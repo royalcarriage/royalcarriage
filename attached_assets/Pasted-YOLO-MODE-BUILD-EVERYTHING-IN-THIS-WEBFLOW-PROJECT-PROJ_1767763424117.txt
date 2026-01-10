@@ -1,0 +1,96 @@
+YOLO MODE — BUILD EVERYTHING IN THIS WEBFLOW PROJECT.
+
+PROJECT GOAL:
+Create a complete SEO-first cash-cow website for airport transportation that converts visitors into phone calls and Moovs bookings.
+
+PLATFORM:
+Webflow ONLY. No Firebase. No Google Cloud. No external hosting.
+
+DOMAIN:
+Primary domain: chicagoairportblackcar.com
+Canonical version: https://chicagoairportblackcar.com (non-www)
+
+BUSINESS DETAILS:
+Business name: Chicago Airport Black Car
+Phone number (use everywhere): +1 (224) 801-3090
+Click-to-call format: tel:+12248013090
+
+BOOKING SYSTEM:
+All “Book Now / Get Quote” buttons must link to:
+https://customer.moovs.app/royal-carriage-limousine/new/info
+
+SITE PURPOSE:
+High-intent airport traffic (O’Hare + Midway) → immediate conversion.
+This is an SEO cash-cow site, not a branding site.
+
+REQUIRED PAGES (CREATE ALL):
+- Home (/)
+- O’Hare Airport Black Car (/ohare-airport-black-car)
+- Midway Airport Black Car (/midway-airport-black-car)
+- Downtown Chicago Airport Transfers (/downtown-chicago-airport-car)
+- Airport Car Service Suburbs (/airport-car-suburbs)
+- Fleet (/fleet)
+- Pricing (/pricing)
+- About (/about)
+- Contact (/contact)
+
+HOMEPAGE REQUIREMENTS:
+- H1: “Chicago Airport Black Car Service – O’Hare & Midway”
+- Subheading emphasizing reliability, flight tracking, professionalism
+- Trust bullets:
+  • Flight tracking & on-time pickup
+  • Licensed & insured chauffeurs
+  • Flat-rate airport pricing
+  • 24/7 service
+- Two CTAs only:
+  • Call Now (tel:+12248013090)
+  • Book Now (Moovs link)
+- Sections:
+  • Services overview (O’Hare, Midway, Downtown, Suburbs)
+  • Fleet summary (Black SUV, Black Sedan)
+  • Final conversion CTA
+
+MONEY PAGES REQUIREMENTS:
+For O’Hare and Midway pages:
+- 800–1,200 words each
+- Airport-specific language (ORD terminals, MDW arrivals)
+- Flight delay handling
+- Internal links to other airport pages
+- CTA buttons every 2–3 sections
+
+SEO SETTINGS (MUST SET):
+- Unique title + meta description per page
+- Canonical URL set correctly
+- Indexing enabled
+- Sitemap enabled
+- Clean URL slugs (no dates, no IDs)
+
+DESIGN STYLE:
+- Clean
+- Luxury
+- Black / white / neutral tones
+- Minimal animations
+- Fast load speed
+- Mobile-first
+- Sticky mobile CTA bar with:
+  • Call Now
+  • Book Now
+
+DO NOT:
+- Use templates
+- Use Webflow CMS yet
+- Add blogs
+- Add popups
+- Add chat widgets
+- Add pricing tables with fake prices
+
+FINAL CHECKS:
+- Every page must have Call + Book CTAs
+- Phone number visible above the fold
+- Booking link consistent everywhere
+- No references to Firebase, Google Cloud, or AI
+- Ready for Google Search Console indexing
+
+EXECUTE NOW.
+DO NOT ASK QUESTIONS.
+BUILD THE FULL SITE STRUCTURE AND CONTENT.
