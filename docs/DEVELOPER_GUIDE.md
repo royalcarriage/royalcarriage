@@ -285,22 +285,22 @@ This section outlines the recommended steps for rolling out this website to prod
 #### Pre-Deployment Checklist
 
 **Infrastructure Setup:**
-1. ✅ Create Firebase project at [Firebase Console](https://console.firebase.google.com/)
-2. ✅ Enable Firebase Hosting for the project
-3. ⬜ Update `.firebaserc` with actual Firebase project ID
-4. ⬜ Generate Firebase service account key (Project Settings → Service Accounts)
-5. ⬜ Add `FIREBASE_SERVICE_ACCOUNT` secret to GitHub repository
+1. Create Firebase project at [Firebase Console](https://console.firebase.google.com/)
+2. Enable Firebase Hosting for the project
+3. Update `.firebaserc` with actual Firebase project ID
+4. Generate Firebase service account key (Project Settings → Service Accounts)
+5. Add `FIREBASE_SERVICE_ACCOUNT` secret to GitHub repository
    - Go to: Settings → Secrets and variables → Actions
    - Add new repository secret
    - Name: `FIREBASE_SERVICE_ACCOUNT`
    - Value: Base64-encoded service account JSON (`base64 -w 0 < key.json`)
 
 **Code Verification:**
-1. ✅ All builds passing locally
-2. ✅ Type checking passes (`npm run check`)
-3. ✅ Smoke tests pass (`npm test`)
-4. ✅ GitHub Actions workflow configured
-5. ✅ Documentation complete
+1. All builds passing locally
+2. Type checking passes (`npm run check`)
+3. Smoke tests pass (`npm test`)
+4. GitHub Actions workflow configured
+5. Documentation complete
 
 #### Rollout Steps
 
@@ -351,7 +351,7 @@ This section outlines the recommended steps for rolling out this website to prod
 
 2. **Performance Optimization**
    - Review Lighthouse scores
-   - Implement code splitting if needed (current bundle is 541 KB)
+   - Implement code splitting if needed (monitor bundle sizes with `npm run build`)
    - Consider CDN optimizations
    - Review and optimize images
 
@@ -416,16 +416,16 @@ firebase deploy --only hosting
 #### Success Criteria
 
 The deployment is considered successful when:
-- ✅ All routes are accessible and load correctly
-- ✅ Images and assets load properly
-- ✅ No console errors on any page
-- ✅ Mobile and desktop views work correctly
-- ✅ Contact forms submit successfully (if applicable)
-- ✅ GitHub Actions deployments work automatically
-- ✅ Preview deployments work for pull requests
-- ✅ SSL certificate is active (for custom domains)
-- ✅ Page load times are under 3 seconds
-- ✅ Lighthouse score is 90+ for Performance
+- All routes are accessible and load correctly
+- Images and assets load properly
+- No console errors on any page
+- Mobile and desktop views work correctly
+- Contact forms submit successfully (if applicable)
+- GitHub Actions deployments work automatically
+- Preview deployments work for pull requests
+- SSL certificate is active (for custom domains)
+- Page load times are under 3 seconds
+- Lighthouse score is 90+ for Performance
 
 #### Support and Troubleshooting
 
