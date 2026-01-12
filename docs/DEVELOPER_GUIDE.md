@@ -278,6 +278,187 @@ firebase deploy --only hosting
 - All static assets (HTML, CSS, JS, images)
 - SPA routing handled by Firebase rewrites (configured in firebase.json)
 
+### Deployment Rollout Plan
+
+This section outlines the recommended steps for rolling out this website to production.
+
+#### Pre-Deployment Checklist
+
+**Infrastructure Setup:**
+1. ✅ Create Firebase project at [Firebase Console](https://console.firebase.google.com/)
+2. ✅ Enable Firebase Hosting for the project
+3. ⬜ Update `.firebaserc` with actual Firebase project ID
+4. ⬜ Generate Firebase service account key (Project Settings → Service Accounts)
+5. ⬜ Add `FIREBASE_SERVICE_ACCOUNT` secret to GitHub repository
+   - Go to: Settings → Secrets and variables → Actions
+   - Add new repository secret
+   - Name: `FIREBASE_SERVICE_ACCOUNT`
+   - Value: Base64-encoded service account JSON (`base64 -w 0 < key.json`)
+
+**Code Verification:**
+1. ✅ All builds passing locally
+2. ✅ Type checking passes (`npm run check`)
+3. ✅ Smoke tests pass (`npm test`)
+4. ✅ GitHub Actions workflow configured
+5. ✅ Documentation complete
+
+#### Rollout Steps
+
+**Phase 1: Initial Deployment (Week 1)**
+
+1. **Merge PR to Main Branch**
+   ```bash
+   # After PR review and approval
+   git checkout main
+   git pull origin main
+   ```
+
+2. **Monitor First Deployment**
+   - Navigate to Actions tab in GitHub
+   - Watch "Build and Deploy to Firebase" workflow
+   - Verify all steps complete successfully
+   - Expected duration: 3-5 minutes
+
+3. **Verify Production Site**
+   - Visit Firebase Hosting URL (shown in workflow output)
+   - Test all major routes:
+     - Home page (`/`)
+     - O'Hare Airport (`/ohare-airport-limo`)
+     - Midway Airport (`/midway-airport-limo`)
+     - Downtown Chicago (`/airport-limo-downtown-chicago`)
+     - Suburbs (`/airport-limo-suburbs`)
+     - Fleet (`/fleet`)
+     - Pricing (`/pricing`)
+     - About (`/about`)
+     - Contact (`/contact`)
+   - Verify images load correctly
+   - Test responsive design (mobile, tablet, desktop)
+   - Check browser console for errors
+
+4. **DNS and Custom Domain (Optional)**
+   - In Firebase Console → Hosting → Add custom domain
+   - Follow Firebase instructions to add DNS records
+   - Wait for SSL certificate provisioning (can take 24-48 hours)
+   - Verify site loads on custom domain
+
+**Phase 2: Monitoring and Optimization (Week 2-3)**
+
+1. **Setup Monitoring**
+   - Enable Firebase Analytics
+   - Configure Google Search Console
+   - Add Google Analytics (if desired)
+   - Monitor Firebase Hosting usage and bandwidth
+
+2. **Performance Optimization**
+   - Review Lighthouse scores
+   - Implement code splitting if needed (current bundle is 541 KB)
+   - Consider CDN optimizations
+   - Review and optimize images
+
+3. **SEO and Marketing**
+   - Submit sitemap to Google Search Console
+   - Verify structured data
+   - Test social media sharing (Open Graph tags)
+   - Review meta descriptions and titles
+
+**Phase 3: Ongoing Operations (Week 4+)**
+
+1. **Regular Maintenance**
+   - Monitor GitHub Actions for failed builds
+   - Review Firebase Hosting logs for errors
+   - Update dependencies monthly (`npm outdated`)
+   - Keep documentation updated
+
+2. **Content Updates**
+   - All content updates go through PR process
+   - Preview deployments automatically created
+   - Test in preview before merging
+   - Monitor for build failures
+
+#### Rollback Procedure
+
+If issues are discovered after deployment:
+
+**Option 1: Rollback via Firebase Console**
+```bash
+# List recent deployments
+firebase hosting:releases
+
+# Rollback to previous version via Firebase Console
+# Navigate to: Hosting → Release history → Click "Rollback"
+```
+
+**Option 2: Revert Git Commit**
+```bash
+# Identify the commit to revert
+git log --oneline
+
+# Revert the problematic commit
+git revert <commit-hash>
+
+# Push to main - this triggers automatic redeployment
+git push origin main
+```
+
+**Option 3: Emergency Manual Deploy**
+```bash
+# Checkout last known good commit
+git checkout <last-good-commit>
+
+# Build locally
+npm install
+npm run build
+
+# Deploy manually
+firebase deploy --only hosting
+```
+
+#### Success Criteria
+
+The deployment is considered successful when:
+- ✅ All routes are accessible and load correctly
+- ✅ Images and assets load properly
+- ✅ No console errors on any page
+- ✅ Mobile and desktop views work correctly
+- ✅ Contact forms submit successfully (if applicable)
+- ✅ GitHub Actions deployments work automatically
+- ✅ Preview deployments work for pull requests
+- ✅ SSL certificate is active (for custom domains)
+- ✅ Page load times are under 3 seconds
+- ✅ Lighthouse score is 90+ for Performance
+
+#### Support and Troubleshooting
+
+**Common Issues:**
+
+1. **Build Fails in CI**
+   - Check GitHub Actions logs
+   - Verify node_modules not committed
+   - Run `npm ci` locally to reproduce
+   - Check for missing environment variables
+
+2. **Deployment Fails**
+   - Verify Firebase secret is correct
+   - Check Firebase project permissions
+   - Ensure .firebaserc has correct project ID
+   - Review Firebase quota limits
+
+3. **Site Not Loading**
+   - Check Firebase Hosting status
+   - Verify DNS records (for custom domains)
+   - Check browser console for errors
+   - Review Firebase Hosting logs
+
+4. **Preview Deployments Not Working**
+   - Check PR has proper permissions
+   - Verify GitHub token is working
+   - Review workflow logs in Actions tab
+
+For additional help, refer to:
+- [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Vite Documentation](https://vitejs.dev/)
+
 ---
 
 ## CI/CD Pipeline
