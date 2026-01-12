@@ -293,7 +293,9 @@ This section outlines the recommended steps for rolling out this website to prod
    - Go to: Settings → Secrets and variables → Actions
    - Add new repository secret
    - Name: `FIREBASE_SERVICE_ACCOUNT`
-   - Value: Base64-encoded service account JSON (`base64 -w 0 < key.json`)
+   - Value: Base64-encoded service account JSON
+     - Linux/WSL: `base64 -w 0 < key.json`
+     - macOS: `base64 -i key.json`
 
 **Code Verification:**
 1. All builds passing locally
@@ -507,7 +509,11 @@ Configure these in **Settings → Secrets and variables → Actions**:
 3. Download the JSON file
 4. Base64 encode it:
    ```bash
+   # Linux/WSL
    base64 -w 0 < service-account-key.json
+   
+   # macOS
+   base64 -i service-account-key.json
    ```
 5. Copy the output and add as GitHub secret
 

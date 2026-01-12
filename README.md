@@ -87,7 +87,9 @@ This project is configured for automatic deployment to Firebase Hosting via GitH
 1. Update `.firebaserc` with your Firebase project ID
 2. Add `FIREBASE_SERVICE_ACCOUNT` secret to GitHub repository
    - Get from Firebase Console → Project Settings → Service Accounts
-   - Base64 encode the JSON: `base64 -w 0 < service-account.json`
+   - Base64 encode the JSON:
+     - Linux/WSL: `base64 -w 0 < service-account.json`
+     - macOS: `base64 -i service-account.json`
    - Add to: Settings → Secrets and variables → Actions
 
 See [Developer Guide - Deployment Rollout Plan](docs/DEVELOPER_GUIDE.md#deployment-rollout-plan) for detailed instructions.
