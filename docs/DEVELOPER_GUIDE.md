@@ -1,7 +1,7 @@
 # Developer Guide - Chicago Airport Black Car Website
 
 **Repository:** royalcarriage/royalcarriage  
-**Last Updated:** January 12, 2026
+**Last Updated:** January 14, 2026
 
 ## Table of Contents
 
@@ -15,6 +15,11 @@
 8. [Environment Variables](#environment-variables)
 9. [Firebase Configuration](#firebase-configuration)
 10. [Troubleshooting](#troubleshooting)
+
+## Related Documentation
+
+- **[CI/CD Workflow Guide](CICD_WORKFLOW.md)** - Comprehensive guide to the GitHub Actions workflow
+- **[Repository Audit](REPO_AUDIT.md)** - Repository structure and audit report
 
 ---
 
@@ -465,41 +470,55 @@ For additional help, refer to:
 
 ## CI/CD Pipeline
 
-### GitHub Actions Workflow
+### Overview
+
+This repository uses GitHub Actions for continuous integration and continuous deployment (CI/CD). The workflow automatically builds, tests, audits, and deploys the application.
+
+**📖 For detailed documentation, see [CI/CD Workflow Guide](CICD_WORKFLOW.md)**
+
+### Quick Reference
 
 **Location:** `.github/workflows/firebase-deploy.yml`
 
+#### Workflow Jobs
+
+1. **Security Audit** - Run npm audit to check for vulnerabilities
+2. **Build** - Build application and run tests
+3. **Deploy Production** - Deploy to Firebase Hosting (main branch only)
+4. **Deploy Preview** - Deploy preview for pull requests
+
 #### Workflow Triggers
 
-1. **Push to `main` branch**: Automatic deploy to production
-2. **Pull requests**: Deploy preview to Firebase Hosting preview channels
+1. **Push to `main` branch**: Runs audit → build → production deployment
+2. **Pull requests to `main`**: Runs audit → build → preview deployment
 
-#### Workflow Steps
+#### Workflow Steps Summary
 
-**For Main Branch (Production):**
-1. Checkout code
-2. Setup Node.js 20.x
-3. Install dependencies (`npm ci`)
-4. Run build (`npm run build`)
-5. Run smoke tests
-6. Deploy to Firebase Hosting (production)
+**Security Audit:**
+- Install dependencies
+- Run npm audit (moderate and high severity checks)
+- Report vulnerabilities as warnings
 
-**For Pull Requests (Preview):**
-1. Checkout code
-2. Setup Node.js 20.x
-3. Install dependencies (`npm ci`)
-4. Run build (`npm run build`)
-5. Run smoke tests
-6. Deploy to Firebase Hosting preview channel
-7. Comment on PR with preview URL
+**Build:**
+- Run TypeScript type checking
+- Build client and server
+- Run smoke tests
+- Upload build artifacts
+
+**Deploy Production:**
+- Download build artifacts
+- Deploy to Firebase Hosting live channel
+
+**Deploy Preview:**
+- Download build artifacts
+- Deploy to Firebase Hosting preview channel
+- Comment on PR with preview URL
 
 ### Required GitHub Secrets
 
 Configure these in **Settings → Secrets and variables → Actions**:
 
-#### Option 1: Service Account (Recommended)
-
-**Secret Name:** `FIREBASE_SERVICE_ACCOUNT`
+#### FIREBASE_SERVICE_ACCOUNT (Required)
 
 **Value:** Base64-encoded Firebase service account JSON
 
@@ -517,15 +536,11 @@ Configure these in **Settings → Secrets and variables → Actions**:
    ```
 5. Copy the output and add as GitHub secret
 
-#### Option 2: CI Token (Alternative)
+#### FIREBASE_PROJECT_ID (Optional)
 
-**Secret Name:** `FIREBASE_TOKEN`
+**Value:** Your Firebase project ID
 
-**How to get:**
-```bash
-firebase login:ci
-```
-Copy the token and add as GitHub secret.
+**Note:** If not provided, uses "default" from `.firebaserc`
 
 ### Deployment Behavior
 
