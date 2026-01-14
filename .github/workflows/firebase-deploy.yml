@@ -46,7 +46,6 @@ jobs:
       
       - name: Run TypeScript check
         run: npm run check
-        continue-on-error: true
       
       - name: Build application
         run: npm run build
@@ -119,7 +118,7 @@ jobs:
           echo "Site URL: https://royalcarriagelimoseo.web.app"
           echo "Verifying site is accessible..."
           sleep 10
-          curl -f -s -o /dev/null -w "HTTP Status: %{http_code}\n" https://royalcarriagelimoseo.web.app || echo "Warning: Site verification failed"
+          curl --max-time 30 -f -s -o /dev/null -w "HTTP Status: %{http_code}\n" https://royalcarriagelimoseo.web.app || echo "Warning: Site verification failed"
       
       - name: Post deployment status
         if: always()

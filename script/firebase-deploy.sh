@@ -189,7 +189,7 @@ verify_deployment() {
     # Check if site is reachable
     print_info "Checking site availability..."
     
-    HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" "$DEPLOYMENT_URL" || echo "000")
+    HTTP_STATUS=$(curl --max-time 30 -o /dev/null -s -w "%{http_code}" "$DEPLOYMENT_URL" || echo "000")
     
     if [ "$HTTP_STATUS" = "200" ]; then
         print_success "Site is live (HTTP $HTTP_STATUS)"
@@ -232,7 +232,10 @@ show_rollback_instructions() {
 ###############################################################################
 
 main() {
-    clear
+    # Only clear in interactive mode
+    if [ -t 0 ]; then
+        clear
+    fi
     print_header "Firebase Deployment Script"
     print_info "Project: Chicago Airport Black Car Service"
     print_info "Firebase Project ID: $FIREBASE_PROJECT_ID"
