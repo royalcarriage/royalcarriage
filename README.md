@@ -1,5 +1,7 @@
 # Chicago Airport Black Car
 
+[![Build and Deploy](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml)
+
 Professional airport transportation serving Chicago O'Hare, Midway, and 80+ suburbs.
 
 ## Quick Start
