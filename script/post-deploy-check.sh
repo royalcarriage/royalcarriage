@@ -2,6 +2,8 @@
 # Post-deployment validation script
 # Usage: ./script/post-deploy-check.sh [URL]
 
+set -euo pipefail
+
 # Default to production URL if not provided
 URL="${1:-https://chicagoairportblackcar.com}"
 
@@ -96,11 +98,12 @@ echo "📊 Performance checks..."
 
 # Check page load time
 LOAD_TIME=$(curl -s -o /dev/null -w "%{time_total}" "$URL")
-LOAD_TIME_INT=$(echo "$LOAD_TIME * 1000" | bc | cut -d. -f1)
+# Convert to milliseconds using shell arithmetic (avoid bc dependency)
+LOAD_TIME_MS=$(awk "BEGIN {printf \"%.0f\", $LOAD_TIME * 1000}")
 
-if [ "$LOAD_TIME_INT" -lt 3000 ]; then
+if [ "$LOAD_TIME_MS" -lt 3000 ]; then
     echo -e "${GREEN}✅ Page load time: ${LOAD_TIME}s (Good)${NC}"
-elif [ "$LOAD_TIME_INT" -lt 5000 ]; then
+elif [ "$LOAD_TIME_MS" -lt 5000 ]; then
     echo -e "${YELLOW}⚠️  Page load time: ${LOAD_TIME}s (Could be better)${NC}"
 else
     echo -e "${RED}❌ Page load time: ${LOAD_TIME}s (Slow)${NC}"

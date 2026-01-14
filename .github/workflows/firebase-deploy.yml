@@ -55,16 +55,23 @@ jobs:
           echo "✓ HTML structure valid"
           
           # Check for common assets
-          test -f dist/public/assets/*.js || (echo "❌ Error: JavaScript bundle not found" && exit 1)
-          echo "✓ JavaScript bundle exists"
+          if find dist/public/assets -name "*.js" -type f | head -1 | grep -q .; then
+            echo "✓ JavaScript bundle exists"
+          else
+            echo "❌ Error: JavaScript bundle not found" && exit 1
+          fi
           
-          test -f dist/public/assets/*.css || (echo "❌ Error: CSS bundle not found" && exit 1)
-          echo "✓ CSS bundle exists"
+          if find dist/public/assets -name "*.css" -type f | head -1 | grep -q .; then
+            echo "✓ CSS bundle exists"
+          else
+            echo "❌ Error: CSS bundle not found" && exit 1
+          fi
           
           # Check bundle sizes
           JS_SIZE=$(find dist/public/assets -name "*.js" -type f -exec du -sb {} + | awk '{sum+=$1} END {print sum}')
           if [ "$JS_SIZE" -gt 1048576 ]; then
-            echo "⚠️ Warning: JavaScript bundle is large ($(echo "scale=2; $JS_SIZE/1024/1024" | bc)MB)"
+            JS_SIZE_MB=$((JS_SIZE / 1024 / 1024))
+            echo "⚠️ Warning: JavaScript bundle is large (${JS_SIZE_MB}MB)"
           else
             echo "✓ JavaScript bundle size acceptable"
           fi
