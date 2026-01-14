@@ -2,6 +2,23 @@
 
 Professional airport transportation serving Chicago O'Hare, Midway, and 80+ suburbs.
 
+## 🚀 NEW: AI-Powered Website Management System
+
+This repository now includes a comprehensive AI-powered system for automated SEO optimization, content generation, and website analytics. 
+
+**Key Features:**
+- 🤖 AI Page Analyzer with SEO scoring
+- ✍️ Automated content generation using Google Vertex AI
+- 🖼️ AI-powered image generation
+- 📊 Admin dashboard for website management
+- ⏰ Scheduled automated analysis and reporting
+- 🔒 Secure Firebase integration with role-based access
+
+**Quick Access:**
+- Admin Dashboard: `https://your-domain.com/admin`
+- [AI System Guide](docs/AI_SYSTEM_GUIDE.md) - Complete documentation
+- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Setup instructions
+
 ## Quick Start
 
 ### Prerequisites
@@ -9,6 +26,8 @@ Professional airport transportation serving Chicago O'Hare, Midway, and 80+ subu
 - Node.js 20.x LTS or later
 - npm 10.x or later
 - Git
+- Firebase CLI (for AI features): `npm install -g firebase-tools`
+- Google Cloud Project with Vertex AI enabled (for AI features)
 
 ### Development Setup
 
@@ -48,11 +67,18 @@ Build output:
 ```
 royalcarriage/
 ├── client/          # React frontend (Vite + TypeScript)
+│   └── src/
+│       └── pages/
+│           └── admin/    # AI admin dashboard
 ├── server/          # Express.js backend
-├── shared/          # Shared types and utilities
+│   └── ai/          # AI services (analyzer, generator, image)
+├── functions/       # Firebase Functions for automation
+├── shared/          # Shared types and database schema
 ├── docs/            # Documentation
-│   ├── DEVELOPER_GUIDE.md    # Comprehensive developer guide
-│   └── REPO_AUDIT.md         # Repository audit report
+│   ├── DEVELOPER_GUIDE.md     # Comprehensive developer guide
+│   ├── REPO_AUDIT.md          # Repository audit report
+│   ├── AI_SYSTEM_GUIDE.md     # AI system documentation
+│   └── DEPLOYMENT_GUIDE.md    # AI deployment instructions
 ├── script/          # Build and utility scripts
 └── .github/         # GitHub Actions workflows
 ```
@@ -72,6 +98,31 @@ royalcarriage/
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Complete setup, build, deployment, and troubleshooting guide
 - **[Repository Audit](docs/REPO_AUDIT.md)** - Repository structure and audit report
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
+- **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
+- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
+
+## AI Features
+
+### Admin Dashboard
+Access the AI-powered admin dashboard at `/admin` to:
+- Analyze all website pages for SEO optimization
+- Generate AI-powered content improvements
+- Create AI-generated images
+- Monitor analytics and performance
+- Configure automation settings
+
+### API Endpoints
+- `POST /api/ai/analyze-page` - Analyze a page for SEO
+- `POST /api/ai/generate-content` - Generate optimized content
+- `POST /api/ai/generate-image` - Create AI images
+- `POST /api/ai/batch-analyze` - Analyze multiple pages
+- `GET /api/ai/health` - Check AI services status
+
+### Scheduled Tasks
+- **Daily Analysis**: 2:00 AM CT - Analyzes all pages automatically
+- **Weekly Reports**: Monday 9:00 AM CT - Generates SEO reports
+
+See [AI System Guide](docs/AI_SYSTEM_GUIDE.md) for complete documentation.
 
 ## Deployment
 
@@ -89,10 +140,15 @@ This project is configured for automatic deployment to Firebase Hosting via GitH
    - Get from Firebase Console → Project Settings → Service Accounts
    - Base64 encode the JSON:
      - Linux/WSL: `base64 -w 0 < service-account.json`
-     - macOS: `base64 -i service-account.json`
+     - macOS: `base64 -i service-account-key.json`
    - Add to: Settings → Secrets and variables → Actions
 
-See [Developer Guide - Deployment Rollout Plan](docs/DEVELOPER_GUIDE.md#deployment-rollout-plan) for detailed instructions.
+3. For AI features, also set up:
+   - Google Cloud Project with Vertex AI enabled
+   - Service account with Vertex AI permissions
+   - Environment variables (see [Deployment Guide](docs/DEPLOYMENT_GUIDE.md))
+
+See [Developer Guide - Deployment Rollout Plan](docs/DEVELOPER_GUIDE.md#deployment-rollout-plan) and [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed instructions.
 
 ## Tech Stack
 
