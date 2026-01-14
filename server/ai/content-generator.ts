@@ -286,15 +286,25 @@ Important:
   }
 
   private generateCTA(request: ContentGenerationRequest): string {
-    const ctas = [
-      'Book Your Ride Now',
-      'Reserve Your Limo',
-      'Get Instant Quote',
-      'Schedule Pickup',
-      'Call (224) 801-3090',
-    ];
+    const { pageType, tone } = request;
     
-    return ctas[Math.floor(Math.random() * ctas.length)];
+    // Deterministic CTA selection based on page type and tone
+    if (tone === 'urgent') {
+      return 'Call (224) 801-3090';
+    }
+    
+    switch (pageType) {
+      case 'airport':
+        return 'Book Your Ride Now';
+      case 'suburb':
+        return 'Schedule Pickup';
+      case 'vehicle':
+        return 'Reserve Your Limo';
+      case 'pricing':
+        return 'Get Instant Quote';
+      default:
+        return 'Book Your Ride Now';
+    }
   }
 
   /**

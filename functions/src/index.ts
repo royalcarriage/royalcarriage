@@ -126,7 +126,14 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
       return;
     }
 
-    // Perform AI analysis (simplified for now)
+    // TODO: Replace with actual AI analysis using PageAnalyzer
+    // This is currently using mock data for demonstration
+    // In production, import and use the PageAnalyzer class:
+    // import { PageAnalyzer } from '../../server/ai/page-analyzer';
+    // const analyzer = new PageAnalyzer();
+    // const result = await analyzer.analyzePage(pageContent, pageUrl, pageName);
+    
+    // Perform AI analysis (using mock data for now)
     const analysis = {
       pageUrl,
       pageName,

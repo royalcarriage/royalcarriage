@@ -49,7 +49,18 @@ export default function PageAnalyzer() {
     setAnalyzing(true);
     
     try {
-      // Simulate page analysis
+      // TODO: Replace with actual API call to /api/ai/batch-analyze
+      // This is currently using mock data for demonstration purposes
+      // In production, this should call the real API:
+      // const response = await fetch('/api/ai/batch-analyze', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ pages: websitePages })
+      // });
+      // const data = await response.json();
+      // setResults(data.results);
+      
+      // Simulate page analysis with mock data
       const mockResults: PageScore[] = websitePages.map((page, index) => ({
         url: page.url,
         name: page.name,

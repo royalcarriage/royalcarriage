@@ -3,11 +3,20 @@ import { pgTable, text, varchar, timestamp, jsonb, integer, boolean } from "driz
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+// User roles enum
+export const UserRole = {
+  USER: 'user',
+  ADMIN: 'admin',
+  SUPER_ADMIN: 'super_admin'
+} as const;
+
+export type UserRoleType = typeof UserRole[keyof typeof UserRole];
+
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  role: text("role").notNull().default("user"), // user, admin, super_admin
+  role: text("role").notNull().default(UserRole.USER).$type<UserRoleType>(),
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 

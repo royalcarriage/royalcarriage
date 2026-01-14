@@ -146,7 +146,7 @@ export class ImageGenerator {
     // This is a placeholder - actual Vertex AI image generation would use
     // the appropriate API endpoint and authentication
     
-    throw new Error('Vertex AI image generation not yet configured. Please set up Imagen API access.');
+    throw new Error('Vertex AI image generation not yet configured. Please set up Imagen API access by following the deployment guide at docs/DEPLOYMENT_GUIDE.md. You need to enable the Vertex AI API in Google Cloud Console and configure service account credentials.');
   }
 
   /**
