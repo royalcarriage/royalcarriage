@@ -35,7 +35,16 @@ Thumbs.db
 # Firebase
 .firebase/
 firebase-debug.log
+firebase-debug.*.log
 firestore-debug.log
+
+# Firebase service accounts and credentials (SECURITY)
+*-firebase-adminsdk-*.json
+service-account*.json
+*-service-account.json
+credentials.json
+*.pem
+*.key
 
 # Testing
 coverage/
