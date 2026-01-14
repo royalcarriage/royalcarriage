@@ -3,6 +3,35 @@
  * Analyzes website pages for SEO, content quality, and conversion optimization
  */
 
+/**
+ * Safely remove HTML tags from a string
+ * This function removes all HTML tags to prevent injection vulnerabilities
+ */
+function sanitizeHtml(html: string): string {
+  if (!html) return '';
+  
+  // Remove all HTML tags completely, including nested tags
+  let text = html;
+  let previousLength = -1;
+  
+  // Keep removing tags until no more tags are found
+  while (text.length !== previousLength) {
+    previousLength = text.length;
+    text = text.replace(/<[^>]*>/g, '');
+  }
+  
+  // Decode HTML entities in a safe order (amp must be last to avoid double-decoding)
+  text = text
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&'); // Always decode &amp; last
+  
+  return text.trim();
+}
+
 interface PageAnalysisResult {
   seoScore: number;
   contentScore: number;
@@ -75,12 +104,12 @@ export class PageAnalyzer {
     const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
     const h3Regex = /<h3[^>]*>(.*?)<\/h3>/gi;
 
-    const h1s = Array.from(content.matchAll(h1Regex)).map(m => m[1].replace(/<[^>]*>/g, ''));
-    const h2s = Array.from(content.matchAll(h2Regex)).map(m => m[1].replace(/<[^>]*>/g, ''));
-    const h3s = Array.from(content.matchAll(h3Regex)).map(m => m[1].replace(/<[^>]*>/g, ''));
+    const h1s = Array.from(content.matchAll(h1Regex)).map(m => sanitizeHtml(m[1]));
+    const h2s = Array.from(content.matchAll(h2Regex)).map(m => sanitizeHtml(m[1]));
+    const h3s = Array.from(content.matchAll(h3Regex)).map(m => sanitizeHtml(m[1]));
 
     // Remove HTML tags for text analysis
-    const textContent = content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const textContent = sanitizeHtml(content).replace(/\s+/g, ' ').trim();
     
     // Word count
     const words = textContent.split(/\s+/).filter(w => w.length > 0);
