@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+env:
+  NODE_VERSION: '20.x'
+  BUILD_ARTIFACT_NAME: build-output
+
 jobs:
   build:
     name: Build Application
@@ -20,7 +24,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
+          node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
       
       - name: Install dependencies
@@ -32,18 +36,67 @@ jobs:
       - name: Build application
         run: npm run build
       
-      - name: Run smoke tests
+      - name: Run enhanced smoke tests
         run: |
           echo "Running smoke tests..."
-          test -f dist/public/index.html || (echo "Error: index.html not found" && exit 1)
-          test -f dist/index.cjs || (echo "Error: server bundle not found" && exit 1)
-          test -d dist/public/assets || (echo "Error: assets directory not found" && exit 1)
-          echo "✓ All smoke tests passed"
+          
+          # Check required files exist
+          test -f dist/public/index.html || (echo "❌ Error: index.html not found" && exit 1)
+          echo "✓ index.html exists"
+          
+          test -f dist/index.cjs || (echo "❌ Error: server bundle not found" && exit 1)
+          echo "✓ server bundle exists"
+          
+          test -d dist/public/assets || (echo "❌ Error: assets directory not found" && exit 1)
+          echo "✓ assets directory exists"
+          
+          # Check HTML is valid (basic check)
+          grep -q "<!DOCTYPE html>" dist/public/index.html || (echo "❌ Error: Invalid HTML" && exit 1)
+          echo "✓ HTML structure valid"
+          
+          # Check for common assets
+          test -f dist/public/assets/*.js || (echo "❌ Error: JavaScript bundle not found" && exit 1)
+          echo "✓ JavaScript bundle exists"
+          
+          test -f dist/public/assets/*.css || (echo "❌ Error: CSS bundle not found" && exit 1)
+          echo "✓ CSS bundle exists"
+          
+          # Check bundle sizes
+          JS_SIZE=$(find dist/public/assets -name "*.js" -type f -exec du -sb {} + | awk '{sum+=$1} END {print sum}')
+          if [ "$JS_SIZE" -gt 1048576 ]; then
+            echo "⚠️ Warning: JavaScript bundle is large ($(echo "scale=2; $JS_SIZE/1024/1024" | bc)MB)"
+          else
+            echo "✓ JavaScript bundle size acceptable"
+          fi
+          
+          echo "✅ All smoke tests passed"
+      
+      - name: Generate build report
+        run: |
+          echo "# Build Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Build Artifacts" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| File | Size |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Calculate sizes
+          HTML_SIZE=$(du -h dist/public/index.html | cut -f1)
+          SERVER_SIZE=$(du -h dist/index.cjs | cut -f1)
+          ASSETS_SIZE=$(du -sh dist/public/assets | cut -f1)
+          TOTAL_SIZE=$(du -sh dist | cut -f1)
+          
+          echo "| index.html | $HTML_SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| server bundle | $SERVER_SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| assets/ | $ASSETS_SIZE |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Total** | **$TOTAL_SIZE** |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Build completed successfully" >> $GITHUB_STEP_SUMMARY
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: build-output
+          name: ${{ env.BUILD_ARTIFACT_NAME }}
           path: dist/
           retention-days: 7
 
@@ -52,6 +105,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://chicagoairportblackcar.com
     
     steps:
       - name: Checkout code
@@ -60,7 +116,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-output
+          name: ${{ env.BUILD_ARTIFACT_NAME }}
           path: dist/
       
       - name: Deploy to Firebase Hosting
@@ -70,12 +126,25 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
           projectId: ${{ secrets.FIREBASE_PROJECT_ID || 'default' }}
+        id: deploy-production
+      
+      - name: Create deployment summary
+        run: |
+          echo "# 🚀 Production Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Successfully deployed to Firebase Hosting" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Production URL:** https://chicagoairportblackcar.com" >> $GITHUB_STEP_SUMMARY
+          echo "**Deploy Time:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
   deploy-preview:
     name: Deploy Preview
     needs: build
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
+    environment:
+      name: preview
     
     steps:
       - name: Checkout code
@@ -84,7 +153,7 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build-output
+          name: ${{ env.BUILD_ARTIFACT_NAME }}
           path: dist/
       
       - name: Deploy to Firebase Hosting Preview
@@ -102,7 +171,28 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const previewUrl = '${{ steps.deploy-preview.outputs.details_url }}';
-            const message = `🚀 **Preview Deployment**\n\nYour changes have been deployed to Firebase Hosting!\n\n**Preview URL:** ${previewUrl}\n\n*This preview will expire in 7 days.*`;
+            const expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 7);
+            
+            const message = `## 🚀 Preview Deployment
+            
+            Your changes have been deployed to Firebase Hosting preview!
+            
+            ### 🔗 Preview URL
+            ${previewUrl}
+            
+            ### 📋 Build Information
+            - **Commit:** ${context.sha.substring(0, 7)}
+            - **Branch:** ${context.ref}
+            - **Deployed:** ${new Date().toUTCString()}
+            - **Expires:** ${expireDate.toUTCString()}
+            
+            ### ✅ Deployment Status
+            - Build: Success
+            - Deploy: Success
+            - Status: Ready for review
+            
+            *This preview will automatically expire in 7 days.*`;
             
             github.rest.issues.createComment({
               issue_number: context.issue.number,
