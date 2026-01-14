@@ -33,12 +33,7 @@ jobs:
         run: npm run build
       
       - name: Run smoke tests
-        run: |
-          echo "Running smoke tests..."
-          test -f dist/public/index.html || (echo "Error: index.html not found" && exit 1)
-          test -f dist/index.cjs || (echo "Error: server bundle not found" && exit 1)
-          test -d dist/public/assets || (echo "Error: assets directory not found" && exit 1)
-          echo "✓ All smoke tests passed"
+        run: npm test
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
