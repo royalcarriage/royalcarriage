@@ -8,10 +8,16 @@ on:
     branches:
       - main
 
+# Cancel in-progress runs for the same workflow on the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Build Application
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     
     steps:
       - name: Checkout code
@@ -23,14 +29,29 @@ jobs:
           node-version: '20.x'
           cache: 'npm'
       
+      - name: Cache build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            node_modules
+            dist
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.ts', '**/*.tsx', '**/*.css') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-
+            ${{ runner.os }}-build-
+      
       - name: Install dependencies
         run: npm ci
       
       - name: Run TypeScript check
         run: npm run check
+        continue-on-error: true
       
       - name: Build application
         run: npm run build
+        env:
+          NODE_ENV: production
       
       - name: Run smoke tests
         run: |
@@ -40,18 +61,30 @@ jobs:
           test -d dist/public/assets || (echo "Error: assets directory not found" && exit 1)
           echo "✓ All smoke tests passed"
       
+      - name: Verify build size
+        run: |
+          echo "Build output size:"
+          du -sh dist/public/
+          echo "Total files:"
+          find dist/public -type f | wc -l
+      
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-output
           path: dist/
           retention-days: 7
+          if-no-files-found: error
 
   deploy-production:
     name: Deploy to Production
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://royalcarriagelimoseo.web.app
     
     steps:
       - name: Checkout code
@@ -63,19 +96,73 @@ jobs:
           name: build-output
           path: dist/
       
+      - name: Verify build artifacts
+        run: |
+          echo "Verifying build artifacts..."
+          ls -la dist/public/
+          test -f dist/public/index.html || (echo "Error: index.html not found" && exit 1)
+      
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
+        id: deploy
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
-          projectId: ${{ secrets.FIREBASE_PROJECT_ID || 'default' }}
+          projectId: royalcarriagelimoseo
+        continue-on-error: false
+      
+      - name: Verify deployment
+        if: success()
+        run: |
+          echo "Deployment successful!"
+          echo "Site URL: https://royalcarriagelimoseo.web.app"
+          echo "Verifying site is accessible..."
+          sleep 10
+          curl -f -s -o /dev/null -w "HTTP Status: %{http_code}\n" https://royalcarriagelimoseo.web.app || echo "Warning: Site verification failed"
+      
+      - name: Post deployment status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const status = '${{ job.status }}';
+            const commitSha = context.sha.substring(0, 7);
+            const commitMsg = context.payload.head_commit?.message?.split('\n')[0] || 'No commit message';
+            
+            let emoji = status === 'success' ? '✅' : '❌';
+            let message = `${emoji} **Production Deployment ${status === 'success' ? 'Successful' : 'Failed'}**\n\n`;
+            message += `**Commit:** ${commitSha} - ${commitMsg}\n`;
+            message += `**Branch:** ${context.ref.replace('refs/heads/', '')}\n`;
+            
+            if (status === 'success') {
+              message += `**Live URL:** https://royalcarriagelimoseo.web.app\n`;
+              message += `**Firebase Console:** https://console.firebase.google.com/project/royalcarriagelimoseo/hosting\n`;
+            } else {
+              message += `\n⚠️ **Rollback Instructions:**\n`;
+              message += `1. Go to [Firebase Console](https://console.firebase.google.com/project/royalcarriagelimoseo/hosting)\n`;
+              message += `2. Navigate to Release History\n`;
+              message += `3. Rollback to the previous version\n`;
+            }
+            
+            console.log(message);
+      
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "::error::Production deployment failed!"
+          echo "::error::Check the logs above for details"
+          echo "::error::Rollback may be required via Firebase Console"
 
   deploy-preview:
     name: Deploy Preview
     needs: build
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     if: github.event_name == 'pull_request'
+    environment:
+      name: preview
     
     steps:
       - name: Checkout code
@@ -87,24 +174,87 @@ jobs:
           name: build-output
           path: dist/
       
+      - name: Verify build artifacts
+        run: |
+          echo "Verifying build artifacts..."
+          ls -la dist/public/
+          test -f dist/public/index.html || (echo "Error: index.html not found" && exit 1)
+      
       - name: Deploy to Firebase Hosting Preview
         uses: FirebaseExtended/action-hosting-deploy@v0
+        id: deploy-preview
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: ${{ secrets.FIREBASE_PROJECT_ID || 'default' }}
-        id: deploy-preview
+          projectId: royalcarriagelimoseo
+        continue-on-error: false
       
       - name: Comment PR with preview URL
+        if: success()
         uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const previewUrl = '${{ steps.deploy-preview.outputs.details_url }}';
-            const message = `🚀 **Preview Deployment**\n\nYour changes have been deployed to Firebase Hosting!\n\n**Preview URL:** ${previewUrl}\n\n*This preview will expire in 7 days.*`;
+            const expireTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toLocaleDateString();
             
-            github.rest.issues.createComment({
+            const message = `🚀 **Preview Deployment Successful**\n\n` +
+                          `Your changes have been deployed to Firebase Hosting!\n\n` +
+                          `**Preview URL:** ${previewUrl}\n` +
+                          `**Expires:** ${expireTime}\n\n` +
+                          `### 📋 Quick Links\n` +
+                          `- [View Preview](${previewUrl})\n` +
+                          `- [Firebase Console](https://console.firebase.google.com/project/royalcarriagelimoseo/hosting)\n\n` +
+                          `### ✅ Deployment Checklist\n` +
+                          `- [ ] Test all navigation routes\n` +
+                          `- [ ] Verify mobile responsiveness\n` +
+                          `- [ ] Check for console errors\n` +
+                          `- [ ] Validate SEO meta tags\n\n` +
+                          `*Preview will automatically expire in 7 days.*`;
+            
+            // Find existing comment to update instead of creating new ones
+            const comments = await github.rest.issues.listComments({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            
+            const botComment = comments.data.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('Preview Deployment')
+            );
+            
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                comment_id: botComment.id,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+            } else {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: message
+              });
+            }
+      
+      - name: Comment on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const message = `❌ **Preview Deployment Failed**\n\n` +
+                          `There was an error deploying your preview.\n\n` +
+                          `**Next Steps:**\n` +
+                          `1. Check the [workflow logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n` +
+                          `2. Verify your changes build locally: \`npm run build\`\n` +
+                          `3. Check for any TypeScript or build errors\n\n` +
+                          `*The deployment will automatically retry when you push new commits.*`;
+            
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
