@@ -361,7 +361,32 @@ export default function PageAnalyzer() {
                     {/* Actions */}
                     <div className="mt-6 flex gap-2">
                       <Button variant="default" size="sm">
-                        Generate Improvements
+                        <button
+                          onClick={async () => {
+                            try {
+                              // fetch page HTML
+                              const pageRes = await fetch(result.url);
+                              const html = await pageRes.text();
+
+                              const resp = await fetch('/api/ai/trigger-plan', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ planName: 'improve', pages: [{ url: result.url, name: result.name, content: html }], writeResults: true }),
+                              });
+                              const data = await resp.json();
+                              if (data?.results && data.results[0]?.improvedContent) {
+                                alert('Improved content generated (saved to server results).');
+                              } else {
+                                alert('No improvements returned.');
+                              }
+                            } catch (err) {
+                              console.error('Generate improvements failed', err);
+                              alert('Generate failed');
+                            }
+                          }}
+                        >
+                          Generate Improvements
+                        </button>
                       </Button>
                       <Button variant="outline" size="sm">
                         View Details

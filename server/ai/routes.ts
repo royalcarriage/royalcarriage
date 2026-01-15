@@ -7,6 +7,7 @@ import { Router } from 'express';
 import { PageAnalyzer } from './page-analyzer';
 import { ContentGenerator } from './content-generator';
 import { ImageGenerator } from './image-generator';
+import { domainsRouter } from './domains';
 
 const router = Router();
 
@@ -317,6 +318,74 @@ router.post('/batch-analyze', async (req, res) => {
 });
 
 /**
+ * Trigger a named plan (demo): analyze/improve/generate
+ * POST /api/ai/trigger-plan
+ * body: { planName: string, pages: [{ url, name, content }] , writeResults?: boolean }
+ */
+router.post('/trigger-plan', async (req, res) => {
+  try {
+    const { planName, pages, writeResults } = req.body as any;
+
+    if (!planName || !pages || !Array.isArray(pages)) {
+      return res.status(400).json({ success: false, error: 'Missing planName or pages array' });
+    }
+
+    const results = await Promise.all(
+      pages.map(async (page: any) => {
+        try {
+          if (planName === 'analyze') {
+            const analysis = await pageAnalyzer.analyzePage(page.content || '', page.url, page.name);
+            return { url: page.url, name: page.name, analysis, success: true };
+          }
+
+          if (planName === 'improve') {
+            const improved = await contentGenerator.improveContent(page.content || '', page.recommendations || []);
+            return { url: page.url, name: page.name, improvedContent: improved, success: true };
+          }
+
+          if (planName === 'generate') {
+            const generated = await contentGenerator.generateContent({
+              pageType: page.pageType || 'page',
+              location: page.location,
+              vehicle: page.vehicle,
+              currentContent: page.content || '',
+              targetKeywords: page.targetKeywords || [],
+              tone: page.tone || 'professional',
+            });
+            return { url: page.url, name: page.name, generatedContent: generated, success: true };
+          }
+
+          return { url: page.url, name: page.name, error: 'Unknown plan', success: false };
+        } catch (err) {
+          return { url: page.url, name: page.name, error: err instanceof Error ? err.message : String(err), success: false };
+        }
+      })
+    );
+
+    // Optionally persist results for audit / UI
+    if (writeResults) {
+      try {
+        const fs = await import('fs');
+        const path = await import('path');
+        const dataDir = path.join(__dirname, '..', 'data');
+        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+        const outFile = path.join(dataDir, 'agent_results.json');
+        const prev = fs.existsSync(outFile) ? JSON.parse(fs.readFileSync(outFile, { encoding: 'utf-8' })) : { runs: [] };
+        prev.runs.push({ planName, pages: pages.map((p: any) => ({ url: p.url, name: p.name })), results, timestamp: new Date().toISOString() });
+        fs.writeFileSync(outFile, JSON.stringify(prev, null, 2), { encoding: 'utf-8' });
+      } catch (err) {
+        console.error('Failed to persist agent results', err);
+      }
+    }
+
+    res.json({ success: true, planName, results });
+  } catch (error) {
+    console.error('Trigger plan error:', error);
+    res.status(500).json({ success: false, error: error instanceof Error ? error.message : 'Unknown error' });
+  }
+});
+
+/**
  * Health check endpoint
  * GET /api/ai/health
  */
@@ -360,5 +429,8 @@ router.get('/config-status', async (req, res) => {
     });
   }
 });
+
+// Domain inventory and sync for AI systems
+router.use('/domains', domainsRouter);
 
 export { router as aiRoutes };
