@@ -15,3 +15,5 @@
 - Secured image generation function with admin token verification, usage-based rate limiting keyed by start-of-day ms, and user-aware audit logging; made image uploads respect `DEPLOY_IMAGES_BUCKET/PREFIX`.
 - `npm run check` and `npm run build` passing post-fixes.
 - Documented deploy-images env variables in `.env.example`.
+- Added AI Ops control room UI (four-site pipeline, brief builder, image prompt kit, quality/deploy gates, queues) under Admin Dashboard.
+- Cleaned Vite config to use explicit dev/prod plugin toggles; gates re-run ✅.

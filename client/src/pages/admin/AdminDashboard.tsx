@@ -3,6 +3,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AIOpsDashboard } from "@/components/admin/AIOpsDashboard";
 import { 
   Brain, 
   FileText, 
@@ -95,10 +96,11 @@ export default function AdminDashboard() {
 
           {/* Main Dashboard Tabs */}
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="pages">Pages</TabsTrigger>
               <TabsTrigger value="ai-tools">AI Tools</TabsTrigger>
+              <TabsTrigger value="ai-ops">AI Ops</TabsTrigger>
               <TabsTrigger value="images">Images</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -293,6 +295,11 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            {/* AI Ops Tab */}
+            <TabsContent value="ai-ops">
+              <AIOpsDashboard />
             </TabsContent>
 
             {/* Images Tab */}
