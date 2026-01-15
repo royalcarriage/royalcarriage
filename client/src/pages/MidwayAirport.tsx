@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Check, Phone, Calendar } from "lucide-react";
 import { Link } from "wouter";
+import { LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
@@ -115,6 +116,19 @@ export default function MidwayAirport() {
         description="Professional black car service to Chicago Midway International Airport (MDW). Flight tracking, meet & greet, curbside pickup. Licensed chauffeurs and flat-rate pricing. Call (224) 801-3090."
         path="/midway-airport-limo"
       />
+      <LocalBusinessSchema image={heroImage} />
+      <ServiceSchema 
+        name="Midway Airport Limousine Service"
+        description="Professional black car service to and from Chicago Midway International Airport with flight tracking and meet & greet."
+        serviceType="Airport Transfer Service"
+        areaServed={["Chicago", "Midway Airport", "MDW", "Southwest Side"]}
+        url="https://chicagoairportblackcar.com/midway-airport-limo"
+      />
+      <FAQSchema questions={faqItems} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://chicagoairportblackcar.com" },
+        { name: "Midway Airport", url: "https://chicagoairportblackcar.com/midway-airport-limo" }
+      ]} />
       <Hero
         title="Midway Airport Limo Service (MDW)"
         subtitle="Private car service to and from Chicago Midway. Professional chauffeurs, real-time flight tracking, and flat-rate pricing."

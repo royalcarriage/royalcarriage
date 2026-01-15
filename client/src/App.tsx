@@ -29,6 +29,8 @@ import InvoicesPage from "@/pages/admin/InvoicesPage";
 import PaymentsPage from "@/pages/admin/PaymentsPage";
 import SettingsPage from "@/pages/admin/SettingsPage";
 import HelpPage from "@/pages/admin/HelpPage";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 
 function Router() {
@@ -58,6 +60,8 @@ function Router() {
       <Route path="/admin/payments" component={PaymentsPage} />
       <Route path="/admin/settings" component={SettingsPage} />
       <Route path="/admin/help" component={HelpPage} />
+      <Route path="/admin" component={AdminDashboardV2} />
+      <Route path="/admin/v1" component={AdminDashboard} />
       <Route path="/admin/analyze" component={PageAnalyzer} />
       
       <Route component={NotFound} />
