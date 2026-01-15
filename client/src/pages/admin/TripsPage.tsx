@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, MapPin, Calendar, Clock, Plus } from "lucide-react";
 import { format } from "date-fns";
+import { useToast } from "@/hooks/use-toast";
 
 interface Trip {
   id: string;
@@ -190,6 +191,30 @@ const columns: Column<Trip>[] = [
 ];
 
 export default function TripsPage() {
+  const { toast } = useToast();
+
+  const handleCreateTrip = () => {
+    toast({
+      title: "Create Trip",
+      description: "Opening trip booking form...",
+    });
+  };
+
+  const handleAssignDriver = (rows: Trip[]) => {
+    toast({
+      title: "Assign Driver",
+      description: `Opening driver assignment for ${rows.length} trip(s)...`,
+    });
+  };
+
+  const handleCancelTrips = (rows: Trip[]) => {
+    toast({
+      title: "Trips Cancelled",
+      description: `${rows.length} trip(s) have been cancelled.`,
+      variant: "destructive",
+    });
+  };
+
   return (
     <>
       <SEO
@@ -240,11 +265,11 @@ export default function TripsPage() {
           bulkActions={[
             {
               label: "Assign Driver",
-              onClick: (rows) => () => {},
+              onClick: handleAssignDriver,
             },
             {
               label: "Cancel",
-              onClick: (rows) => () => {},
+              onClick: handleCancelTrips,
               variant: "destructive",
             },
           ]}
@@ -270,7 +295,7 @@ export default function TripsPage() {
             description: "Get started by creating your first trip.",
             action: {
               label: "Create Trip",
-              onClick: () => () => {},
+              onClick: handleCreateTrip,
             },
           }}
         />

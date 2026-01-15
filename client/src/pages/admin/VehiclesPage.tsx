@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Car, Users, Briefcase, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Vehicle {
   id: string;
@@ -193,6 +194,15 @@ const columns: Column<Vehicle>[] = [
 ];
 
 export default function VehiclesPage() {
+  const { toast } = useToast();
+
+  const handleAddVehicle = () => {
+    toast({
+      title: "Add Vehicle",
+      description: "Opening vehicle registration form...",
+    });
+  };
+
   return (
     <>
       <SEO
@@ -263,7 +273,7 @@ export default function VehiclesPage() {
             description: "Get started by adding your first vehicle.",
             action: {
               label: "Add Vehicle",
-              onClick: () => () => {},
+              onClick: handleAddVehicle,
             },
           }}
         />
