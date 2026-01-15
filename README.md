@@ -5,7 +5,7 @@
 [![Firebase](https://img.shields.io/badge/Firebase-Hosted-orange)](https://firebase.google.com/)
 [![Security](https://img.shields.io/badge/security-HTTPS%20%7C%20HSTS-green)](https://royalcarriagelimoseo.web.app)
 
-Professional limousine service with comprehensive admin management system for Chicago O'Hare, Midway, and surrounding areas.
+Professional limousine service with comprehensive admin management system and AI-powered SEO optimization for Chicago O'Hare, Midway, and surrounding areas.
 
 ## 🎯 Admin System - Complete & Production Ready
 
@@ -32,6 +32,12 @@ Professional limousine service with comprehensive admin management system for Ch
 - 👥 **User Management:** Full CRUD with role management
 - 📈 **Analytics:** Traffic stats and insights
 - ⚙️ **Settings:** System configuration
+
+**AI-Powered Features:**
+- 🤖 AI Page Analyzer with SEO scoring
+- ✍️ Automated content generation using Google Vertex AI
+- 🖼️ AI-powered image generation
+- ⏰ Scheduled automated analysis and reporting
 
 **Design:**
 - 🎨 Modern, professional interface
@@ -81,6 +87,8 @@ npm run dev
 - 🔐 [Authentication System](docs/AUTHENTICATION_INTEGRATION_COMPLETE.md) - Security details
 - 🎨 [Dashboard Design](docs/ADMIN_DASHBOARD_REDESIGN.md) - UI specifications
 - 🚀 [Deployment Guide](docs/COMPLETE_SYSTEM_DEPLOYMENT.md) - Production setup
+- 🤖 [AI System Guide](docs/AI_SYSTEM_GUIDE.md) - AI features documentation and usage
+- 📦 [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - AI system deployment instructions
 
 ---
 
@@ -92,6 +100,7 @@ npm run dev
 - npm 10.x or later
 - Git
 - Firebase CLI (optional): `npm install -g firebase-tools`
+- Google Cloud Project with Vertex AI enabled (for AI features)
 
 ### Local Setup
 
@@ -177,11 +186,17 @@ VSCODE/
 │   ├── routes/
 │   │   ├── auth.ts                  # Auth endpoints
 │   │   └── users.ts                 # User management API
-│   └── ai/                          # AI services
+│   └── ai/                          # AI services (analyzer, generator, image)
 ├── shared/
 │   └── schema.ts                    # Database schema
 ├── docs/                            # Documentation
-└── functions/                       # Firebase Functions
+│   ├── DEVELOPER_GUIDE.md           # Comprehensive developer guide
+│   ├── REPO_AUDIT.md                # Repository audit report
+│   ├── AI_SYSTEM_GUIDE.md           # AI system documentation
+│   └── DEPLOYMENT_GUIDE.md          # AI deployment instructions
+├── functions/                       # Firebase Functions for automation
+├── script/                          # Build and utility scripts
+└── .github/                         # GitHub Actions workflows
 ```
 
 ## Key Commands
