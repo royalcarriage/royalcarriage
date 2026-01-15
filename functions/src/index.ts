@@ -171,7 +171,7 @@ export const weeklySeoReport = functions.pubsub
         .where('analyzedAt', '>=', oneWeekAgo)
         .get();
 
-      const analyses = snapshot.docs.map((doc: admin.firestore.QueryDocumentSnapshot) => doc.data());
+      const analyses = snapshot.docs.map(doc => doc.data());
 
       // Generate summary report
       const report = {
