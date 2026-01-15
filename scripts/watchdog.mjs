@@ -1,42 +1,52 @@
 #!/usr/bin/env node
-// Minimal watchdog that hits configured health endpoints and exits non-zero on failure
-import { setTimeout } from 'timers/promises';
-import fetch from 'node-fetch';
+/**
+ * Watchdog: runs gates (npm ci, lint, typecheck, test, build)
+ * Logs failures and exits non-zero if any gate fails.
+ */
+import { execSync } from "node:child_process";
+import fs from "node:fs";
 
-const TARGETS = process.env.WATCHDOG_TARGETS ? process.env.WATCHDOG_TARGETS.split(',') : ['http://localhost:5000/health', 'http://localhost:5000/admin'];
-const RETRIES = Number(process.env.WATCHDOG_RETRIES || 3);
-const INTERVAL = Number(process.env.WATCHDOG_INTERVAL_MS || 5000);
+const logDir = ".agent/logs";
+fs.mkdirSync(logDir, { recursive: true });
 
-async function checkUrl(url) {
+const cmds = [
+  ["install", "npm ci"],
+  ["lint", "npm run lint"],
+  ["typecheck", "npm run typecheck"],
+  ["test", "npm test"],
+  ["build", "npm run build"],
+];
+
+function run(name, cmd) {
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const logFile = `${logDir}/${stamp}-${name}.log`;
   try {
-    const res = await fetch(url, { method: 'GET' });
-    return res.ok;
+    console.log(`\n[${name}] Running: ${cmd}`);
+    const out = execSync(cmd, { stdio: "pipe" }).toString();
+    fs.writeFileSync(logFile, out);
+    console.log(`[${name}] ✓ PASS (log: ${logFile})`);
+    return { ok: true, logFile };
   } catch (e) {
-    return false;
+    const out = (e.stdout?.toString() || "") + "\n" + (e.stderr?.toString() || "");
+    fs.writeFileSync(logFile, out);
+    console.error(`[${name}] ✗ FAIL (log: ${logFile})`);
+    return { ok: false, logFile };
   }
 }
 
-async function main() {
-  console.log('watchdog: targets=', TARGETS);
-
-  for (const url of TARGETS) {
-    let ok = false;
-    for (let i = 0; i < RETRIES; i++) {
-      process.stdout.write(`Checking ${url} (attempt ${i + 1}/${RETRIES})... `);
-      ok = await checkUrl(url);
-      console.log(ok ? 'OK' : 'FAIL');
-      if (ok) break;
-      await setTimeout(INTERVAL);
-    }
-
-    if (!ok) {
-      console.error(`watchdog: FAILURE - ${url} did not respond successfully`);
-      process.exit(2);
-    }
-  }
-
-  console.log('watchdog: all targets healthy');
-  process.exit(0);
+let failures = 0;
+for (const [name, cmd] of cmds) {
+  const r = run(name, cmd);
+  if (!r.ok) failures++;
 }
 
-main();
+console.log(`\n=== GATES SUMMARY ===`);
+console.log(`Total: ${cmds.length} | Passed: ${cmds.length - failures} | Failed: ${failures}`);
+
+if (failures > 0) {
+  console.error(`\nGates failed. Check logs in ${logDir}/`);
+  process.exit(1);
+}
+
+console.log("\n✓ All gates passed!");
+process.exit(0);

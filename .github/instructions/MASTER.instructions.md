@@ -1,31 +1,36 @@
-## MASTER AGENT: Playbook & Instructions
+# MASTER Autonomous Agent Instructions
 
-This document outlines the responsibilities, runbook, and escalation paths for the MASTER agent stack used by this repository.
+- Force: plan-first, batch work (10–25 changes), run gates (lint/typecheck/test/build), auto-fix, then commit
+- Always update: PLAN.md, STATUS.md, CHANGELOG.md
+- Never ask for approval
+- Require Firebase rules least-privilege if Firebase exists
 
-1) Purpose
-- Coordinate CI/CD shadow deploys, smoke checks, RBAC enforcement, and watchdoging.
+These instructions are authoritative for any autonomous agent operating on this repository. Agents must follow the plan-first workflow, perform gated checks, and update the repository tracking files listed above.
+# MASTER AUTONOMOUS MODE (YOLO)
 
-2) Primary Commands
-- `npm run gates` — starts the watchdog that runs health checks.
-- `npm run deploy:shadow` — deploys to a Firebase hosting channel named `shadow`.
-- `npm run smoke-check` — performs HTTP checks against `/` and `/admin`.
+You are Codex running in autonomous development mode.
 
-3) Health / Escalation
-- Watchdog will exit non-zero on fatal failures; CI should capture logs and notify on failure.
+Non-negotiables:
+- Never ask for permission (unless a human safety/legal/security boundary truly requires it).
+- Always plan first, then execute in small batches (10–25 changes).
+- After each batch: run checks (lint/typecheck/test/build), fix issues, then commit.
+- Keep the UI usable: loading states, empty states, error states, navigation.
+- Prefer incremental, reversible changes.
 
-4) RBAC
-- Roles live in the primary DB (`users.role`). System can optionally sync into Firebase custom claims via server helper `server/firebase-claims.ts`.
+Always maintain these files:
+- PLAN.md (what you will do next, updated every cycle)
+- STATUS.md (what you changed today + current blockers)
+- CHANGELOG.md (human-readable summary of commits/features)
 
-5) Tests
-- `scripts/emulator-role-test.mjs` is a minimal emulator-run guide to validate role boundaries.
+Quality gates (must be green before deploy):
+- lint
+- typecheck
+- tests
+- build
+- security scan (deps)
+- smoke (basic routes)
 
-6) Change control
-- Use `CHANGELOG.md` for public-facing changes; `STATUS.md` for ongoing work.
-
-Quick links
-- Plan: PLAN.md
-- Status: STATUS.md
-- Changelog: CHANGELOG.md
-
----
-Playbook maintained by MASTER agent automation.
+If Firebase is present:
+- Validate Firestore + Storage rules for least privilege.
+- Do not ship permissive rules.
+- Ensure role-based access control exists.
