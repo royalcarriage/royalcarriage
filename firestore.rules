@@ -15,12 +15,15 @@ service cloud.firestore {
     
     // Helper function to check image generation rate limit
     function canGenerateImage() {
-      let today = request.time.toMillis() - (request.time.toMillis() % 86400000);
+      let today = request.time.toMillis() - (request.time.toMillis() % 86400000); // 86400000 ms = 1 day
       let usageStatsPath = /databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today);
+      
+      // Rate limit: matches MAX_IMAGES_PER_DAY environment variable (default 50)
+      let maxImagesPerDay = 50;
       
       return isAdmin() && (
         !exists(usageStatsPath) ||
-        get(usageStatsPath).data.imageGenerations < 50  // Max 50 images per day per admin
+        get(usageStatsPath).data.imageGenerations < maxImagesPerDay
       );
     }
     

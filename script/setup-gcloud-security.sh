@@ -48,7 +48,7 @@ if ! command -v gcloud &> /dev/null; then
 fi
 
 # Check if authenticated
-if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" &> /dev/null; then
+if ! gcloud auth list --filter=status:ACTIVE --format="value(account)" | grep -q "@"; then
     print_error "Not authenticated with gcloud. Please run: gcloud auth login"
     exit 1
 fi
@@ -169,7 +169,7 @@ print_status "Storage permissions granted on bucket"
 
 # Step 7: Verify configuration
 echo ""
-echo "Step 6: Verifying configuration..."
+echo "Step 7: Verifying configuration..."
 echo "-----------------------------------"
 
 echo "Checking enabled APIs..."
@@ -213,7 +213,7 @@ done
 
 # Step 8: Create .env configuration
 echo ""
-echo "Step 7: Creating environment configuration..."
+echo "Step 8: Creating environment configuration..."
 echo "----------------------------------------------"
 
 if [ -f ".env" ]; then
