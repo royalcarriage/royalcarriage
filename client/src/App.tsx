@@ -17,6 +17,14 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
+import DashboardPage from "@/pages/admin/DashboardPage";
+import TripsPage from "@/pages/admin/TripsPage";
+import DriversPage from "@/pages/admin/DriversPage";
+import VehiclesPage from "@/pages/admin/VehiclesPage";
+import CustomersPage from "@/pages/admin/CustomersPage";
+import ImportsPage from "@/pages/admin/ImportsPage";
+import PayrollPage from "@/pages/admin/PayrollPage";
+import SettingsPage from "@/pages/admin/SettingsPage";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 
 function Router() {
@@ -34,8 +42,16 @@ function Router() {
       <Route path="/contact" component={Contact} />
       
       {/* Admin Routes */}
-      <Route path="/admin" component={AdminDashboardV2} />
+      <Route path="/admin" component={DashboardPage} />
+      <Route path="/admin/v2" component={AdminDashboardV2} />
       <Route path="/admin/v1" component={AdminDashboard} />
+      <Route path="/admin/trips" component={TripsPage} />
+      <Route path="/admin/drivers" component={DriversPage} />
+      <Route path="/admin/vehicles" component={VehiclesPage} />
+      <Route path="/admin/customers" component={CustomersPage} />
+      <Route path="/admin/imports" component={ImportsPage} />
+      <Route path="/admin/payroll" component={PayrollPage} />
+      <Route path="/admin/settings" component={SettingsPage} />
       <Route path="/admin/analyze" component={PageAnalyzer} />
       
       <Route component={NotFound} />

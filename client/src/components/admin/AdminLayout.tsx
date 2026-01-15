@@ -170,6 +170,59 @@ export function AdminLayout({
             )}
           </div>
 
+          {/* Organization Switcher */}
+          <div className="p-2 border-b border-border">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start gap-2 h-auto py-2",
+                    collapsed && "justify-center px-2"
+                  )}
+                >
+                  <Avatar className="h-8 w-8 rounded-lg">
+                    <AvatarFallback className="rounded-lg bg-primary/10 text-primary text-xs font-semibold">
+                      RC
+                    </AvatarFallback>
+                  </Avatar>
+                  {!collapsed && (
+                    <>
+                      <div className="flex-1 text-left">
+                        <p className="text-sm font-medium">Royal Carriage</p>
+                        <p className="text-xs text-muted-foreground">Owner</p>
+                      </div>
+                      <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+                    </>
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-56">
+                <DropdownMenuLabel>Switch Organization</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {organizations.map((org) => (
+                  <DropdownMenuItem key={org.id} className="cursor-pointer">
+                    <Avatar className="h-6 w-6 rounded mr-2">
+                      <AvatarFallback className="rounded text-xs bg-primary/10 text-primary">
+                        {org.logo}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">{org.name}</p>
+                      <p className="text-xs text-muted-foreground">{org.role}</p>
+                    </div>
+                    {org.id === "1" && <Check className="h-4 w-4 text-primary" />}
+                  </DropdownMenuItem>
+                ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="cursor-pointer">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Organization
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
           {/* Navigation */}
           <ScrollArea className="flex-1 py-4">
             <nav className="space-y-6 px-2">
