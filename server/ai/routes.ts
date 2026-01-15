@@ -1,432 +1,264 @@
-/**
- * AI Routes
- * API endpoints for AI-powered website management
- */
-
 import { Router } from 'express';
 import { PageAnalyzer } from './page-analyzer';
 import { ContentGenerator } from './content-generator';
 import { ImageGenerator } from './image-generator';
+import queue, { enqueueContent, listDrafts, getDraft, updateDraftStatus } from './queue';
+import { domainsRouter } from './domains';
 
 const router = Router();
 
-// Initialize AI services
 const pageAnalyzer = new PageAnalyzer();
 const contentGenerator = new ContentGenerator();
 const imageGenerator = new ImageGenerator();
 
-/**
- * Analyze a page for SEO and content quality
- * POST /api/ai/analyze-page
- */
 router.post('/analyze-page', async (req, res) => {
   try {
-    const { pageUrl, pageContent, pageName } = req.body;
-
-    if (!pageUrl || !pageContent || !pageName) {
-      return res.status(400).json({
-        error: 'Missing required fields: pageUrl, pageContent, pageName',
-      });
+    const { pageUrl = '', pageContent = '', pageName = '' } = req.body || {};
+    if (!pageUrl) {
+      return res.status(400).json({ error: 'pageUrl is required' });
     }
 
-    const analysis = await pageAnalyzer.analyzePage(pageContent, pageUrl, pageName);
-
-    res.json({
-      success: true,
-      analysis,
-      analyzedAt: new Date().toISOString(),
-    });
+    const analysis = await pageAnalyzer.analyzePage(pageContent, pageUrl, pageName || pageUrl);
+    res.json({ success: true, analysis, analyzedAt: new Date().toISOString() });
   } catch (error) {
     console.error('Page analysis error:', error);
-    res.status(500).json({
-      error: 'Failed to analyze page',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    res.status(500).json({ error: 'Failed to analyze page' });
   }
 });
 
-/**
- * Generate optimized content
- * POST /api/ai/generate-content
- */
+router.post('/batch-analyze', async (req, res) => {
+  const pages = Array.isArray(req.body?.pages) ? req.body.pages : [];
+  const results: any[] = [];
+
+  for (const page of pages) {
+    try {
+      const analysis = await pageAnalyzer.analyzePage(
+        page.content || '',
+        page.url || '',
+        page.name || page.url || 'Page'
+      );
+      results.push({ url: page.url, name: page.name, success: true, analysis });
+    } catch (error) {
+      console.error('Batch analyze failed for', page?.url, error);
+      results.push({ url: page?.url, name: page?.name, success: false, error: String(error) });
+    }
+  }
+
+  const successCount = results.filter(r => r.success).length;
+  res.json({
+    success: successCount === results.length,
+    successCount,
+    totalPages: results.length,
+    results,
+  });
+});
+
 router.post('/generate-content', async (req, res) => {
   try {
     const {
       pageType,
       location,
       vehicle,
-      import queue from './queue';
       currentContent,
       targetKeywords,
-      tone,
+      tone = 'professional',
       maxLength,
-    } = req.body;
+    } = req.body || {};
 
     if (!pageType || !targetKeywords) {
-      return res.status(400).json({
-        error: 'Missing required fields: pageType, targetKeywords',
-      });
+      return res.status(400).json({ error: 'pageType and targetKeywords are required' });
     }
+
+    const normalizedKeywords = Array.isArray(targetKeywords) ? targetKeywords : [String(targetKeywords)];
 
     const content = await contentGenerator.generateContent({
       pageType,
       location,
       vehicle,
       currentContent,
-      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [targetKeywords],
-      tone: tone || 'professional',
+      targetKeywords: normalizedKeywords,
+      tone,
       maxLength,
     });
 
-          // Enqueue generation job and respond with job id. Background worker will generate and save draft.
-          const job = await queue.enqueueContent({
-            pageType,
-            location,
-            vehicle,
-            currentContent,
-            targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [targetKeywords],
-            tone: (tone as any) || 'professional',
-            maxLength,
-          });
+    res.json({
+      success: true,
+      content,
+      generatedAt: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Content generation failed:', error);
+    res.status(500).json({ error: 'Failed to generate content' });
+  }
+});
 
-          res.json({
-            success: true,
-            job,
-            message: 'Generation job queued. Draft will be available for review when ready.',
-            generatedAt: new Date().toISOString(),
-          });
- * Improve existing content
- * POST /api/ai/improve-content
- */
 router.post('/improve-content', async (req, res) => {
   try {
-    const { currentContent, recommendations } = req.body;
-
-    if (!currentContent || !recommendations) {
-
-      /**
-       * Enqueue content (direct endpoint) - POST /api/ai/enqueue-content
-       */
-      router.post('/enqueue-content', async (req, res) => {
-        try {
-          const payload = req.body;
-          const job = await queue.enqueueContent(payload);
-          res.json({ success: true, job });
-        } catch (error) {
-          console.error('Enqueue content failed:', error);
-          res.status(500).json({ error: 'Failed to enqueue content' });
-        }
-      });
-
-      /** Drafts: list and review endpoints */
-      router.get('/drafts', async (req, res) => {
-        try {
-          const drafts = await queue.listDrafts();
-          res.json({ success: true, drafts });
-        } catch (error) {
-          console.error('Failed to list drafts:', error);
-          res.status(500).json({ error: 'Failed to list drafts' });
-        }
-      });
-
-      router.get('/drafts/:id', async (req, res) => {
-        try {
-          const id = req.params.id;
-          const draft = await queue.getDraft(id);
-          if (!draft) return res.status(404).json({ error: 'Draft not found' });
-          res.json({ success: true, draft });
-        } catch (error) {
-          console.error('Failed to get draft:', error);
-          res.status(500).json({ error: 'Failed to get draft' });
-        }
-      });
-
-      router.post('/drafts/:id/approve', async (req, res) => {
-        try {
-          const id = req.params.id;
-          const reviewer = req.body.reviewer || 'admin';
-          const notes = req.body.notes || '';
-          const updated = await queue.updateDraftStatus(id, 'approved', reviewer, notes);
-          if (!updated) return res.status(404).json({ error: 'Draft not found' });
-          res.json({ success: true, draft: updated });
-        } catch (error) {
-          console.error('Approve draft failed:', error);
-          res.status(500).json({ error: 'Failed to approve draft' });
-        }
-      });
-
-      router.post('/drafts/:id/reject', async (req, res) => {
-        try {
-          const id = req.params.id;
-          const reviewer = req.body.reviewer || 'admin';
-          const notes = req.body.notes || '';
-          const updated = await queue.updateDraftStatus(id, 'rejected', reviewer, notes);
-          if (!updated) return res.status(404).json({ error: 'Draft not found' });
-          res.json({ success: true, draft: updated });
-        } catch (error) {
-          console.error('Reject draft failed:', error);
-          res.status(500).json({ error: 'Failed to reject draft' });
-        }
-      });
-      return res.status(400).json({
-        error: 'Missing required fields: currentContent, recommendations',
-      });
+    const { currentContent, recommendations = [], pageType = 'page', targetKeywords = [] } = req.body || {};
+    if (!currentContent) {
+      return res.status(400).json({ error: 'currentContent is required' });
     }
 
-    const improvedContent = await contentGenerator.improveContent(
+    const content = await contentGenerator.generateContent({
+      pageType,
       currentContent,
-      Array.isArray(recommendations) ? recommendations : [recommendations]
-    );
+      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [String(targetKeywords)],
+      tone: 'professional',
+    });
 
     res.json({
       success: true,
-      improvedContent,
-      generatedAt: new Date().toISOString(),
+      content,
+      recommendationsApplied: recommendations,
     });
   } catch (error) {
-    console.error('Content improvement error:', error);
-    res.status(500).json({
-      error: 'Failed to improve content',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error('Improve content failed:', error);
+    res.status(500).json({ error: 'Failed to improve content' });
   }
 });
 
-/**
- * Generate AI image
- * POST /api/ai/generate-image
- */
+router.post('/enqueue-content', async (req, res) => {
+  try {
+    const payload = req.body;
+    const job = await enqueueContent({
+      pageType: payload.pageType,
+      location: payload.location,
+      vehicle: payload.vehicle,
+      currentContent: payload.currentContent,
+      targetKeywords: Array.isArray(payload.targetKeywords)
+        ? payload.targetKeywords
+        : [String(payload.targetKeywords || '')].filter(Boolean),
+      tone: payload.tone,
+      maxLength: payload.maxLength,
+    });
+
+    res.json({
+      success: true,
+      job,
+      message: 'Generation job queued. Draft will be available for review when ready.',
+    });
+  } catch (error) {
+    console.error('Enqueue content failed:', error);
+    res.status(500).json({ error: 'Failed to enqueue content' });
+  }
+});
+
+router.get('/drafts', async (_req, res) => {
+  try {
+    const drafts = await listDrafts();
+    res.json({ success: true, drafts });
+  } catch (error) {
+    console.error('Failed to list drafts:', error);
+    res.status(500).json({ error: 'Failed to list drafts' });
+  }
+});
+
+router.get('/drafts/:id', async (req, res) => {
+  try {
+    const draft = await getDraft(req.params.id);
+    if (!draft) return res.status(404).json({ error: 'Draft not found' });
+    res.json({ success: true, draft });
+  } catch (error) {
+    console.error('Failed to get draft:', error);
+    res.status(500).json({ error: 'Failed to get draft' });
+  }
+});
+
+router.post('/drafts/:id/:action', async (req, res) => {
+  try {
+    const { id, action } = req.params;
+    const actionMap: Record<string, 'approved' | 'rejected' | 'published'> = {
+      approve: 'approved',
+      reject: 'rejected',
+      publish: 'published',
+    };
+
+    const nextStatus = actionMap[action];
+    if (!nextStatus) return res.status(400).json({ error: 'Invalid draft action' });
+
+    const updated = await updateDraftStatus(id, nextStatus, req.body?.reviewer, req.body?.notes);
+    if (!updated) return res.status(404).json({ error: 'Draft not found' });
+
+    res.json({ success: true, draft: updated });
+  } catch (error) {
+    console.error('Failed to update draft:', error);
+    res.status(500).json({ error: 'Failed to update draft' });
+  }
+});
+
 router.post('/generate-image', async (req, res) => {
   try {
-    const { purpose, location, vehicle, style, description } = req.body;
-
-    if (!purpose) {
-      return res.status(400).json({
-        error: 'Missing required field: purpose',
-      });
-    }
-
-    const image = await imageGenerator.generateImage({
-      purpose,
-      location,
-      vehicle,
-      style,
-      description,
-    });
-
-    res.json({
-      success: true,
-      image,
-      generatedAt: new Date().toISOString(),
-    });
+    const result = await imageGenerator.generateImage(req.body);
+    res.json({ success: true, result });
   } catch (error) {
-    console.error('Image generation error:', error);
-    res.status(500).json({
-      error: 'Failed to generate image',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error('Image generation failed:', error);
+    res.status(500).json({ error: 'Failed to generate image' });
   }
 });
 
-/**
- * Generate multiple image variations
- * POST /api/ai/generate-image-variations
- */
 router.post('/generate-image-variations', async (req, res) => {
   try {
-    const { purpose, location, vehicle, style, description, count } = req.body;
-
-    if (!purpose) {
-      return res.status(400).json({
-        error: 'Missing required field: purpose',
-      });
-    }
-
-    const images = await imageGenerator.generateVariations(
-      {
-        purpose,
-        location,
-        vehicle,
-        style,
-        description,
-      },
-      count || 3
-    );
-
-    res.json({
-      success: true,
-      images,
-      count: images.length,
-      generatedAt: new Date().toISOString(),
-    });
+    const variations = await imageGenerator.generateImage(req.body);
+    res.json({ success: true, variations: [variations] });
   } catch (error) {
-    console.error('Image variations generation error:', error);
-    res.status(500).json({
-      error: 'Failed to generate image variations',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error('Image variation generation failed:', error);
+    res.status(500).json({ error: 'Failed to generate image variations' });
   }
 });
 
-/**
- * Get location-specific content suggestions
- * POST /api/ai/location-content
- */
 router.post('/location-content', async (req, res) => {
   try {
-    const { location, pageType } = req.body;
-
-    if (!location || !pageType) {
-      return res.status(400).json({
-        error: 'Missing required fields: location, pageType',
-      });
-    }
-
-    const content = pageAnalyzer.generateLocationContent(location, pageType);
-
-    res.json({
-      success: true,
-      content,
+    const { location, targetKeywords = [] } = req.body || {};
+    const content = await contentGenerator.generateContent({
+      pageType: 'location',
       location,
-      pageType,
+      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [String(targetKeywords)],
+      tone: 'professional',
     });
+    res.json({ success: true, content });
   } catch (error) {
-    console.error('Location content generation error:', error);
-    res.status(500).json({
-      error: 'Failed to generate location content',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error('Location content generation failed:', error);
+    res.status(500).json({ error: 'Failed to generate location content' });
   }
 });
 
-/**
- * Get vehicle-specific content suggestions
- * POST /api/ai/vehicle-content
- */
 router.post('/vehicle-content', async (req, res) => {
   try {
-    const { vehicle } = req.body;
-
-    if (!vehicle) {
-      return res.status(400).json({
-        error: 'Missing required field: vehicle',
-      });
-    }
-
-    const content = pageAnalyzer.generateVehicleContent(vehicle);
-
-    res.json({
-      success: true,
-      content,
+    const { vehicle, targetKeywords = [] } = req.body || {};
+    const content = await contentGenerator.generateContent({
+      pageType: 'vehicle',
       vehicle,
+      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [String(targetKeywords)],
+      tone: 'professional',
     });
+    res.json({ success: true, content });
   } catch (error) {
-    console.error('Vehicle content generation error:', error);
-    res.status(500).json({
-      error: 'Failed to generate vehicle content',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    console.error('Vehicle content generation failed:', error);
+    res.status(500).json({ error: 'Failed to generate vehicle content' });
   }
 });
 
-/**
- * Batch analyze multiple pages
- * POST /api/ai/batch-analyze
- */
-router.post('/batch-analyze', async (req, res) => {
-  try {
-    const { pages } = req.body;
-
-    if (!pages || !Array.isArray(pages)) {
-      return res.status(400).json({
-        error: 'Missing required field: pages (array)',
-      });
-    }
-
-    const results = await Promise.all(
-      pages.map(async (page) => {
-        try {
-          const analysis = await pageAnalyzer.analyzePage(
-            page.content,
-            page.url,
-            page.name
-          );
-          return {
-            url: page.url,
-            name: page.name,
-            analysis,
-            success: true,
-          };
-        } catch (error) {
-          return {
-            url: page.url,
-            name: page.name,
-            error: error instanceof Error ? error.message : 'Analysis failed',
-            success: false,
-          };
-        }
-      })
-    );
-
-    res.json({
-      success: true,
-      results,
-      totalPages: pages.length,
-      successCount: results.filter(r => r.success).length,
-      analyzedAt: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('Batch analysis error:', error);
-    res.status(500).json({
-      error: 'Failed to perform batch analysis',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
-});
-
-/**
- * Health check endpoint
- * GET /api/ai/health
- */
-router.get('/health', (req, res) => {
+router.get('/health', (_req, res) => {
   res.json({
-    status: 'healthy',
+    status: 'ok',
     services: {
-      pageAnalyzer: 'active',
-      contentGenerator: 'active',
-      imageGenerator: 'active',
+      pageAnalyzer: true,
+      contentGenerator: true,
+      imageGenerator: true,
+      queue: Boolean(queue),
     },
-    timestamp: new Date().toISOString(),
   });
 });
 
-/**
- * Configuration status check
- * GET /api/ai/config-status
- */
-router.get('/config-status', async (req, res) => {
-  try {
-    const { ConfigurationValidator } = await import('./config-validator');
-    const validator = new ConfigurationValidator();
-    
-    const results = await validator.validateAll();
-    const readiness = await validator.isSystemReady();
-    const instructions = validator.generateSetupInstructions(results);
-    
-    res.json({
-      ready: readiness.ready,
-      message: readiness.message,
-      validationResults: results,
-      setupInstructions: instructions,
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('Configuration status check error:', error);
-    res.status(500).json({
-      error: 'Failed to check configuration status',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
+router.get('/config-status', (_req, res) => {
+  res.json({
+    vertexAIEnabled: Boolean(process.env.GOOGLE_CLOUD_PROJECT),
+    queueDir: process.env.AI_QUEUE_DIR || 'data/ai_queue',
+  });
 });
 
-export { router as aiRoutes };
+// Mount domains router (inventory and import endpoints)
+router.use('/domains', domainsRouter);
+
+export const aiRoutes = router;
+export default router;

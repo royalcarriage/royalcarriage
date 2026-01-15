@@ -30,7 +30,7 @@
     "build:corporate": "npm -w @royal/corporate run build",
     "build:wedding": "npm -w @royal/wedding run build",
     "build:partybus": "npm -w @royal/partybus run build",
-    "build:all": "node ./scripts/build-all.mjs",
+    "build:all": "tsx script/build.ts",
     "deploy:airport": "firebase deploy --only hosting:airport",
     "deploy:corporate": "firebase deploy --only hosting:corporate",
     "deploy:wedding": "firebase deploy --only hosting:wedding",
@@ -76,6 +76,7 @@
     "images:quality-gate": "npm run build:all",
     "images:deploy": "npm run deploy:all",
     "images:pipeline": "node ./scripts/execute-full-pipeline.mjs",
+    "google-auth-library": "^9.0.0"
     "images:pipeline-quick": "npm run images:convert && npm run images:validate && npm run images:sync && npm run deploy:all",
     "admin:dashboard-setup": "node ./scripts/setup-admin-dashboard.mjs",
     "seo:images": "npm run admin:dashboard-setup && npm run images:pipeline",
