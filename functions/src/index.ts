@@ -15,10 +15,10 @@ admin.initializeApp();
 
 // Helper function to get backend API URL
 function getBackendUrl(): string {
-  return process.env.BACKEND_API_URL || 
-    process.env.FUNCTIONS_EMULATOR === 'true' 
-      ? 'http://localhost:5000' 
-      : 'https://royalcarriagelimoseo.web.app';
+  return process.env.BACKEND_API_URL ||
+    (process.env.FUNCTIONS_EMULATOR === 'true'
+      ? 'http://localhost:5000'
+      : 'https://royalcarriagelimoseo.web.app');
 }
 
 // Helper function to get allowed origins from environment
