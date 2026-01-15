@@ -20,3 +20,4 @@
 - Cleaned Vite config to use explicit dev/prod plugin toggles; gates re-run ✅.
 - Resolved full rebase queue onto latest main (multiple conflicts across package/functions/vite/README), keeping admin auth/rate limits and AI Ops UI intact; gates green post-rebase (build warns on PostCSS/chunk size only).
 - Tweaked Vite PostCSS plugins (instantiated Tailwind/Autoprefixer) and raised chunk warning limit; PostCSS `from` warning remains upstream, build otherwise green.
+- Security/ops: `npm audit --audit-level=high` (0), smoke check against preview/prod (200s), and helper script to prune merged remote branches.
