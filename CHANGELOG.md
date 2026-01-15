@@ -8,3 +8,4 @@ All notable changes to this project will be documented in this file.
 - Add shadow deploy script and `deploy:shadow` script
 - Add smoke-check script and `smoke-check` script
 - Add emulator role test script
+- Fix TypeScript error TS2339 in `server/firebase-claims.ts` - proper error type casting

@@ -12,4 +12,9 @@ RBAC updates:
 - Added `server/firebase-claims.ts` to optionally sync DB roles into Firebase custom claims.
 - `server/routes/users.ts` now attempts to sync claims after role updates.
 
+TypeScript type error fix:
+- Fixed TS2339 error in `server/firebase-claims.ts:19` - added proper type assertion for error message access in catch block.
+- TypeScript check passes cleanly.
+- Build completes successfully.
+
 Next: Run `scripts/emulator-role-test.mjs` against local server/emulator and validate smoke checks.
