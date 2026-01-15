@@ -9,7 +9,6 @@ import { devBanner } from "@replit/vite-plugin-dev-banner";
 import { cartographer } from "@replit/vite-plugin-cartographer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isDev = process.env.NODE_ENV === 'development';
 
 export default defineConfig(({ mode }) => {
   const isDev = mode === 'development';
