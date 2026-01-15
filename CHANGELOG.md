@@ -2,7 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - 2026-01-15
+## [1.0.0] - 2026-01-15
+
+**DEPLOYED TO PRODUCTION** ✅
+- Hosting URL: https://royalcarriagelimoseo.web.app
+- All gates passed (5/5): install, lint, typecheck, test, build
+- 21 files deployed to Firebase Hosting
+- HTTP 200 response verified
 
 ### Added
 - Master Autonomous Agent Stack configuration for unified AI system behavior
