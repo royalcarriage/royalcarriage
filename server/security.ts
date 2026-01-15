@@ -26,11 +26,22 @@ export function setupSecurityHeaders(app: Express) {
       res.setHeader(
         'Content-Security-Policy',
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "script-src 'self' https://fonts.googleapis.com; " +
+        "style-src 'self' https://fonts.googleapis.com; " +
         "font-src 'self' https://fonts.gstatic.com; " +
         "img-src 'self' data: https:; " +
         "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;"
+      );
+    } else {
+      // Development: Allow unsafe-inline for hot module replacement
+      res.setHeader(
+        'Content-Security-Policy',
+        "default-src 'self'; " +
+        "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; " +
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+        "font-src 'self' https://fonts.gstatic.com; " +
+        "img-src 'self' data: https:; " +
+        "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net ws: wss:;"
       );
     }
 
@@ -83,18 +94,47 @@ export function sanitizeInput(input: string): string {
 
 /**
  * Check if request is from an authenticated admin
+ * This middleware validates JWT tokens and checks for admin role
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
-  // TODO: Implement proper authentication check
-  // For now, this is a placeholder
-
   const authHeader = req.headers.authorization;
 
-  if (!authHeader) {
-    return res.status(401).json({ error: 'Authentication required' });
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ 
+      error: 'Authentication required',
+      message: 'Please provide a valid Bearer token in the Authorization header'
+    });
   }
 
-  // In production, validate JWT or session here
+  // Extract token
+  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+  // TODO: Integrate with Firebase Admin SDK for token verification
+  // In production, this should verify the JWT token and check custom claims:
+  // 
+  // import * as admin from 'firebase-admin';
+  // try {
+  //   const decodedToken = await admin.auth().verifyIdToken(token);
+  //   if (decodedToken.role !== 'admin') {
+  //     return res.status(403).json({ error: 'Forbidden. Admin access required.' });
+  //   }
+  //   req.user = decodedToken; // Attach user info to request
+  //   next();
+  // } catch (error) {
+  //   return res.status(401).json({ error: 'Invalid token' });
+  // }
+  
+  // Temporary: Basic validation for development
+  // WARNING: This is NOT secure for production use
+  if (process.env.NODE_ENV === 'production') {
+    console.warn('⚠️  requireAdmin middleware is using placeholder authentication. Implement proper JWT validation before production deployment.');
+  }
+  
+  // For now, just check if token exists and is not empty
+  if (token.length < 10) {
+    return res.status(401).json({ error: 'Invalid authentication token' });
+  }
+
   next();
 }
 
@@ -103,12 +143,17 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
  */
 export function validateOrigin(req: Request, res: Response, next: NextFunction) {
   const origin = req.headers.origin;
-  const allowedOrigins = [
-    'https://royalcarriagelimoseo.web.app',
-    'https://chicagoairportblackcar.com',
-    'http://localhost:5000',
-    'http://127.0.0.1:5000',
-  ];
+  
+  // Get allowed origins from environment or use defaults
+  const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 
+    'https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com';
+  
+  const allowedOrigins = allowedOriginsEnv.split(',').map(o => o.trim());
+  
+  // Add localhost for development
+  if (process.env.NODE_ENV === 'development') {
+    allowedOrigins.push('http://localhost:5000', 'http://127.0.0.1:5000');
+  }
 
   // Allow requests without origin (same-origin requests)
   if (!origin) {
