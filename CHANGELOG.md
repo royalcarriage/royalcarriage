@@ -18,3 +18,4 @@
 - Documented deploy-images env variables in `.env.example`.
 - Added AI Ops control room UI (four-site pipeline, brief builder, image prompt kit, quality/deploy gates, queues) under Admin Dashboard.
 - Cleaned Vite config to use explicit dev/prod plugin toggles; gates re-run ✅.
+- Resolved full rebase queue onto latest main (multiple conflicts across package/functions/vite/README), keeping admin auth/rate limits and AI Ops UI intact; gates green post-rebase (build warns on PostCSS/chunk size only).
