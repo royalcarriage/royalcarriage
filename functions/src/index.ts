@@ -36,6 +36,55 @@ function getAllowedOrigins(): string[] {
   return origins;
 }
 
+// CORS middleware helper
+function handleCors(req: Request, res: Response): boolean {
+  const allowedOrigins = getAllowedOrigins();
+  const origin = req.headers.origin;
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+  }
+  
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.status(204).send('');
+    return true;
+  }
+  
+  return false;
+}
+
+// Authentication middleware helper
+async function authenticateAdmin(req: Request, res: Response): Promise<boolean> {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({
+      error: 'Authentication required. Please provide a valid Bearer token.',
+    });
+    return false;
+  }
+
+  try {
+    const token = authHeader.substring(7);
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    if (decodedToken.role !== 'admin') {
+      res.status(403).json({
+        error: 'Forbidden. Admin access required.',
+      });
+      return false;
+    }
+    
+    return true;
+  } catch (error) {
+    res.status(401).json({
+      error: 'Invalid authentication token.',
+    });
+    return false;
+  }
+}
+
 /**
  * Scheduled function: Daily page analysis
  * Runs every day at 2:00 AM to analyze all website pages
@@ -171,48 +220,16 @@ export const weeklySeoReport = functions.pubsub
  * Manual trigger for page analysis via API
  */
 export const triggerPageAnalysis = functions.https.onRequest(async (req: Request, res: Response) => {
-  // Configure CORS based on environment
-  const allowedOrigins = getAllowedOrigins();
+  if (handleCors(req, res)) return;
   
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.set('Access-Control-Allow-Origin', origin);
-  }
-  
-  if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.status(204).send('');
-    return;
-  }
-
   if (req.method !== 'POST') {
     res.status(405).send('Method Not Allowed');
     return;
   }
 
-  // Check authentication (require admin role)
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({
-      error: 'Authentication required. Please provide a valid Bearer token.',
-    });
-    return;
-  }
+  if (!(await authenticateAdmin(req, res))) return;
 
   try {
-    // Verify Firebase Auth token
-    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    
-    // Check if user is admin (requires custom claims to be set)
-    if (decodedToken.role !== 'admin') {
-      res.status(403).json({
-        error: 'Forbidden. Admin access required.',
-      });
-      return;
-    }
-
     const { pageUrl, pageName, pageContent } = req.body;
 
     if (!pageUrl || !pageName || !pageContent) {
@@ -222,17 +239,13 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req: Request
       return;
     }
 
-    // Sanitize inputs
     const sanitizedPageUrl = pageUrl.trim();
     const sanitizedPageName = pageName.trim().replace(/[<>]/g, '');
 
-    // Call backend API for actual AI analysis
     const backendUrl = getBackendUrl();
     const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         pageUrl: sanitizedPageUrl,
         pageName: sanitizedPageName,
@@ -241,13 +254,12 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req: Request
     });
 
     if (!analysisResponse.ok) {
-      throw new Error(`Backend API error: ${analysisResponse.status} ${analysisResponse.statusText}`);
+      throw new Error(`Backend API error: ${analysisResponse.status}`);
     }
 
     const analysisData = await analysisResponse.json();
     
-    // Store analysis results in Firestore
-    const analysis = {
+    const docRef = await admin.firestore().collection('page_analyses').add({
       pageUrl: sanitizedPageUrl,
       pageName: sanitizedPageName,
       seoScore: analysisData.analysis.seoScore,
@@ -255,10 +267,7 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req: Request
       recommendations: analysisData.analysis.recommendations,
       analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
       status: 'completed',
-    };
-
-    // Store in Firestore
-    const docRef = await admin.firestore().collection('page_analyses').add(analysis);
+    });
 
     res.status(200).json({
       success: true,
@@ -279,48 +288,16 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req: Request
  * Trigger AI content generation
  */
 export const generateContent = functions.https.onRequest(async (req: Request, res: Response) => {
-  // Configure CORS based on environment
-  const allowedOrigins = getAllowedOrigins();
+  if (handleCors(req, res)) return;
   
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.set('Access-Control-Allow-Origin', origin);
-  }
-  
-  if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.status(204).send('');
-    return;
-  }
-
   if (req.method !== 'POST') {
     res.status(405).send('Method Not Allowed');
     return;
   }
 
-  // Check authentication (require admin role)
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({
-      error: 'Authentication required. Please provide a valid Bearer token.',
-    });
-    return;
-  }
+  if (!(await authenticateAdmin(req, res))) return;
 
   try {
-    // Verify Firebase Auth token
-    const token = authHeader.substring(7);
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    
-    // Check if user is admin
-    if (decodedToken.role !== 'admin') {
-      res.status(403).json({
-        error: 'Forbidden. Admin access required.',
-      });
-      return;
-    }
-
     const { pageType, location, vehicle, targetKeywords } = req.body;
 
     if (!pageType || !targetKeywords) {
@@ -330,12 +307,10 @@ export const generateContent = functions.https.onRequest(async (req: Request, re
       return;
     }
 
-    // Sanitize inputs
     const sanitizedLocation = location ? location.trim().replace(/[<>]/g, '') : 'Chicago';
     const sanitizedVehicle = vehicle ? vehicle.trim().replace(/[<>]/g, '') : 'Limo';
     const sanitizedPageType = pageType.trim().replace(/[<>]/g, '');
 
-    // Generate content (simplified template for now)
     const content = {
       title: `${sanitizedLocation} ${sanitizedVehicle} Service | Premium Airport Transportation`,
       metaDescription: `Professional ${sanitizedLocation} airport limo service. Reliable black car transportation to O'Hare & Midway.`,
@@ -345,7 +320,6 @@ export const generateContent = functions.https.onRequest(async (req: Request, re
       generatedAt: new Date().toISOString(),
     };
 
-    // Store in Firestore
     await admin.firestore().collection('content_suggestions').add({
       pageType: sanitizedPageType,
       location: sanitizedLocation,
@@ -356,10 +330,7 @@ export const generateContent = functions.https.onRequest(async (req: Request, re
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    res.status(200).json({
-      success: true,
-      content,
-    });
+    res.status(200).json({ success: true, content });
   } catch (error) {
     console.error('Content generation failed:', error);
     res.status(500).json({
@@ -374,34 +345,14 @@ export const generateContent = functions.https.onRequest(async (req: Request, re
  * Trigger AI image generation
  */
 export const generateImage = functions.https.onRequest(async (req: Request, res: Response) => {
-  // Configure CORS based on environment
-  const allowedOrigins = getAllowedOrigins();
+  if (handleCors(req, res)) return;
   
-  const origin = req.headers.origin;
-  if (origin && allowedOrigins.includes(origin)) {
-    res.set('Access-Control-Allow-Origin', origin);
-  }
-  
-  if (req.method === 'OPTIONS') {
-    res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.status(204).send('');
-    return;
-  }
-
   if (req.method !== 'POST') {
     res.status(405).send('Method Not Allowed');
     return;
   }
 
-  // Check authentication (require admin role)
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    res.status(401).json({
-      error: 'Authentication required. Please provide a valid Bearer token.',
-    });
-    return;
-  }
+  if (!(await authenticateAdmin(req, res))) return;
 
   try {
     const { purpose, location, vehicle, style, description } = req.body;
@@ -413,14 +364,10 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
       return;
     }
 
-    // Import ImageGenerator dynamically
     const { ImageGenerator } = await import('../../server/ai/image-generator');
-    
-    // Create image generator instance
     const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT;
     const imageGenerator = new ImageGenerator(projectId, 'us-central1');
     
-    // Generate the image
     const result = await imageGenerator.generateImage({
       purpose: purpose as any,
       location,
@@ -429,7 +376,6 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
       description,
     });
 
-    // Store in Firestore with full metadata
     const docRef = await admin.firestore().collection('ai_images').add({
       purpose,
       location,
@@ -445,30 +391,22 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    // Track usage for rate limiting
     const today = new Date().toISOString().split('T')[0];
-    const userId = 'system'; // In production, use actual user ID from auth
-    const usageRef = admin.firestore().collection('usage_stats').doc(`${userId}_${today}`);
-    
-    await usageRef.set({
+    const userId = 'system';
+    await admin.firestore().collection('usage_stats').doc(`${userId}_${today}`).set({
       userId,
       date: today,
       imageGenerations: admin.firestore.FieldValue.increment(1),
-      totalCost: admin.firestore.FieldValue.increment(0.02), // Approximate cost per image
+      totalCost: admin.firestore.FieldValue.increment(0.02),
       lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
 
-    // Log audit event
     await admin.firestore().collection('audit_logs').add({
       action: 'image_generated',
       resourceId: docRef.id,
       resourceType: 'ai_image',
       userId: 'system',
-      details: {
-        purpose,
-        prompt: result.prompt,
-        status: 'success',
-      },
+      details: { purpose, prompt: result.prompt, status: 'success' },
       timestamp: admin.firestore.FieldValue.serverTimestamp(),
     });
 
@@ -480,7 +418,6 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
   } catch (error) {
     console.error('Image generation failed:', error);
     
-    // Log failure in audit logs
     try {
       await admin.firestore().collection('audit_logs').add({
         action: 'image_generation_failed',
