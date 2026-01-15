@@ -1,0 +1,40 @@
+name: Deploy to Firebase (OIDC)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Authenticate to GCP using Workload Identity Federation (OIDC)
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: "projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER"
+          service_account: "SERVICE_ACCOUNT_EMAIL@PROJECT.iam.gserviceaccount.com"
+
+      - name: Install Firebase CLI
+        run: |
+          curl -sL https://firebase.tools | bash
+
+      - name: Deploy to Firebase (hosting + rules + functions)
+        env:
+          FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT_ID }}
+        run: |
+          # The google-github-actions/auth action provides ADC for gcloud and firebase-tools
+          firebase deploy --project "$FIREBASE_PROJECT" --only hosting,firestore:rules,functions --non-interactive
+
+      - name: Notify
+        run: echo "Firebase deploy complete"
+
+# Notes:
+# - Replace WORKLOAD_IDENTITY_PROVIDER and SERVICE_ACCOUNT_EMAIL with values from your GCP setup.
+# - This workflow avoids storing long-lived JSON service account keys; prefer OIDC.
