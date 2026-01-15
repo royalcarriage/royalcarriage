@@ -1,7 +1,9 @@
 import express, { type Request, Response, NextFunction } from "express";
+import session from "express-session";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
-import { setupSecurityHeaders } from "./security";
+import { setupSecurityHeaders, validateSessionSecret } from "./security";
+import { setupAuthentication, passport } from "./auth";
 import { createServer } from "http";
 
 const app = express();
@@ -9,6 +11,26 @@ const httpServer = createServer(app);
 
 // Setup security headers first
 setupSecurityHeaders(app);
+
+// Setup session middleware
+app.use(
+  session({
+    secret: validateSessionSecret(),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: "lax",
+    },
+  })
+);
+
+// Initialize Passport and restore authentication state from session
+app.use(passport.initialize());
+app.use(passport.session());
+setupAuthentication();
 
 declare module "http" {
   interface IncomingMessage {

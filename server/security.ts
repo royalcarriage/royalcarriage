@@ -3,6 +3,7 @@
  */
 
 import { type Express, type Request, type Response, type NextFunction } from 'express';
+import { type User, UserRole, type UserRoleType } from '@shared/schema';
 
 /**
  * Configure security headers
@@ -82,20 +83,80 @@ export function sanitizeInput(input: string): string {
 }
 
 /**
+ * Check if user is authenticated
+ */
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  next();
+}
+
+/**
  * Check if request is from an authenticated admin
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
-  // TODO: Implement proper authentication check
-  // For now, this is a placeholder
-
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader) {
+  if (!req.isAuthenticated()) {
     return res.status(401).json({ error: 'Authentication required' });
   }
 
-  // In production, validate JWT or session here
+  const user = req.user as User;
+  const allowedRoles: UserRoleType[] = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
+
+  if (!allowedRoles.includes(user.role)) {
+    return res.status(403).json({ error: 'Insufficient permissions. Admin access required.' });
+  }
+
   next();
+}
+
+/**
+ * Check if request is from a super admin
+ */
+export function requireSuperAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  const user = req.user as User;
+
+  if (user.role !== UserRole.SUPER_ADMIN) {
+    return res.status(403).json({ error: 'Insufficient permissions. Super admin access required.' });
+  }
+
+  next();
+}
+
+/**
+ * Flexible role-based access control
+ * Checks if user has at least the specified role level
+ */
+export function requireRole(minRole: UserRoleType) {
+  const roleHierarchy: Record<UserRoleType, number> = {
+    [UserRole.USER]: 1,
+    [UserRole.ADMIN]: 2,
+    [UserRole.SUPER_ADMIN]: 3,
+  };
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const user = req.user as User;
+    const userLevel = roleHierarchy[user.role] || 0;
+    const requiredLevel = roleHierarchy[minRole] || 0;
+
+    if (userLevel < requiredLevel) {
+      return res.status(403).json({
+        error: 'Insufficient permissions',
+        required: minRole,
+        current: user.role,
+      });
+    }
+
+    next();
+  };
 }
 
 /**
