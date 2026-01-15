@@ -47,6 +47,7 @@ import {
   ChevronsUpDown,
   Check,
   Plus,
+  Brain,
 } from "lucide-react";
 
 // Mock organizations for the switcher
@@ -74,6 +75,12 @@ const navigation: NavGroup[] = [
     label: "Overview",
     items: [
       { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: "AI Tools",
+    items: [
+      { title: "Page Analyzer", href: "/admin/analyze", icon: Brain },
     ],
   },
   {
