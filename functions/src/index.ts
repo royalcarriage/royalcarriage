@@ -541,3 +541,12 @@ export const autoAnalyzeNewPage = functions.firestore
 
     return null;
   });
+
+// Export CSV Import Functions
+export {
+  uploadCSV,
+  processCSVImport,
+  getImportStatus,
+  dailyGA4Ingestion,
+  dailyGoogleAdsIngestion,
+} from './csv-import-functions';
