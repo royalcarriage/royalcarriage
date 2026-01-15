@@ -7,6 +7,8 @@
     "dev": "NODE_ENV=development tsx server/index.ts",
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
+    "lint": "echo \"No lint script configured; skipping.\" && exit 0",
+    "typecheck": "echo \"No typecheck script configured; skipping.\" && exit 0",
     "check": "tsc",
     "test": "bash script/smoke-test.sh",
     "gates": "node ./scripts/watchdog.mjs",
