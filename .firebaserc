@@ -1,5 +1,30 @@
 {
   "projects": {
     "default": "royalcarriagelimoseo"
+  },
+  "targets": {
+    "royalcarriagelimoseo": {
+      "hosting": {
+        "admin": [
+          "royalcarriagelimoseo"
+        ],
+        "airport": [
+          "chicagoairportblackcar"
+        ],
+        "executive": [
+          "chicagoexecutivecarservice"
+        ],
+        "wedding": [
+          "chicagoweddingtransportation"
+        ],
+        "partybus": [
+          "chicagopartybus"
+        ]
+        ,
+        "packages-firebase": [
+          "YOUR_HOSTING_SITE_ID"
+        ]
+      }
+    }
   }
 }
