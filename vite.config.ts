@@ -14,6 +14,14 @@ export default defineConfig({
     react(),
     ...(isDev ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
   ],
+  css: {
+    postcss: {
+      plugins: [
+        (await import('tailwindcss')).default,
+        (await import('autoprefixer')).default,
+      ],
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
