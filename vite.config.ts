@@ -17,7 +17,7 @@ export default defineConfig(({ mode }) => {
   return {
   plugins: [
     react(),
-    ...(isDev ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
+    ...(mode === 'development' ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
   ],
   css: {
     postcss: {
