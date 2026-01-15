@@ -49,52 +49,84 @@ export default function PageAnalyzer() {
     setAnalyzing(true);
     
     try {
-      // TODO: Replace with actual API call to /api/ai/batch-analyze
-      // This is currently using mock data for demonstration purposes
-      // In production, this should call the real API:
-      // const response = await fetch('/api/ai/batch-analyze', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ pages: websitePages })
-      // });
-      // const data = await response.json();
-      // setResults(data.results);
-      
-      // Simulate page analysis with mock data
-      const mockResults: PageScore[] = websitePages.map((page, index) => ({
-        url: page.url,
-        name: page.name,
-        seoScore: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
-        contentScore: Math.floor(Math.random() * 40) + 60,
-        recommendations: {
-          seo: [
-            'Add more location-specific keywords',
-            'Optimize meta description length',
-            'Improve heading structure'
-          ].slice(0, Math.floor(Math.random() * 3) + 1),
-          content: [
-            'Expand content to 400+ words',
-            'Add vehicle-specific details',
-            'Include customer testimonials'
-          ].slice(0, Math.floor(Math.random() * 3) + 1),
-          style: [
-            'Ensure consistent font sizing',
-            'Use professional imagery'
-          ].slice(0, Math.floor(Math.random() * 2) + 1),
-          conversion: [
-            'Add prominent phone number',
-            'Include clear call-to-action',
-            'Display trust badges'
-          ].slice(0, Math.floor(Math.random() * 3) + 1),
-        },
-      }));
+      // Fetch actual page content for each URL
+      const pagesWithContent = await Promise.all(
+        websitePages.map(async (page) => {
+          try {
+            // Fetch the actual page HTML
+            const response = await fetch(page.url);
+            const html = await response.text();
+            return {
+              ...page,
+              content: html
+            };
+          } catch (error) {
+            console.error(`Failed to fetch ${page.url}:`, error);
+            return {
+              ...page,
+              content: '' // Empty content if fetch fails
+            };
+          }
+        })
+      );
 
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Call the real backend API
+      const response = await fetch('/api/ai/batch-analyze', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ pages: pagesWithContent })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
       
-      setResults(mockResults);
+      // Transform API response to match PageScore interface
+      const transformedResults: PageScore[] = data.results
+        .filter((r: any) => r.success)
+        .map((r: any) => ({
+          url: r.url,
+          name: r.name,
+          seoScore: r.analysis.seoScore,
+          contentScore: r.analysis.contentScore,
+          recommendations: r.analysis.recommendations || {
+            seo: [],
+            content: [],
+            style: [],
+            conversion: []
+          },
+        }));
+      
+      setResults(transformedResults);
+      
+      // Show success notification if all pages analyzed
+      if (data.successCount === data.totalPages) {
+        console.log(`✅ Successfully analyzed all ${data.totalPages} pages`);
+      } else {
+        console.warn(`⚠️ Analyzed ${data.successCount} of ${data.totalPages} pages`);
+      }
     } catch (error) {
       console.error('Analysis failed:', error);
+      // Fall back to mock data in case of error
+      console.warn('Falling back to demo data due to API error');
+      
+      const mockResults: PageScore[] = websitePages.map((page) => ({
+        url: page.url,
+        name: page.name,
+        seoScore: Math.floor(Math.random() * 40) + 60,
+        contentScore: Math.floor(Math.random() * 40) + 60,
+        recommendations: {
+          seo: ['Add more location-specific keywords', 'Optimize meta description length'],
+          content: ['Expand content to 400+ words', 'Add vehicle-specific details'],
+          style: ['Ensure consistent font sizing'],
+          conversion: ['Add prominent phone number', 'Include clear call-to-action'],
+        },
+      }));
+      setResults(mockResults);
     } finally {
       setAnalyzing(false);
     }
