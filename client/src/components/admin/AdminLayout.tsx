@@ -48,6 +48,7 @@ import {
   Check,
   Plus,
   Brain,
+  TrendingUp,
 } from "lucide-react";
 
 // Mock organizations for the switcher
@@ -81,6 +82,7 @@ const navigation: NavGroup[] = [
     label: "AI Tools",
     items: [
       { title: "Page Analyzer", href: "/admin/analyze", icon: Brain },
+      { title: "ROI Intelligence", href: "/admin/roi", icon: TrendingUp },
     ],
   },
   {
