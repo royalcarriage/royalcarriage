@@ -105,6 +105,8 @@ royalcarriage/
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
 - **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
 - **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
+- **[Firebase Audit](docs/FIREBASE_AUDIT.md)** - Firebase system configuration audit report
+- **[Firebase Emulator Guide](docs/FIREBASE_EMULATOR_GUIDE.md)** - Local development with Firebase emulators
 
 ## AI Features
 
