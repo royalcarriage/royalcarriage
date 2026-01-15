@@ -114,7 +114,7 @@ service cloud.firestore {
     match /raw_import_batches/{batchId} {
       allow read: if isAdmin();
       allow create: if isAdmin();
-      allow update: if isAdmin() || request.auth.uid == 'firebase-functions'; // Functions can update
+      allow update: if isAdmin(); // Functions use admin SDK with elevated privileges
       allow delete: if false; // Immutable - never delete
     }
     

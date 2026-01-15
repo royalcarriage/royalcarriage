@@ -6,6 +6,7 @@
 import * as functions from 'firebase-functions/v2';
 import * as admin from 'firebase-admin';
 import { Storage } from '@google-cloud/storage';
+import { createHash } from 'crypto';
 
 // Note: Firebase Admin is initialized in main index.ts
 const storage = new Storage();
@@ -84,8 +85,7 @@ export const uploadCSV = functions.https.onRequest(
       const storageUrl = `gs://${bucket.name}/${file.name}`;
       
       // Calculate SHA256 hash
-      const crypto = require('crypto');
-      const sha256Hash = crypto.createHash('sha256').update(csvContent).digest('hex');
+      const sha256Hash = createHash('sha256').update(csvContent).digest('hex');
       
       // Check for duplicate import
       const existingBatch = await admin.firestore()

@@ -29,7 +29,7 @@ export function parseMoney(value: any): number {
   const cleaned = str.replace(/[$,\s]/g, '');
   
   // Handle negative values (parentheses or minus sign)
-  const isNegative = cleaned.startsWith('(') && cleaned.endsWith(')') || cleaned.startsWith('-');
+  const isNegative = (cleaned.startsWith('(') && cleaned.endsWith(')')) || cleaned.startsWith('-');
   const withoutNegative = cleaned.replace(/[()]/g, '').replace(/^-/, '');
   
   const parsed = parseFloat(withoutNegative);
