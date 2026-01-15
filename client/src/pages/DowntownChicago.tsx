@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Phone, Calendar, Building, MapPin } from "lucide-react";
 import { Link } from "wouter";
+import { LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_suv_downtown_chicago.png";
 

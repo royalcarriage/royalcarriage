@@ -3,11 +3,38 @@
  * Scheduled functions for automated page analysis and optimization
  */
 
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
+import fetch from 'node-fetch';
+import type { EventContext } from 'firebase-functions/v1';
+import type { Request, Response } from 'firebase-functions/v1';
+import type { DocumentSnapshot } from 'firebase-functions/v1/firestore';
 
 // Initialize Firebase Admin
 admin.initializeApp();
+
+// Helper function to get backend API URL
+function getBackendUrl(): string {
+  return process.env.BACKEND_API_URL ||
+    (process.env.FUNCTIONS_EMULATOR === 'true'
+      ? 'http://localhost:5000'
+      : 'https://royalcarriagelimoseo.web.app');
+}
+
+// Helper function to get allowed origins from environment
+function getAllowedOrigins(): string[] {
+  const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 
+    'https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com';
+  
+  const origins = allowedOriginsEnv.split(',').map((o: string) => o.trim());
+  
+  // Add localhost for development
+  if (process.env.NODE_ENV === 'development' || process.env.FUNCTIONS_EMULATOR === 'true') {
+    origins.push('http://localhost:5000', 'http://127.0.0.1:5000');
+  }
+  
+  return origins;
+}
 
 /**
  * Scheduled function: Daily page analysis
@@ -15,34 +42,77 @@ admin.initializeApp();
  */
 export const dailyPageAnalysis = functions.pubsub
   .schedule('0 2 * * *')
-  .timeZone('America/Chicago')
-  .onRun(async (context) => {
+  .timeZone(process.env.SCHEDULED_TIMEZONE || 'America/Chicago')
+  .onRun(async (context: EventContext) => {
     console.log('Starting daily page analysis...');
 
     try {
-      const pages = [
-        { url: '/', name: 'Home' },
-        { url: '/ohare-airport-limo', name: 'O\'Hare Airport' },
-        { url: '/midway-airport-limo', name: 'Midway Airport' },
-        { url: '/airport-limo-downtown-chicago', name: 'Downtown Chicago' },
-        { url: '/airport-limo-suburbs', name: 'Suburbs Service' },
-        { url: '/fleet', name: 'Fleet' },
-        { url: '/pricing', name: 'Pricing' },
-        { url: '/about', name: 'About' },
-        { url: '/contact', name: 'Contact' },
-      ];
+      // Get pages to analyze from environment or use defaults
+      const pagesToAnalyzeEnv = process.env.PAGES_TO_ANALYZE || 
+        '/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact';
+      
+      const pageUrls = pagesToAnalyzeEnv.split(',').map((url: string) => url.trim());
+      
+      const pages = pageUrls.map((url: string) => {
+        // Extract page name from URL
+        const name = url === '/' ? 'Home' : 
+          url.split('/').filter(Boolean).join(' ')
+            .split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        return { url, name };
+      });
 
       // Analyze each page
+      const backendUrl = getBackendUrl();
+      
       for (const page of pages) {
-        console.log(`Analyzing page: ${page.name}`);
+        console.log(`Analyzing page: ${page.name} (${page.url})`);
         
-        // Store analysis results in Firestore
-        await admin.firestore().collection('page_analyses').add({
-          pageUrl: page.url,
-          pageName: page.name,
-          analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-          status: 'pending',
-        });
+        try {
+          // Fetch the actual page content
+          const pageResponse = await fetch(`${backendUrl}${page.url}`);
+          const pageContent = await pageResponse.text();
+          
+          // Call backend API for analysis
+          const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              pageUrl: page.url,
+              pageName: page.name,
+              pageContent: pageContent,
+            }),
+          });
+          
+          if (analysisResponse.ok) {
+            const analysisData = await analysisResponse.json();
+            
+            // Store successful analysis results in Firestore
+            await admin.firestore().collection('page_analyses').add({
+              pageUrl: page.url,
+              pageName: page.name,
+              seoScore: analysisData.analysis.seoScore,
+              contentScore: analysisData.analysis.contentScore,
+              recommendations: analysisData.analysis.recommendations,
+              analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+              status: 'completed',
+            });
+            console.log(`✓ Successfully analyzed: ${page.name}`);
+          } else {
+            throw new Error(`API returned ${analysisResponse.status}`);
+          }
+        } catch (error) {
+          console.error(`✗ Failed to analyze ${page.name}:`, error);
+          // Store failed analysis
+          await admin.firestore().collection('page_analyses').add({
+            pageUrl: page.url,
+            pageName: page.name,
+            analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+            status: 'failed',
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
       }
 
       console.log(`Daily analysis completed for ${pages.length} pages`);
@@ -59,8 +129,8 @@ export const dailyPageAnalysis = functions.pubsub
  */
 export const weeklySeoReport = functions.pubsub
   .schedule('0 9 * * 1')
-  .timeZone('America/Chicago')
-  .onRun(async (context) => {
+  .timeZone(process.env.SCHEDULED_TIMEZONE || 'America/Chicago')
+  .onRun(async (context: EventContext) => {
     console.log('Generating weekly SEO report...');
 
     try {
@@ -80,8 +150,8 @@ export const weeklySeoReport = functions.pubsub
         periodStart: oneWeekAgo,
         periodEnd: new Date(),
         totalPages: analyses.length,
-        averageSeoScore: analyses.reduce((sum, a: any) => sum + (a.seoScore || 0), 0) / analyses.length,
-        averageContentScore: analyses.reduce((sum, a: any) => sum + (a.contentScore || 0), 0) / analyses.length,
+        averageSeoScore: analyses.reduce((sum: number, a: any) => sum + (a.seoScore || 0), 0) / analyses.length,
+        averageContentScore: analyses.reduce((sum: number, a: any) => sum + (a.contentScore || 0), 0) / analyses.length,
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
@@ -100,13 +170,18 @@ export const weeklySeoReport = functions.pubsub
  * HTTP function: Trigger page analysis
  * Manual trigger for page analysis via API
  */
-export const triggerPageAnalysis = functions.https.onRequest(async (req, res) => {
-  // Enable CORS
-  res.set('Access-Control-Allow-Origin', '*');
+export const triggerPageAnalysis = functions.https.onRequest(async (req: Request, res: Response) => {
+  // Configure CORS based on environment
+  const allowedOrigins = getAllowedOrigins();
+  
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+  }
   
   if (req.method === 'OPTIONS') {
     res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.status(204).send('');
     return;
   }
@@ -116,7 +191,28 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
     return;
   }
 
+  // Check authentication (require admin role)
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({
+      error: 'Authentication required. Please provide a valid Bearer token.',
+    });
+    return;
+  }
+
   try {
+    // Verify Firebase Auth token
+    const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    // Check if user is admin (requires custom claims to be set)
+    if (decodedToken.role !== 'admin') {
+      res.status(403).json({
+        error: 'Forbidden. Admin access required.',
+      });
+      return;
+    }
+
     const { pageUrl, pageName, pageContent } = req.body;
 
     if (!pageUrl || !pageName || !pageContent) {
@@ -126,19 +222,37 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
       return;
     }
 
-    // TODO: Replace with actual AI analysis using PageAnalyzer
-    // This is currently using mock data for demonstration
-    // In production, import and use the PageAnalyzer class:
-    // import { PageAnalyzer } from '../../server/ai/page-analyzer';
-    // const analyzer = new PageAnalyzer();
-    // const result = await analyzer.analyzePage(pageContent, pageUrl, pageName);
+    // Sanitize inputs
+    const sanitizedPageUrl = pageUrl.trim();
+    const sanitizedPageName = pageName.trim().replace(/[<>]/g, '');
+
+    // Call backend API for actual AI analysis
+    const backendUrl = getBackendUrl();
+    const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pageUrl: sanitizedPageUrl,
+        pageName: sanitizedPageName,
+        pageContent: pageContent,
+      }),
+    });
+
+    if (!analysisResponse.ok) {
+      throw new Error(`Backend API error: ${analysisResponse.status} ${analysisResponse.statusText}`);
+    }
+
+    const analysisData = await analysisResponse.json();
     
-    // Perform AI analysis (using mock data for now)
+    // Store analysis results in Firestore
     const analysis = {
-      pageUrl,
-      pageName,
-      seoScore: Math.floor(Math.random() * 40) + 60,
-      contentScore: Math.floor(Math.random() * 40) + 60,
+      pageUrl: sanitizedPageUrl,
+      pageName: sanitizedPageName,
+      seoScore: analysisData.analysis.seoScore,
+      contentScore: analysisData.analysis.contentScore,
+      recommendations: analysisData.analysis.recommendations,
       analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
       status: 'completed',
     };
@@ -149,7 +263,7 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
     res.status(200).json({
       success: true,
       analysisId: docRef.id,
-      analysis,
+      analysis: analysisData.analysis,
     });
   } catch (error) {
     console.error('Page analysis failed:', error);
@@ -164,13 +278,18 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
  * HTTP function: Generate content
  * Trigger AI content generation
  */
-export const generateContent = functions.https.onRequest(async (req, res) => {
-  // Enable CORS
-  res.set('Access-Control-Allow-Origin', '*');
+export const generateContent = functions.https.onRequest(async (req: Request, res: Response) => {
+  // Configure CORS based on environment
+  const allowedOrigins = getAllowedOrigins();
+  
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+  }
   
   if (req.method === 'OPTIONS') {
     res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.status(204).send('');
     return;
   }
@@ -180,7 +299,28 @@ export const generateContent = functions.https.onRequest(async (req, res) => {
     return;
   }
 
+  // Check authentication (require admin role)
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({
+      error: 'Authentication required. Please provide a valid Bearer token.',
+    });
+    return;
+  }
+
   try {
+    // Verify Firebase Auth token
+    const token = authHeader.substring(7);
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    // Check if user is admin
+    if (decodedToken.role !== 'admin') {
+      res.status(403).json({
+        error: 'Forbidden. Admin access required.',
+      });
+      return;
+    }
+
     const { pageType, location, vehicle, targetKeywords } = req.body;
 
     if (!pageType || !targetKeywords) {
@@ -190,21 +330,26 @@ export const generateContent = functions.https.onRequest(async (req, res) => {
       return;
     }
 
+    // Sanitize inputs
+    const sanitizedLocation = location ? location.trim().replace(/[<>]/g, '') : 'Chicago';
+    const sanitizedVehicle = vehicle ? vehicle.trim().replace(/[<>]/g, '') : 'Limo';
+    const sanitizedPageType = pageType.trim().replace(/[<>]/g, '');
+
     // Generate content (simplified template for now)
     const content = {
-      title: `${location || 'Chicago'} ${vehicle || 'Limo'} Service | Premium Airport Transportation`,
-      metaDescription: `Professional ${location || 'Chicago'} airport limo service. Reliable black car transportation to O'Hare & Midway.`,
-      heading: `Premium ${vehicle || 'Limousine'} Service`,
-      content: `Experience luxury transportation with our professional ${vehicle || 'limousine'} service in ${location || 'Chicago'}.`,
+      title: `${sanitizedLocation} ${sanitizedVehicle} Service | Premium Airport Transportation`,
+      metaDescription: `Professional ${sanitizedLocation} airport limo service. Reliable black car transportation to O'Hare & Midway.`,
+      heading: `Premium ${sanitizedVehicle} Service`,
+      content: `Experience luxury transportation with our professional ${sanitizedVehicle.toLowerCase()} service in ${sanitizedLocation}.`,
       ctaText: 'Book Your Ride Now',
       generatedAt: new Date().toISOString(),
     };
 
     // Store in Firestore
     await admin.firestore().collection('content_suggestions').add({
-      pageType,
-      location,
-      vehicle,
+      pageType: sanitizedPageType,
+      location: sanitizedLocation,
+      vehicle: sanitizedVehicle,
       targetKeywords,
       generatedContent: content,
       status: 'pending_review',
@@ -228,13 +373,18 @@ export const generateContent = functions.https.onRequest(async (req, res) => {
  * HTTP function: Generate image
  * Trigger AI image generation
  */
-export const generateImage = functions.https.onRequest(async (req, res) => {
-  // Enable CORS
-  res.set('Access-Control-Allow-Origin', '*');
+export const generateImage = functions.https.onRequest(async (req: Request, res: Response) => {
+  // Configure CORS based on environment
+  const allowedOrigins = getAllowedOrigins();
+  
+  const origin = req.headers.origin;
+  if (origin && allowedOrigins.includes(origin)) {
+    res.set('Access-Control-Allow-Origin', origin);
+  }
   
   if (req.method === 'OPTIONS') {
     res.set('Access-Control-Allow-Methods', 'POST');
-    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     res.status(204).send('');
     return;
   }
@@ -244,8 +394,17 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
     return;
   }
 
+  // Check authentication (require admin role)
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    res.status(401).json({
+      error: 'Authentication required. Please provide a valid Bearer token.',
+    });
+    return;
+  }
+
   try {
-    const { purpose, location, vehicle } = req.body;
+    const { purpose, location, vehicle, style, description } = req.body;
 
     if (!purpose) {
       res.status(400).json({
@@ -254,35 +413,89 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
       return;
     }
 
-    // Generate placeholder image URL
-    const text = vehicle || location || purpose;
-    const imageUrl = `https://placehold.co/1200x800/1a1a1a/ffffff?text=${encodeURIComponent(text)}`;
+    // Import ImageGenerator dynamically
+    const { ImageGenerator } = await import('../../server/ai/image-generator');
+    
+    // Create image generator instance
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT;
+    const imageGenerator = new ImageGenerator(projectId, 'us-central1');
+    
+    // Generate the image
+    const result = await imageGenerator.generateImage({
+      purpose: purpose as any,
+      location,
+      vehicle,
+      style,
+      description,
+    });
 
-    const image = {
-      imageUrl,
-      prompt: `Luxury ${vehicle || 'car'} at ${location || 'Chicago airport'}`,
-      width: 1200,
-      height: 800,
-      format: 'png',
-      generatedAt: new Date().toISOString(),
-    };
-
-    // Store in Firestore
-    await admin.firestore().collection('ai_images').add({
+    // Store in Firestore with full metadata
+    const docRef = await admin.firestore().collection('ai_images').add({
       purpose,
       location,
       vehicle,
-      imageUrl,
+      style,
+      description,
+      imageUrl: result.imageUrl,
+      prompt: result.prompt,
+      width: result.width,
+      height: result.height,
+      format: result.format,
       status: 'generated',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
+    // Track usage for rate limiting
+    const today = new Date().toISOString().split('T')[0];
+    const userId = 'system'; // In production, use actual user ID from auth
+    const usageRef = admin.firestore().collection('usage_stats').doc(`${userId}_${today}`);
+    
+    await usageRef.set({
+      userId,
+      date: today,
+      imageGenerations: admin.firestore.FieldValue.increment(1),
+      totalCost: admin.firestore.FieldValue.increment(0.02), // Approximate cost per image
+      lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    // Log audit event
+    await admin.firestore().collection('audit_logs').add({
+      action: 'image_generated',
+      resourceId: docRef.id,
+      resourceType: 'ai_image',
+      userId: 'system',
+      details: {
+        purpose,
+        prompt: result.prompt,
+        status: 'success',
+      },
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
     res.status(200).json({
       success: true,
-      image,
+      image: result,
+      imageId: docRef.id,
     });
   } catch (error) {
     console.error('Image generation failed:', error);
+    
+    // Log failure in audit logs
+    try {
+      await admin.firestore().collection('audit_logs').add({
+        action: 'image_generation_failed',
+        resourceType: 'ai_image',
+        userId: 'system',
+        details: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          status: 'failed',
+        },
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (logError) {
+      console.error('Failed to log error:', logError);
+    }
+    
     res.status(500).json({
       error: 'Image generation failed',
       message: error instanceof Error ? error.message : 'Unknown error',
@@ -296,8 +509,13 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
  */
 export const autoAnalyzeNewPage = functions.firestore
   .document('pages/{pageId}')
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: DocumentSnapshot, context: EventContext) => {
     const page = snap.data();
+    
+    if (!page) {
+      console.error('Page data is undefined');
+      return null;
+    }
     
     console.log(`Auto-analyzing new page: ${page.name}`);
 

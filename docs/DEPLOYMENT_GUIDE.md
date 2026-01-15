@@ -123,41 +123,215 @@ npm run serve
 firebase deploy --only firestore
 ```
 
-2. **Deploy Firebase Functions**
+2. **Deploy Storage Rules**
+```bash
+firebase deploy --only storage
+```
+
+3. **Deploy Firebase Functions**
 ```bash
 firebase deploy --only functions
 ```
 
-3. **Deploy Hosting**
+4. **Deploy Hosting**
 ```bash
 firebase deploy --only hosting
 ```
 
-4. **Or Deploy Everything**
+5. **Or Deploy Everything**
 ```bash
 firebase deploy
 ```
 
 ## Step 7: Create Admin User
 
-After deployment, create an admin user:
+After deployment, create an admin user with proper authentication setup:
 
-1. **Via Firebase Console**
+### Important: Firebase Storage Rules Require Custom Claims
+
+Firebase Storage rules cannot access Firestore directly (unlike Firestore rules). They rely on **custom claims** in the Firebase Auth token. You must set the `role: 'admin'` custom claim for admin users.
+
+### Option 1: Via Firebase Functions (Recommended)
+
+Create a one-time admin setup function:
+
+```javascript
+// In functions/src/index.ts or a separate setup file
+import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
+
+export const createAdminUser = functions.https.onCall(async (data, context) => {
+  // Add security: only allow from specific IP or with secret key
+  const { email, password, secret } = data;
+  
+  if (secret !== 'your-one-time-secret-key') {
+    throw new functions.https.HttpsError('permission-denied', 'Invalid secret');
+  }
+  
+  try {
+    // Create Firebase Auth user
+    const userRecord = await admin.auth().createUser({
+      email: email,
+      password: password,
+      emailVerified: true,
+    });
+    
+    // Set custom claims for Storage rules
+    await admin.auth().setCustomUserClaims(userRecord.uid, { 
+      role: 'admin' 
+    });
+    
+    // Create Firestore user document for Firestore rules
+    await admin.firestore().collection('users').doc(userRecord.uid).set({
+      id: userRecord.uid,
+      username: email.split('@')[0],
+      email: email,
+      role: 'admin',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    return { 
+      success: true, 
+      userId: userRecord.uid,
+      message: 'Admin user created with custom claims and Firestore document'
+    };
+  } catch (error) {
+    throw new functions.https.HttpsError('internal', error.message);
+  }
+});
+```
+
+Call it after deployment:
+```bash
+# Using Firebase CLI
+firebase functions:call createAdminUser --data '{"email":"admin@example.com","password":"secure-password","secret":"your-one-time-secret-key"}'
+```
+
+### Option 2: Via Firebase Admin SDK Script
+
+Create a script `scripts/create-admin.js`:
+
+```javascript
+const admin = require('firebase-admin');
+const serviceAccount = require('../path/to/service-account-key.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+async function createAdmin() {
+  const email = 'admin@example.com';
+  const password = 'secure-password';
+  
+  try {
+    // Create auth user
+    const userRecord = await admin.auth().createUser({
+      email: email,
+      password: password,
+      emailVerified: true,
+    });
+    
+    console.log('Created auth user:', userRecord.uid);
+    
+    // Set custom claims for Storage rules
+    await admin.auth().setCustomUserClaims(userRecord.uid, { 
+      role: 'admin' 
+    });
+    
+    console.log('Set custom claims: role=admin');
+    
+    // Create Firestore document for Firestore rules
+    await admin.firestore().collection('users').doc(userRecord.uid).set({
+      id: userRecord.uid,
+      username: email.split('@')[0],
+      email: email,
+      role: 'admin',
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    
+    console.log('Created Firestore user document');
+    console.log('Admin user created successfully!');
+    
+    // Verify
+    const user = await admin.auth().getUser(userRecord.uid);
+    console.log('Custom claims:', user.customClaims);
+    
+  } catch (error) {
+    console.error('Error creating admin:', error);
+  }
+  
+  process.exit(0);
+}
+
+createAdmin();
+```
+
+Run the script:
+```bash
+node scripts/create-admin.js
+```
+
+### Option 3: Via Firebase Console (Manual - Two Steps Required)
+
+1. **Create Firebase Auth User**
+   - Go to Firebase Console → Authentication → Users
+   - Click "Add User"
+   - Enter email and password
+   - Copy the User UID
+
+2. **Set Custom Claims (requires Cloud Shell or local script)**
+   
+   You cannot set custom claims via the Firebase Console UI. Use one of these methods:
+   
+   **Using gcloud Cloud Shell:**
+   ```bash
+   # In Google Cloud Console Cloud Shell
+   gcloud auth application-default login
+   
+   # Run this Node.js snippet
+   const admin = require('firebase-admin');
+   admin.initializeApp();
+   await admin.auth().setCustomUserClaims('USER_UID_HERE', { role: 'admin' });
+   ```
+   
+   **Or create the Firestore document manually:**
    - Go to Firestore Database
-   - Create a document in `users` collection:
+   - Create document in `users` collection with ID matching the Auth UID:
    ```json
    {
-     "id": "admin-user-id",
+     "id": "USER_UID_FROM_AUTH",
      "username": "admin",
-     "password": "hashed-password",
+     "email": "admin@example.com",
      "role": "admin",
      "createdAt": "2024-01-01T00:00:00Z"
    }
    ```
+   
+   **Then set custom claims using a script** (same as Option 2 above)
 
-2. **Or via Firebase Functions**
-   - Create a one-time setup function
-   - Call it to create the admin user
+### Verify Admin Setup
+
+Test that admin has access to both Firestore and Storage:
+
+```javascript
+// Test script
+const admin = require('firebase-admin');
+admin.initializeApp();
+
+async function verifyAdmin(uid) {
+  // Check Auth custom claims
+  const user = await admin.auth().getUser(uid);
+  console.log('Custom claims:', user.customClaims);
+  
+  // Check Firestore document
+  const doc = await admin.firestore().collection('users').doc(uid).get();
+  console.log('Firestore role:', doc.data()?.role);
+  
+  // Both should show role: 'admin'
+}
+
+verifyAdmin('USER_UID_HERE');
+```
 
 ## Step 8: Access Admin Dashboard
 

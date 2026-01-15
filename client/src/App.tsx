@@ -15,7 +15,22 @@ import Fleet from "@/pages/Fleet";
 import Pricing from "@/pages/Pricing";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+
+// Admin Pages
+import DashboardPage from "@/pages/admin/DashboardPage";
+import TripsPage from "@/pages/admin/TripsPage";
+import DriversPage from "@/pages/admin/DriversPage";
+import VehiclesPage from "@/pages/admin/VehiclesPage";
+import CustomersPage from "@/pages/admin/CustomersPage";
+import ImportsPage from "@/pages/admin/ImportsPage";
+import AnalyticsPage from "@/pages/admin/AnalyticsPage";
+import PayrollPage from "@/pages/admin/PayrollPage";
+import InvoicesPage from "@/pages/admin/InvoicesPage";
+import PaymentsPage from "@/pages/admin/PaymentsPage";
+import SettingsPage from "@/pages/admin/SettingsPage";
+import HelpPage from "@/pages/admin/HelpPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 
 function Router() {
@@ -33,7 +48,20 @@ function Router() {
       <Route path="/contact" component={Contact} />
       
       {/* Admin Routes */}
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin" component={DashboardPage} />
+      <Route path="/admin/trips" component={TripsPage} />
+      <Route path="/admin/drivers" component={DriversPage} />
+      <Route path="/admin/vehicles" component={VehiclesPage} />
+      <Route path="/admin/customers" component={CustomersPage} />
+      <Route path="/admin/imports" component={ImportsPage} />
+      <Route path="/admin/analytics" component={AnalyticsPage} />
+      <Route path="/admin/payroll" component={PayrollPage} />
+      <Route path="/admin/invoices" component={InvoicesPage} />
+      <Route path="/admin/payments" component={PaymentsPage} />
+      <Route path="/admin/settings" component={SettingsPage} />
+      <Route path="/admin/help" component={HelpPage} />
+      <Route path="/admin" component={AdminDashboardV2} />
+      <Route path="/admin/v1" component={AdminDashboard} />
       <Route path="/admin/analyze" component={PageAnalyzer} />
       
       <Route component={NotFound} />

@@ -1,20 +1,46 @@
-# PLAN
+# PLAN (2026-01-15)
 
-## Goal (2026-01-15)
-Audit Firebase and Google Cloud configuration, surface breakages, and list remediation steps.
+## Mission
+Run end-to-end audit, repair, and deployment across repo, Firebase/GCP, and workspace. Operate autonomously and log all actions.
 
-## Current Status
-- Audit report written: `reports/firebase-gcp-audit-2026-01-15.md`.
-- Validation run: `npm --prefix functions run build` fails (missing `@types/mime`, `@types/ms`; undeclared `@google-cloud/storage`/`node-fetch` usage).
-- Root typecheck: `npm run check` passes after defining `isDev` in `vite.config.ts`.
+## Phases
+1) Safety/logging setup; sync with origin/main; create repo map.
+2) MD audit → backlog (20-item roadmap).
+3) Gates + UI/security/data audits; fix blockers.
+4) Cloud/Firebase verification and dry-run deploy.
+5) Cleanup plan and archival.
+6) Shadow deploy → smoke → prod (if green).
+7) Re-run gates and finalize reports.
 
-## Outstanding Actions
-1) Fix Cloud Functions build/deps (add storage + type packages; remove or declare `node-fetch`) and rerun build.
-2) Align auth claims across HTTP functions, Firestore rules, and claim issuer (`decodedToken.role` vs `request.auth.token.admin` vs `roles` map).
-3) Harden Storage rules (`ai-images` public reads, unscoped `/temp`, content-type/size gaps in `/uploads` and `/sites/...`).
-4) Repair Firestore rate limiter identity/path and design to work without `context.auth` in triggers.
-5) Replace deployImages local-FS workflow; correct bucket name to `<project>.appspot.com`.
+## Current Checkpoints
+- Branch: merge/consolidation-2026-01-15 (tracks origin/main).
+- Working tree: clean (post-reset), stashes retained for earlier work.
 
-## Next Validation
-- Re-run `npm --prefix functions run build` after dependency fixes.
-- Add back a repo-wide gates script when available (lint/typecheck/test/build) and run it.
+## Next Actions
+1) Map repo/apps/packages, frameworks, and scripts; write `.agent/artifacts/repo-map.md`.
+2) Run MD audit to produce `.agent/artifacts/md-audit.md` and `.agent/artifacts/backlog.md`; archive obsolete docs.
+3) Run gates (lint/typecheck/test/build) and fix failures.
+4) Audit Firebase/GCP rules and functions; prepare deploy plan.
+5) Execute shadow deploy and smoke; promote if green.
+
+## Roadmap (to fill after MD audit)
+1) Mobile sticky CTA + trust badges + differentiated hero copy.
+2) Pricing anchors on Pricing page with “no surge” messaging.
+3) Image optimization (WebP/responsive, lazyload, preload).
+4) JSON-LD schemas (Org/FAQ/Service/Breadcrumb/Product).
+5) XML sitemaps + robots.txt for all sites.
+6) Internal linking strategy implementation.
+7) GA4 + conversion tracking events (calls/bookings/forms).
+8) ROI data pipeline (Moovs + Google Ads import) with schema validation.
+9) PR-based content workflow with quality gates for AI content.
+10) Firebase rules/auth hardening + functions build fix.
+11) Consolidated gates script + CI enforcement + PR templates.
+12) Performance tuning (LCP/CLS/caching, reduce unused JS/CSS).
+13) Monitoring/observability hooks and alerts.
+14) Admin dashboard build-out (reports/drivers/trips) per redesign doc.
+15) ROI analytics dashboards in admin.
+16) Sitemap/robots generation scripts for Astro microsites/admin.
+17) Security hardening: secrets scan, dependency audit, GCP config verification.
+18) Smoke/preview deploy automation for Firebase before prod.
+19) Content depth upgrades (1k+ words, trust/FAQ) on service/city/blog pages.
+20) Cleanup/archival of dead docs/code/assets post-verification.
