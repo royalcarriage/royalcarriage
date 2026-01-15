@@ -8,7 +8,10 @@ import { cartographer } from "@replit/vite-plugin-cartographer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const isDev = mode === 'development';
+  
+  return {
   plugins: [
     react(),
     ...(isDev ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
@@ -39,4 +42,5 @@ export default defineConfig({
     },
     chunkSizeWarningLimit: 600,
   },
-});
+}});
+
