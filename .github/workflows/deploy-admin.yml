@@ -54,6 +54,11 @@ jobs:
           service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT || '' }}
           credentials_json: ${{ secrets.GCP_SA_KEY || '' }}
 
+      - name: Fallback: ensure FIREBASE_SERVICE_ACCOUNT secret is respected
+        if: ${{ secrets.GCP_SA_KEY == '' && secrets.WORKLOAD_IDENTITY_PROVIDER == '' }}
+        run: |
+          echo "No OIDC or service account key provided; ensure repo secret FIREBASE_SERVICE_ACCOUNT is set if using FirebaseExtended/action-hosting-deploy"
+
       - name: Build admin dashboard
         run: |
           cd apps/admin
