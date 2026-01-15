@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Phone, Calendar, Shield, Clock, CreditCard } from "lucide-react";
 import { Link } from "wouter";
+import { LocalBusinessSchema, BreadcrumbSchema, FAQSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/lincoln_sedan_chicago_cityscape.png";
 
@@ -58,8 +59,17 @@ const faqs = [
 ];
 
 export default function Pricing() {
+  const breadcrumbItems = [
+    { name: "Home", url: "https://chicagoairportblackcar.com" },
+    { name: "Pricing", url: "https://chicagoairportblackcar.com/pricing" }
+  ];
+
   return (
     <Layout>
+      <LocalBusinessSchema image={heroImage} />
+      <BreadcrumbSchema items={breadcrumbItems} />
+      <FAQSchema questions={faqs} />
+      
       <SEO 
         title="Transparent Flat-Rate Pricing"
         description="Know your fare upfront with our flat-rate airport pricing. No surge pricing, no hidden fees. All-inclusive rates for O'Hare and Midway airport transfers. Get a quote today."
