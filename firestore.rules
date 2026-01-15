@@ -107,5 +107,74 @@ service cloud.firestore {
       allow read: if isAdmin();
       allow write: if isAdmin();
     }
+    
+    // CSV Import System Collections
+    
+    // Raw import batches - admin only
+    match /raw_import_batches/{batchId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update: if isAdmin() || request.auth.uid == 'firebase-functions'; // Functions can update
+      allow delete: if false; // Immutable - never delete
+    }
+    
+    // Raw import rows - admin read, functions write
+    match /raw_import_rows/{rowId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only Firebase Functions can write
+    }
+    
+    // Bookings - admin read/write
+    match /bookings/{bookingId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false; // Soft delete only via status field
+    }
+    
+    // Revenue lines - admin read/write
+    match /revenue_lines/{lineId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+    
+    // Receivables - admin read/write
+    match /receivables/{receivableId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+    
+    // Driver payouts - admin read/write
+    match /driver_payouts/{payoutId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+    
+    // Affiliate payables - admin read/write
+    match /affiliate_payables/{payableId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+    
+    // Fleet vehicles - admin read/write
+    match /fleet/{vehicleId} {
+      allow read: if isAdmin();
+      allow create, update: if isAdmin();
+      allow delete: if false;
+    }
+    
+    // Marketing data - admin read, functions write
+    match /marketing_daily_ga4/{recordId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only Firebase Functions can write
+    }
+    
+    match /marketing_daily_google_ads/{recordId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only Firebase Functions can write
+    }
   }
 }

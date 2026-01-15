@@ -81,6 +81,7 @@
     "seo:images": "npm run admin:dashboard-setup && npm run images:pipeline",
     "metrics:import": "node ./scripts/metrics-import.mjs",
     "sitemap:generate": "node ./scripts/generate-sitemap.mjs",
+    "import:local": "node ./scripts/import-csv-local.mjs",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc"
   },

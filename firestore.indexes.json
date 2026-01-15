@@ -31,6 +31,123 @@
         { "fieldPath": "action", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "raw_import_batches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "uploadedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "raw_import_batches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "sha256Hash", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "raw_import_rows",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "batchId", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bookings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "pickupDatetime", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bookings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status.statusSlug", "order": "ASCENDING" },
+        { "fieldPath": "pickupDatetime", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "bookings",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status.cancelled", "order": "ASCENDING" },
+        { "fieldPath": "pickupDatetime", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "revenue_lines",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "bookingId", "order": "ASCENDING" },
+        { "fieldPath": "lineType", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "receivables",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "paymentStatus", "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "receivables",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "amountDue", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "driver_payouts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "payPeriod", "order": "DESCENDING" },
+        { "fieldPath": "driverId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "driver_payouts",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "earningStatus", "order": "ASCENDING" },
+        { "fieldPath": "payPeriod", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "affiliate_payables",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "payableStatus", "order": "ASCENDING" },
+        { "fieldPath": "dueDate", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "fleet",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "vehicleType", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "marketing_daily_ga4",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "date", "order": "DESCENDING" },
+        { "fieldPath": "landingPage", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "marketing_daily_google_ads",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "date", "order": "DESCENDING" },
+        { "fieldPath": "campaign", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
