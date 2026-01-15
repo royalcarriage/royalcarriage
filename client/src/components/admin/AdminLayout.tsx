@@ -83,6 +83,7 @@ const navigation: NavGroup[] = [
     items: [
       { title: "Page Analyzer", href: "/admin/analyze", icon: Brain },
       { title: "ROI Intelligence", href: "/admin/roi", icon: TrendingUp },
+      { title: "SEO Workflow", href: "/admin/seo-workflow", icon: FileText },
     ],
   },
   {
