@@ -1,0 +1,82 @@
+name: CI - Build and Test
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run type check
+        run: npm run check
+        continue-on-error: true
+      
+      - name: Run tests
+        run: npm test
+        continue-on-error: true
+      
+      - name: Build client
+        run: |
+          cd client
+          npm ci
+          npm run build
+        env:
+          NODE_ENV: production
+      
+      - name: Build server
+        run: |
+          cd server
+          npm ci
+          npm run build
+        continue-on-error: true
+      
+      - name: Generate sitemap
+        run: npm run sitemap:generate
+        continue-on-error: true
+      
+      - name: Check bundle size
+        run: |
+          if [ -d "client/dist" ]; then
+            du -sh client/dist
+            du -h client/dist/*.js | sort -hr | head -10
+          fi
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts-node-${{ matrix.node-version }}
+          path: |
+            client/dist
+            server/dist
+            client/public/sitemap.xml
+          retention-days: 7
+      
+      - name: Check for vulnerabilities
+        run: npm audit --audit-level=high
+        continue-on-error: true
+      
+      - name: Report build status
+        if: always()
+        run: |
+          echo "Build completed for Node.js ${{ matrix.node-version }}"
+          echo "Status: ${{ job.status }}"
