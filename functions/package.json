@@ -4,7 +4,7 @@
   "description": "Firebase Functions for AI-powered website management",
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node scripts/postbuild.js",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "deploy": "firebase deploy --only functions",
@@ -18,7 +18,8 @@
     "firebase-functions": "^5.0.0",
     "@google-cloud/aiplatform": "^3.0.0",
     "@google-cloud/storage": "^7.16.0",
-    "@google-cloud/vertexai": "^1.0.0"
+    "@google-cloud/vertexai": "^1.0.0",
+    "node-fetch": "^2.7.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
