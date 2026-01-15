@@ -7,4 +7,9 @@
 - RBAC enforcement: server middleware exists (`server/security.ts`), client `ProtectedRoute` already supports role checks; adding role helper and firebase-sync helper next.
 - Emulator role test script added: `scripts/emulator-role-test.mjs` - completed.
 
-Next: Add `shared/roles.ts` and `server/firebase-claims.ts`, then commit batch.
+RBAC updates:
+- Added `shared/roles.ts` for shared role helpers.
+- Added `server/firebase-claims.ts` to optionally sync DB roles into Firebase custom claims.
+- `server/routes/users.ts` now attempts to sync claims after role updates.
+
+Next: Run `scripts/emulator-role-test.mjs` against local server/emulator and validate smoke checks.
