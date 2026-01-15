@@ -1,7 +1,7 @@
 # Security Report (2026-01-15)
 
 ## Summary
-- npm audit: 6 moderate vulnerabilities (Vitest/vite/esbuild). Fix = upgrade to vitest 4.x (cascades to vite/esbuild), review breaking changes before bump.
+- npm audit: now clean after upgrading vitest/@vitest/coverage-v8 to 4.0.17 (pulling newer vite/esbuild).
 - Firebase/GCP:
   - Functions deps fixed (`node-fetch` added) and build passes (`npm --prefix functions run build`).
   - Storage rules hardened: `/ai-images` no longer public; `/temp` scoped by userId. Further review needed for uploads/screenshot paths.
