@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="Our Fleet | Executive Sedans, SUVs & Sprinter Vans" 
+  description="View our premium fleet of executive sedans, luxury SUVs, and Sprinter vans. Late-model vehicles, professionally maintained. Chicago airport black car service. Call (224) 801-3090."
+>
+  <section class="relative min-h-[400px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12">
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">Our Premium Fleet</h1>
+      <p class="text-lg text-white/90 max-w-2xl">Choose from our diverse selection of luxury vehicles, each maintained to the highest standards.</p>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="bg-gray-50 rounded-lg p-8 text-center">
+          <div class="text-6xl mb-4">🚗</div>
+          <h2 class="text-2xl font-bold mb-3">Executive Sedans</h2>
+          <p class="text-gray-600 mb-4">Perfect for 1-3 passengers. Ideal for business travelers and airport transfers.</p>
+          <ul class="text-left text-gray-700 space-y-2 mb-6">
+            <li>✓ Lincoln Continental</li>
+            <li>✓ Chrysler 300</li>
+            <li>✓ Premium leather interior</li>
+            <li>✓ Climate control</li>
+            <li>✓ Phone chargers & WiFi</li>
+            <li>✓ Bottled water</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-8 text-center">
+          <div class="text-6xl mb-4">🚙</div>
+          <h2 class="text-2xl font-bold mb-3">Luxury SUVs</h2>
+          <p class="text-gray-600 mb-4">Comfortable for 4-6 passengers with extra luggage space.</p>
+          <ul class="text-left text-gray-700 space-y-2 mb-6">
+            <li>✓ Cadillac Escalade</li>
+            <li>✓ Chevrolet Suburban</li>
+            <li>✓ Spacious interior</li>
+            <li>✓ Extra luggage capacity</li>
+            <li>✓ Premium amenities</li>
+            <li>✓ Family-friendly</li>
+          </ul>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-8 text-center">
+          <div class="text-6xl mb-4">🚐</div>
+          <h2 class="text-2xl font-bold mb-3">Sprinter Vans</h2>
+          <p class="text-gray-600 mb-4">For groups of 7-14 passengers. Perfect for corporate travel.</p>
+          <ul class="text-left text-gray-700 space-y-2 mb-6">
+            <li>✓ Mercedes Sprinter</li>
+            <li>✓ Seats up to 14</li>
+            <li>✓ Ample luggage space</li>
+            <li>✓ Executive seating</li>
+            <li>✓ Conference capability</li>
+            <li>✓ Group comfort</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="max-w-4xl mx-auto mt-16 prose prose-lg">
+        <h2>Why Our Fleet Stands Out</h2>
+        <p>Every vehicle in our fleet is selected for comfort, reliability, and professional appearance. We maintain our vehicles to the highest standards with regular inspections, professional detailing, and immediate repairs when needed.</p>
+        
+        <p>Unlike rideshare services where you never know what vehicle will arrive, our fleet consists exclusively of late-model luxury vehicles. Each vehicle is fully insured, licensed, and equipped with modern safety features.</p>
+
+        <h3>Vehicle Amenities</h3>
+        <p>All our vehicles include:</p>
+        <ul>
+          <li>Complimentary bottled water</li>
+          <li>Phone charging cables (USB-C, Lightning, USB-A)</li>
+          <li>Climate control (front and rear)</li>
+          <li>Premium sound systems</li>
+          <li>Tinted windows for privacy</li>
+          <li>Spacious, clean interiors</li>
+        </ul>
+
+        <h3>Regular Maintenance & Inspection</h3>
+        <p>Safety is our top priority. Every vehicle undergoes regular maintenance on a strict schedule, including oil changes, tire rotations, brake inspections, and comprehensive safety checks. We inspect each vehicle before every trip to ensure it meets our standards.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-900 text-white text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-4">Ready to Reserve Your Vehicle?</h2>
+      <p class="text-gray-300 mb-6 max-w-2xl mx-auto">Book your airport transfer and select the perfect vehicle for your needs.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white rounded-md font-semibold hover:bg-white/10 transition">Book Online</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

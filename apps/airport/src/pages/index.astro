@@ -1,0 +1,497 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="Chicago Airport Black Car Service – O'Hare & Midway | No Surge Pricing" 
+  description="Royal Carriage Airport Service — Scheduled pickup, no surge pricing, professional chauffeurs. Fixed rates to O'Hare & Midway airports. Flight tracking included. Book online or call (224) 801-3090."
+>
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Royal Carriage Limousine",
+    "image": "https://chicagoairportblackcar.com/images/hero-airport.jpg",
+    "description": "Premium black car and limousine service in Chicago. Airport transfers, corporate transportation, and special events.",
+    "url": "https://chicagoairportblackcar.com",
+    "telephone": "+12248013090",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chicago",
+      "addressRegion": "IL",
+      "postalCode": "60601",
+      "addressCountry": "US"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 41.8781,
+      "longitude": -87.6298
+    },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "reviewCount": "200",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+      "opens": "00:00",
+      "closes": "23:59"
+    }
+  })} />
+
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Do you monitor flights?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. We track arrivals and adjust pickup timing for ORD and MDW."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer meet and greet?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Your chauffeur can meet you inside baggage claim with a name sign."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What areas do you cover?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Downtown Chicago plus 50+ suburbs, including Naperville, Schaumburg, and Oak Brook."
+        }
+      }
+    ]
+  })} />
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[400px] md:min-h-[480px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12 md:py-16">
+      <div class="max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight">
+          Chicago Airport Black Car Service — No Surge Pricing, Guaranteed Pickup
+        </h1>
+        <p class="text-base md:text-lg text-white/90 mb-6 leading-relaxed">
+          Scheduled black car service to O'Hare & Midway • Fixed rates • Flight tracking • Professional chauffeurs • Never pay surge pricing
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-md font-semibold text-base hover:bg-gray-100 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white rounded-md font-semibold text-base hover:bg-white/10 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+
+        <!-- Trust Signals -->
+        <div class="mt-6 flex flex-wrap gap-4 text-white/80 text-sm">
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            Licensed & Insured
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            24/7 Availability
+          </div>
+          <div class="flex items-center gap-2">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            Flight Tracking
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- On-time Section -->
+  <section class="py-12 md:py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+          On-time. Flight-tracked. Stress-free.
+        </h2>
+        <p class="text-gray-600 text-lg mb-6 text-center">
+          Our professional chauffeurs monitor your flight in real-time, ensuring they're there when you land — not when your flight was scheduled to arrive.
+        </p>
+        <ul class="space-y-3 max-w-xl mx-auto mb-6">
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-900 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span class="text-gray-600">Automatic flight tracking for arrivals at O'Hare and Midway</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-900 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span class="text-gray-600">Driver details sent before pickup</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-900 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span class="text-gray-600">Complimentary 60-minute wait time for airport pickups</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-gray-900 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+            <span class="text-gray-600">Meet-and-greet available inside baggage claim</span>
+          </li>
+        </ul>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mt-8">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-md font-semibold hover:bg-gray-50 transition">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-12 md:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8 text-center">
+        Airport Services Throughout Chicago
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+        <!-- O'Hare -->
+        <a href="/ohare-airport-limo" class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition group">
+          <div class="text-4xl mb-3">✈️</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">O'Hare Airport</h3>
+          <p class="text-gray-600 text-sm mb-3">Professional service to all ORD terminals with flight tracking and meet-and-greet options.</p>
+          <span class="text-blue-600 font-semibold text-sm">Learn more →</span>
+        </a>
+
+        <!-- Midway -->
+        <a href="/midway-airport-limo" class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition group">
+          <div class="text-4xl mb-3">🛫</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Midway Airport</h3>
+          <p class="text-gray-600 text-sm mb-3">Reliable black car service to MDW with on-time pickups and fixed rates.</p>
+          <span class="text-blue-600 font-semibold text-sm">Learn more →</span>
+        </a>
+
+        <!-- Downtown -->
+        <a href="/downtown-chicago" class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition group">
+          <div class="text-4xl mb-3">🏙️</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Downtown Chicago</h3>
+          <p class="text-gray-600 text-sm mb-3">Downtown hotels, convention centers, and the Loop with professional chauffeur service.</p>
+          <span class="text-blue-600 font-semibold text-sm">Learn more →</span>
+        </a>
+
+        <!-- Suburbs -->
+        <a href="/suburbs" class="bg-white p-6 rounded-lg shadow-md hover:shadow-xl transition group">
+          <div class="text-4xl mb-3">🏡</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Chicago Suburbs</h3>
+          <p class="text-gray-600 text-sm mb-3">Service to 50+ suburbs including Naperville, Schaumburg, and Oak Brook.</p>
+          <span class="text-blue-600 font-semibold text-sm">Learn more →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fleet Section -->
+  <section class="py-12 md:py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+        Premium Fleet Selection
+      </h2>
+      <p class="text-gray-600 text-lg mb-8 text-center max-w-3xl mx-auto">
+        Choose from our diverse fleet of luxury vehicles, each maintained to the highest standards and equipped with modern amenities.
+      </p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="text-center">
+          <div class="bg-gray-50 rounded-lg p-8 mb-4">
+            <div class="text-6xl mb-4">🚗</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Executive Sedans</h3>
+          </div>
+          <p class="text-gray-600 text-sm">Perfect for solo travelers and business professionals. Comfortable, reliable, and professional.</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-gray-50 rounded-lg p-8 mb-4">
+            <div class="text-6xl mb-4">🚙</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Luxury SUVs</h3>
+          </div>
+          <p class="text-gray-600 text-sm">Ideal for families and groups with extra luggage. Spacious interiors with premium comfort.</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-gray-50 rounded-lg p-8 mb-4">
+            <div class="text-6xl mb-4">🚐</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2">Sprinter Vans</h3>
+          </div>
+          <p class="text-gray-600 text-sm">For larger groups up to 14 passengers. Corporate events, group travel, and conventions.</p>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <a href="/fleet" class="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700">
+          View Our Complete Fleet →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section class="py-12 md:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+          Black Car vs Uber, Taxi, and Shuttle
+        </h2>
+        <p class="text-gray-600 text-lg mb-8 text-center">
+          Reserved black car service offers reliability and comfort that rideshare and taxi services simply can't match.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          <div class="flex gap-4 p-5 bg-white rounded-lg shadow">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-1 text-sm">Scheduled pickup with driver details</h3>
+              <p class="text-gray-600 text-sm">Know exactly who's picking you up and when. We track your flight and adjust pickup times automatically.</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-5 bg-white rounded-lg shadow">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-1 text-sm">Fixed quote once booked</h3>
+              <p class="text-gray-600 text-sm">No surge pricing, no surprises. Your flat rate is locked in at booking time.</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-5 bg-white rounded-lg shadow">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-1 text-sm">Meet-and-greet available</h3>
+              <p class="text-gray-600 text-sm">Your chauffeur can meet you inside baggage claim with a name sign for smoother arrivals.</p>
+            </div>
+          </div>
+          <div class="flex gap-4 p-5 bg-white rounded-lg shadow">
+            <div class="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-900 mb-1 text-sm">Multiple vehicle sizes</h3>
+              <p class="text-gray-600 text-sm">Choose from sedans, SUVs, and sprinters based on your group size and luggage needs.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO Content Section -->
+  <section class="py-12 md:py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto prose prose-lg">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">Why Choose Chicago Airport Black Car Service?</h2>
+        
+        <p class="text-gray-600 leading-relaxed mb-4">
+          When it comes to airport transportation in Chicago, you have many options: rideshare apps, taxis, shuttles, or a professional black car service. While each has its place, travelers who value reliability, comfort, and peace of mind consistently choose our premium airport car service. Here's why Royal Carriage has become the preferred choice for thousands of Chicago travelers.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Guaranteed Pickup Times with No Surge Pricing</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          The most significant advantage of booking a black car service is knowing your driver will be there when you need them—without the stress of surge pricing. Unlike rideshare apps that can multiply their rates by 2-5x during peak hours, severe weather, or high-demand periods, our rates are fixed at booking. Whether you're catching an early morning flight or arriving late at night, your quoted price remains the same.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          This pricing certainty is especially valuable for corporate travelers who need to expense their transportation or families traveling on a budget. You'll never experience the frustration of opening your rideshare app to discover your expected $40 ride now costs $180 because of surge pricing. Our transparent, quote-based pricing means you know exactly what you'll pay before you confirm your reservation.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Real-Time Flight Tracking for Arrivals</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          One of the most anxiety-inducing aspects of airport travel is coordinating ground transportation after a flight. Flight delays, early arrivals, and gate changes can throw off even the best-laid plans. That's why we track every flight in real-time for airport pickups at O'Hare and Midway.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          When you book airport pickup service with us, you provide your flight number and airline. Our system automatically monitors your flight status from departure through arrival. If your flight is delayed by 30 minutes or arrives 15 minutes early, we adjust our chauffeur's schedule accordingly. This means you never have to worry about your driver leaving early or charging wait fees for circumstances beyond your control.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          We also include a complimentary 60-minute wait time for all airport pickups, starting from your flight's actual landing time (not scheduled time). This gives you plenty of time to clear customs (for international flights), collect your luggage, and make your way to the pickup area without feeling rushed or worried about extra charges.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Professional Chauffeurs Who Know Chicago</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Our chauffeurs are more than just drivers—they're professional transportation specialists with extensive knowledge of Chicago's roads, traffic patterns, and airport procedures. Each chauffeur undergoes background checks, maintains a clean driving record, and receives ongoing training in customer service and safety protocols.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Unlike the variable experience you might get with different rideshare drivers, our chauffeurs are career professionals who take pride in providing consistently excellent service. They know the fastest routes to avoid traffic, the most efficient ways to navigate O'Hare's terminals, and how to handle the unique challenges of Chicago transportation, from construction zones to special events that affect traffic flow.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Your chauffeur will arrive in professional attire, greet you courteously, and assist with your luggage. The vehicle will be immaculately clean, well-maintained, and stocked with bottled water and phone chargers. This level of consistency and professionalism simply isn't possible with the gig-economy model of rideshare services.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Comprehensive Chicago Area Coverage</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          While we specialize in airport transportation, our service area extends throughout the entire Chicago metropolitan area. We provide reliable black car service to downtown Chicago, all major suburbs, and over 50 individual communities. Whether you're staying at a downtown hotel near the Loop, a suburban corporate campus in Schaumburg, or a residence in Naperville, we'll get you there safely and on time.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Our extensive service area includes popular destinations like Oak Brook, Evanston, Highland Park, Arlington Heights, Orland Park, and Aurora. For corporate travelers, we serve major business districts and office parks throughout the region. For leisure travelers, we provide service to hotels, attractions, convention centers, and residential addresses.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Fleet Options for Every Need</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Different travelers have different needs, which is why we maintain a diverse fleet of vehicles. Solo business travelers typically prefer our executive sedans—comfortable, professional, and perfect for working during the ride. Families with children and luggage often choose our luxury SUVs, which offer more space without sacrificing comfort. For larger groups, corporate teams, or special events, our Sprinter vans can accommodate up to 14 passengers with luggage.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Every vehicle in our fleet is late-model, fully insured, and maintained to the highest standards. We regularly inspect and detail each vehicle to ensure it meets our quality standards. You'll never find yourself in an older vehicle with worn seats or questionable cleanliness—a concern that's all too common with rideshare services where drivers use their personal vehicles.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Meet-and-Greet Service</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          For an even more seamless arrival experience, we offer optional meet-and-greet service at both O'Hare and Midway airports. Instead of navigating to a rideshare pickup zone or taxi stand, your chauffeur will meet you inside the terminal at baggage claim, holding a professional sign with your name.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          This service is particularly valuable for first-time visitors to Chicago, international travelers who may not be familiar with the airport layout, or anyone who simply wants the most stress-free arrival possible. Your chauffeur will assist with luggage and escort you directly to your vehicle, which will be parked nearby in a premium location.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Booking Convenience</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Reserving your airport transportation is simple and can be done online through our booking system or by calling our dispatch center at (224) 801-3090. We recommend booking at least 24 hours in advance for best availability, though we can often accommodate last-minute requests depending on vehicle availability.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          When you book, you'll receive immediate confirmation with all the details of your reservation. Before your pickup, we'll send you information about your chauffeur, including their name, photo, and direct phone number. This transparency and communication gives you peace of mind that your transportation is confirmed and ready.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Corporate Account Options</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Business travelers and companies with frequent transportation needs can establish corporate accounts with simplified billing and dedicated service. Corporate accounts receive priority scheduling, detailed invoicing for expense reports, and the ability to book travel for executives and employees. Contact our dispatch team to learn more about corporate account benefits and setup.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">Safety and Reliability</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Safety is our top priority. All our chauffeurs are professionally licensed, insured, and undergo regular background checks. Our vehicles meet or exceed all safety regulations and undergo routine maintenance and inspections. We carry comprehensive insurance coverage for your protection and peace of mind.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Unlike taxi services or rideshare platforms where driver quality can vary dramatically, we maintain strict standards for every chauffeur and vehicle in our fleet. This consistency ensures that whether you're traveling for the first time or the hundredth time with us, you'll receive the same high level of service.
+        </p>
+
+        <h3 class="text-xl font-bold text-gray-900 mb-3 mt-8">The Chicago Airport Black Car Difference</h3>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Choosing the right airport transportation service can make the difference between starting your trip stressed and arriving relaxed. With Royal Carriage Chicago Airport Black Car Service, you're not just booking a ride—you're booking reliability, comfort, professionalism, and peace of mind.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Whether you're a frequent business traveler who needs consistent, professional service, a family looking for reliable transportation without surge pricing surprises, or a visitor to Chicago who wants to start their trip right, we're here to serve you 24 hours a day, 7 days a week, 365 days a year.
+        </p>
+        <p class="text-gray-600 leading-relaxed mb-4">
+          Book your next airport transfer online or call (224) 801-3090 to reserve your black car service today. Experience the difference that professional, reliable, and courteous service makes in your travel experience.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-12 md:py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4 text-center">
+          Frequently Asked Questions
+        </h2>
+        <p class="text-gray-600 text-lg mb-8 text-center">
+          Everything you need to know about our black car service.
+        </p>
+        <div class="space-y-4">
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Do you monitor flights?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes. We track arrivals and adjust pickup timing for ORD and MDW.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Do you offer meet and greet?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes. Your chauffeur can meet you inside baggage claim with a name sign.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              What areas do you cover?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Downtown Chicago plus 50+ suburbs, including Naperville, Schaumburg, and Oak Brook.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              How is pricing calculated?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Quote-based flat rates with taxes and tolls itemized.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Can I book last minute?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Often yes, subject to availability. For urgent trips, call dispatch.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              What vehicles are available?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Sedans, SUVs, and sprinters. See the fleet page.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Are child seats available?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes, on request. Mention ages and quantity when booking.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Do you have corporate billing?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes. Contact dispatch to set up an account.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="py-12 md:py-16 bg-gray-900 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold mb-4">
+        Ready to Book Your Airport Transfer?
+      </h2>
+      <p class="text-gray-300 text-lg mb-8 max-w-2xl mx-auto">
+        Professional chauffeurs, flight tracking, and no surge pricing. Experience the difference of premium black car service.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-md font-semibold text-lg hover:bg-gray-100 transition">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+          Call {PHONE_DISPLAY}
+        </a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white text-white rounded-md font-semibold text-lg hover:bg-white/10 transition">
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          Book Online Now
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

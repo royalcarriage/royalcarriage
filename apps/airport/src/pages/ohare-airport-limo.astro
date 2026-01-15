@@ -1,0 +1,280 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="O'Hare Airport Limo Service (ORD) | Chicago Black Car" 
+  description="Professional black car service to Chicago O'Hare International Airport (ORD). Flight tracking, meet & greet, curbside pickup. Licensed chauffeurs and flat-rate pricing. Call (224) 801-3090."
+>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "O'Hare Airport Limousine Service",
+    "description": "Professional black car and limousine service to Chicago O'Hare International Airport (ORD). Flight tracking, meet and greet, curbside pickup with flat-rate pricing.",
+    "provider": {
+      "@type": "LocalBusiness",
+      "name": "Royal Carriage Limousine"
+    },
+    "serviceType": "Airport Transfer Service",
+    "areaServed": [
+      {"@type": "City", "name": "Chicago"},
+      {"@type": "City", "name": "O'Hare"},
+      {"@type": "City", "name": "Rosemont"},
+      {"@type": "City", "name": "Des Plaines"}
+    ],
+    "url": "https://chicagoairportblackcar.com/ohare-airport-limo"
+  })} />
+
+  <!-- Hero Section -->
+  <section class="relative min-h-[400px] md:min-h-[480px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12 md:py-16">
+      <nav class="mb-4">
+        <ol class="flex items-center gap-2 text-sm text-white/70">
+          <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+          <li><span>/</span></li>
+          <li class="text-white">O'Hare Airport</li>
+        </ol>
+      </nav>
+      
+      <div class="max-w-3xl">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-3 md:mb-4 leading-tight">
+          O'Hare Airport Limo Service (ORD)
+        </h1>
+        <p class="text-base md:text-lg text-white/90 mb-6 leading-relaxed">
+          Private car service to and from Chicago O'Hare. Professional chauffeurs, real-time flight tracking, and flat-rate pricing.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-md font-semibold text-base hover:bg-gray-100 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white rounded-md font-semibold text-base hover:bg-white/10 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ORD Arrivals Section -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+          ORD arrivals made simple
+        </h2>
+        <p class="text-gray-600 text-lg leading-relaxed mb-8">
+          Skip the taxi line and rideshare surge. Your chauffeur tracks your flight and waits curbside or meets you inside baggage claim—whichever you prefer. Whether you're landing at Terminal 1, 2, 3, or International Terminal 5, we handle the logistics so you can focus on what's next.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Curbside or inside baggage claim pickup</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Real-time flight tracking—no early wake-ups</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Name sign meet-and-greet available</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">All ORD terminals covered (1, 2, 3, and 5)</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-md font-semibold hover:bg-gray-50 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Vehicles Section -->
+  <section class="py-16 md:py-24 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+          Premium vehicles for every itinerary
+        </h2>
+        <p class="text-gray-600 text-lg leading-relaxed mb-8">
+          From executive sedans for quick downtown trips to Sprinter vans for corporate groups, our <a href="/fleet" class="text-gray-900 underline">fleet</a> matches your travel style. Every vehicle is late-model, immaculately maintained, and stocked with bottled water and phone chargers.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Executive sedans for solo travelers</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">SUVs for families and extra luggage</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Sprinter vans for groups up to 14</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Late-model, immaculately maintained fleet</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-md font-semibold hover:bg-gray-50 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Reserve Section -->
+  <section class="py-16 md:py-24 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
+          Why reserve a private car for ORD?
+        </h2>
+        <p class="text-gray-600 text-lg leading-relaxed mb-8">
+          O'Hare is one of the busiest airports in the world. Rideshare pickups can take 20+ minutes during peak hours, and taxis add stress you don't need after a long flight. Our reservation-first model means your driver is confirmed before you land. Check our <a href="/pricing" class="text-gray-900 underline">pricing</a> for transparent, flat-rate quotes.
+        </p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Flat-rate, quote-based pricing—no surge</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Licensed, insured, and compliant</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">Professional chauffeurs who know Chicago</span>
+          </div>
+          <div class="flex items-start gap-3">
+            <div class="w-5 h-5 rounded-full bg-gray-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+            </div>
+            <span class="text-gray-900">24/7 dispatch and reservation support</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+            Call {PHONE_DISPLAY}
+          </a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-md font-semibold hover:bg-gray-50 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+            Book Online
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 md:py-24 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+          Frequently Asked Questions
+        </h2>
+        <div class="space-y-4">
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Where do you meet passengers?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Curbside or inside baggage claim with a name sign—your choice.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Do you wait if my flight is delayed?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes. We track flights and adjust pickup timing based on arrivals.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Can you handle group arrivals?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Yes. Sprinters and multiple vehicles are available with coordinated staging.</p>
+          </details>
+          
+          <details class="bg-white rounded-lg shadow-sm p-6 group">
+            <summary class="font-semibold text-gray-900 cursor-pointer list-none flex items-center justify-between">
+              Is pricing flat-rate or surge-based?
+              <svg class="w-5 h-5 text-gray-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <p class="text-gray-600 mt-3">Flat-rate, quote-based pricing.</p>
+          </details>
+        </div>
+        
+        <div class="mt-8 pt-8 border-t border-gray-200">
+          <p class="text-gray-600 mb-6">
+            Have more questions? <a href="/contact" class="text-gray-900 underline">Contact us</a> or call directly.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              Call {PHONE_DISPLAY}
+            </a>
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-white border-2 border-gray-900 text-gray-900 rounded-md font-semibold hover:bg-gray-50 transition">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+              Book Online
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

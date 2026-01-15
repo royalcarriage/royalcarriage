@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="Chicago Suburbs Airport Car Service | Naperville, Schaumburg & More" 
+  description="Black car service from Chicago suburbs to O'Hare and Midway. Serving Naperville, Schaumburg, Oak Brook, Evanston, and 50+ suburban communities. Call (224) 801-3090."
+>
+  <section class="relative min-h-[400px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12">
+      <nav class="mb-4">
+        <ol class="flex items-center gap-2 text-sm text-white/70">
+          <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+          <li><span>/</span></li>
+          <li class="text-white">Suburbs</li>
+        </ol>
+      </nav>
+      
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 max-w-3xl">Chicago Suburbs Airport Service</h1>
+      <p class="text-lg text-white/90 mb-6 max-w-2xl">Serving 50+ suburban communities with professional black car service to O'Hare and Midway airports.</p>
+      
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white rounded-md font-semibold hover:bg-white/10 transition">Book Online</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center">Suburban Service Areas</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div>
+            <h3 class="font-bold text-xl mb-3">Western Suburbs</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li>Naperville</li>
+              <li>Oak Brook</li>
+              <li>Downers Grove</li>
+              <li>Wheaton</li>
+              <li>Glen Ellyn</li>
+              <li>Elmhurst</li>
+              <li>Lombard</li>
+              <li>Aurora</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-bold text-xl mb-3">Northern Suburbs</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li>Evanston</li>
+              <li>Skokie</li>
+              <li>Highland Park</li>
+              <li>Wilmette</li>
+              <li>Northbrook</li>
+              <li>Glenview</li>
+              <li>Winnetka</li>
+              <li>Lake Forest</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="font-bold text-xl mb-3">Northwest Suburbs</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li>Schaumburg</li>
+              <li>Arlington Heights</li>
+              <li>Palatine</li>
+              <li>Hoffman Estates</li>
+              <li>Des Plaines</li>
+              <li>Mount Prospect</li>
+              <li>Elk Grove Village</li>
+              <li>Rolling Meadows</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-12 prose prose-lg mx-auto max-w-3xl">
+          <h3>Reliable Suburban Airport Transportation</h3>
+          <p>Living in the suburbs doesn't mean you should sacrifice service quality for your airport transportation. We provide the same professional, reliable black car service to suburban residents as we do to downtown travelers—with the added benefit of door-to-door convenience from your home or office.</p>
+          
+          <p>Our chauffeurs know the optimal routes from each suburban area to both O'Hare and Midway airports, factoring in time of day, traffic patterns, and construction zones. We track your flight for return trips and adjust pickup timing automatically.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-900 text-white text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6">Book Your Suburban Airport Transfer</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white rounded-md font-semibold hover:bg-white/10 transition">Book Online</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

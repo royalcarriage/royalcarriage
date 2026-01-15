@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="Downtown Chicago Airport Car Service | Black Car to Loop Hotels" 
+  description="Premium black car service from downtown Chicago to O'Hare and Midway airports. Serving Loop hotels, convention centers, and the central business district. Call (224) 801-3090."
+>
+  <section class="relative min-h-[400px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12">
+      <nav class="mb-4">
+        <ol class="flex items-center gap-2 text-sm text-white/70">
+          <li><a href="/" class="hover:text-white transition-colors">Home</a></li>
+          <li><span>/</span></li>
+          <li class="text-white">Downtown Chicago</li>
+        </ol>
+      </nav>
+      
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4 max-w-3xl">Downtown Chicago Airport Car Service</h1>
+      <p class="text-lg text-white/90 mb-6 max-w-2xl">Premium black car service from downtown Chicago to O'Hare and Midway. Serving Loop hotels, Magnificent Mile, and the central business district.</p>
+      
+      <div class="flex flex-col sm:flex-row gap-3">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-6 py-3 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-6 py-3 bg-transparent border-2 border-white text-white rounded-md font-semibold hover:bg-white/10 transition">Book Online</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl prose prose-lg mx-auto">
+        <h2>Downtown Chicago to Airport Service</h2>
+        <p>Downtown Chicago is home to hundreds of hotels, convention centers, corporate offices, and entertainment venues. Whether you're staying near the Loop, River North, Streeterville, or the Magnificent Mile, we provide reliable airport transportation that gets you to your flight on time.</p>
+
+        <h3>Service Areas in Downtown Chicago</h3>
+        <ul>
+          <li><strong>The Loop:</strong> Willis Tower, Chicago Board of Trade, financial district hotels</li>
+          <li><strong>River North:</strong> Gallery district, restaurants, boutique hotels</li>
+          <li><strong>Streeterville:</strong> Northwestern Memorial Hospital, Navy Pier area</li>
+          <li><strong>Magnificent Mile:</strong> Michigan Avenue shopping, luxury hotels</li>
+          <li><strong>West Loop:</strong> Tech companies, trendy restaurants, Google offices</li>
+          <li><strong>South Loop:</strong> Grant Park, Museum Campus, Columbia College</li>
+        </ul>
+
+        <h3>Popular Downtown Hotels We Serve</h3>
+        <p>We provide service to all major downtown Chicago hotels including The Peninsula, Four Seasons, Park Hyatt, Waldorf Astoria, Conrad, Ritz-Carlton, InterContinental, Marriott Marquis, Hilton Chicago, Palmer House, and dozens more.</p>
+
+        <h3>Convention Center Transportation</h3>
+        <p>McCormick Place is one of the largest convention centers in North America. We provide group transportation for conventions, trade shows, and corporate events with multiple vehicles and coordinated scheduling.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-900 text-white text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-6">Ready to Book Your Downtown Transfer?</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white rounded-md font-semibold hover:bg-white/10 transition">Book Online</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

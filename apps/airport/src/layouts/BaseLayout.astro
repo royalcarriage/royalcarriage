@@ -1,0 +1,217 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const siteUrl = 'https://chicagoairportblackcar.com';
+const currentPath = Astro.url.pathname;
+const PHONE_NUMBER = "(224) 801-3090";
+const PHONE_TEL = "tel:+12248013090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical || `${siteUrl}${currentPath}`} />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical || `${siteUrl}${currentPath}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/images/og-airport.jpg`} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/images/og-airport.jpg`} />
+    
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="US-IL" />
+    <meta name="geo.placename" content="Chicago" />
+    <meta name="geo.position" content="41.8781;-87.6298" />
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CC67CH86JR"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CC67CH86JR');
+    </script>
+  </head>
+  <body class="min-h-screen bg-white text-gray-900">
+    <!-- Header/Navigation -->
+    <header class="sticky top-0 z-50 bg-gray-900 border-b border-gray-800 shadow-lg">
+      <nav class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16 md:h-20">
+          <a href="/" class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center">
+              <span class="text-gray-900 font-bold text-lg">CB</span>
+            </div>
+            <div class="hidden sm:block">
+              <span class="font-semibold text-white text-sm md:text-base">Chicago Airport</span>
+              <span class="block text-xs text-gray-400">Black Car Service</span>
+            </div>
+          </a>
+
+          <div class="hidden lg:flex items-center gap-1">
+            <a href="/" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Home</a>
+            <a href="/ohare-airport-limo" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/ohare-airport-limo' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>O'Hare</a>
+            <a href="/midway-airport-limo" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/midway-airport-limo' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Midway</a>
+            <a href="/downtown-chicago" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/downtown-chicago' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Downtown</a>
+            <a href="/suburbs" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/suburbs' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Suburbs</a>
+            <a href="/fleet" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/fleet' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Fleet</a>
+            <a href="/pricing" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/pricing' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Pricing</a>
+            <a href="/about" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/about' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>About</a>
+            <a href="/contact" class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${currentPath === '/contact' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Contact</a>
+          </div>
+
+          <div class="flex items-center gap-2 md:gap-3">
+            <a href={PHONE_TEL} class="hidden md:flex items-center gap-2 text-sm font-semibold text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              {PHONE_NUMBER}
+            </a>
+            <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center px-4 py-2 bg-white text-gray-900 rounded-md font-semibold text-sm hover:bg-gray-100 transition">
+              Book Now
+            </a>
+            <button id="mobile-menu-button" class="lg:hidden text-white p-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden border-t border-gray-800 bg-gray-900">
+          <div class="px-4 py-4 flex flex-col gap-1">
+            <a href="/" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Home</a>
+            <a href="/ohare-airport-limo" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/ohare-airport-limo' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>O'Hare</a>
+            <a href="/midway-airport-limo" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/midway-airport-limo' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Midway</a>
+            <a href="/downtown-chicago" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/downtown-chicago' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Downtown</a>
+            <a href="/suburbs" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/suburbs' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Suburbs</a>
+            <a href="/fleet" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/fleet' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Fleet</a>
+            <a href="/pricing" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/pricing' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Pricing</a>
+            <a href="/about" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/about' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>About</a>
+            <a href="/contact" class={`px-4 py-3 text-base font-medium rounded-md ${currentPath === '/contact' ? 'bg-gray-800 text-white' : 'text-gray-300 hover:text-white hover:bg-gray-800'}`}>Contact</a>
+            <a href={PHONE_TEL} class="flex items-center gap-2 px-4 py-3 text-base font-semibold text-white">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              {PHONE_NUMBER}
+            </a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white">
+      <div class="container mx-auto px-4 py-12 md:py-16">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+          <div class="lg:col-span-1">
+            <div class="flex items-center gap-2 mb-4">
+              <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center">
+                <span class="text-gray-900 font-bold text-lg">CB</span>
+              </div>
+              <div>
+                <span class="font-semibold text-white text-sm">Chicago Airport</span>
+                <span class="block text-xs text-gray-400">Black Car Service</span>
+              </div>
+            </div>
+            <p class="text-gray-400 text-sm mb-4 leading-relaxed">
+              Premium airport transportation serving Chicago O'Hare, Midway, and surrounding suburbs with professional chauffeur service.
+            </p>
+            <a href={PHONE_TEL} class="flex items-center gap-2 text-white font-semibold text-lg">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+              {PHONE_NUMBER}
+            </a>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Services</h3>
+            <ul class="space-y-3">
+              <li><a href="/ohare-airport-limo" class="text-gray-400 hover:text-white transition-colors text-sm">O'Hare Airport</a></li>
+              <li><a href="/midway-airport-limo" class="text-gray-400 hover:text-white transition-colors text-sm">Midway Airport</a></li>
+              <li><a href="/downtown-chicago" class="text-gray-400 hover:text-white transition-colors text-sm">Downtown Chicago</a></li>
+              <li><a href="/suburbs" class="text-gray-400 hover:text-white transition-colors text-sm">Suburbs</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Company</h3>
+            <ul class="space-y-3">
+              <li><a href="/fleet" class="text-gray-400 hover:text-white transition-colors text-sm">Our Fleet</a></li>
+              <li><a href="/pricing" class="text-gray-400 hover:text-white transition-colors text-sm">Pricing</a></li>
+              <li><a href="/about" class="text-gray-400 hover:text-white transition-colors text-sm">About Us</a></li>
+              <li><a href="/contact" class="text-gray-400 hover:text-white transition-colors text-sm">Contact</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 class="font-semibold text-white mb-4 text-sm uppercase tracking-wider">Popular Cities</h3>
+            <ul class="space-y-2">
+              <li><a href="/city/naperville" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Naperville</a></li>
+              <li><a href="/city/schaumburg" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Schaumburg</a></li>
+              <li><a href="/city/evanston" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Evanston</a></li>
+              <li><a href="/city/oak-brook" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Oak Brook</a></li>
+              <li><a href="/city/arlington-heights" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Arlington Heights</a></li>
+              <li><a href="/city/highland-park" class="text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2"><svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>Highland Park</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p class="text-gray-400 text-sm">
+            © {new Date().getFullYear()} Chicago Airport Black Car. All rights reserved.
+          </p>
+          <div class="flex items-center gap-6">
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Terms of Service</a>
+            <a href="#" class="text-gray-400 hover:text-white text-sm transition-colors">Privacy Policy</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-gray-200 shadow-lg">
+      <div class="flex">
+        <a href={PHONE_TEL} class="flex-1 flex items-center justify-center gap-2 py-4 bg-gray-900 text-white font-semibold text-sm">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
+          Call Now
+        </a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="flex-1 flex items-center justify-center gap-2 py-4 bg-white text-gray-900 font-semibold text-sm border-l border-gray-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          Book Now
+        </a>
+      </div>
+    </div>
+
+    <script is:inline>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+    </script>
+  </body>
+</html>

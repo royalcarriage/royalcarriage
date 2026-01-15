@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+---
+
+<BaseLayout 
+  title="Pricing | Chicago Airport Black Car Flat Rates" 
+  description="Transparent flat-rate pricing for Chicago airport black car service. No surge pricing, no hidden fees. Quote-based rates to O'Hare and Midway. Call (224) 801-3090 for your quote."
+>
+  <section class="relative min-h-[400px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12">
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">Transparent Pricing</h1>
+      <p class="text-lg text-white/90 max-w-2xl">Flat-rate, quote-based pricing with no surge fees. Know your cost before you book.</p>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8">
+          <p class="text-lg font-semibold text-blue-900 mb-2">Get Your Custom Quote</p>
+          <p class="text-blue-800">Call <a href={PHONE_TEL} class="underline font-semibold">{PHONE_DISPLAY}</a> or <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="underline font-semibold">book online</a> for a personalized quote based on your specific route and vehicle needs.</p>
+        </div>
+
+        <div class="prose prose-lg max-w-none">
+          <h2>How Our Pricing Works</h2>
+          <p>Unlike rideshare services that use surge pricing during peak hours, our rates are quote-based and fixed at the time of booking. Your quoted price includes:</p>
+          
+          <ul>
+            <li>Professional chauffeur service</li>
+            <li>Fuel and vehicle costs</li>
+            <li>Meet-and-greet service (when requested)</li>
+            <li>60-minute complimentary wait time for airport pickups</li>
+            <li>Flight tracking for arrivals</li>
+            <li>Vehicle amenities (water, chargers, WiFi)</li>
+          </ul>
+
+          <h3>What's NOT Included</h3>
+          <p>For complete transparency, here's what may be additional:</p>
+          <ul>
+            <li>Tolls (itemized on your receipt)</li>
+            <li>Parking fees for multi-stop trips</li>
+            <li>Gratuity (optional, typically 15-20%)</li>
+            <li>Wait time beyond complimentary period</li>
+          </ul>
+
+          <h3>Sample Routes</h3>
+          <p>While we provide custom quotes for every trip, here are typical route categories:</p>
+          
+          <div class="grid md:grid-cols-2 gap-6 not-prose my-8">
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h4 class="font-bold text-lg mb-2">Downtown to O'Hare</h4>
+              <p class="text-gray-600 mb-3">Approximately 17 miles, 30-45 minutes depending on traffic</p>
+              <p class="text-sm text-gray-500">Call for current rates</p>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h4 class="font-bold text-lg mb-2">Downtown to Midway</h4>
+              <p class="text-gray-600 mb-3">Approximately 11 miles, 25-35 minutes depending on traffic</p>
+              <p class="text-sm text-gray-500">Call for current rates</p>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h4 class="font-bold text-lg mb-2">Naperville to O'Hare</h4>
+              <p class="text-gray-600 mb-3">Approximately 28 miles, 35-50 minutes depending on traffic</p>
+              <p class="text-sm text-gray-500">Call for current rates</p>
+            </div>
+            
+            <div class="border border-gray-200 rounded-lg p-6">
+              <h4 class="font-bold text-lg mb-2">Schaumburg to O'Hare</h4>
+              <p class="text-gray-600 mb-3">Approximately 10 miles, 20-30 minutes depending on traffic</p>
+              <p class="text-sm text-gray-500">Call for current rates</p>
+            </div>
+          </div>
+
+          <h3>No Surge Pricing Guarantee</h3>
+          <p>One of the biggest frustrations with rideshare apps is surge pricing that can multiply your fare by 2-5x during:</p>
+          <ul>
+            <li>Morning and evening rush hours</li>
+            <li>Severe weather events</li>
+            <li>Major sporting events and conventions</li>
+            <li>Holidays and peak travel times</li>
+            <li>Late-night hours</li>
+          </ul>
+          <p>With our service, your rate is locked in when you book. Whether you reserve a week in advance or same-day, you know exactly what you'll pay.</p>
+
+          <h3>Corporate Accounts</h3>
+          <p>Businesses and frequent travelers can establish corporate accounts for simplified billing and volume discounts. Corporate accounts receive:</p>
+          <ul>
+            <li>Priority scheduling</li>
+            <li>Monthly consolidated invoicing</li>
+            <li>Ability to book for multiple employees</li>
+            <li>Detailed trip reporting</li>
+            <li>Dedicated account representative</li>
+          </ul>
+          <p>Contact our office to set up your corporate account.</p>
+
+          <h3>Payment Methods</h3>
+          <p>We accept all major credit cards, debit cards, and corporate billing. Payment is processed securely through our booking system or can be handled by your chauffeur at the end of your trip.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-900 text-white text-center">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold mb-4">Get Your Custom Quote Today</h2>
+      <p class="text-gray-300 mb-6 max-w-2xl mx-auto">Call now or book online to receive your personalized flat-rate quote.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-900 rounded-md font-semibold hover:bg-gray-100 transition">Call {PHONE_DISPLAY}</a>
+        <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-8 py-4 bg-transparent border-2 border-white rounded-md font-semibold hover:bg-white/10 transition">Get Quote Online</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

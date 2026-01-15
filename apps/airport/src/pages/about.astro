@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+const PHONE_TEL = "tel:+12248013090";
+const PHONE_DISPLAY = "(224) 801-3090";
+---
+
+<BaseLayout 
+  title="About Us | Royal Carriage Airport Service Chicago" 
+  description="Learn about Royal Carriage, Chicago's trusted airport black car service. Professional chauffeurs, premium vehicles, and commitment to excellence since serving the Chicago area. Call (224) 801-3090."
+>
+  <section class="relative min-h-[400px] flex items-center bg-gradient-to-r from-gray-900 to-gray-800">
+    <div class="absolute inset-0 bg-black/50"></div>
+    <div class="relative z-10 container mx-auto px-4 py-12">
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-4">About Royal Carriage</h1>
+      <p class="text-lg text-white/90 max-w-2xl">Chicago's trusted airport black car service, dedicated to excellence in transportation.</p>
+    </div>
+  </section>
+
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto prose prose-lg">
+        <h2>Our Story</h2>
+        <p>Royal Carriage has been serving the Chicago area with premium transportation services, building a reputation for reliability, professionalism, and exceptional customer service. Our focus on airport transportation has made us the preferred choice for business travelers, families, and anyone who values stress-free airport transfers.</p>
+
+        <h2>Our Mission</h2>
+        <p>We exist to make airport transportation predictable, comfortable, and worry-free. In an age of surge pricing and uncertainty, we provide the alternative travelers have been asking for: professional service at transparent, fixed rates.</p>
+
+        <h3>What Sets Us Apart</h3>
+        <p><strong>Professional Chauffeurs:</strong> Every member of our driving team is a licensed, insured, background-checked professional. They're not gig workers—they're career chauffeurs who take pride in their work.</p>
+
+        <p><strong>Flight Tracking Technology:</strong> We automatically monitor your flight status for arrivals, adjusting pickup timing for delays or early arrivals. You'll never worry about your driver leaving early or charging wait fees for circumstances beyond your control.</p>
+
+        <p><strong>Transparent Pricing:</strong> No surge pricing, ever. Your quote is your price, regardless of time of day, weather conditions, or demand. We believe in straightforward, honest pricing.</p>
+
+        <p><strong>Premium Fleet:</strong> Our vehicles are late-model luxury sedans, SUVs, and Sprinter vans, maintained to the highest standards. Every vehicle is detailed before pickup and equipped with modern amenities.</p>
+
+        <p><strong>24/7 Availability:</strong> Airports never sleep, and neither do we. Our dispatch operates 24 hours a day, 7 days a week, 365 days a year—including holidays.</p>
+
+        <h3>Our Commitment to Safety</h3>
+        <p>Safety is non-negotiable. Our vehicles undergo regular mechanical inspections and maintenance. Our chauffeurs are trained in defensive driving and customer service. We carry comprehensive insurance coverage for your protection and peace of mind.</p>
+
+        <h3>Service Excellence</h3>
+        <p>We measure our success by customer satisfaction. From the moment you book to the moment you arrive at your destination, we're focused on exceeding expectations. Our high rate of repeat customers and referrals speaks to the quality of service we provide.</p>
+
+        <h3>Corporate Responsibility</h3>
+        <p>We're committed to being a responsible corporate citizen in the Chicago community. We employ local residents, support local businesses, and operate with environmental consciousness in mind.</p>
+
+        <h2>Contact Us</h2>
+        <p>Have questions about our services? Want to establish a corporate account? We're here to help.</p>
+        <p><strong>Phone:</strong> <a href={PHONE_TEL}>{PHONE_DISPLAY}</a><br/>
+        <strong>Hours:</strong> 24/7/365<br/>
+        <strong>Service Area:</strong> Chicago and surrounding suburbs</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-gray-50">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-4">Experience the Royal Carriage Difference</h2>
+      <p class="text-gray-600 mb-6 max-w-2xl mx-auto">Book your next airport transfer and discover why travelers trust Royal Carriage for their Chicago transportation needs.</p>
+      <a href={PHONE_TEL} class="inline-flex items-center justify-center px-8 py-4 bg-gray-900 text-white rounded-md font-semibold hover:bg-gray-800 transition">Call {PHONE_DISPLAY}</a>
+    </div>
+  </section>
+</BaseLayout>
