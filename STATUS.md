@@ -8,6 +8,9 @@
 - 09:18 UTC: Fixed invalid `package.json` (trailing comma), installed dependencies, resolved SuburbsService type errors; `npm run check` and `npm run build` now pass.
 - 09:20 UTC: Ran `npm audit --json`; 6 moderate vulnerabilities flagged (Vitest/vite/esbuild). Pending upgrade plan.
 - 09:25 UTC: Created security/UI/data/cloud/cleanup/deploy reports in `.agent/artifacts/` capturing current gaps and next steps (no deploy yet).
+- 09:35 UTC: Merged latest `origin/main` into consolidation branch (new admin pages/docs, storage rules, tailwind config, functions updates).
+- 09:38 UTC: Installed root/functions deps; fixed storage rules (no public ai-images; user-scoped temp), added `node-fetch` to functions; `npm run check`, `npm run build`, and `npm --prefix functions run build` all pass.
+- 09:40 UTC: `npm audit --json` still reports 6 moderate vulns (vitest/vite/esbuild) pending major upgrade.
 
 ## Notes
 - Pending: repo mapping, MD audit, gates, Firebase/GCP verification, deploy steps.

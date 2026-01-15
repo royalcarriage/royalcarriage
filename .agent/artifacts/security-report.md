@@ -2,11 +2,11 @@
 
 ## Summary
 - npm audit: 6 moderate vulnerabilities (Vitest/vite/esbuild). Fix = upgrade to vitest 4.x (cascades to vite/esbuild), review breaking changes before bump.
-- Firebase/GCP (from prior audits, not yet remediated in code):
-  - Functions build previously failing on missing `@types/mime`/`@types/ms` and `@google-cloud/storage`/`node-fetch` usage; rules/auth alignment issues; storage exposures (`ai-images` public, `/temp` unscoped). Pending re-verification.
-  - deployImages uses hardcoded bucket/path and local FS writes.
-  - Rate limiter uses context paths that don’t exist; claims mismatch.
-- Secrets: no keys observed in repo; `.env` absent (stashed earlier). Confirm via targeted scan before deploy.
+- Firebase/GCP:
+  - Functions deps fixed (`node-fetch` added) and build passes (`npm --prefix functions run build`).
+  - Storage rules hardened: `/ai-images` no longer public; `/temp` scoped by userId. Further review needed for uploads/screenshot paths.
+  - Remaining gaps: deployImages still uses hardcoded bucket/path and local FS writes; rate limiter/auth claims alignment not yet addressed; Firestore rules still minimal (admin-only via users collection).
+- Secrets: no keys observed in repo; `.env` absent (stashed earlier). Run a secret scan before deploy.
 
 ## Required Actions
 1) Upgrade vitest/vite/esbuild to patched versions; rerun tests/build.
