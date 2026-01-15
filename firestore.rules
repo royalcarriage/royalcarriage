@@ -13,6 +13,29 @@ service cloud.firestore {
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
     
+    // Helper function to check image generation rate limit
+    function canGenerateImage() {
+      let today = request.time.toMillis() - (request.time.toMillis() % 86400000); // 86400000 ms = 1 day
+      let usageStatsPath = /databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today);
+      
+      // Rate limit: matches MAX_IMAGES_PER_DAY environment variable (default 50)
+      let maxImagesPerDay = 50;
+      
+      return isAdmin() && (
+        !exists(usageStatsPath) ||
+        get(usageStatsPath).data.imageGenerations < maxImagesPerDay
+      );
+    }
+    
+    // Helper function to validate image data
+    function isValidImageData() {
+      return request.resource.data.keys().hasAll(['imageUrl', 'purpose', 'prompt', 'createdAt', 'createdBy']) &&
+             request.resource.data.purpose in ['hero', 'service_card', 'fleet', 'location', 'testimonial'] &&
+             request.resource.data.imageUrl is string &&
+             request.resource.data.prompt is string &&
+             request.resource.data.createdBy == request.auth.uid;
+    }
+    
     // Users collection - only admins can read/write
     match /users/{userId} {
       allow read: if isAdmin();
@@ -31,10 +54,28 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
-    // AI images - admin only
+    // AI images - admin only with validation
     match /ai_images/{imageId} {
       allow read: if isAdmin();
-      allow write: if isAdmin();
+      
+      // Create: admin only, must pass validation and rate limit
+      allow create: if isAdmin() && 
+                      canGenerateImage() &&
+                      isValidImageData();
+      
+      // Update: admin only, can only update status and approval fields
+      allow update: if isAdmin() && 
+                      request.resource.data.diff(resource.data).affectedKeys()
+                        .hasOnly(['status', 'approvedAt', 'approvedBy', 'updatedAt']);
+      
+      // Delete: soft delete only via status field, no hard deletes
+      allow delete: if false;
+    }
+    
+    // Usage statistics - system managed, admin read-only
+    match /usage_stats/{statId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only Firebase Functions can write
     }
     
     // Audit logs - read only for admins

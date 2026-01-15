@@ -245,7 +245,7 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
   }
 
   try {
-    const { purpose, location, vehicle } = req.body;
+    const { purpose, location, vehicle, style, description } = req.body;
 
     if (!purpose) {
       res.status(400).json({
@@ -254,35 +254,89 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
       return;
     }
 
-    // Generate placeholder image URL
-    const text = vehicle || location || purpose;
-    const imageUrl = `https://placehold.co/1200x800/1a1a1a/ffffff?text=${encodeURIComponent(text)}`;
+    // Import ImageGenerator dynamically
+    const { ImageGenerator } = await import('../../server/ai/image-generator');
+    
+    // Create image generator instance
+    const projectId = process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT;
+    const imageGenerator = new ImageGenerator(projectId, 'us-central1');
+    
+    // Generate the image
+    const result = await imageGenerator.generateImage({
+      purpose: purpose as any,
+      location,
+      vehicle,
+      style,
+      description,
+    });
 
-    const image = {
-      imageUrl,
-      prompt: `Luxury ${vehicle || 'car'} at ${location || 'Chicago airport'}`,
-      width: 1200,
-      height: 800,
-      format: 'png',
-      generatedAt: new Date().toISOString(),
-    };
-
-    // Store in Firestore
-    await admin.firestore().collection('ai_images').add({
+    // Store in Firestore with full metadata
+    const docRef = await admin.firestore().collection('ai_images').add({
       purpose,
       location,
       vehicle,
-      imageUrl,
+      style,
+      description,
+      imageUrl: result.imageUrl,
+      prompt: result.prompt,
+      width: result.width,
+      height: result.height,
+      format: result.format,
       status: 'generated',
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
+    // Track usage for rate limiting
+    const today = new Date().toISOString().split('T')[0];
+    const userId = 'system'; // In production, use actual user ID from auth
+    const usageRef = admin.firestore().collection('usage_stats').doc(`${userId}_${today}`);
+    
+    await usageRef.set({
+      userId,
+      date: today,
+      imageGenerations: admin.firestore.FieldValue.increment(1),
+      totalCost: admin.firestore.FieldValue.increment(0.02), // Approximate cost per image
+      lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    // Log audit event
+    await admin.firestore().collection('audit_logs').add({
+      action: 'image_generated',
+      resourceId: docRef.id,
+      resourceType: 'ai_image',
+      userId: 'system',
+      details: {
+        purpose,
+        prompt: result.prompt,
+        status: 'success',
+      },
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+
     res.status(200).json({
       success: true,
-      image,
+      image: result,
+      imageId: docRef.id,
     });
   } catch (error) {
     console.error('Image generation failed:', error);
+    
+    // Log failure in audit logs
+    try {
+      await admin.firestore().collection('audit_logs').add({
+        action: 'image_generation_failed',
+        resourceType: 'ai_image',
+        userId: 'system',
+        details: {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          status: 'failed',
+        },
+        timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } catch (logError) {
+      console.error('Failed to log error:', logError);
+    }
+    
     res.status(500).json({
       error: 'Image generation failed',
       message: error instanceof Error ? error.message : 'Unknown error',
