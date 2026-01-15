@@ -103,6 +103,8 @@ royalcarriage/
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 - **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
+- **[Firebase Audit](docs/FIREBASE_AUDIT.md)** - Firebase system configuration audit report
+- **[Firebase Emulator Guide](docs/FIREBASE_EMULATOR_GUIDE.md)** - Local development with Firebase emulators
 
 ## AI Features
 
