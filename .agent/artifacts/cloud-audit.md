@@ -9,11 +9,13 @@ Findings:
 - App Hosting config (`apphosting.yaml`) targets admin build with env vars.
 
 Commands run:
-- `firebase projects:list` ✅ (projects visible; current: royalcarriagelimoseo).
-- `firebase deploy --only firestore:rules,storage:rules --dry-run` ❌ fails: "Could not find rules for the following storage targets: rules" (likely CLI expects storage target names; adjust deploy command/targets).
+- `firebase projects:list` ✅ (current project royalcarriagelimoseo).
+- `firebase deploy --only firestore:rules,storage --dry-run` ✅.
+- Preview deploy hosting: `firebase hosting:channel:deploy canary-1768485534 --expires 1d` ✅ (URL: https://royalcarriagelimoseo--canary-1768485534-berzffmk.web.app).
+- Production deploy hosting + rules: `firebase deploy --only hosting,firestore:rules,storage` ✅.
+- Functions deploy: `firebase deploy --only functions` ✅ after fixing predeploy to use `npx tsc` + postbuild copy; functions updated (dailyPageAnalysis/weeklySeoReport/triggerPageAnalysis/generateContent/generateImage/autoAnalyzeNewPage). Note deprecation notice: migrate off `functions.config()` before March 2026.
 
 Pending Actions:
-1) Adjust deploy command (e.g., `firebase deploy --only storage,firestore:rules` or define storage target) and retry once storage rules finalized.
-2) Validate functions build/deploy locally or via emulator; align auth claims with rules.
+1) Align auth claims/rules and rate limiter/deployImages; consider multi-org rules if needed.
+2) Add smoke/monitoring for preview/prod; verify Hosting/Functions logs.
 3) If multi-org intended, switch firebase.json to `firestore.rules.multi-org` post-migration.
-4) Confirm hosting targets/buckets align with production resources.

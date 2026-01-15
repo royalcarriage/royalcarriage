@@ -1,9 +1,11 @@
 # Deploy Report (2026-01-15)
 
-- Firebase dry-run: `firebase deploy --only firestore:rules,storage:rules --dry-run` ❌ error: "Could not find rules for the following storage targets: rules" (likely requires storage target adjustment).
+- Firebase dry-run: `firebase deploy --only firestore:rules,storage --dry-run` ✅.
+- Preview deploy: `firebase hosting:channel:deploy canary-1768485534 --expires 1d` ✅ URL: https://royalcarriagelimoseo--canary-1768485534-berzffmk.web.app.
+- Production deploy: `firebase deploy --only hosting,firestore:rules,storage` ✅ (hosting + rules).
+- Functions deploy: `firebase deploy --only functions` ✅ after fixing predeploy; functions live (dailyPageAnalysis/weeklySeoReport/triggerPageAnalysis/generateContent/generateImage/autoAnalyzeNewPage).
+- Note: Functions deploy emitted deprecation notice for `functions.config()`; migrate to `params` before March 2026.
 
-Pending steps:
-- Fix storage deploy target/command, then rerun dry-run for rules.
-- After rules/functions fixes and gates, run Firebase preview deploy (`firebase hosting:channel:deploy canary-<timestamp> --expires 1d`) and record URL.
-- Run smoke (home/admin/auth/key flows) against preview.
-- Promote to production via `firebase deploy` once green; log results here and in STATUS.
+Pending:
+- Add automated smoke checks against preview/prod (home/admin/auth/flows).
+- Monitor functions logs post-deploy.
