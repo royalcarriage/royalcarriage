@@ -1,16 +1,20 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { fileURLToPath } from "url";
 import runtimeErrorModal from "@replit/vite-plugin-runtime-error-modal";
 import { devBanner } from "@replit/vite-plugin-dev-banner";
 import { cartographer } from "@replit/vite-plugin-cartographer";
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+// Only use Replit plugins in development
+const isDev = process.env.NODE_ENV !== "production";
+
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorModal(),
-    devBanner(),
-    cartographer(),
+    ...(isDev ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
   ],
   resolve: {
     alias: {
@@ -25,6 +29,17 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, "client", "index.html"),
+      output: {
+        manualChunks: {
+          // Split React and related libraries into a separate chunk
+          'react-vendor': ['react', 'react-dom', 'wouter'],
+          // Split React Query into its own chunk
+          'query-vendor': ['@tanstack/react-query'],
+          // Split UI libraries
+          'ui-vendor': ['lucide-react'],
+        },
+      },
     },
+    chunkSizeWarningLimit: 600,
   },
 });
