@@ -103,6 +103,8 @@ royalcarriage/
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 - **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
+- **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
+- **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
 
 ## AI Features
 
