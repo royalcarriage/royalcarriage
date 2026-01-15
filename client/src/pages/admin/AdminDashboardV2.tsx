@@ -12,6 +12,7 @@ import DeployDashboard from "@/components/admin/DeployDashboard";
 import SettingsDashboard from "@/components/admin/SettingsDashboard";
 import { Bell, User, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import DraftsPage from './Drafts';
 
 export default function AdminDashboardV2() {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview");
@@ -88,16 +89,30 @@ export default function AdminDashboardV2() {
                 </Button>
               </div>
             </div>
-          </header>
+          return (
+            <Layout>
+              <SEO title="Admin" description="Admin dashboard" noindex />
 
-          {/* Content Area */}
-          <main className="flex-1 p-6">
-            {renderContent()}
-          </main>
-        </div>
-      </div>
-    </>
-  );
-}
+              <div className="min-h-screen bg-gray-50 py-8">
+                <div className="container mx-auto px-4 max-w-7xl">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <aside className="md:col-span-1">
+                      <div className="space-y-4">
+                        <nav className="space-y-1">
+                          <button onClick={() => setActiveSection('overview')} className={`w-full text-left px-3 py-2 rounded ${activeSection === 'overview' ? 'bg-white shadow' : 'bg-transparent'}`}>Overview</button>
+                          <button onClick={() => setActiveSection('analyze')} className={`w-full text-left px-3 py-2 rounded ${activeSection === 'analyze' ? 'bg-white shadow' : 'bg-transparent'}`}>Page Analyzer</button>
+                          <button onClick={() => setActiveSection('drafts')} className={`w-full text-left px-3 py-2 rounded ${activeSection === 'drafts' ? 'bg-white shadow' : 'bg-transparent'}`}>AI Drafts</button>
+                        </nav>
+                      </div>
+                    </aside>
 
-// All dashboard sections now implemented (no more placeholders)
+                    <main className="md:col-span-3">
+                      {activeSection === 'overview' && <DashboardPage />}
+                      {activeSection === 'analyze' && <PageAnalyzer />}
+                      {activeSection === 'drafts' && <DraftsPage />}
+                    </main>
+                  </div>
+                </div>
+              </div>
+            </Layout>
+          );

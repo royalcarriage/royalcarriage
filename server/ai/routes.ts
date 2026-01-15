@@ -55,6 +55,7 @@ router.post('/generate-content', async (req, res) => {
       pageType,
       location,
       vehicle,
+      import queue from './queue';
       currentContent,
       targetKeywords,
       tone,
@@ -77,21 +78,23 @@ router.post('/generate-content', async (req, res) => {
       maxLength,
     });
 
-    res.json({
-      success: true,
-      content,
-      generatedAt: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error('Content generation error:', error);
-    res.status(500).json({
-      error: 'Failed to generate content',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
-});
+          // Enqueue generation job and respond with job id. Background worker will generate and save draft.
+          const job = await queue.enqueueContent({
+            pageType,
+            location,
+            vehicle,
+            currentContent,
+            targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [targetKeywords],
+            tone: (tone as any) || 'professional',
+            maxLength,
+          });
 
-/**
+          res.json({
+            success: true,
+            job,
+            message: 'Generation job queued. Draft will be available for review when ready.',
+            generatedAt: new Date().toISOString(),
+          });
  * Improve existing content
  * POST /api/ai/improve-content
  */
@@ -100,6 +103,71 @@ router.post('/improve-content', async (req, res) => {
     const { currentContent, recommendations } = req.body;
 
     if (!currentContent || !recommendations) {
+
+      /**
+       * Enqueue content (direct endpoint) - POST /api/ai/enqueue-content
+       */
+      router.post('/enqueue-content', async (req, res) => {
+        try {
+          const payload = req.body;
+          const job = await queue.enqueueContent(payload);
+          res.json({ success: true, job });
+        } catch (error) {
+          console.error('Enqueue content failed:', error);
+          res.status(500).json({ error: 'Failed to enqueue content' });
+        }
+      });
+
+      /** Drafts: list and review endpoints */
+      router.get('/drafts', async (req, res) => {
+        try {
+          const drafts = await queue.listDrafts();
+          res.json({ success: true, drafts });
+        } catch (error) {
+          console.error('Failed to list drafts:', error);
+          res.status(500).json({ error: 'Failed to list drafts' });
+        }
+      });
+
+      router.get('/drafts/:id', async (req, res) => {
+        try {
+          const id = req.params.id;
+          const draft = await queue.getDraft(id);
+          if (!draft) return res.status(404).json({ error: 'Draft not found' });
+          res.json({ success: true, draft });
+        } catch (error) {
+          console.error('Failed to get draft:', error);
+          res.status(500).json({ error: 'Failed to get draft' });
+        }
+      });
+
+      router.post('/drafts/:id/approve', async (req, res) => {
+        try {
+          const id = req.params.id;
+          const reviewer = req.body.reviewer || 'admin';
+          const notes = req.body.notes || '';
+          const updated = await queue.updateDraftStatus(id, 'approved', reviewer, notes);
+          if (!updated) return res.status(404).json({ error: 'Draft not found' });
+          res.json({ success: true, draft: updated });
+        } catch (error) {
+          console.error('Approve draft failed:', error);
+          res.status(500).json({ error: 'Failed to approve draft' });
+        }
+      });
+
+      router.post('/drafts/:id/reject', async (req, res) => {
+        try {
+          const id = req.params.id;
+          const reviewer = req.body.reviewer || 'admin';
+          const notes = req.body.notes || '';
+          const updated = await queue.updateDraftStatus(id, 'rejected', reviewer, notes);
+          if (!updated) return res.status(404).json({ error: 'Draft not found' });
+          res.json({ success: true, draft: updated });
+        } catch (error) {
+          console.error('Reject draft failed:', error);
+          res.status(500).json({ error: 'Failed to reject draft' });
+        }
+      });
       return res.status(400).json({
         error: 'Missing required fields: currentContent, recommendations',
       });
