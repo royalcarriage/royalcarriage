@@ -6,6 +6,10 @@ import { SiteSelector } from "@/components/admin/SiteSelector";
 import { OverviewDashboard } from "@/components/admin/OverviewDashboard";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { SEOBotDashboard } from "@/components/admin/SEOBotDashboard";
+import ContentManagementDashboard from "@/components/admin/ContentManagementDashboard";
+import ImagesDashboard from "@/components/admin/ImagesDashboard";
+import DeployDashboard from "@/components/admin/DeployDashboard";
+import SettingsDashboard from "@/components/admin/SettingsDashboard";
 import { Bell, User, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,17 +22,17 @@ export default function AdminDashboardV2() {
       case "overview":
         return <OverviewDashboard selectedSite={selectedSite} />;
       case "content":
-        return <ContentPlaceholder />;
+        return <ContentManagementDashboard />;
       case "seo-bot":
         return <SEOBotDashboard />;
       case "images":
-        return <ImagesPlaceholder />;
+        return <ImagesDashboard />;
       case "analytics":
         return <AnalyticsDashboard />;
       case "deploy":
-        return <DeployPlaceholder />;
+        return <DeployDashboard />;
       case "settings":
-        return <SettingsPlaceholder />;
+        return <SettingsDashboard />;
       default:
         return <OverviewDashboard selectedSite={selectedSite} />;
     }
@@ -96,53 +100,4 @@ export default function AdminDashboardV2() {
   );
 }
 
-// Placeholder components for other sections
-function ContentPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Content Management</h2>
-      <p className="text-gray-600 mb-4">Manage pages, drafts, and city content</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
-
-function SEOBotPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">SEO Autobot</h2>
-      <p className="text-gray-600 mb-4">Automated content generation with quality gates</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
-
-function ImagesPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Image Management</h2>
-      <p className="text-gray-600 mb-4">Upload, generate, and manage website images</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
-
-function DeployPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Deploy</h2>
-      <p className="text-gray-600 mb-4">Deploy sites to production with safety checks</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
-
-function SettingsPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Settings</h2>
-      <p className="text-gray-600 mb-4">Configure API keys, thresholds, and automation</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
+// All dashboard sections now implemented (no more placeholders)
