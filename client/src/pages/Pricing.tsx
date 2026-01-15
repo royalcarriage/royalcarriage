@@ -148,6 +148,129 @@ export default function Pricing() {
         </div>
       </section>
 
+      {/* Sample Pricing Section */}
+      <section className="py-16 md:py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 text-center">
+              Sample Rates (Base Fare)
+            </h2>
+            <p className="text-muted-foreground text-center mb-8">
+              Final price includes taxes, tolls, and fees. No surge pricing.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4 text-foreground">O'Hare Airport (ORD)</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center pb-2 border-b border-border">
+                    <span className="text-muted-foreground">To Downtown Chicago</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $85*</div>
+                      <div className="text-xs text-muted-foreground">Sedan</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-border">
+                    <span className="text-muted-foreground">To Downtown (SUV)</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $115*</div>
+                      <div className="text-xs text-muted-foreground">SUV</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">To Naperville/Suburbs</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $105*</div>
+                      <div className="text-xs text-muted-foreground">Sedan</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-accent p-6 rounded-lg">
+                <h3 className="text-xl font-semibold mb-4 text-foreground">Midway Airport (MDW)</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center pb-2 border-b border-border">
+                    <span className="text-muted-foreground">To Downtown Chicago</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $70*</div>
+                      <div className="text-xs text-muted-foreground">Sedan</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center pb-2 border-b border-border">
+                    <span className="text-muted-foreground">To Downtown (SUV)</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $95*</div>
+                      <div className="text-xs text-muted-foreground">SUV</div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-muted-foreground">To Schaumburg/Suburbs</span>
+                    <div className="text-right">
+                      <div className="font-bold text-foreground">From $85*</div>
+                      <div className="text-xs text-muted-foreground">Sedan</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-accent p-6 rounded-lg mb-8">
+              <h3 className="text-xl font-semibold mb-4 text-foreground">Hourly Charter Service</h3>
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="text-muted-foreground">Executive sedan or SUV by the hour</span>
+                  <p className="text-sm text-muted-foreground mt-1">3-hour minimum • Ideal for business meetings, city tours, events</p>
+                </div>
+                <div className="text-right">
+                  <div className="font-bold text-foreground text-xl">$95/hr</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8">
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">*Base rates shown.</strong> Final price includes all taxes, tolls, and airport fees. No surge pricing, ever. Book online or call for exact quote based on your specific pickup/drop-off locations.
+              </p>
+            </div>
+            
+            <div className="bg-accent p-6 rounded-lg">
+              <h3 className="text-lg font-semibold mb-3 text-foreground">Why Our Rates Beat Ride-Share:</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-foreground">No Surge Pricing</span>
+                    <p className="text-sm text-muted-foreground">Price locked at booking</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-foreground">Scheduled Pickup</span>
+                    <p className="text-sm text-muted-foreground">Not "5 min away" uncertainty</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-foreground">Flight Tracking</span>
+                    <p className="text-sm text-muted-foreground">Driver adjusts for delays</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <span className="font-semibold text-foreground">Professional Driver</span>
+                    <p className="text-sm text-muted-foreground">Licensed chauffeur, not random</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 md:py-24 bg-background">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <div className="max-w-4xl mx-auto">
