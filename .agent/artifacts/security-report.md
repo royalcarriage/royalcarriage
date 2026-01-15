@@ -3,9 +3,9 @@
 ## Summary
 - npm audit: now clean after upgrading vitest/@vitest/coverage-v8 to 4.0.17 (pulling newer vite/esbuild).
 - Firebase/GCP:
-  - Functions deps fixed (`node-fetch` added) and build passes (`npm --prefix functions run build`).
-  - Storage rules hardened: `/ai-images` no longer public; `/temp` scoped by userId. Further review needed for uploads/screenshot paths.
-  - Remaining gaps: deployImages still uses hardcoded bucket/path and local FS writes; rate limiter/auth claims alignment not yet addressed; Firestore rules still minimal (admin-only via users collection).
+  - Functions deps fixed (`node-fetch` added) and build passes (`npm --prefix functions run build`); functions deploy successful.
+  - Storage rules hardened: `/ai-images` no longer public; `/temp` scoped by userId; admin check honors token role/admin. Firestore isAdmin now allows token admin/role or users doc role.
+  - Remaining gaps: deployImages still uses hardcoded bucket/path and local FS writes; rate limiter absent; Firestore rules remain admin-only and may need multi-org/role nuance.
 - Secrets: no keys observed in repo; `.env` absent (stashed earlier). Run a secret scan before deploy.
 
 ## Required Actions

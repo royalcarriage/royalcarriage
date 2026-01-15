@@ -9,3 +9,4 @@
 - Hardened `storage.rules` (admin-only ai-images, user-scoped temp); added `node-fetch` dependency and verified `npm --prefix functions run build` passes.
 - Upgraded vitest/@vitest/coverage-v8 to 4.0.17; `npm run check`/`npm run build` pass; `npm audit` now clean.
 - Fixed Firebase functions predeploy (npx tsc + postbuild copy to lib/index.js); deployed hosting + Firestore/Storage rules and functions; created preview channel (canary-1768485534) and pushed prod hosting/rules. Functions deploy surfaced `functions.config()` deprecation notice (migrate to params).
+- Aligned auth checks to accept role/admin claim across functions and rules; Storage/Firestore admins now honor claims + user doc; added smoke check script (`npm run smoke`) for preview/prod.

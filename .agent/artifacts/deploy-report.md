@@ -5,6 +5,7 @@
 - Production deploy: `firebase deploy --only hosting,firestore:rules,storage` ✅ (hosting + rules).
 - Functions deploy: `firebase deploy --only functions` ✅ after fixing predeploy; functions live (dailyPageAnalysis/weeklySeoReport/triggerPageAnalysis/generateContent/generateImage/autoAnalyzeNewPage).
 - Note: Functions deploy emitted deprecation notice for `functions.config()`; migrate to `params` before March 2026.
+- Smoke: `npm run smoke` (HEADs) ✅ against preview/prod roots and /admin (heads 200).
 
 Pending:
 - Add automated smoke checks against preview/prod (home/admin/auth/flows).
