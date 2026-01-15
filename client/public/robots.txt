@@ -1,0 +1,8 @@
+# robots.txt for chicagoairportblackcar.com
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://chicagoairportblackcar.com/sitemap.xml

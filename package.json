@@ -10,7 +10,8 @@
     "check": "tsc",
     "test": "bash script/smoke-test.sh",
     "db:push": "drizzle-kit push",
-    "metrics:import": "node scripts/metrics-import.mjs"
+    "metrics:import": "node scripts/metrics-import.mjs",
+    "sitemap:generate": "node scripts/generate-sitemap.mjs"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^6.1.0",
