@@ -20,7 +20,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - TypeScript error TS2339 in `server/firebase-claims.ts` - proper error type casting
-- npm ci failure - sync package-lock.json with package.json (bufferutil moved to optionalDependencies)
+- npm ci failure - regenerate package-lock.json to sync with package.json (missing bufferutil@4.1.0 and @opentelemetry/api@1.9.0)
 
 ### Changed
 - All AI agents now follow unified autonomous mode: plan-first, batch changes, run gates, auto-fix, commit
