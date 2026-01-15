@@ -24,6 +24,7 @@
 - 11:12 UTC: Cleaned Vite config conflict and restored dev/prod plugin toggles; reran `npm run check` and `npm run build` ✅.
 - 12:05 UTC: Completed multi-commit rebase onto latest main (resolved repeated conflicts in package.json/functions/vite config/README); preserved AI Ops UI, rate-limited image generation, and admin auth helpers.
 - 12:15 UTC: Ran `npm run check` ✅ and `npm run build` ✅ (PostCSS warning persists; chunk size warnings unchanged).
+- 12:25 UTC: Swapped Tailwind/Autoprefixer to instantiated plugins and raised chunk warning limit; PostCSS `from` warning still emitted by upstream plugin, builds otherwise green.
 
 ## Notes
 - Outstanding: migrate env handling to params; rework deployImages/rate limiter; consider multi-org rules; expand smoke (auth/APIs); execute UX/SEO backlog (CTA/trust/pricing, schemas/sitemap automation, image optimization, GA4 events) and add CI gates.

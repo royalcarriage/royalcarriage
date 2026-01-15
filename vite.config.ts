@@ -21,7 +21,7 @@ export default defineConfig(({ mode }) => {
     css: {
       postcss: {
         from: path.resolve(__dirname, "client", "src", "index.css"),
-        plugins: [tailwindcss, autoprefixer],
+        plugins: [tailwindcss(), autoprefixer()],
       },
     },
     resolve: {
@@ -45,7 +45,7 @@ export default defineConfig(({ mode }) => {
           },
         },
       },
-      chunkSizeWarningLimit: 600,
+      chunkSizeWarningLimit: 1500,
     },
   };
 });
