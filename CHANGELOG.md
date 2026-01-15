@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- AGENTS.md with autonomous agent workflow requirements
+
 ## [1.0.0] - 2026-01-15
 
 **DEPLOYED TO PRODUCTION** ✅

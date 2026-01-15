@@ -28,6 +28,9 @@
    - Commits: master agent stack, VS Code settings docs
    - STATUS.md and CHANGELOG.md updated
 
+7) Added AGENTS.md - DONE
+   - Repository-wide autonomous agent instructions
+
 ## Next Actions
 
 The Master Autonomous Agent Stack is complete and operational. All AI systems in VS Code will now:

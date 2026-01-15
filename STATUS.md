@@ -1,6 +1,7 @@
 # STATUS
 
 - 2026-01-15: Completed MASTER agent bootstrap and unified AI configuration.
+- 2026-01-15: Added AGENTS.md with autonomous agent workflow requirements.
 
 Master Autonomous Agent Stack (completed):
 - Instruction/playbook files: `.github/instructions/MASTER.instructions.md`, `.codex/MEMORY.md`, `.codex/FIREBASE_RULES_PLAYBOOK.md`, `.codex/DUAL_BRAIN.md` - all enforcing plan-first, batch work, gates, and Firebase security rules.
