@@ -7,3 +7,4 @@
 - Fixed root `package.json` JSON parse error; installed deps; addressed SuburbsService type issues; `npm run check`/`npm run build` passing.
 - Merged latest `origin/main` (admin pages, Firebase docs/config updates, tailwind config).
 - Hardened `storage.rules` (admin-only ai-images, user-scoped temp); added `node-fetch` dependency and verified `npm --prefix functions run build` passes.
+- Upgraded vitest/@vitest/coverage-v8 to 4.0.17; `npm run check`/`npm run build` pass; `npm audit` now clean.

@@ -11,6 +11,8 @@
 - 09:35 UTC: Merged latest `origin/main` into consolidation branch (new admin pages/docs, storage rules, tailwind config, functions updates).
 - 09:38 UTC: Installed root/functions deps; fixed storage rules (no public ai-images; user-scoped temp), added `node-fetch` to functions; `npm run check`, `npm run build`, and `npm --prefix functions run build` all pass.
 - 09:40 UTC: `npm audit --json` still reports 6 moderate vulns (vitest/vite/esbuild) pending major upgrade.
+- 09:42 UTC: Firebase commands: `firebase projects:list` ✅; `firebase deploy --only firestore:rules,storage:rules --dry-run` ❌ (missing storage target "rules" in CLI). Needs target adjustment before deploy.
+- 09:50 UTC: Upgraded vitest/@vitest/coverage-v8 to 4.0.17; reran `npm run check` and `npm run build` ✅; `npm audit --json` now clean (0 vulnerabilities).
 
 ## Notes
 - Pending: repo mapping, MD audit, gates, Firebase/GCP verification, deploy steps.
