@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "Pricing | Chicago Executive Car Service Rates";
+const description = "Transparent pricing for executive car service in Chicago. Airport transfers, hourly rates, and corporate account pricing. Request a custom quote today.";
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Hero Section -->
+  <section class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+          Transparent Pricing
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 mb-8">
+          Professional executive transportation with no hidden fees or surprises
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Overview -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4 max-w-5xl">
+      
+      <div class="bg-amber-50 border-l-4 border-amber-500 p-6 mb-12">
+        <h3 class="font-bold text-lg text-slate-900 mb-2">What's Included in Every Trip</h3>
+        <ul class="text-gray-700 space-y-2">
+          <li>✓ Professional, licensed chauffeur</li>
+          <li>✓ Luxury vehicle of your choice</li>
+          <li>✓ Complimentary WiFi and bottled water</li>
+          <li>✓ All tolls, parking, and fuel included</li>
+          <li>✓ Real-time flight tracking (airport transfers)</li>
+          <li>✓ Meet & greet service (airport arrivals)</li>
+          <li>✓ Detailed receipt for expense reporting</li>
+        </ul>
+      </div>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Airport Transfer Pricing</h2>
+      
+      <div class="grid md:grid-cols-2 gap-6 mb-16">
+        <div class="border-2 border-slate-200 rounded-xl p-8 hover:border-amber-500 transition">
+          <h3 class="text-2xl font-bold text-slate-900 mb-4">O'Hare Airport</h3>
+          <div class="space-y-3 mb-6">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From Downtown</span>
+              <span class="font-bold text-amber-600">From $95</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From North Shore</span>
+              <span class="font-bold text-amber-600">From $110</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From Western Suburbs</span>
+              <span class="font-bold text-amber-600">From $85</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From South Suburbs</span>
+              <span class="font-bold text-amber-600">From $100</span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600">
+            * Includes 60 minutes complimentary wait time and meet & greet
+          </p>
+        </div>
+        
+        <div class="border-2 border-slate-200 rounded-xl p-8 hover:border-amber-500 transition">
+          <h3 class="text-2xl font-bold text-slate-900 mb-4">Midway Airport</h3>
+          <div class="space-y-3 mb-6">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From Downtown</span>
+              <span class="font-bold text-amber-600">From $75</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From North Side</span>
+              <span class="font-bold text-amber-600">From $85</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From Western Suburbs</span>
+              <span class="font-bold text-amber-600">From $70</span>
+            </div>
+            <div class="flex justify-between items-center border-b border-slate-100 pb-2">
+              <span class="text-gray-700">To/From South Suburbs</span>
+              <span class="font-bold text-amber-600">From $65</span>
+            </div>
+          </div>
+          <p class="text-sm text-gray-600">
+            * Includes 60 minutes complimentary wait time and meet & greet
+          </p>
+        </div>
+      </div>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8 mt-16">Hourly Chauffeur Rates</h2>
+      
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-8 hover:border-amber-500 transition">
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Executive Sedan</h3>
+          <div class="text-4xl font-bold text-amber-600 mb-4">$75<span class="text-xl text-gray-500">/hr</span></div>
+          <p class="text-gray-600 mb-4">3-hour minimum</p>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li>✓ Mercedes S-Class or similar</li>
+            <li>✓ Up to 3 passengers</li>
+            <li>✓ Professional chauffeur</li>
+            <li>✓ Unlimited stops</li>
+          </ul>
+        </div>
+        
+        <div class="bg-gradient-to-br from-amber-50 to-white border-2 border-amber-500 rounded-xl p-8 shadow-lg relative">
+          <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-amber-500 text-white px-4 py-1 rounded-full text-sm font-bold">
+            POPULAR
+          </div>
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Luxury SUV</h3>
+          <div class="text-4xl font-bold text-amber-600 mb-4">$95<span class="text-xl text-gray-500">/hr</span></div>
+          <p class="text-gray-600 mb-4">3-hour minimum</p>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li>✓ Escalade or Navigator</li>
+            <li>✓ Up to 6 passengers</li>
+            <li>✓ Extra luggage space</li>
+            <li>✓ Premium amenities</li>
+          </ul>
+        </div>
+        
+        <div class="bg-white border-2 border-slate-200 rounded-xl p-8 hover:border-amber-500 transition">
+          <h3 class="text-xl font-bold text-slate-900 mb-2">Executive Van</h3>
+          <div class="text-4xl font-bold text-amber-600 mb-4">$125<span class="text-xl text-gray-500">/hr</span></div>
+          <p class="text-gray-600 mb-4">4-hour minimum</p>
+          <ul class="text-sm text-gray-700 space-y-2">
+            <li>✓ Mercedes Sprinter</li>
+            <li>✓ Up to 14 passengers</li>
+            <li>✓ Corporate shuttles</li>
+            <li>✓ WiFi & charging</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="text-sm text-gray-600 mb-16">
+        * Hourly rates apply after minimum hours. Extended bookings (8+ hours) may qualify for discounted rates.
+      </p>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8 mt-16">Point-to-Point Service</h2>
+      
+      <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 mb-16">
+        <h3 class="text-2xl font-bold text-slate-900 mb-4">Custom Route Pricing</h3>
+        <p class="text-gray-700 mb-6">
+          For meetings, events, or specific destinations within Chicago and suburbs, we provide custom pricing based on your exact route and requirements.
+        </p>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-semibold text-slate-900 mb-2">Sample Routes:</h4>
+            <ul class="space-y-2 text-gray-700">
+              <li>• Downtown to Schaumburg: From $85</li>
+              <li>• Loop to Oak Brook: From $90</li>
+              <li>• River North to Naperville: From $110</li>
+              <li>• O'Hare to Midway: From $120</li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-slate-900 mb-2">Factors Affecting Price:</h4>
+            <ul class="space-y-2 text-gray-700">
+              <li>• Distance and estimated time</li>
+              <li>• Vehicle type selected</li>
+              <li>• Time of day (peak hours)</li>
+              <li>• Special requirements</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8 mt-16">Corporate Account Pricing</h2>
+      
+      <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-xl p-8 mb-16">
+        <h3 class="text-2xl font-bold mb-4">Volume-Based Discounts</h3>
+        <p class="text-gray-300 mb-6">
+          Businesses with regular transportation needs benefit from significant savings through our corporate account program.
+        </p>
+        <div class="grid md:grid-cols-3 gap-6 mb-6">
+          <div class="text-center">
+            <div class="text-4xl font-bold text-amber-400 mb-2">10-15%</div>
+            <div class="text-gray-300">$2,000+ Monthly Spend</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-amber-400 mb-2">15-25%</div>
+            <div class="text-gray-300">$5,000+ Monthly Spend</div>
+          </div>
+          <div class="text-center">
+            <div class="text-4xl font-bold text-amber-400 mb-2">25%+</div>
+            <div class="text-gray-300">$10,000+ Monthly Spend</div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-400 text-center">
+          Additional benefits include dedicated account manager, priority booking, and customized billing
+        </p>
+        <div class="text-center mt-6">
+          <a href="/services/corporate-accounts" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-6 py-3 rounded-lg font-bold transition inline-block">
+            Learn About Corporate Accounts
+          </a>
+        </div>
+      </div>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Additional Services</h2>
+      
+      <div class="grid md:grid-cols-2 gap-6 mb-16">
+        <div class="border border-slate-200 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Roadshows</h3>
+          <p class="text-gray-600 mb-4">
+            Multi-day, multi-city investor roadshow support with dedicated vehicles and chauffeurs.
+          </p>
+          <p class="text-amber-600 font-semibold">Custom pricing - Contact for quote</p>
+        </div>
+        
+        <div class="border border-slate-200 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Special Events</h3>
+          <p class="text-gray-600 mb-4">
+            Corporate galas, client entertainment, and special occasions requiring multiple vehicles.
+          </p>
+          <p class="text-amber-600 font-semibold">Custom pricing - Contact for quote</p>
+        </div>
+        
+        <div class="border border-slate-200 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Out-of-Town Service</h3>
+          <p class="text-gray-600 mb-4">
+            Transportation to Milwaukee, Indianapolis, Detroit, or other Midwest cities.
+          </p>
+          <p class="text-amber-600 font-semibold">Distance-based pricing available</p>
+        </div>
+        
+        <div class="border border-slate-200 rounded-lg p-6">
+          <h3 class="text-xl font-bold text-slate-900 mb-3">Multiple Vehicles</h3>
+          <p class="text-gray-600 mb-4">
+            Coordinate transportation for large groups with multiple vehicles and chauffeurs.
+          </p>
+          <p class="text-amber-600 font-semibold">Volume discounts available</p>
+        </div>
+      </div>
+
+      <h2 class="text-4xl font-bold text-slate-900 mb-8">Pricing FAQs</h2>
+      
+      <div class="space-y-6 mb-12">
+        <div class="border-b border-slate-200 pb-6">
+          <h3 class="font-bold text-lg text-slate-900 mb-2">Is gratuity included?</h3>
+          <p class="text-gray-700">
+            Gratuity is not included in our rates. Standard gratuity is 20% for exceptional service. You may add gratuity to your payment or provide cash directly to your chauffeur.
+          </p>
+        </div>
+        
+        <div class="border-b border-slate-200 pb-6">
+          <h3 class="font-bold text-lg text-slate-900 mb-2">Are there any additional fees?</h3>
+          <p class="text-gray-700">
+            All tolls, parking, fuel, and standard wait times are included. Additional charges may apply for extended wait times beyond complimentary periods or special requests like child car seats.
+          </p>
+        </div>
+        
+        <div class="border-b border-slate-200 pb-6">
+          <h3 class="font-bold text-lg text-slate-900 mb-2">How far in advance should I book?</h3>
+          <p class="text-gray-700">
+            We recommend booking at least 24-48 hours in advance to guarantee your preferred vehicle. Same-day bookings are often available but subject to vehicle availability.
+          </p>
+        </div>
+        
+        <div class="border-b border-slate-200 pb-6">
+          <h3 class="font-bold text-lg text-slate-900 mb-2">What is your cancellation policy?</h3>
+          <p class="text-gray-700">
+            Cancellations made 24+ hours in advance receive a full refund. Cancellations within 24 hours may incur a 50% cancellation fee. No-shows are charged the full amount.
+          </p>
+        </div>
+        
+        <div class="border-b border-slate-200 pb-6">
+          <h3 class="font-bold text-lg text-slate-900 mb-2">What payment methods do you accept?</h3>
+          <p class="text-gray-700">
+            We accept all major credit cards, corporate cards, ACH transfers, and checks. Corporate accounts can be invoiced monthly with Net 30 terms.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 text-white rounded-xl p-8 text-center">
+        <h3 class="text-2xl font-bold mb-4">Get a Custom Quote</h3>
+        <p class="text-gray-300 mb-6">Contact us for personalized pricing based on your specific needs</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/contact" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-8 py-3 rounded-lg font-bold transition">
+            Request Quote
+          </a>
+          <a href="tel:+13129980909" class="bg-transparent border-2 border-white hover:bg-white hover:text-slate-900 px-8 py-3 rounded-lg font-bold transition">
+            Call: (312) 998-0909
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

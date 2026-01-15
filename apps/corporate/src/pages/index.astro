@@ -1,0 +1,443 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "Chicago Executive Car Service | Premium Corporate Transportation";
+const description = "Chicago's premier executive car service. Professional chauffeurs, luxury vehicles, and corporate transportation solutions. Airport transfers, hourly service, and corporate accounts. Available 24/7.";
+
+const schemaOrg = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "Chicago Executive Car Service",
+  "image": "https://chicagoexecutivecarservice.com/og-corporate.jpg",
+  "@id": "https://chicagoexecutivecarservice.com",
+  "url": "https://chicagoexecutivecarservice.com",
+  "telephone": "+13129980909",
+  "priceRange": "$$$",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "",
+    "addressLocality": "Chicago",
+    "addressRegion": "IL",
+    "postalCode": "",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 41.8781,
+    "longitude": -87.6298
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ],
+    "opens": "00:00",
+    "closes": "23:59"
+  },
+  "sameAs": [],
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "487"
+  }
+};
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify(schemaOrg)} />
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute inset-0 bg-[url('/grid.svg')] bg-center"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="inline-block mb-4 px-4 py-2 bg-amber-500 text-slate-900 rounded-full font-semibold text-sm">
+          ★ Trusted by Fortune 500 Companies
+        </div>
+        <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+          Chicago Executive Car Service<br/>
+          <span class="text-amber-400">Premium Corporate Transportation</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-300 mb-8">
+          Professional chauffeur services for executives, corporations, and discerning professionals. Available 24/7/365.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a href="/contact" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg">
+            Request a Quote
+          </a>
+          <a href="tel:+13129980909" class="bg-transparent border-2 border-white hover:bg-white hover:text-slate-900 px-8 py-4 rounded-lg font-bold text-lg transition">
+            Call: (312) 998-0909
+          </a>
+        </div>
+        <div class="mt-12 grid grid-cols-3 gap-8 text-center">
+          <div>
+            <div class="text-4xl font-bold text-amber-400">15+</div>
+            <div class="text-gray-400">Years Experience</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-amber-400">50K+</div>
+            <div class="text-gray-400">Trips Completed</div>
+          </div>
+          <div>
+            <div class="text-4xl font-bold text-amber-400">4.9★</div>
+            <div class="text-gray-400">Client Rating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-900 mb-4">Executive Transportation Services</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Comprehensive chauffeur solutions tailored for corporate executives and businesses
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition">
+          <div class="text-4xl mb-4">✈️</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Airport Transfers</h3>
+          <p class="text-gray-600 mb-4">
+            Reliable O'Hare and Midway airport pickups and drop-offs. Flight tracking, meet & greet service, and luggage assistance included.
+          </p>
+          <a href="/services/airport-transfers" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Learn More →
+          </a>
+        </div>
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition">
+          <div class="text-4xl mb-4">⏰</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Hourly Chauffeur Service</h3>
+          <p class="text-gray-600 mb-4">
+            Flexible hourly rates for multiple stops, meetings, and events. Professional chauffeur at your disposal for the entire duration.
+          </p>
+          <a href="/services/hourly-chauffeur" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Learn More →
+          </a>
+        </div>
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition">
+          <div class="text-4xl mb-4">🏢</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Corporate Accounts</h3>
+          <p class="text-gray-600 mb-4">
+            Streamlined billing, dedicated account managers, and priority booking for businesses. Volume discounts available.
+          </p>
+          <a href="/services/corporate-accounts" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Learn More →
+          </a>
+        </div>
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition" id="roadshows">
+          <div class="text-4xl mb-4">🚀</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Roadshows</h3>
+          <p class="text-gray-600 mb-4">
+            Multi-city investor roadshows with seamless coordination. Experienced in handling tight schedules and executive needs.
+          </p>
+          <a href="/contact" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Get Started →
+          </a>
+        </div>
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition" id="executive-meetings">
+          <div class="text-4xl mb-4">💼</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Executive Meetings</h3>
+          <p class="text-gray-600 mb-4">
+            Point-to-point transportation for board meetings, conferences, and high-level business events. Discretion guaranteed.
+          </p>
+          <a href="/contact" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Book Now →
+          </a>
+        </div>
+        <div class="bg-gradient-to-br from-slate-50 to-white border border-slate-200 rounded-xl p-8 hover:shadow-xl transition">
+          <div class="text-4xl mb-4">🌃</div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-3">Special Events</h3>
+          <p class="text-gray-600 mb-4">
+            Corporate galas, client entertainment, and special occasions. Make a lasting impression with our luxury fleet.
+          </p>
+          <a href="/contact" class="text-amber-600 font-semibold hover:text-amber-700 transition">
+            Inquire →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fleet Showcase -->
+  <section class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-900 mb-4">Our Premium Fleet</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Immaculately maintained luxury vehicles for every corporate transportation need
+        </p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+          <div class="bg-slate-900 h-48 flex items-center justify-center">
+            <div class="text-white text-center">
+              <div class="text-6xl mb-2">🚘</div>
+              <div class="font-semibold">Mercedes S-Class</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Executive Sedan</h3>
+            <p class="text-gray-600 mb-3">Perfect for airport transfers and executive meetings. Seats up to 3 passengers.</p>
+            <ul class="text-sm text-gray-500 space-y-1">
+              <li>✓ Leather interior</li>
+              <li>✓ WiFi & charging</li>
+              <li>✓ Climate control</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+          <div class="bg-slate-900 h-48 flex items-center justify-center">
+            <div class="text-white text-center">
+              <div class="text-6xl mb-2">🚙</div>
+              <div class="font-semibold">BMW 7-Series</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Luxury Sedan</h3>
+            <p class="text-gray-600 mb-3">Ultimate comfort for C-suite executives. Premium amenities throughout.</p>
+            <ul class="text-sm text-gray-500 space-y-1">
+              <li>✓ Executive seating</li>
+              <li>✓ Privacy partition</li>
+              <li>✓ Premium sound</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+          <div class="bg-slate-900 h-48 flex items-center justify-center">
+            <div class="text-white text-center">
+              <div class="text-6xl mb-2">🚐</div>
+              <div class="font-semibold">Cadillac Escalade</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Luxury SUV</h3>
+            <p class="text-gray-600 mb-3">Spacious and commanding. Ideal for groups or extra luggage needs.</p>
+            <ul class="text-sm text-gray-500 space-y-1">
+              <li>✓ Seats up to 6</li>
+              <li>✓ Ample cargo space</li>
+              <li>✓ All-weather capable</li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition">
+          <div class="bg-slate-900 h-48 flex items-center justify-center">
+            <div class="text-white text-center">
+              <div class="text-6xl mb-2">🚍</div>
+              <div class="font-semibold">Mercedes Sprinter</div>
+            </div>
+          </div>
+          <div class="p-6">
+            <h3 class="text-xl font-bold text-slate-900 mb-2">Executive Van</h3>
+            <p class="text-gray-600 mb-3">Corporate shuttle for teams and groups up to 14 passengers.</p>
+            <ul class="text-sm text-gray-500 space-y-1">
+              <li>✓ Conference seating</li>
+              <li>✓ WiFi connectivity</li>
+              <li>✓ Mobile office setup</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-12">
+        <a href="/fleet" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg inline-block">
+          View Full Fleet
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Signals -->
+  <section class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-slate-900 mb-4">Trusted by Leading Organizations</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Chicago's premier choice for corporate transportation and executive chauffeur services
+        </p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8 mb-12">
+        <div class="text-center p-8 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200">
+          <div class="text-5xl font-bold text-amber-500 mb-2">500+</div>
+          <div class="text-xl font-semibold text-slate-900 mb-2">Corporate Clients</div>
+          <p class="text-gray-600">Including Fortune 500 companies, law firms, and financial institutions</p>
+        </div>
+        <div class="text-center p-8 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200">
+          <div class="text-5xl font-bold text-amber-500 mb-2">98%</div>
+          <div class="text-xl font-semibold text-slate-900 mb-2">On-Time Rate</div>
+          <p class="text-gray-600">Punctuality guaranteed with advanced flight tracking and route optimization</p>
+        </div>
+        <div class="text-center p-8 bg-gradient-to-br from-slate-50 to-white rounded-xl border border-slate-200">
+          <div class="text-5xl font-bold text-amber-500 mb-2">24/7</div>
+          <div class="text-xl font-semibold text-slate-900 mb-2">Availability</div>
+          <p class="text-gray-600">Round-the-clock service, 365 days a year for your business needs</p>
+        </div>
+      </div>
+      <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-12 text-white text-center">
+        <h3 class="text-3xl font-bold mb-4">Preferred by Fortune 500 Companies</h3>
+        <p class="text-xl text-gray-300 mb-6 max-w-3xl mx-auto">
+          Our commitment to excellence, discretion, and reliability has made us the transportation partner of choice for major corporations, law firms, investment banks, and consulting firms throughout Chicago and the Midwest.
+        </p>
+        <div class="flex flex-wrap justify-center gap-8 text-sm text-gray-400">
+          <span>✓ Financial Services</span>
+          <span>✓ Legal Firms</span>
+          <span>✓ Consulting</span>
+          <span>✓ Technology</span>
+          <span>✓ Healthcare</span>
+          <span>✓ Manufacturing</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEO Content Section -->
+  <section class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <article class="prose prose-lg max-w-none">
+        <h2 class="text-4xl font-bold text-slate-900 mb-6">Chicago Executive Car Service: Your Premier Corporate Transportation Partner</h2>
+        
+        <p class="text-xl text-gray-700 leading-relaxed mb-6">
+          In today's fast-paced business environment, reliable and professional transportation is not just a convenience—it's a necessity. Chicago Executive Car Service has been providing world-class corporate transportation solutions for over 15 years, serving thousands of executives, corporations, and business professionals throughout the Chicago metropolitan area and beyond.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Why Choose Professional Executive Transportation?</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          When it comes to executive transportation in Chicago, settling for anything less than excellence can impact your business operations, professional image, and bottom line. Our executive car service is specifically designed to meet the demanding needs of corporate executives, providing a seamless transportation experience that allows you to focus on what matters most—your business.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Time is money in the corporate world, and our professional chauffeurs understand this implicitly. Every member of our team is extensively trained, background-checked, and experienced in providing discreet, professional service to high-level executives and business professionals. They know Chicago's streets intimately, understand the importance of punctuality, and are committed to providing a smooth, comfortable ride every single time.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Comprehensive Airport Transfer Services</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          O'Hare International Airport and Chicago Midway International Airport handle millions of business travelers annually, and navigating these busy hubs can be stressful and time-consuming. Our airport transfer service eliminates these concerns entirely. We provide flight tracking to monitor your arrival in real-time, ensuring your chauffeur is ready when you land, regardless of delays or early arrivals.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Our meet and greet service includes having your professional chauffeur waiting at baggage claim with a name sign, ready to assist with luggage and escort you directly to your vehicle. No waiting in taxi lines, no hunting for rideshare drivers, no stress. Just smooth, seamless service from the moment you land. For departures, we build in appropriate buffer time based on TSA wait times, flight schedules, and traffic patterns to ensure you never miss a flight.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Flexible Hourly Chauffeur Services</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Not every business need fits into a simple point-to-point transfer. Our hourly chauffeur service provides the flexibility you need for complex itineraries, multiple meeting locations, or full-day transportation requirements. Whether you need a chauffeur for three hours or a full 12-hour day, we provide a professional driver and luxury vehicle at your disposal.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          This service is ideal for executives visiting from out of town who need transportation to multiple meetings across the city, for roadshows requiring precision timing between investor presentations, or for any situation where having reliable, on-demand transportation provides a competitive advantage. Your chauffeur will wait during meetings, handle any schedule changes with professionalism, and ensure you arrive at each destination refreshed and on time.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Streamlined Corporate Account Management</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          For businesses with regular transportation needs, our corporate account program provides significant operational and financial benefits. We understand that coordinating transportation for multiple executives across various departments can be administratively complex. Our corporate accounts simplify this process with centralized billing, detailed trip reports, and dedicated account management.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Your dedicated account manager serves as a single point of contact for all transportation needs, from last-minute bookings to complex multi-city arrangements. Monthly invoicing with detailed breakdowns makes expense tracking and allocation straightforward, while volume-based pricing ensures you receive competitive rates that reflect your commitment to our service. Corporate accounts also receive priority booking and guaranteed vehicle availability, even during peak demand periods.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">The Chicago Executive Car Service Fleet Difference</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Our fleet represents a carefully curated selection of the finest luxury vehicles available. Every vehicle undergoes rigorous maintenance on a schedule that exceeds manufacturer recommendations, ensuring reliability and safety. Our Mercedes S-Class and BMW 7-Series sedans provide the ultimate in executive comfort, featuring premium leather interiors, advanced climate control, and whisper-quiet cabins perfect for phone calls or preparation before important meetings.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          For executives who prefer the commanding presence and spaciousness of an SUV, our Cadillac Escalades and luxury SUV options provide exceptional comfort while accommodating extra passengers or luggage. These vehicles are perfect for group transportation or when weather conditions demand all-wheel drive capability. All vehicles in our fleet come equipped with WiFi connectivity, charging ports for all device types, and complimentary bottled water.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Specialized Roadshow and Investor Relations Support</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Investor roadshows require flawless execution and precision timing. Our team has extensive experience supporting public companies, private equity firms, and investment banks during these critical business activities. We understand the unique challenges of roadshow logistics: tight schedules, multiple daily meetings, the need for absolutely reliable transportation, and the importance of discretion.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Our roadshow services include advance route planning, backup vehicles for mission-critical days, and 24/7 support from our operations team. We coordinate with investor relations teams to ensure timing aligns perfectly with meeting schedules, provide real-time updates on traffic conditions and estimated arrival times, and maintain the professional discretion essential when transporting company executives during sensitive business activities.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Technology-Enabled Service Excellence</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          While our service is built on the foundation of professional chauffeurs and luxury vehicles, technology plays a crucial role in ensuring consistency and reliability. Our reservation system integrates with corporate calendars and travel management systems, making booking seamless for administrative assistants and travel coordinators. Real-time GPS tracking allows you to see your vehicle's location and estimated arrival time.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Flight tracking integration means we automatically adjust pickup times based on actual arrival times, whether your flight is early or delayed. Our chauffeurs use advanced routing software that accounts for real-time traffic conditions, construction, and special events to ensure the most efficient route. After each trip, you receive automated receipts with detailed trip information, making expense reporting effortless.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Commitment to Safety and Professionalism</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Safety is never compromised at Chicago Executive Car Service. Every chauffeur undergoes comprehensive background checks, drug testing, and continuous driving record monitoring. Our vehicles exceed all safety standards and are equipped with the latest safety technology. We maintain comprehensive insurance coverage that exceeds industry minimums, providing peace of mind for both individual executives and corporate risk management teams.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Professional discretion is paramount in executive transportation. Our chauffeurs are trained to respect privacy, maintain confidentiality, and provide service that is attentive but never intrusive. Whether you need quiet time to prepare for a meeting, wish to conduct business calls, or simply want to relax, your chauffeur will ensure your preferences are respected.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Serving Chicago's Business Districts and Beyond</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Our service area encompasses all of Chicago's major business districts, including the Loop, River North, West Loop, Fulton Market, and the Magnificent Mile. We regularly serve suburban business centers in Schaumburg, Oak Brook, Rosemont, and throughout the North Shore. Our familiarity with Chicago's business geography means we know the fastest routes, best drop-off points, and building access procedures for major corporate offices, hotels, and conference centers.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          For businesses with regional needs, we coordinate transportation in Milwaukee, Indianapolis, Detroit, and other Midwest markets through our trusted partner network. This ensures consistent service quality even when your business activities extend beyond the Chicago area.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Making the Right Choice for Your Corporate Transportation</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Choosing the right executive car service partner is an important decision that impacts your organization's operations, your professional image, and your personal productivity. Chicago Executive Car Service combines the elements that matter most to discerning business professionals: reliability, professionalism, luxury, and value. Our 98% on-time rate, 4.9-star average rating, and client retention rate of over 90% demonstrate our commitment to excellence.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Whether you need regular airport transfers, occasional hourly service, or comprehensive corporate transportation solutions, we have the experience, fleet, and dedication to exceed your expectations. Our 24/7 availability means we're ready when you need us, whether that's for an early morning flight, a late evening pickup, or weekend business travel.
+        </p>
+
+        <h3 class="text-3xl font-bold text-slate-900 mt-12 mb-4">Get Started with Chicago's Premier Executive Car Service</h3>
+        
+        <p class="text-gray-700 leading-relaxed mb-4">
+          Experience the Chicago Executive Car Service difference for yourself. Contact us today to discuss your corporate transportation needs, request a quote, or set up a corporate account. Our team is ready to provide the professional service and attention to detail that has made us Chicago's trusted choice for executive transportation.
+        </p>
+
+        <p class="text-gray-700 leading-relaxed mb-6">
+          Call us at (312) 998-0909 or request a quote online. Discover why Fortune 500 companies, leading law firms, and thousands of business professionals trust Chicago Executive Car Service for their corporate transportation needs.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-4xl font-bold mb-6">Ready to Experience Premium Corporate Transportation?</h2>
+      <p class="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+        Join hundreds of satisfied corporate clients who trust Chicago Executive Car Service for reliable, professional transportation.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-8 py-4 rounded-lg font-bold text-lg transition shadow-lg inline-block">
+          Request a Quote
+        </a>
+        <a href="tel:+13129980909" class="bg-transparent border-2 border-white hover:bg-white hover:text-slate-900 px-8 py-4 rounded-lg font-bold text-lg transition inline-block">
+          Call: (312) 998-0909
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

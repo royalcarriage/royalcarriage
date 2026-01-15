@@ -1,0 +1,141 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const siteUrl = 'https://chicagoexecutivecarservice.com';
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical || `${siteUrl}${currentPath}`} />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical || `${siteUrl}${currentPath}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/og-corporate.jpg`} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/og-corporate.jpg`} />
+    
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="US-IL" />
+    <meta name="geo.placename" content="Chicago" />
+    <meta name="geo.position" content="41.8781;-87.6298" />
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CC67CH86JR"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CC67CH86JR');
+    </script>
+  </head>
+  <body class="min-h-screen bg-white">
+    <!-- Header/Navigation -->
+    <header class="bg-gradient-to-r from-slate-900 to-slate-800 shadow-lg sticky top-0 z-50">
+      <nav class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-2xl font-bold text-white">
+            <span class="text-amber-400">★</span> Chicago Executive Car Service
+          </a>
+          <div class="hidden lg:flex space-x-6 items-center">
+            <a href="/" class={`hover:text-amber-400 transition ${currentPath === '/' ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>Home</a>
+            <div class="relative group">
+              <button class={`hover:text-amber-400 transition ${currentPath.startsWith('/services') ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>Services</button>
+              <div class="absolute hidden group-hover:block bg-white shadow-xl rounded-lg mt-2 py-2 w-64">
+                <a href="/services/airport-transfers" class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition">Airport Transfers</a>
+                <a href="/services/hourly-chauffeur" class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition">Hourly Chauffeur</a>
+                <a href="/services/corporate-accounts" class="block px-4 py-2 text-gray-700 hover:bg-amber-50 hover:text-amber-600 transition">Corporate Accounts</a>
+              </div>
+            </div>
+            <a href="/fleet" class={`hover:text-amber-400 transition ${currentPath === '/fleet' ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>Fleet</a>
+            <a href="/pricing" class={`hover:text-amber-400 transition ${currentPath === '/pricing' ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>Pricing</a>
+            <a href="/about" class={`hover:text-amber-400 transition ${currentPath === '/about' ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>About</a>
+            <a href="/contact" class={`hover:text-amber-400 transition ${currentPath === '/contact' ? 'text-amber-400 font-semibold' : 'text-gray-200'}`}>Contact</a>
+          </div>
+          <a href="tel:+13129980909" class="hidden md:block bg-amber-500 hover:bg-amber-600 text-slate-900 px-6 py-3 rounded-lg font-semibold transition shadow-md">
+            Call: (312) 998-0909
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-b from-slate-900 to-slate-950 text-white mt-16">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold text-amber-400 mb-4">Chicago Executive Car Service</h3>
+            <p class="text-gray-300">Premier corporate transportation and chauffeur services. Trusted by Fortune 500 companies and executives worldwide.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Services</h4>
+            <ul class="space-y-2 text-gray-300">
+              <li><a href="/services/airport-transfers" class="hover:text-amber-400 transition">Airport Transfers</a></li>
+              <li><a href="/services/hourly-chauffeur" class="hover:text-amber-400 transition">Hourly Chauffeur</a></li>
+              <li><a href="/services/corporate-accounts" class="hover:text-amber-400 transition">Corporate Accounts</a></li>
+              <li><a href="/#roadshows" class="hover:text-amber-400 transition">Roadshows</a></li>
+              <li><a href="/#executive-meetings" class="hover:text-amber-400 transition">Executive Meetings</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Company</h4>
+            <ul class="space-y-2 text-gray-300">
+              <li><a href="/about" class="hover:text-amber-400 transition">About Us</a></li>
+              <li><a href="/fleet" class="hover:text-amber-400 transition">Our Fleet</a></li>
+              <li><a href="/pricing" class="hover:text-amber-400 transition">Pricing</a></li>
+              <li><a href="/contact" class="hover:text-amber-400 transition">Get A Quote</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-white mb-4">Contact Us</h4>
+            <ul class="space-y-2 text-gray-300">
+              <li>📞 <a href="tel:+13129980909" class="hover:text-amber-400 transition">(312) 998-0909</a></li>
+              <li>✉️ <a href="mailto:corporate@chicagoexecutivecarservice.com" class="hover:text-amber-400 transition">corporate@chicagoexecutivecarservice.com</a></li>
+              <li>📍 Chicago, IL</li>
+              <li class="text-sm text-gray-400">Available 24/7/365</li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-slate-800 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; {new Date().getFullYear()} Chicago Executive Car Service. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 flex gap-2 lg:hidden z-50 shadow-2xl border-t border-amber-500">
+      <a href="tel:+13129980909" class="flex-1 bg-amber-500 text-slate-900 py-3 rounded-lg font-semibold text-center shadow-md">
+        📞 Call Now
+      </a>
+      <a href="/contact" class="flex-1 bg-slate-700 py-3 rounded-lg font-semibold text-center shadow-md">
+        Get Quote
+      </a>
+    </div>
+  </body>
+</html>
