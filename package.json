@@ -14,7 +14,8 @@
     "test:smoke": "bash script/smoke-test.sh",
     "db:push": "drizzle-kit push",
     "metrics:import": "node scripts/metrics-import.mjs",
-    "sitemap:generate": "node scripts/generate-sitemap.mjs"
+    "sitemap:generate": "node scripts/generate-sitemap.mjs",
+    "smoke": "node scripts/smoke-check.mjs"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^6.1.0",

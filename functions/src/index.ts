@@ -234,7 +234,7 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req: Request
     const decodedToken = await admin.auth().verifyIdToken(token);
     
     // Check if user is admin (requires custom claims to be set)
-    if (decodedToken.role !== 'admin') {
+    if (decodedToken.role !== 'admin' && decodedToken.admin !== true) {
       res.status(403).json({
         error: 'Forbidden. Admin access required.',
       });
@@ -342,7 +342,7 @@ export const generateContent = functions.https.onRequest(async (req: Request, re
     const decodedToken = await admin.auth().verifyIdToken(token);
     
     // Check if user is admin
-    if (decodedToken.role !== 'admin') {
+    if (decodedToken.role !== 'admin' && decodedToken.admin !== true) {
       res.status(403).json({
         error: 'Forbidden. Admin access required.',
       });
