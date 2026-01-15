@@ -240,11 +240,11 @@ export default function TripsPage() {
           bulkActions={[
             {
               label: "Assign Driver",
-              onClick: (rows) => console.log("Assign driver to", rows),
+              onClick: (rows) => () => {},
             },
             {
               label: "Cancel",
-              onClick: (rows) => console.log("Cancel", rows),
+              onClick: (rows) => () => {},
               variant: "destructive",
             },
           ]}
@@ -270,7 +270,7 @@ export default function TripsPage() {
             description: "Get started by creating your first trip.",
             action: {
               label: "Create Trip",
-              onClick: () => console.log("Create trip"),
+              onClick: () => () => {},
             },
           }}
         />
