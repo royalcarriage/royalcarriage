@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express';
 import { storage } from '../storage';
 import { type User, UserRole, type UserRoleType } from '@shared/schema';
 import { requireAdmin, requireSuperAdmin } from '../security';
+import { syncUserRoleToFirebase } from '../firebase-claims';
 import { z } from 'zod';
 import { fromZodError } from 'zod-validation-error';
 
@@ -90,6 +91,12 @@ router.put('/:id/role', requireSuperAdmin, async (req: Request, res: Response) =
     }
 
     const { password, ...userWithoutPassword } = updatedUser;
+    // attempt to sync role into Firebase custom claims (optional)
+    try {
+      await syncUserRoleToFirebase(updatedUser.id, role);
+    } catch (e) {
+      console.warn('Failed to sync firebase claims (non-fatal)');
+    }
     res.json({
       message: 'User role updated successfully',
       user: userWithoutPassword,
