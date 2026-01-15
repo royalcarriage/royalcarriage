@@ -124,13 +124,17 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   //   return res.status(401).json({ error: 'Invalid token' });
   // }
   
-  // Temporary: Basic validation for development
-  // WARNING: This is NOT secure for production use
+  // Temporary: Basic validation for development ONLY
+  // WARNING: This is NOT secure for production use and is blocked in production.
   if (process.env.NODE_ENV === 'production') {
-    console.warn('⚠️  requireAdmin middleware is using placeholder authentication. Implement proper JWT validation before production deployment.');
+    console.error('⚠️  requireAdmin middleware is not configured with proper JWT validation in production. Blocking admin access.');
+    return res.status(503).json({
+      error: 'Admin authentication not configured',
+      message: 'Admin routes are disabled because authentication is not properly configured on this server.'
+    });
   }
-  
-  // For now, just check if token exists and is not empty
+
+  // For now (non-production), just check if token exists and is not empty
   if (token.length < 10) {
     return res.status(401).json({ error: 'Invalid authentication token' });
   }
