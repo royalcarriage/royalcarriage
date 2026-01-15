@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Building2, Phone, Mail, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Customer {
   id: string;
@@ -184,6 +185,15 @@ const columns: Column<Customer>[] = [
 ];
 
 export default function CustomersPage() {
+  const { toast } = useToast();
+  
+  const handleAddCustomer = () => {
+    toast({
+      title: "Add Customer",
+      description: "Opening customer form...",
+    });
+  };
+
   return (
     <>
       <SEO
@@ -250,7 +260,7 @@ export default function CustomersPage() {
             description: "Get started by adding your first customer.",
             action: {
               label: "Add Customer",
-              onClick: () => () => {},
+              onClick: handleAddCustomer,
             },
           }}
         />

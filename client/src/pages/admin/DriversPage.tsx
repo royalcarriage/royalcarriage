@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Phone, Mail, Star, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Driver {
   id: string;
@@ -191,6 +192,29 @@ const columns: Column<Driver>[] = [
 ];
 
 export default function DriversPage() {
+  const { toast } = useToast();
+
+  const handleAddDriver = () => {
+    toast({
+      title: "Add Driver",
+      description: "Opening driver registration form...",
+    });
+  };
+
+  const handleActivateDrivers = (rows: Driver[]) => {
+    toast({
+      title: "Drivers Activated",
+      description: `${rows.length} driver(s) have been activated.`,
+    });
+  };
+
+  const handleDeactivateDrivers = (rows: Driver[]) => {
+    toast({
+      title: "Drivers Deactivated",
+      description: `${rows.length} driver(s) have been deactivated.`,
+    });
+  };
+
   return (
     <>
       <SEO
@@ -231,11 +255,11 @@ export default function DriversPage() {
           bulkActions={[
             {
               label: "Activate",
-              onClick: (rows) => () => {},
+              onClick: handleActivateDrivers,
             },
             {
               label: "Deactivate",
-              onClick: (rows) => () => {},
+              onClick: handleDeactivateDrivers,
               variant: "outline",
             },
           ]}
@@ -261,7 +285,7 @@ export default function DriversPage() {
             description: "Get started by adding your first driver.",
             action: {
               label: "Add Driver",
-              onClick: () => () => {},
+              onClick: handleAddDriver,
             },
           }}
         />
