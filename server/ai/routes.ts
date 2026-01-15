@@ -332,4 +332,33 @@ router.get('/health', (req, res) => {
   });
 });
 
+/**
+ * Configuration status check
+ * GET /api/ai/config-status
+ */
+router.get('/config-status', async (req, res) => {
+  try {
+    const { ConfigurationValidator } = await import('./config-validator');
+    const validator = new ConfigurationValidator();
+    
+    const results = await validator.validateAll();
+    const readiness = await validator.isSystemReady();
+    const instructions = validator.generateSetupInstructions(results);
+    
+    res.json({
+      ready: readiness.ready,
+      message: readiness.message,
+      validationResults: results,
+      setupInstructions: instructions,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error) {
+    console.error('Configuration status check error:', error);
+    res.status(500).json({
+      error: 'Failed to check configuration status',
+      message: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
 export { router as aiRoutes };
