@@ -44,7 +44,7 @@ function startOfDayMs(date: Date = new Date()): number {
 }
 
 // Helper: verify ID token and ensure admin role
-async function verifyAdminRequest(req: functions.https.Request) {
+async function verifyAdminRequest(req: Request) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return null;
@@ -422,6 +422,8 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
     return;
   }
 
+  let userId = 'unknown';
+  let userEmail = 'unknown';
   try {
     const decodedToken = await verifyAdminRequest(req);
     if (!decodedToken) {
@@ -429,8 +431,8 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
       return;
     }
 
-    const userId = decodedToken.uid;
-    const userEmail = decodedToken.email || 'unknown';
+    userId = decodedToken.uid;
+    userEmail = decodedToken.email || 'unknown';
     const { purpose, location, vehicle, style, description } = req.body;
 
     if (!purpose) {
@@ -459,7 +461,11 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
         userId,
         date: new Date(today).toISOString(),
         imageGenerations: admin.firestore.FieldValue.increment(1),
+<<<<<<< HEAD
         totalCost: admin.firestore.FieldValue.increment(0.02),
+=======
+        totalCost: admin.firestore.FieldValue.increment(0.02), // Approximate cost per image
+>>>>>>> f207076e6 (Harden image generation and repair build tooling)
         lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       }, { merge: true });
@@ -531,7 +537,7 @@ export const generateImage = functions.https.onRequest(async (req: Request, res:
       await admin.firestore().collection('audit_logs').add({
         action: 'image_generation_failed',
         resourceType: 'ai_image',
-        userId: 'unknown',
+        userId,
         details: {
           error: error instanceof Error ? error.message : 'Unknown error',
           status: 'failed',

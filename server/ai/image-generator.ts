@@ -229,7 +229,10 @@ export class ImageGenerator {
     request: ImageGenerationRequest
   ): Promise<string> {
     // If Cloud Storage is not configured, return data URL
-    const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET;
+    const bucketName = process.env.DEPLOY_IMAGES_BUCKET ||
+      process.env.GOOGLE_CLOUD_STORAGE_BUCKET ||
+      process.env.GCLOUD_STORAGE_BUCKET;
+    const prefix = process.env.DEPLOY_IMAGES_PREFIX || 'generated';
     
     if (!bucketName) {
       console.warn('Cloud Storage bucket not configured, using data URL');
@@ -246,7 +249,7 @@ export class ImageGenerator {
       
       // Generate unique filename
       const timestamp = Date.now();
-      const filename = `generated/${request.purpose}-${timestamp}.png`;
+      const filename = `${prefix}/${request.purpose}-${timestamp}.png`;
       const file = bucket.file(filename);
       
       // Upload the image

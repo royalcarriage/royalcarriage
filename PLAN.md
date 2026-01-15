@@ -17,11 +17,11 @@ Run end-to-end audit, repair, and deployment across repo, Firebase/GCP, and work
 - Working tree: clean (post-reset), stashes retained for earlier work.
 
 ## Next Actions
-1) Map repo/apps/packages, frameworks, and scripts; write `.agent/artifacts/repo-map.md`.
-2) Run MD audit to produce `.agent/artifacts/md-audit.md` and `.agent/artifacts/backlog.md`; archive obsolete docs.
-3) Run gates (lint/typecheck/test/build) and fix failures.
-4) Audit Firebase/GCP rules and functions; prepare deploy plan.
-5) Execute shadow deploy and smoke; promote if green.
+1) Reconfirm repo map after package installs; keep astro packages aligned; refresh `.agent/artifacts/repo-map.md` if structure shifts.
+2) Re-run MD audit deltas if new docs land; keep backlog/priorities in sync.
+3) Run gates regularly (`npm run check && npm run build` now green); add CI coverage for smoke.
+4) Finalize Firebase bits: migrate any env to params, finish rate limiter/deployImages bucket wiring, consider multi-org scoping; dry-run deploy before prod.
+5) Expand smoke (auth/API/UI), address UX/SEO backlog (CTA/trust/pricing, schemas/robots automation, GA4/ROI), and prep next deploy.
 
 ## Roadmap (to fill after MD audit)
 1) Mobile sticky CTA + trust badges + differentiated hero copy.

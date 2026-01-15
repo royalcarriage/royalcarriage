@@ -1,0 +1,25 @@
+{
+  "name": "@royal/astro-components",
+  "version": "1.0.0",
+  "type": "module",
+  "exports": {
+    "./SEOHead.astro": "./src/SEOHead.astro",
+    "./LocalBusinessSchema.astro": "./src/LocalBusinessSchema.astro",
+    "./VehicleCard.astro": "./src/VehicleCard.astro",
+    "./ServiceCard.astro": "./src/ServiceCard.astro",
+    "./LocationCard.astro": "./src/LocationCard.astro",
+    "./EventCard.astro": "./src/EventCard.astro",
+    "./BlogPostCard.astro": "./src/BlogPostCard.astro",
+    "./CTASection.astro": "./src/CTASection.astro",
+    "./Hero.astro": "./src/Hero.astro",
+    "./Footer.astro": "./src/Footer.astro",
+    "./Header.astro": "./src/Header.astro",
+    "./Navigation.astro": "./src/Navigation.astro",
+    "./GoogleAnalytics.astro": "./src/GoogleAnalytics.astro",
+    "./AnalyticsTracker.astro": "./src/AnalyticsTracker.astro"
+  },
+  "dependencies": {
+    "@royal/types": "file:../types",
+    "@royal/astro-utils": "file:../astro-utils"
+  }
+}

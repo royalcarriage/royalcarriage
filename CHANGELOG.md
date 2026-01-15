@@ -11,3 +11,7 @@
 - Fixed Firebase functions predeploy (npx tsc + postbuild copy to lib/index.js); deployed hosting + Firestore/Storage rules and functions; created preview channel (canary-1768485534) and pushed prod hosting/rules. Functions deploy surfaced `functions.config()` deprecation notice (migrate to params).
 - Aligned auth checks to accept role/admin claim across functions and rules; Storage/Firestore admins now honor claims + user doc; added smoke check script (`npm run smoke`) for preview/prod.
 - Added robots.txt and sitemap.xml to client/public; rebuild successful.
+- Repaired local toolchain after stash cleanup (restored node_modules bins, removed stray workflow/admin lockfile) and switched tsx scripts to direct module path.
+- Secured image generation function with admin token verification, usage-based rate limiting keyed by start-of-day ms, and user-aware audit logging; made image uploads respect `DEPLOY_IMAGES_BUCKET/PREFIX`.
+- `npm run check` and `npm run build` passing post-fixes.
+- Documented deploy-images env variables in `.env.example`.

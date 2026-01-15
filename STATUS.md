@@ -16,6 +16,10 @@
 - 10:00 UTC: Firebase dry-run `firebase deploy --only firestore:rules,storage --dry-run` ✅; preview deploy `hosting:channel:deploy canary-1768485534` ✅ (URL: https://royalcarriagelimoseo--canary-1768485534-berzffmk.web.app); production deploy hosting+rules ✅; functions deploy ✅ after fixing predeploy (npx tsc + postbuild copy). Functions.config deprecation notice logged (migrate to params).
 - 10:15 UTC: Aligned auth checks (functions accept role=admin or admin=true), hardened Firestore/Storage rules to accept claims + user doc for admin; added smoke script (`npm run smoke`) hitting preview/prod (heads OK).
 - 10:25 UTC: Added robots.txt and sitemap.xml to client/public; rebuild succeeded. Rate limiter/deployImages still pending rework; functions.config migration reminder (none found).
+- 10:35 UTC: Resolved stash residue from `main` (removed stray workflow/admin lockfile, kept astro packages), reinstalled node_modules to restore missing bins.
+- 10:38 UTC: Hardened `functions/src/index.ts` image generation: verify admin ID token, enforce daily limit via `usage_stats` doc keyed by start-of-day ms, log actual user, and write `createdBy`; adjusted image upload to respect `DEPLOY_IMAGES_BUCKET/PREFIX`.
+- 10:42 UTC: Swapped tsx invocations to direct module path to avoid broken pnpm shim; `npm run check` ✅ and `npm run build` ✅.
+- 10:44 UTC: Added deploy-images env hints (`DEPLOY_IMAGES_BUCKET`, `DEPLOY_IMAGES_PREFIX`) to `.env.example`.
 
 ## Notes
 - Outstanding: migrate env handling to params; rework deployImages/rate limiter; consider multi-org rules; expand smoke (auth/APIs); execute UX/SEO backlog (CTA/trust/pricing, schemas/sitemap automation, image optimization, GA4 events) and add CI gates.
