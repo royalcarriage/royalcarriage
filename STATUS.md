@@ -17,4 +17,9 @@ TypeScript type error fix:
 - TypeScript check passes cleanly.
 - Build completes successfully.
 
+CI/CD pipeline fix:
+- Fixed npm ci failure by syncing package-lock.json with package.json.
+- Resolved missing bufferutil@4.1.0 (moved to optionalDependencies).
+- Verified: npm install, typecheck, and build all pass.
+
 Next: Run `scripts/emulator-role-test.mjs` against local server/emulator and validate smoke checks.
