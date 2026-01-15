@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Phone, Calendar, Check, Clock, Shield, Users, Car } from "lucide-react";
+import { LocalBusinessSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
@@ -123,6 +124,13 @@ export default function Home() {
         description="Royal Carriage Airport Service — Scheduled pickup, no surge pricing, professional chauffeurs. Fixed rates to O'Hare & Midway airports. Flight tracking included. Book online or call (224) 801-3090."
         path="/"
       />
+      <LocalBusinessSchema 
+        image="https://chicagoairportblackcar.com/assets/luxury_black_sedan_airport_terminal.png"
+      />
+      <FAQSchema questions={faqItems} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://chicagoairportblackcar.com" }
+      ]} />
       <Hero
         title="Royal Carriage Airport Service — No Surge Pricing, Guaranteed Pickup"
         subtitle="Scheduled black car service to O'Hare & Midway • Fixed rates • Flight tracking • Professional chauffeurs • Never pay surge pricing"
