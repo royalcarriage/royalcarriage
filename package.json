@@ -12,6 +12,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:smoke": "bash script/smoke-test.sh",
+    "optimize:images": "node script/optimize-images.js",
+    "check-links": "npx linkinator ./dist/public --concurrency 10 --timeout 20000 || true",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
