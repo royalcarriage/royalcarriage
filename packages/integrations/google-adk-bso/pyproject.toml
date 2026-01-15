@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "google-adk-bso"
+version = "0.1.0"
+description = "Extracted BigQuery + keyword utilities from Google ADK Brand Search Optimization sample"
+authors = ["royalcarriage"]
+
+[tool.poetry.dependencies]
+python = ">=3.11"
+google-cloud-bigquery = "^3.8.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

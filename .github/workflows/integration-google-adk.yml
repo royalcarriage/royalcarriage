@@ -1,0 +1,26 @@
+name: Google ADK BSO Integration
+
+on:
+  push:
+    paths:
+      - 'packages/integrations/google-adk-bso/**'
+  pull_request:
+    paths:
+      - 'packages/integrations/google-adk-bso/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install requirements
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r packages/integrations/google-adk-bso/requirements.txt
+      - name: Run tests
+        run: |
+          pytest -q packages/integrations/google-adk-bso/tests
