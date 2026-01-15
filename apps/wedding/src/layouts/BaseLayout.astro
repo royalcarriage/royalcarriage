@@ -1,0 +1,132 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const siteUrl = 'https://chicagoweddingtransportation.com';
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical || `${siteUrl}${currentPath}`} />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical || `${siteUrl}${currentPath}`} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/og-wedding.jpg`} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/og-wedding.jpg`} />
+    
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="US-IL" />
+    <meta name="geo.placename" content="Chicago" />
+    <meta name="geo.position" content="41.8781;-87.6298" />
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CC67CH86JR"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CC67CH86JR');
+    </script>
+  </head>
+  <body class="min-h-screen bg-white">
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+      <nav class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-2xl font-bold text-rose-900">
+            <span class="text-rose-600">❤</span> Chicago Wedding Transportation
+          </a>
+          <div class="hidden lg:flex space-x-6 items-center">
+            <a href="/" class={`hover:text-rose-600 transition ${currentPath === '/' ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>Home</a>
+            <a href="/services/wedding-day-limo" class={`hover:text-rose-600 transition ${currentPath.startsWith('/services') ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>Services</a>
+            <a href="/fleet" class={`hover:text-rose-600 transition ${currentPath === '/fleet' ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>Fleet</a>
+            <a href="/pricing" class={`hover:text-rose-600 transition ${currentPath === '/pricing' ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>Pricing</a>
+            <a href="/about" class={`hover:text-rose-600 transition ${currentPath === '/about' ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>About</a>
+            <a href="/contact" class={`hover:text-rose-600 transition ${currentPath === '/contact' ? 'text-rose-600 font-semibold' : 'text-gray-700'}`}>Contact</a>
+          </div>
+          <a href="tel:+12248013090" class="hidden md:block bg-rose-600 hover:bg-rose-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-md">
+            Call: (224) 801-3090
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-b from-gray-50 to-gray-100 mt-16 border-t border-gray-200">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold text-rose-900 mb-4">Chicago Wedding Transportation</h3>
+            <p class="text-gray-600">Elegant and reliable luxury transportation for your special day. Serving Chicago and surrounding areas.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-4">Wedding Services</h4>
+            <ul class="space-y-2 text-gray-600">
+              <li><a href="/services/wedding-day-limo" class="hover:text-rose-600 transition">Wedding Day Limo</a></li>
+              <li><a href="/services/guest-shuttles" class="hover:text-rose-600 transition">Guest Shuttles</a></li>
+              <li><a href="/#rehearsal-dinner" class="hover:text-rose-600 transition">Rehearsal Dinner</a></li>
+              <li><a href="/#airport-transfers" class="hover:text-rose-600 transition">Airport Transfers</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-4">Company</h4>
+            <ul class="space-y-2 text-gray-600">
+              <li><a href="/about" class="hover:text-rose-600 transition">About Us</a></li>
+              <li><a href="/fleet" class="hover:text-rose-600 transition">Our Fleet</a></li>
+              <li><a href="/pricing" class="hover:text-rose-600 transition">Pricing</a></li>
+              <li><a href="/contact" class="hover:text-rose-600 transition">Get A Quote</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-900 mb-4">Contact Us</h4>
+            <ul class="space-y-2 text-gray-600">
+              <li>📞 Phone: <a href="tel:+12248013090" class="hover:text-rose-600 transition">(224) 801-3090</a></li>
+              <li>✉️ Email: <a href="mailto:weddings@chicagoweddingtransportation.com" class="hover:text-rose-600 transition">weddings@chicagoweddingtransportation.com</a></li>
+              <li>📍 Chicago, IL</li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-300 mt-8 pt-8 text-center text-gray-600">
+          <p>&copy; {new Date().getFullYear()} Chicago Wedding Transportation. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-rose-600 to-pink-600 text-white p-4 flex gap-2 lg:hidden z-50 shadow-2xl">
+      <a href="tel:+12248013090" class="flex-1 bg-white text-rose-600 py-3 rounded-lg font-semibold text-center shadow-md">
+        📞 Call Now
+      </a>
+      <a href="/contact" class="flex-1 bg-rose-700 py-3 rounded-lg font-semibold text-center shadow-md">
+        💍 Get Quote
+      </a>
+    </div>
+  </body>
+</html>

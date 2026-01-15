@@ -1,0 +1,129 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+}
+
+const { title, description, canonical } = Astro.props;
+const siteUrl = 'https://chicago-partybus.com';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical || siteUrl} />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical || siteUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={`${siteUrl}/og-image.jpg`} />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={`${siteUrl}/og-image.jpg`} />
+    
+    <!-- Geo Tags -->
+    <meta name="geo.region" content="US-IL" />
+    <meta name="geo.placename" content="Chicago" />
+    <meta name="geo.position" content="41.8781;-87.6298" />
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CC67CH86JR"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-CC67CH86JR');
+    </script>
+  </head>
+  <body class="min-h-screen bg-gray-50">
+    <!-- Header/Navigation -->
+    <header class="bg-black text-white sticky top-0 z-50 shadow-lg">
+      <nav class="container mx-auto px-4 py-4">
+        <div class="flex items-center justify-between">
+          <a href="/" class="text-2xl font-bold">Chicago Party Bus</a>
+          <div class="hidden md:flex space-x-6">
+            <a href="/" class="hover:text-purple-400 transition">Home</a>
+            <a href="/fleet" class="hover:text-purple-400 transition">Fleet</a>
+            <a href="/services" class="hover:text-purple-400 transition">Services</a>
+            <a href="/pricing" class="hover:text-purple-400 transition">Pricing</a>
+            <a href="/about" class="hover:text-purple-400 transition">About</a>
+            <a href="/contact" class="hover:text-purple-400 transition">Contact</a>
+          </div>
+          <a href="tel:+12248013090" class="bg-purple-600 hover:bg-purple-700 px-6 py-2 rounded-lg font-semibold transition">
+            Call: (224) 801-3090
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white mt-16">
+      <div class="container mx-auto px-4 py-12">
+        <div class="grid md:grid-cols-4 gap-8">
+          <div>
+            <h3 class="text-xl font-bold mb-4">Chicago Party Bus</h3>
+            <p class="text-gray-400">Premium party bus rentals for Chicago events, celebrations, and nights out.</p>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Services</h4>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="/services/birthday-party-bus" class="hover:text-white">Birthday Parties</a></li>
+              <li><a href="/services/bachelor-bachelorette" class="hover:text-white">Bachelor/Bachelorette</a></li>
+              <li><a href="/services/corporate-events" class="hover:text-white">Corporate Events</a></li>
+              <li><a href="/services/prom-homecoming" class="hover:text-white">Prom & Homecoming</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Company</h4>
+            <ul class="space-y-2 text-gray-400">
+              <li><a href="/about" class="hover:text-white">About Us</a></li>
+              <li><a href="/fleet" class="hover:text-white">Our Fleet</a></li>
+              <li><a href="/pricing" class="hover:text-white">Pricing</a></li>
+              <li><a href="/contact" class="hover:text-white">Contact</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="font-semibold mb-4">Contact</h4>
+            <ul class="space-y-2 text-gray-400">
+              <li>Phone: (224) 801-3090</li>
+              <li>Email: info@chicago-partybus.com</li>
+              <li>Chicago, IL</li>
+            </ul>
+          </div>
+        </div>
+        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+          <p>&copy; {new Date().getFullYear()} Chicago Party Bus. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA -->
+    <div class="fixed bottom-0 left-0 right-0 bg-purple-600 text-white p-4 flex gap-2 md:hidden z-50 shadow-lg">
+      <a href="tel:+12248013090" class="flex-1 bg-white text-purple-600 py-3 rounded-lg font-semibold text-center">
+        📞 Call Now
+      </a>
+      <a href="/contact" class="flex-1 bg-purple-700 py-3 rounded-lg font-semibold text-center">
+        📅 Book Online
+      </a>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,452 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Wedding Guest Shuttle Service",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "Chicago Wedding Transportation",
+    "telephone": "+12248013090",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chicago",
+      "addressRegion": "IL",
+      "addressCountry": "US"
+    }
+  },
+  "areaServed": {
+    "@type": "State",
+    "name": "Illinois"
+  },
+  "description": "Professional wedding guest shuttle service in Chicago. Transport guests between ceremony, reception, and hotels."
+};
+---
+
+<BaseLayout 
+  title="Wedding Guest Shuttle Service Chicago | Hotel to Venue Transportation"
+  description="Professional wedding guest shuttle service in Chicago. Comfortable buses for ceremony, reception, and hotel transportation. Keep guests together and on schedule. Book now!"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-rose-50 via-pink-50 to-white py-16 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-6">
+          <a href="/" class="text-rose-600 hover:text-rose-700 font-semibold">← Back to Home</a>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Wedding Guest Shuttle Service
+          <span class="block text-rose-600 mt-2">Reliable Transportation for Your Guests</span>
+        </h1>
+        <p class="text-xl text-gray-700 mb-8">
+          Keep your wedding guests together, on time, and worry-free with our professional shuttle bus service between hotels, ceremony, and reception venues.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/contact" class="bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition shadow-lg">
+            🚐 Get Quote
+          </a>
+          <a href="tel:+12248013090" class="bg-white hover:bg-gray-50 text-rose-600 px-8 py-4 rounded-lg text-lg font-semibold transition border-2 border-rose-600 shadow-lg">
+            📞 (224) 801-3090
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why You Need Guest Shuttles -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Why Wedding Guest Shuttles Are Essential</h2>
+        
+        <p class="text-gray-700 mb-4 text-lg">
+          One of the biggest logistical challenges for any Chicago wedding is coordinating guest transportation. Between ceremony, cocktail hour, reception, and hotel accommodations, your guests can face confusion, parking challenges, and potential safety concerns—especially if alcohol is being served.
+        </p>
+
+        <p class="text-gray-700 mb-6 text-lg">
+          Our professional wedding guest shuttle service solves all these problems elegantly and affordably. We transport your guests safely and comfortably between locations, ensuring everyone arrives together and on time, while you focus on celebrating your special day.
+        </p>
+
+        <div class="grid md:grid-cols-2 gap-6 my-12">
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-3 text-xl">Benefits for Your Guests</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li>✓ No need to navigate unfamiliar areas</li>
+              <li>✓ No parking hassles or fees</li>
+              <li>✓ Enjoy the celebration without driving concerns</li>
+              <li>✓ Meet other guests during rides</li>
+              <li>✓ Safe transportation all night</li>
+            </ul>
+          </div>
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-3 text-xl">Benefits for You</h3>
+            <ul class="space-y-2 text-gray-700">
+              <li>✓ Everyone arrives on time</li>
+              <li>✓ No guests getting lost</li>
+              <li>✓ Reduces venue parking needs</li>
+              <li>✓ Shows care for guest comfort</li>
+              <li>✓ Peace of mind all day</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shuttle Options -->
+  <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Our Shuttle Bus Options</h2>
+        
+        <div class="space-y-8">
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🚐</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Mini Buses (14-25 Passengers)</h3>
+                <p class="text-gray-700 mb-4">
+                  Perfect for smaller weddings or as supplementary shuttles. Our mini buses offer comfortable seating, climate control, and a smooth ride between venues.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ 14-25 passenger capacity</li>
+                  <li>✓ Climate controlled</li>
+                  <li>✓ PA system</li>
+                  <li>✓ Storage for gifts/bags</li>
+                  <li>✓ Professional driver</li>
+                  <li>✓ Ideal for hotel loops</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🚌</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Full-Size Coaches (30-56 Passengers)</h3>
+                <p class="text-gray-700 mb-4">
+                  Our full-size motor coaches are ideal for larger weddings. Transport all your guests in one comfortable, well-appointed vehicle.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ 30-56 passenger capacity</li>
+                  <li>✓ Reclining seats</li>
+                  <li>✓ Restroom on board</li>
+                  <li>✓ Entertainment systems</li>
+                  <li>✓ Large luggage capacity</li>
+                  <li>✓ ADA accessible options</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🚐🚐</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Multiple Shuttle Fleet</h3>
+                <p class="text-gray-700 mb-4">
+                  For very large weddings or multiple hotel locations, we provide a coordinated fleet of shuttles working together to transport all your guests efficiently.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ Multiple vehicles coordinated</li>
+                  <li>✓ Continuous loop service</li>
+                  <li>✓ Different hotel pickups</li>
+                  <li>✓ Professional coordination</li>
+                  <li>✓ Radio communication</li>
+                  <li>✓ Flexible scheduling</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Options -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Flexible Shuttle Service Options</h2>
+        
+        <div class="space-y-6">
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🏨 Hotel to Ceremony Shuttle</h3>
+            <p class="text-gray-700">
+              Pick up guests from one or multiple hotels and transport them to your ceremony venue. We can make multiple trips or use multiple shuttles to accommodate all guests, with pickups timed perfectly for ceremony start time.
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">⛪ Ceremony to Reception Shuttle</h3>
+            <p class="text-gray-700">
+              Transport guests between ceremony and reception venues, perfect for when they're at different locations. We wait during the ceremony and load guests immediately after, ensuring everyone arrives at the reception together for cocktail hour.
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🔄 Continuous Loop Service</h3>
+            <p class="text-gray-700">
+              Running shuttles throughout your event, providing continuous transportation between hotels and your venue. Ideal for staggered arrivals and giving guests flexibility to come and go.
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">🌙 End-of-Night Return Service</h3>
+            <p class="text-gray-700">
+              Scheduled shuttle runs at the end of your reception to safely transport guests back to hotels. We can offer multiple departure times (10pm, 11pm, midnight, etc.) to accommodate different schedules.
+            </p>
+          </div>
+
+          <div class="bg-gradient-to-br from-rose-50 to-pink-50 p-6 rounded-xl">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">📅 Multi-Day Service</h3>
+            <p class="text-gray-700">
+              Shuttle service for your entire wedding weekend, including rehearsal dinner, welcome party, wedding day, and farewell brunch. Keep your out-of-town guests comfortable and connected throughout all events.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">How Our Shuttle Service Works</h2>
+        
+        <div class="grid md:grid-cols-4 gap-6">
+          <div class="text-center">
+            <div class="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
+            <h3 class="font-bold text-gray-900 mb-2">Plan</h3>
+            <p class="text-gray-600">We discuss your venues, hotels, guest count, and timing to create the perfect shuttle schedule.</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
+            <h3 class="font-bold text-gray-900 mb-2">Coordinate</h3>
+            <p class="text-gray-600">We work with your wedding planner and venues to finalize pickup times and locations.</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
+            <h3 class="font-bold text-gray-900 mb-2">Communicate</h3>
+            <p class="text-gray-600">You provide shuttle details to guests. We can also coordinate directly with hotel concierges.</p>
+          </div>
+          <div class="text-center">
+            <div class="bg-rose-600 text-white w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4">4</div>
+            <h3 class="font-bold text-gray-900 mb-2">Execute</h3>
+            <p class="text-gray-600">Our professional drivers handle all transportation flawlessly, keeping everyone on schedule.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Included -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">What's Included in Your Shuttle Service</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Professional Drivers</h3>
+              <p class="text-gray-600">Experienced, uniformed drivers with commercial licenses and wedding day experience.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Clean, Modern Vehicles</h3>
+              <p class="text-gray-600">Well-maintained, detailed shuttles with climate control and comfortable seating.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Flexible Scheduling</h3>
+              <p class="text-gray-600">Multiple pickups, drop-offs, and timing options to match your wedding schedule.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Coordination Services</h3>
+              <p class="text-gray-600">We work with your planner, venues, and hotels to ensure seamless service.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Signage</h3>
+              <p class="text-gray-600">Custom wedding signs for easy guest identification of shuttles.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Insurance & Safety</h3>
+              <p class="text-gray-600">Full commercial insurance and safety-first practices for complete peace of mind.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Guide -->
+  <section class="py-16 bg-gradient-to-b from-rose-50 to-pink-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Shuttle Service Investment</h2>
+        
+        <p class="text-center text-gray-700 mb-8 text-lg">
+          Pricing depends on guest count, number of locations, and service duration. Here are typical scenarios:
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Basic Shuttle</h3>
+            <p class="text-gray-600 mb-4">Single route, 2-3 trips</p>
+            <ul class="space-y-2 text-gray-700 mb-4 text-sm">
+              <li>• One mini bus</li>
+              <li>• Hotel to venue</li>
+              <li>• Return trip at end</li>
+              <li>• Up to 25 guests</li>
+            </ul>
+            <div class="text-center pt-4 border-t border-gray-200">
+              <a href="/contact" class="text-rose-600 font-semibold hover:text-rose-700">Get Quote →</a>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-rose-600">
+            <div class="bg-rose-600 text-white text-sm font-semibold py-1 px-3 rounded-full inline-block mb-3">
+              POPULAR
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Full Service</h3>
+            <p class="text-gray-600 mb-4">Complete day coverage</p>
+            <ul class="space-y-2 text-gray-700 mb-4 text-sm">
+              <li>• Multiple shuttles</li>
+              <li>• Ceremony & reception</li>
+              <li>• Multiple hotel stops</li>
+              <li>• Up to 100 guests</li>
+            </ul>
+            <div class="text-center pt-4 border-t border-gray-200">
+              <a href="/contact" class="text-rose-600 font-semibold hover:text-rose-700">Get Quote →</a>
+            </div>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Premium Package</h3>
+            <p class="text-gray-600 mb-4">Multi-day service</p>
+            <ul class="space-y-2 text-gray-700 mb-4 text-sm">
+              <li>• Weekend coverage</li>
+              <li>• All events</li>
+              <li>• Continuous loops</li>
+              <li>• Unlimited guests</li>
+            </ul>
+            <div class="text-center pt-4 border-t border-gray-200">
+              <a href="/contact" class="text-rose-600 font-semibold hover:text-rose-700">Get Quote →</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg mt-8 text-center">
+          <p class="text-gray-700 mb-4">Every wedding is unique. Contact us for a customized quote based on your specific needs.</p>
+          <a href="/pricing" class="text-rose-600 font-semibold hover:text-rose-700">View detailed pricing information →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Common Questions About Guest Shuttles</h2>
+        
+        <div class="space-y-6">
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="font-bold text-gray-900 mb-2">How many shuttles do I need for my wedding?</h3>
+            <p class="text-gray-600">This depends on your guest count and how quickly you need everyone transported. A mini bus (25 passengers) can typically make 2-3 round trips per hour. We'll help you determine the right number based on your timeline.</p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="font-bold text-gray-900 mb-2">How far in advance should I book?</h3>
+            <p class="text-gray-600">We recommend booking 3-6 months in advance, especially for peak wedding season (May-October). However, we often accommodate last-minute requests based on availability.</p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="font-bold text-gray-900 mb-2">Can shuttles pick up from multiple hotels?</h3>
+            <p class="text-gray-600">Yes! We regularly coordinate multi-hotel pickups. We'll create an efficient route that collects guests from all locations while keeping everyone on schedule.</p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="font-bold text-gray-900 mb-2">What if my timeline changes?</h3>
+            <p class="text-gray-600">We understand wedding timelines can shift. Our drivers stay in communication and can adjust pickup times as needed. We recommend having a coordinator or designated person communicate any changes.</p>
+          </div>
+
+          <div class="border-b border-gray-200 pb-6">
+            <h3 class="font-bold text-gray-900 mb-2">Are the shuttles wheelchair accessible?</h3>
+            <p class="text-gray-600">We have ADA-accessible vehicles available. Please let us know about accessibility needs when booking so we can ensure the right equipment is available.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Complete Your Wedding Transportation</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Wedding Day Limo</h3>
+            <p class="text-gray-600 mb-4">Luxury limousine service for the bride, groom, and wedding party.</p>
+            <a href="/services/wedding-day-limo" class="text-rose-600 font-semibold hover:text-rose-700">Learn More →</a>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">View Our Fleet</h3>
+            <p class="text-gray-600 mb-4">See all shuttle buses and vehicles available for your wedding.</p>
+            <a href="/fleet" class="text-rose-600 font-semibold hover:text-rose-700">See Vehicles →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16 bg-gradient-to-br from-rose-600 to-pink-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Book Your Guest Shuttles?</h2>
+      <p class="text-xl mb-8 opacity-90">Let's discuss your guest transportation needs</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact" class="bg-white text-rose-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg">
+          🚐 Get Free Quote
+        </a>
+        <a href="tel:+12248013090" class="bg-rose-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-rose-800 transition shadow-lg border-2 border-white">
+          📞 Call: (224) 801-3090
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

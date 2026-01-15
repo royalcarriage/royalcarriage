@@ -1,0 +1,362 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "serviceType": "Wedding Day Limousine Service",
+  "provider": {
+    "@type": "LocalBusiness",
+    "name": "Chicago Wedding Transportation",
+    "telephone": "+12248013090",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chicago",
+      "addressRegion": "IL",
+      "addressCountry": "US"
+    }
+  },
+  "areaServed": {
+    "@type": "State",
+    "name": "Illinois"
+  },
+  "description": "Luxury limousine service for brides, grooms, and wedding parties in Chicago"
+};
+---
+
+<BaseLayout 
+  title="Wedding Day Limo Service Chicago | Bride & Groom Transportation"
+  description="Elegant wedding day limousine service in Chicago. Luxury sedans and stretch limos for brides, grooms, and wedding parties. Professional chauffeurs, red carpet service. Book now!"
+>
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-rose-50 via-pink-50 to-white py-16 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <div class="mb-6">
+          <a href="/" class="text-rose-600 hover:text-rose-700 font-semibold">← Back to Home</a>
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Wedding Day Limousine Service
+          <span class="block text-rose-600 mt-2">Elegant Transportation for Brides & Grooms</span>
+        </h1>
+        <p class="text-xl text-gray-700 mb-8">
+          Make your grand entrance and exit unforgettable with our luxury wedding limousines and professional chauffeur service in Chicago.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/contact" class="bg-rose-600 hover:bg-rose-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition shadow-lg">
+            💍 Get Quote
+          </a>
+          <a href="tel:+12248013090" class="bg-white hover:bg-gray-50 text-rose-600 px-8 py-4 rounded-lg text-lg font-semibold transition border-2 border-rose-600 shadow-lg">
+            📞 (224) 801-3090
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Overview -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Your Perfect Wedding Day Deserves Perfect Transportation</h2>
+        
+        <p class="text-gray-700 mb-4 text-lg">
+          Your wedding day is one of the most important days of your life, and every detail matters—including how you arrive. At Chicago Wedding Transportation, we specialize in providing luxurious, reliable, and elegant transportation for brides, grooms, and wedding parties throughout the Chicagoland area.
+        </p>
+
+        <p class="text-gray-700 mb-6 text-lg">
+          From the moment you step into one of our pristine vehicles to your grand exit as newlyweds, we ensure your transportation experience is as memorable as the ceremony itself. Our professional chauffeurs, immaculate fleet, and attention to detail make us Chicago's premier choice for wedding day limousine service.
+        </p>
+
+        <div class="grid md:grid-cols-3 gap-6 my-12">
+          <div class="bg-rose-50 p-6 rounded-lg text-center">
+            <div class="text-4xl mb-3">🎩</div>
+            <h3 class="font-bold text-gray-900 mb-2">Professional Service</h3>
+            <p class="text-gray-600">Uniformed chauffeurs trained in wedding day excellence</p>
+          </div>
+          <div class="bg-rose-50 p-6 rounded-lg text-center">
+            <div class="text-4xl mb-3">💎</div>
+            <h3 class="font-bold text-gray-900 mb-2">Luxury Vehicles</h3>
+            <p class="text-gray-600">Pristine limos and sedans detailed for your special day</p>
+          </div>
+          <div class="bg-rose-50 p-6 rounded-lg text-center">
+            <div class="text-4xl mb-3">⏰</div>
+            <h3 class="font-bold text-gray-900 mb-2">On-Time Promise</h3>
+            <p class="text-gray-600">We arrive early and follow your schedule perfectly</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vehicle Options -->
+  <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Wedding Day Vehicle Options</h2>
+        
+        <div class="space-y-8">
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🚗</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Luxury Sedans</h3>
+                <p class="text-gray-700 mb-4">
+                  Perfect for intimate wedding transportation, our luxury sedans (Mercedes S-Class, BMW 7-Series, Cadillac XTS) provide elegant and sophisticated transportation for the bride and groom or small bridal parties.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ Seats 3-4 passengers</li>
+                  <li>✓ Premium leather interiors</li>
+                  <li>✓ Climate control</li>
+                  <li>✓ Complimentary water & mints</li>
+                  <li>✓ Privacy tinted windows</li>
+                  <li>✓ Professional chauffeur</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🎩</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Classic Stretch Limousines</h3>
+                <p class="text-gray-700 mb-4">
+                  Make a grand statement with our classic white or black stretch limousines. Ideal for wedding parties, these vehicles combine elegance with room for your bridesmaids or groomsmen.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ Seats 6-10 passengers</li>
+                  <li>✓ Bar with glassware</li>
+                  <li>✓ Premium sound system</li>
+                  <li>✓ Mood lighting</li>
+                  <li>✓ Red carpet service</li>
+                  <li>✓ Champagne available</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white p-8 rounded-xl shadow-lg">
+            <div class="md:flex gap-6">
+              <div class="md:w-1/3 mb-4 md:mb-0">
+                <div class="h-48 bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg flex items-center justify-center">
+                  <span class="text-6xl">🚙</span>
+                </div>
+              </div>
+              <div class="md:w-2/3">
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">Luxury SUV Limousines</h3>
+                <p class="text-gray-700 mb-4">
+                  Our Cadillac Escalade and Lincoln Navigator limousines offer extra space and modern luxury. Perfect for wedding parties who want room to move and travel comfortably.
+                </p>
+                <ul class="grid md:grid-cols-2 gap-2 text-gray-700">
+                  <li>✓ Seats 6-8 passengers</li>
+                  <li>✓ Extra space for dresses</li>
+                  <li>✓ Entertainment systems</li>
+                  <li>✓ Privacy partitions</li>
+                  <li>✓ Champagne service</li>
+                  <li>✓ Modern amenities</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-8">
+          <a href="/fleet" class="inline-block bg-rose-600 hover:bg-rose-700 text-white px-8 py-3 rounded-lg font-semibold transition shadow-md">
+            View Complete Fleet
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What's Included -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">What's Included in Your Wedding Day Limo Service</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Professional Chauffeur</h3>
+              <p class="text-gray-600">Uniformed, licensed, and trained specifically for wedding day service with dress handling expertise.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Red Carpet Service</h3>
+              <p class="text-gray-600">Make your entrance memorable with our signature red carpet rolled out for your arrival.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Vehicle Decoration</h3>
+              <p class="text-gray-600">Optional "Just Married" signs and ribbon decorations to mark your special day.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Champagne Service</h3>
+              <p class="text-gray-600">Complimentary champagne, glasses, and ice available for your celebration.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Timeline Coordination</h3>
+              <p class="text-gray-600">We work with your wedding planner and photographer to ensure perfect timing.</p>
+            </div>
+          </div>
+          <div class="flex gap-4">
+            <div class="text-3xl">✓</div>
+            <div>
+              <h3 class="font-bold text-gray-900 mb-2">Unlimited Mileage</h3>
+              <p class="text-gray-600">Travel anywhere in the Chicagoland area without worrying about extra charges.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages -->
+  <section class="py-16 bg-gradient-to-b from-rose-50 to-pink-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Flexible Wedding Day Packages</h2>
+        
+        <div class="grid md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Essential Package</h3>
+            <div class="text-3xl font-bold text-rose-600 mb-4">3 Hours</div>
+            <p class="text-gray-600 mb-4">Perfect for ceremony to reception transportation</p>
+            <ul class="space-y-2 text-gray-700 mb-6">
+              <li>✓ Ceremony pickup</li>
+              <li>✓ Photo location stops</li>
+              <li>✓ Reception delivery</li>
+              <li>✓ Champagne service</li>
+            </ul>
+            <a href="/contact" class="block text-center bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-lg font-semibold transition">
+              Get Quote
+            </a>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-rose-600">
+            <div class="bg-rose-600 text-white text-sm font-semibold py-1 px-3 rounded-full inline-block mb-4">
+              MOST POPULAR
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Complete Package</h3>
+            <div class="text-3xl font-bold text-rose-600 mb-4">5 Hours</div>
+            <p class="text-gray-600 mb-4">Full wedding day coverage with flexibility</p>
+            <ul class="space-y-2 text-gray-700 mb-6">
+              <li>✓ Getting ready pickup</li>
+              <li>✓ Multiple photo stops</li>
+              <li>✓ Ceremony & reception</li>
+              <li>✓ Grand exit transport</li>
+            </ul>
+            <a href="/contact" class="block text-center bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-lg font-semibold transition">
+              Get Quote
+            </a>
+          </div>
+
+          <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Premium Package</h3>
+            <div class="text-3xl font-bold text-rose-600 mb-4">8+ Hours</div>
+            <p class="text-gray-600 mb-4">All-day service with unlimited flexibility</p>
+            <ul class="space-y-2 text-gray-700 mb-6">
+              <li>✓ Full day coverage</li>
+              <li>✓ Multiple vehicles option</li>
+              <li>✓ Extended photo time</li>
+              <li>✓ Late night transport</li>
+            </ul>
+            <a href="/contact" class="block text-center bg-rose-600 hover:bg-rose-700 text-white py-3 rounded-lg font-semibold transition">
+              Get Quote
+            </a>
+          </div>
+        </div>
+
+        <p class="text-center text-gray-600 mt-6">All packages customizable to your specific needs. <a href="/pricing" class="text-rose-600 hover:text-rose-700 font-semibold">View detailed pricing →</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8">Why Brides & Grooms Choose Our Limo Service</h2>
+        
+        <div class="prose prose-lg max-w-none text-gray-700">
+          <p class="mb-4">
+            Your wedding day timeline is meticulously planned, and transportation is a critical piece that can't be left to chance. We've been serving Chicago couples for over a decade, and we understand the unique demands of wedding day transportation. Our chauffeurs don't just drive—they're an extension of your wedding team, working in coordination with your planner and photographer to ensure seamless service.
+          </p>
+
+          <p class="mb-4">
+            Every vehicle in our wedding fleet undergoes special detailing before each ceremony. We're talking about a level of cleanliness and presentation that photographs beautifully and reflects the elegance of your special day. From the shine on the exterior to the spotless leather interiors, every detail is perfect.
+          </p>
+
+          <p class="mb-4">
+            Our drivers are trained in the art of handling wedding gowns and formal attire, ensuring you enter and exit the vehicle gracefully without any wardrobe mishaps. We arrive 15 minutes early to every pickup, carry umbrellas for unexpected weather, and have backup plans for Chicago's unpredictable traffic patterns.
+          </p>
+
+          <p class="mb-4">
+            We also understand the importance of those special moments between venues. Many couples tell us that the time in our limos—whether it's the quiet moment alone as newlyweds or the celebratory ride with the wedding party—becomes one of their favorite memories of the day. We create that space for you while handling all the logistics seamlessly.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Services -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Complete Your Wedding Transportation</h2>
+        
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Guest Shuttle Service</h3>
+            <p class="text-gray-600 mb-4">Keep your guests together with our professional shuttle bus service between venues and hotels.</p>
+            <a href="/services/guest-shuttles" class="text-rose-600 font-semibold hover:text-rose-700">Learn More →</a>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold text-gray-900 mb-3">View Our Fleet</h3>
+            <p class="text-gray-600 mb-4">Explore our complete collection of luxury vehicles available for your wedding day.</p>
+            <a href="/fleet" class="text-rose-600 font-semibold hover:text-rose-700">See Vehicles →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16 bg-gradient-to-br from-rose-600 to-pink-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Ready to Book Your Wedding Day Limo?</h2>
+      <p class="text-xl mb-8 opacity-90">Contact us today for availability and personalized pricing</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact" class="bg-white text-rose-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg">
+          💍 Get Free Quote
+        </a>
+        <a href="tel:+12248013090" class="bg-rose-700 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-rose-800 transition shadow-lg border-2 border-white">
+          📞 Call: (224) 801-3090
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

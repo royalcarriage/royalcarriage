@@ -1,0 +1,346 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout 
+  title="Contact Chicago Wedding Transportation | Get Your Free Quote"
+  description="Request a free quote for Chicago wedding transportation. Contact us for luxury limos and guest shuttles. Fast response, custom packages. Call (224) 801-3090 or fill out our form."
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-rose-50 via-pink-50 to-white py-16 md:py-24">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          Get Your Free Wedding Transportation Quote
+        </h1>
+        <p class="text-xl text-gray-700 mb-8">
+          Let's discuss your wedding transportation needs and create the perfect package for your special day
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Options -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-5xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+          <div class="text-center p-8 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl">
+            <div class="text-5xl mb-4">📞</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Call Us</h3>
+            <p class="text-gray-600 mb-4">Speak with a wedding transportation specialist</p>
+            <a href="tel:+12248013090" class="text-rose-600 font-bold text-xl hover:text-rose-700">(224) 801-3090</a>
+            <p class="text-sm text-gray-600 mt-2">Available 7 days a week</p>
+          </div>
+
+          <div class="text-center p-8 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl">
+            <div class="text-5xl mb-4">✉️</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Email Us</h3>
+            <p class="text-gray-600 mb-4">Send us your wedding details</p>
+            <a href="mailto:weddings@chicagoweddingtransportation.com" class="text-rose-600 font-semibold hover:text-rose-700 break-all">weddings@chicagoweddingtransportation.com</a>
+            <p class="text-sm text-gray-600 mt-2">We respond within 24 hours</p>
+          </div>
+
+          <div class="text-center p-8 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl">
+            <div class="text-5xl mb-4">💬</div>
+            <h3 class="text-xl font-bold text-gray-900 mb-3">Request Quote</h3>
+            <p class="text-gray-600 mb-4">Fill out our quick form below</p>
+            <a href="#quote-form" class="text-rose-600 font-semibold hover:text-rose-700">Get Started →</a>
+            <p class="text-sm text-gray-600 mt-2">Fastest response method</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote Form -->
+  <section id="quote-form" class="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <div class="bg-white rounded-xl shadow-2xl p-8 md:p-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-3 text-center">Request Your Free Quote</h2>
+          <p class="text-gray-600 mb-8 text-center">Fill out the form below and we'll get back to you with a custom proposal within 24 hours</p>
+          
+          <form class="space-y-6">
+            <!-- Contact Information -->
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">First Name *</label>
+                <input 
+                  type="text" 
+                  id="firstName" 
+                  name="firstName" 
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">Last Name *</label>
+                <input 
+                  type="text" 
+                  id="lastName" 
+                  name="lastName" 
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="Smith"
+                />
+              </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+                <input 
+                  type="email" 
+                  id="email" 
+                  name="email" 
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="john@example.com"
+                />
+              </div>
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
+                <input 
+                  type="tel" 
+                  id="phone" 
+                  name="phone" 
+                  required
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="(312) 555-0123"
+                />
+              </div>
+            </div>
+
+            <!-- Wedding Details -->
+            <div class="border-t border-gray-200 pt-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Wedding Details</h3>
+              
+              <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                  <label for="weddingDate" class="block text-sm font-semibold text-gray-700 mb-2">Wedding Date *</label>
+                  <input 
+                    type="date" 
+                    id="weddingDate" 
+                    name="weddingDate" 
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="guestCount" class="block text-sm font-semibold text-gray-700 mb-2">Number of Guests</label>
+                  <input 
+                    type="number" 
+                    id="guestCount" 
+                    name="guestCount" 
+                    min="1"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                    placeholder="100"
+                  />
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <label for="ceremonyVenue" class="block text-sm font-semibold text-gray-700 mb-2">Ceremony Venue</label>
+                <input 
+                  type="text" 
+                  id="ceremonyVenue" 
+                  name="ceremonyVenue" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="St. Mary's Church, Chicago"
+                />
+              </div>
+
+              <div class="mt-6">
+                <label for="receptionVenue" class="block text-sm font-semibold text-gray-700 mb-2">Reception Venue</label>
+                <input 
+                  type="text" 
+                  id="receptionVenue" 
+                  name="receptionVenue" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                  placeholder="The Drake Hotel, Chicago"
+                />
+              </div>
+            </div>
+
+            <!-- Services Needed -->
+            <div class="border-t border-gray-200 pt-6">
+              <h3 class="text-xl font-bold text-gray-900 mb-4">Services Needed *</h3>
+              
+              <div class="space-y-3">
+                <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg hover:bg-rose-50 transition">
+                  <input 
+                    type="checkbox" 
+                    name="services" 
+                    value="bride-groom-limo"
+                    class="w-5 h-5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                  />
+                  <span class="ml-3 text-gray-700">Bride & Groom Limousine</span>
+                </label>
+
+                <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg hover:bg-rose-50 transition">
+                  <input 
+                    type="checkbox" 
+                    name="services" 
+                    value="wedding-party"
+                    class="w-5 h-5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                  />
+                  <span class="ml-3 text-gray-700">Wedding Party Transportation</span>
+                </label>
+
+                <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg hover:bg-rose-50 transition">
+                  <input 
+                    type="checkbox" 
+                    name="services" 
+                    value="guest-shuttles"
+                    class="w-5 h-5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                  />
+                  <span class="ml-3 text-gray-700">Guest Shuttle Service</span>
+                </label>
+
+                <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg hover:bg-rose-50 transition">
+                  <input 
+                    type="checkbox" 
+                    name="services" 
+                    value="rehearsal-dinner"
+                    class="w-5 h-5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                  />
+                  <span class="ml-3 text-gray-700">Rehearsal Dinner Transportation</span>
+                </label>
+
+                <label class="flex items-center cursor-pointer p-4 border border-gray-300 rounded-lg hover:bg-rose-50 transition">
+                  <input 
+                    type="checkbox" 
+                    name="services" 
+                    value="airport-transfer"
+                    class="w-5 h-5 text-rose-600 border-gray-300 rounded focus:ring-rose-500"
+                  />
+                  <span class="ml-3 text-gray-700">Airport Transfer / Honeymoon</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Additional Details -->
+            <div class="border-t border-gray-200 pt-6">
+              <label for="additionalDetails" class="block text-sm font-semibold text-gray-700 mb-2">Additional Details or Questions</label>
+              <textarea 
+                id="additionalDetails" 
+                name="additionalDetails" 
+                rows="5"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                placeholder="Tell us more about your transportation needs, timeline, special requests, budget considerations, etc."
+              ></textarea>
+            </div>
+
+            <!-- How did you hear about us -->
+            <div>
+              <label for="referralSource" class="block text-sm font-semibold text-gray-700 mb-2">How did you hear about us?</label>
+              <select 
+                id="referralSource" 
+                name="referralSource"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+              >
+                <option value="">Select one...</option>
+                <option value="google">Google Search</option>
+                <option value="wedding-planner">Wedding Planner</option>
+                <option value="venue">Venue Recommendation</option>
+                <option value="friend">Friend or Family</option>
+                <option value="social-media">Social Media</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-6">
+              <button 
+                type="submit"
+                class="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white py-4 px-8 rounded-lg text-lg font-semibold transition shadow-lg"
+              >
+                💍 Request Free Quote
+              </button>
+              <p class="text-sm text-gray-600 text-center mt-4">
+                We'll review your information and send you a personalized proposal within 24 hours
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center">Common Questions</h2>
+        
+        <div class="space-y-6">
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-2">How quickly will I receive a quote?</h3>
+            <p class="text-gray-600">We typically respond to all quote requests within 24 hours, often much sooner. If your wedding is within the next few weeks, we'll prioritize your request.</p>
+          </div>
+
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-2">Is there any obligation to book?</h3>
+            <p class="text-gray-600">Absolutely not! Our quotes are completely free with no obligation. We want you to have all the information you need to make the best decision for your wedding.</p>
+          </div>
+
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-2">Can I make changes to my quote?</h3>
+            <p class="text-gray-600">Yes! We understand that wedding plans evolve. We're happy to adjust your quote as your needs change, right up until your wedding day.</p>
+          </div>
+
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-2">How far in advance should I book?</h3>
+            <p class="text-gray-600">We recommend booking 3-6 months in advance, especially for peak season (May-October) Saturdays. However, we often accommodate last-minute bookings based on availability.</p>
+          </div>
+
+          <div class="bg-rose-50 p-6 rounded-lg">
+            <h3 class="font-bold text-gray-900 mb-2">Can I see the vehicles before booking?</h3>
+            <p class="text-gray-600">Absolutely! We're happy to arrange a fleet viewing at our facility. Just mention this in your quote request or give us a call to schedule.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us -->
+  <section class="py-16 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6">Why Request a Quote From Us?</h2>
+        
+        <div class="grid md:grid-cols-3 gap-8">
+          <div>
+            <div class="text-4xl mb-3">⚡</div>
+            <h3 class="font-bold text-gray-900 mb-2">Fast Response</h3>
+            <p class="text-gray-600">Quick turnaround on all quote requests</p>
+          </div>
+          <div>
+            <div class="text-4xl mb-3">💎</div>
+            <h3 class="font-bold text-gray-900 mb-2">Custom Packages</h3>
+            <p class="text-gray-600">Tailored to your specific needs</p>
+          </div>
+          <div>
+            <div class="text-4xl mb-3">💰</div>
+            <h3 class="font-bold text-gray-900 mb-2">Transparent Pricing</h3>
+            <p class="text-gray-600">No hidden fees or surprises</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="py-16 bg-gradient-to-br from-rose-600 to-pink-600 text-white">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">Prefer to Talk?</h2>
+      <p class="text-xl mb-8 opacity-90">Give us a call and speak directly with a wedding transportation specialist</p>
+      <a href="tel:+12248013090" class="inline-block bg-white text-rose-600 px-8 py-4 rounded-lg text-2xl font-bold hover:bg-gray-100 transition shadow-lg">
+        📞 (224) 801-3090
+      </a>
+      <p class="mt-4 opacity-90">Available 7 days a week</p>
+    </div>
+  </section>
+</BaseLayout>
