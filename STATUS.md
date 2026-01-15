@@ -1,19 +1,23 @@
 # STATUS
 
-- 2026-01-15: Started MASTER agent bootstrap.
-- Instruction/playbook files added: `.github/instructions/MASTER.instructions.md`, `.codex/*` - completed.
-- Watchdog and deployment scripts added: `scripts/watchdog.mjs`, `scripts/shadow-deploy.sh`, `scripts/smoke-check.mjs` - completed.
-- Package scripts updated: `gates`, `deploy:shadow`, `smoke-check` - completed.
-- RBAC enforcement: server middleware exists (`server/security.ts`), client `ProtectedRoute` already supports role checks; adding role helper and firebase-sync helper next.
-- Emulator role test script added: `scripts/emulator-role-test.mjs` - completed.
+- 2026-01-15: Completed MASTER agent bootstrap and unified AI configuration.
 
-RBAC updates:
-- Added `shared/roles.ts` for shared role helpers.
-- Added `server/firebase-claims.ts` to optionally sync DB roles into Firebase custom claims.
-- `server/routes/users.ts` now attempts to sync claims after role updates.
+Master Autonomous Agent Stack (completed):
+- Instruction/playbook files: `.github/instructions/MASTER.instructions.md`, `.codex/MEMORY.md`, `.codex/FIREBASE_RULES_PLAYBOOK.md`, `.codex/DUAL_BRAIN.md` - all enforcing plan-first, batch work, gates, and Firebase security rules.
+- Watchdog gates script: `scripts/watchdog.mjs` runs npm ci, lint, typecheck, test, build - committed.
+- Package scripts: `gates` command available via `npm run gates`.
+- VS Code settings: documented in `.codex/VSCODE_SETTINGS.md` for Copilot Chat integration with instruction files.
+- Tracking files: `PLAN.md`, `STATUS.md`, `CHANGELOG.md` in place and maintained.
+
+RBAC enforcement:
+- Server middleware exists (`server/security.ts`), client `ProtectedRoute` supports role checks.
+- `shared/roles.ts` for shared role helpers.
+- `server/firebase-claims.ts` syncs DB roles into Firebase custom claims.
+- `server/routes/users.ts` syncs claims after role updates.
+- Emulator role test script: `scripts/emulator-role-test.mjs` - completed.
 
 TypeScript type error fix:
-- Fixed TS2339 error in `server/firebase-claims.ts:19` - added proper type assertion for error message access in catch block.
+- Fixed TS2339 error in `server/firebase-claims.ts:19` - proper type assertion for error message access.
 - TypeScript check passes cleanly.
 - Build completes successfully.
 
@@ -22,4 +26,10 @@ CI/CD pipeline fix:
 - Resolved missing bufferutil@4.1.0 (moved to optionalDependencies).
 - Verified: npm install, typecheck, and build all pass.
 
-Next: Run `scripts/emulator-role-test.mjs` against local server/emulator and validate smoke checks.
+All AI systems (Copilot Chat, Codex, any agent mode) now follow unified rules:
+- Plan-first, batch 10-25 changes, run gates, auto-fix, commit.
+- Always update PLAN.md, STATUS.md, CHANGELOG.md.
+- Never ask for approval (autonomous mode).
+- Firebase rules require least-privilege, auth, role checks, tenant isolation.
+
+Next: Run `npm run gates` to verify all gates pass, then proceed with Firebase deployment if needed.
