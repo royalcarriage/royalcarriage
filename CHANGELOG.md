@@ -7,6 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Added
 - AGENTS.md with autonomous agent workflow requirements
 
+### Fixed
+- npm ci lockfile sync for @opentelemetry/api optional dependency
+
 ## [1.0.0] - 2026-01-15
 
 **DEPLOYED TO PRODUCTION** ✅

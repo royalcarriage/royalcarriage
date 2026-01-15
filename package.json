@@ -123,6 +123,7 @@
     }
   },
   "optionalDependencies": {
+    "@opentelemetry/api": "1.9.0",
     "bufferutil": "4.1.0"
   }
 }
