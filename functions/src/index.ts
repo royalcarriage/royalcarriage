@@ -5,9 +5,18 @@
 
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+import fetch from 'node-fetch';
 
 // Initialize Firebase Admin
 admin.initializeApp();
+
+// Helper function to get backend API URL
+function getBackendUrl(): string {
+  return process.env.BACKEND_API_URL || 
+    process.env.FUNCTIONS_EMULATOR === 'true' 
+      ? 'http://localhost:5000' 
+      : 'https://royalcarriagelimoseo.web.app';
+}
 
 // Helper function to get allowed origins from environment
 function getAllowedOrigins(): string[] {
@@ -78,16 +87,57 @@ export const dailyPageAnalysis = functions.pubsub
       });
 
       // Analyze each page
+      const backendUrl = getBackendUrl();
+      
       for (const page of pages) {
-        console.log(`Analyzing page: ${page.name}`);
+        console.log(`Analyzing page: ${page.name} (${page.url})`);
         
-        // Store analysis results in Firestore
-        await admin.firestore().collection('page_analyses').add({
-          pageUrl: page.url,
-          pageName: page.name,
-          analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-          status: 'pending',
-        });
+        try {
+          // Fetch the actual page content
+          const pageResponse = await fetch(`${backendUrl}${page.url}`);
+          const pageContent = await pageResponse.text();
+          
+          // Call backend API for analysis
+          const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              pageUrl: page.url,
+              pageName: page.name,
+              pageContent: pageContent,
+            }),
+          });
+          
+          if (analysisResponse.ok) {
+            const analysisData = await analysisResponse.json();
+            
+            // Store successful analysis results in Firestore
+            await admin.firestore().collection('page_analyses').add({
+              pageUrl: page.url,
+              pageName: page.name,
+              seoScore: analysisData.analysis.seoScore,
+              contentScore: analysisData.analysis.contentScore,
+              recommendations: analysisData.analysis.recommendations,
+              analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+              status: 'completed',
+            });
+            console.log(`✓ Successfully analyzed: ${page.name}`);
+          } else {
+            throw new Error(`API returned ${analysisResponse.status}`);
+          }
+        } catch (error) {
+          console.error(`✗ Failed to analyze ${page.name}:`, error);
+          // Store failed analysis
+          await admin.firestore().collection('page_analyses').add({
+            pageUrl: page.url,
+            pageName: page.name,
+            analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+            status: 'failed',
+            error: error instanceof Error ? error.message : 'Unknown error',
+          });
+        }
       }
 
       console.log(`Daily analysis completed for ${pages.length} pages`);
@@ -201,19 +251,33 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
     const sanitizedPageUrl = pageUrl.trim();
     const sanitizedPageName = pageName.trim().replace(/[<>]/g, '');
 
-    // TODO: Replace with actual AI analysis using PageAnalyzer
-    // This is currently using mock data for demonstration
-    // In production, import and use the PageAnalyzer class:
-    // import { PageAnalyzer } from '../../server/ai/page-analyzer';
-    // const analyzer = new PageAnalyzer();
-    // const result = await analyzer.analyzePage(pageContent, pageUrl, pageName);
+    // Call backend API for actual AI analysis
+    const backendUrl = getBackendUrl();
+    const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        pageUrl: sanitizedPageUrl,
+        pageName: sanitizedPageName,
+        pageContent: pageContent,
+      }),
+    });
+
+    if (!analysisResponse.ok) {
+      throw new Error(`Backend API error: ${analysisResponse.status} ${analysisResponse.statusText}`);
+    }
+
+    const analysisData = await analysisResponse.json();
     
-    // Perform AI analysis (using mock data for now)
+    // Store analysis results in Firestore
     const analysis = {
       pageUrl: sanitizedPageUrl,
       pageName: sanitizedPageName,
-      seoScore: Math.floor(Math.random() * 40) + 60,
-      contentScore: Math.floor(Math.random() * 40) + 60,
+      seoScore: analysisData.analysis.seoScore,
+      contentScore: analysisData.analysis.contentScore,
+      recommendations: analysisData.analysis.recommendations,
       analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
       status: 'completed',
     };
@@ -224,7 +288,7 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
     res.status(200).json({
       success: true,
       analysisId: docRef.id,
-      analysis,
+      analysis: analysisData.analysis,
     });
   } catch (error) {
     console.error('Page analysis failed:', error);
