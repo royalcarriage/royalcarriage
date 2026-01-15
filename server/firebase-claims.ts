@@ -16,6 +16,6 @@ export async function syncUserRoleToFirebase(uid: string, role: string) {
     await admin.auth().setCustomUserClaims(uid, claims as any);
     console.log('Synced role to firebase claims for', uid);
   } catch (e) {
-    console.warn('Failed to sync firebase claims:', e?.message || e);
+    console.warn('Failed to sync firebase claims:', (e as Error)?.message || e);
   }
 }
