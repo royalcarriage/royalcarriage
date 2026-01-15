@@ -15,6 +15,7 @@
 - 09:50 UTC: Upgraded vitest/@vitest/coverage-v8 to 4.0.17; reran `npm run check` and `npm run build` ✅; `npm audit --json` now clean (0 vulnerabilities).
 - 10:00 UTC: Firebase dry-run `firebase deploy --only firestore:rules,storage --dry-run` ✅; preview deploy `hosting:channel:deploy canary-1768485534` ✅ (URL: https://royalcarriagelimoseo--canary-1768485534-berzffmk.web.app); production deploy hosting+rules ✅; functions deploy ✅ after fixing predeploy (npx tsc + postbuild copy). Functions.config deprecation notice logged (migrate to params).
 - 10:15 UTC: Aligned auth checks (functions accept role=admin or admin=true), hardened Firestore/Storage rules to accept claims + user doc for admin; added smoke script (`npm run smoke`) hitting preview/prod (heads OK).
+- 10:25 UTC: Added robots.txt and sitemap.xml to client/public; rebuild succeeded. Rate limiter/deployImages still pending rework; functions.config migration reminder (none found).
 
 ## Notes
-- Pending: repo mapping, MD audit, gates, Firebase/GCP verification, deploy steps.
+- Outstanding: migrate env handling to params; rework deployImages/rate limiter; consider multi-org rules; expand smoke (auth/APIs); execute UX/SEO backlog (CTA/trust/pricing, schemas/sitemap automation, image optimization, GA4 events) and add CI gates.
