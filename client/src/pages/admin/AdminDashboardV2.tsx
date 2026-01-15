@@ -5,6 +5,7 @@ import { AdminSidebar, AdminSection } from "@/components/admin/AdminSidebar";
 import { SiteSelector } from "@/components/admin/SiteSelector";
 import { OverviewDashboard } from "@/components/admin/OverviewDashboard";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
+import { SEOBotDashboard } from "@/components/admin/SEOBotDashboard";
 import { Bell, User, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -19,7 +20,7 @@ export default function AdminDashboardV2() {
       case "content":
         return <ContentPlaceholder />;
       case "seo-bot":
-        return <SEOBotPlaceholder />;
+        return <SEOBotDashboard />;
       case "images":
         return <ImagesPlaceholder />;
       case "analytics":
