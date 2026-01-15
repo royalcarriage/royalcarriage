@@ -231,11 +231,11 @@ export default function DriversPage() {
           bulkActions={[
             {
               label: "Activate",
-              onClick: (rows) => console.log("Activate", rows),
+              onClick: (rows) => () => {},
             },
             {
               label: "Deactivate",
-              onClick: (rows) => console.log("Deactivate", rows),
+              onClick: (rows) => () => {},
               variant: "outline",
             },
           ]}
@@ -261,7 +261,7 @@ export default function DriversPage() {
             description: "Get started by adding your first driver.",
             action: {
               label: "Add Driver",
-              onClick: () => console.log("Add driver"),
+              onClick: () => () => {},
             },
           }}
         />

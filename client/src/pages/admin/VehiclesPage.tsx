@@ -263,7 +263,7 @@ export default function VehiclesPage() {
             description: "Get started by adding your first vehicle.",
             action: {
               label: "Add Vehicle",
-              onClick: () => console.log("Add vehicle"),
+              onClick: () => () => {},
             },
           }}
         />

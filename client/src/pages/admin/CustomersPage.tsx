@@ -250,7 +250,7 @@ export default function CustomersPage() {
             description: "Get started by adding your first customer.",
             action: {
               label: "Add Customer",
-              onClick: () => console.log("Add customer"),
+              onClick: () => () => {},
             },
           }}
         />
