@@ -3,9 +3,16 @@ import { PageAnalyzer } from './page-analyzer';
 import { ContentGenerator } from './content-generator';
 import { ImageGenerator } from './image-generator';
 import queue, { enqueueContent, listDrafts, getDraft, updateDraftStatus } from './queue';
+import { requireAdmin } from '../middleware/auth';
+import { rateLimit } from '../middleware/rateLimit';
 import { domainsRouter } from './domains';
+import { applyChangesRouter } from './apply_changes';
 
 const router = Router();
+
+// Apply RBAC + rate limiting to AI endpoints
+router.use(requireAdmin);
+router.use(rateLimit);
 
 const pageAnalyzer = new PageAnalyzer();
 const contentGenerator = new ContentGenerator();
@@ -259,6 +266,7 @@ router.get('/config-status', (_req, res) => {
 
 // Mount domains router (inventory and import endpoints)
 router.use('/domains', domainsRouter);
+router.use('/apply', applyChangesRouter);
 
 export const aiRoutes = router;
 export default router;
