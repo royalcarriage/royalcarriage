@@ -8,11 +8,7 @@
     "build": "tsx script/build.ts",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "test:smoke": "bash script/smoke-test.sh",
-    "db:push": "drizzle-kit push"
+
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^6.1.0",

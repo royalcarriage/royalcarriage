@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Check, Phone, Calendar } from "lucide-react";
 import { Link } from "wouter";
+import { LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
@@ -115,6 +116,19 @@ export default function OHareAirport() {
         description="Professional black car service to Chicago O'Hare International Airport (ORD). Flight tracking, meet & greet, curbside pickup. Licensed chauffeurs and flat-rate pricing. Call (224) 801-3090."
         path="/ohare-airport-limo"
       />
+      <LocalBusinessSchema />
+      <ServiceSchema 
+        name="O'Hare Airport Limousine Service"
+        description="Professional black car and limousine service to Chicago O'Hare International Airport (ORD). Flight tracking, meet and greet, curbside pickup with flat-rate pricing."
+        serviceType="Airport Transfer Service"
+        areaServed={["Chicago", "O'Hare", "Rosemont", "Des Plaines", "Park Ridge"]}
+        url="https://chicagoairportblackcar.com/ohare-airport-limo"
+      />
+      <FAQSchema questions={faqItems} />
+      <BreadcrumbSchema items={[
+        { name: "Home", url: "https://chicagoairportblackcar.com" },
+        { name: "O'Hare Airport", url: "https://chicagoairportblackcar.com/ohare-airport-limo" }
+      ]} />
       <Hero
         title="O'Hare Airport Limo Service (ORD)"
         subtitle="Private car service to and from Chicago O'Hare. Professional chauffeurs, real-time flight tracking, and flat-rate pricing."

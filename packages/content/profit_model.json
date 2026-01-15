@@ -1,0 +1,132 @@
+{
+  "version": "1.0",
+  "last_updated": "2026-01-15",
+  "description": "Profit margin assumptions for Royal Carriage Limousine service lines. Edit these values based on actual cost data from Moovs and accounting.",
+  
+  "service_margins": {
+    "airport_transfer": {
+      "margin": 0.28,
+      "notes": "Airport sedan/SUV pickups. Lower margin due to wait time and flight delays.",
+      "typical_revenue": 125,
+      "driver_payout_pct": 0.52,
+      "tax_pct": 0.10,
+      "fuel_tolls_pct": 0.10
+    },
+    "corporate_hourly": {
+      "margin": 0.30,
+      "notes": "Hourly chauffeur service. Higher margin due to predictable routing.",
+      "typical_revenue": 95,
+      "driver_payout_pct": 0.50,
+      "tax_pct": 0.10,
+      "fuel_tolls_pct": 0.10
+    },
+    "wedding_event": {
+      "margin": 0.33,
+      "notes": "Wedding and special event transportation. Premium pricing, higher margin.",
+      "typical_revenue": 350,
+      "driver_payout_pct": 0.47,
+      "tax_pct": 0.10,
+      "fuel_tolls_pct": 0.10
+    },
+    "party_bus": {
+      "margin": 0.35,
+      "notes": "Party bus rentals. Highest margin due to premium pricing and group bookings.",
+      "typical_revenue": 450,
+      "driver_payout_pct": 0.45,
+      "tax_pct": 0.10,
+      "fuel_tolls_pct": 0.10
+    },
+    "sprinter_van": {
+      "margin": 0.30,
+      "notes": "Sprinter van for groups. Similar to airport but higher capacity.",
+      "typical_revenue": 200,
+      "driver_payout_pct": 0.50,
+      "tax_pct": 0.10,
+      "fuel_tolls_pct": 0.10
+    }
+  },
+  
+  "default_assumptions": {
+    "driver_payout_rate": 0.55,
+    "tax_rate": 0.10,
+    "fuel_tolls_rate": 0.10,
+    "notes": "Used when Moovs export doesn't provide driver payout or tax data."
+  },
+  
+  "ad_spend_allocation": {
+    "method": "proportional",
+    "notes": "Allocate ad spend to service types proportionally based on keyword intent and conversion attribution.",
+    "airport_pct": 0.60,
+    "corporate_pct": 0.20,
+    "wedding_pct": 0.10,
+    "party_bus_pct": 0.10
+  },
+  
+  "roas_thresholds": {
+    "excellent": 5.0,
+    "good": 3.0,
+    "acceptable": 2.0,
+    "break_even": 1.0,
+    "notes": "ROAS = Revenue / Ad Spend. Thresholds for labeling keywords/campaigns as SCALE vs FIX."
+  },
+  
+  "profit_proxy_formula": {
+    "formula": "(revenue - tax - driver_payout - ad_spend_allocated)",
+    "notes": "Simplified contribution margin. Does not include fixed costs (dispatch, insurance, admin, vehicle payments)."
+  },
+  
+  "vehicle_type_margins": {
+    "sedan": {
+      "margin_adjustment": 0.0,
+      "notes": "Baseline margin. Standard black car sedan."
+    },
+    "suv": {
+      "margin_adjustment": 0.02,
+      "notes": "Slightly higher margin due to premium pricing."
+    },
+    "sprinter": {
+      "margin_adjustment": 0.03,
+      "notes": "Higher margin for group transport."
+    },
+    "party_bus": {
+      "margin_adjustment": 0.05,
+      "notes": "Highest margin for premium party bus rentals."
+    },
+    "stretch_limo": {
+      "margin_adjustment": 0.04,
+      "notes": "Premium pricing for stretch limos."
+    }
+  },
+  
+  "seasonal_adjustments": {
+    "enabled": false,
+    "notes": "Optional: adjust margins by season (peak wedding season, holiday travel, etc.)",
+    "q1": 1.0,
+    "q2": 1.1,
+    "q3": 1.05,
+    "q4": 1.15
+  },
+  
+  "data_quality_requirements": {
+    "minimum_reservations_for_analysis": 30,
+    "minimum_ad_spend_for_roas": 100,
+    "notes": "Thresholds for generating reliable reports. If below minimums, flag as 'insufficient data'."
+  },
+  
+  "instructions": {
+    "how_to_update": "Edit this file manually with actual cost data from your accounting system or Moovs backend.",
+    "verification": "After updating, run 'npm run metrics:import' to regenerate ROI reports with new assumptions.",
+    "profit_calculation_example": {
+      "service": "Airport transfer - Sedan",
+      "revenue": 125.0,
+      "tax": 12.5,
+      "driver_payout": 65.0,
+      "fuel_tolls": 12.5,
+      "gross_profit": 35.0,
+      "margin": 0.28,
+      "ad_spend_allocated": 15.0,
+      "net_contribution": 20.0,
+      "notes": "This is the 'profit proxy' used for prioritizing SEO content and ad campaigns."
+    }
+  }
+}

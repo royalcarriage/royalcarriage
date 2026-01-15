@@ -16,6 +16,7 @@ import Pricing from "@/pages/Pricing";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
+import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 
 function Router() {
@@ -33,7 +34,8 @@ function Router() {
       <Route path="/contact" component={Contact} />
       
       {/* Admin Routes */}
-      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin" component={AdminDashboardV2} />
+      <Route path="/admin/v1" component={AdminDashboard} />
       <Route path="/admin/analyze" component={PageAnalyzer} />
       
       <Route component={NotFound} />
