@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Phone, Calendar, MapPin, Plane, Building } from "lucide-react";
 import { Link } from "wouter";
-import { cities, getCitiesByRegion, allRegions } from "@/data/cities";
+import { cities, getCitiesByRegion, allRegions, type City } from "@/data/cities";
 import { LocalBusinessSchema, ServiceSchema, BreadcrumbSchema, FAQSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/lincoln_sedan_chicago_cityscape.png";
@@ -50,7 +50,7 @@ const faqs = [
   },
 ];
 
-const regionLabels: Record<string, string> = {
+const regionLabels: Record<City["region"], string> = {
   "North Shore": "North Shore Suburbs",
   "West Suburbs": "Western Suburbs",
   "Northwest Suburbs": "Northwest Suburbs",
@@ -65,11 +65,16 @@ export default function SuburbsService() {
     { name: "Suburbs Service", url: "https://chicagoairportblackcar.com/chicago-suburbs" }
   ];
 
-  const suburbCities = cities.filter(c => 
-    c.region === "northwestern_suburbs" || 
-    c.region === "western_suburbs" ||
-    c.region === "northern_suburbs"
-  ).slice(0, 20).map(c => c.name);
+  const featuredRegions: City["region"][] = [
+    "North Shore",
+    "West Suburbs",
+    "Northwest Suburbs",
+  ];
+
+  const suburbCities = cities
+    .filter(c => featuredRegions.includes(c.region))
+    .slice(0, 20)
+    .map(c => c.name);
 
   return (
     <Layout>
