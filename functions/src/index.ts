@@ -3,9 +3,12 @@
  * Scheduled functions for automated page analysis and optimization
  */
 
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
 import fetch from 'node-fetch';
+import type { EventContext } from 'firebase-functions/v1';
+import type { Request, Response } from 'firebase-functions/v1';
+import type { DocumentSnapshot } from 'firebase-functions/v1/firestore';
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -23,7 +26,7 @@ function getAllowedOrigins(): string[] {
   const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 
     'https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com';
   
-  const origins = allowedOriginsEnv.split(',').map(o => o.trim());
+  const origins = allowedOriginsEnv.split(',').map((o: string) => o.trim());
   
   // Add localhost for development
   if (process.env.NODE_ENV === 'development' || process.env.FUNCTIONS_EMULATOR === 'true') {
@@ -68,7 +71,7 @@ async function verifyAdminRequest(req: functions.https.Request) {
 export const dailyPageAnalysis = functions.pubsub
   .schedule('0 2 * * *')
   .timeZone(process.env.SCHEDULED_TIMEZONE || 'America/Chicago')
-  .onRun(async (context) => {
+  .onRun(async (context: EventContext) => {
     console.log('Starting daily page analysis...');
 
     try {
@@ -76,13 +79,13 @@ export const dailyPageAnalysis = functions.pubsub
       const pagesToAnalyzeEnv = process.env.PAGES_TO_ANALYZE || 
         '/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact';
       
-      const pageUrls = pagesToAnalyzeEnv.split(',').map(url => url.trim());
+      const pageUrls = pagesToAnalyzeEnv.split(',').map((url: string) => url.trim());
       
-      const pages = pageUrls.map(url => {
+      const pages = pageUrls.map((url: string) => {
         // Extract page name from URL
         const name = url === '/' ? 'Home' : 
           url.split('/').filter(Boolean).join(' ')
-            .split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+            .split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
         return { url, name };
       });
 
@@ -155,7 +158,7 @@ export const dailyPageAnalysis = functions.pubsub
 export const weeklySeoReport = functions.pubsub
   .schedule('0 9 * * 1')
   .timeZone(process.env.SCHEDULED_TIMEZONE || 'America/Chicago')
-  .onRun(async (context) => {
+  .onRun(async (context: EventContext) => {
     console.log('Generating weekly SEO report...');
 
     try {
@@ -168,15 +171,15 @@ export const weeklySeoReport = functions.pubsub
         .where('analyzedAt', '>=', oneWeekAgo)
         .get();
 
-      const analyses = snapshot.docs.map(doc => doc.data());
+      const analyses = snapshot.docs.map((doc: admin.firestore.QueryDocumentSnapshot) => doc.data());
 
       // Generate summary report
       const report = {
         periodStart: oneWeekAgo,
         periodEnd: new Date(),
         totalPages: analyses.length,
-        averageSeoScore: analyses.reduce((sum, a: any) => sum + (a.seoScore || 0), 0) / analyses.length,
-        averageContentScore: analyses.reduce((sum, a: any) => sum + (a.contentScore || 0), 0) / analyses.length,
+        averageSeoScore: analyses.reduce((sum: number, a: any) => sum + (a.seoScore || 0), 0) / analyses.length,
+        averageContentScore: analyses.reduce((sum: number, a: any) => sum + (a.contentScore || 0), 0) / analyses.length,
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
@@ -195,7 +198,7 @@ export const weeklySeoReport = functions.pubsub
  * HTTP function: Trigger page analysis
  * Manual trigger for page analysis via API
  */
-export const triggerPageAnalysis = functions.https.onRequest(async (req, res) => {
+export const triggerPageAnalysis = functions.https.onRequest(async (req: Request, res: Response) => {
   // Configure CORS based on environment
   const allowedOrigins = getAllowedOrigins();
   
@@ -303,7 +306,7 @@ export const triggerPageAnalysis = functions.https.onRequest(async (req, res) =>
  * HTTP function: Generate content
  * Trigger AI content generation
  */
-export const generateContent = functions.https.onRequest(async (req, res) => {
+export const generateContent = functions.https.onRequest(async (req: Request, res: Response) => {
   // Configure CORS based on environment
   const allowedOrigins = getAllowedOrigins();
   
@@ -398,7 +401,7 @@ export const generateContent = functions.https.onRequest(async (req, res) => {
  * HTTP function: Generate image
  * Trigger AI image generation
  */
-export const generateImage = functions.https.onRequest(async (req, res) => {
+export const generateImage = functions.https.onRequest(async (req: Request, res: Response) => {
   // Configure CORS based on environment
   const allowedOrigins = getAllowedOrigins();
   
@@ -552,8 +555,13 @@ export const generateImage = functions.https.onRequest(async (req, res) => {
  */
 export const autoAnalyzeNewPage = functions.firestore
   .document('pages/{pageId}')
-  .onCreate(async (snap, context) => {
+  .onCreate(async (snap: DocumentSnapshot, context: EventContext) => {
     const page = snap.data();
+    
+    if (!page) {
+      console.error('Page data is undefined');
+      return null;
+    }
     
     console.log(`Auto-analyzing new page: ${page.name}`);
 
