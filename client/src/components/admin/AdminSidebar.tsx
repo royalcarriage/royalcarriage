@@ -115,13 +115,13 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
   };
 
   return (
-    <div className="w-64 bg-white border-r border-gray-200 min-h-screen">
+    <div className="w-64 bg-white border-r border-gray-200 min-h-screen flex flex-col">
       <div className="p-4 border-b border-gray-200">
         <h2 className="font-bold text-lg text-gray-900">Admin Control</h2>
         <p className="text-xs text-gray-500 mt-1">Royal Carriage SEO System</p>
       </div>
 
-      <nav className="p-3 space-y-1">
+      <nav className="p-3 space-y-1 flex-1 overflow-y-auto">
         {SECTIONS.map((section) => {
           const Icon = section.icon;
           const isActive = activeSection === section.id;
@@ -173,12 +173,14 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
       </nav>
 
       {/* Footer Info */}
-      <div className="absolute bottom-4 left-4 right-4 p-3 bg-gray-50 rounded-lg">
-        <div className="text-xs text-gray-500">
-          <div className="font-medium text-gray-700 mb-1">System Status</div>
-          <div className="flex items-center gap-2">
-            <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span>All systems operational</span>
+      <div className="p-4 mt-auto border-t border-gray-200">
+        <div className="p-3 bg-gray-50 rounded-lg">
+          <div className="text-xs text-gray-500">
+            <div className="font-medium text-gray-700 mb-1">System Status</div>
+            <div className="flex items-center gap-2">
+              <span className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+              <span>All systems operational</span>
+            </div>
           </div>
         </div>
       </div>

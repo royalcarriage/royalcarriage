@@ -21,6 +21,12 @@ interface OverviewDashboardProps {
 
 export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
   // Mock data - will be replaced with real API calls
+  const statusColors = {
+    live: "bg-green-500",
+    pending: "bg-yellow-500",
+    building: "bg-blue-500",
+  };
+
   const siteStatus = {
     airport: { live: true, lastDeploy: "2 hours ago", health: "good" },
     partybus: { live: false, lastDeploy: "Never", health: "pending" },
@@ -68,7 +74,7 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Status</span>
-              <Badge className={siteStatus[selectedSite as keyof typeof siteStatus]?.live ? "bg-green-500" : "bg-yellow-500"}>
+              <Badge className={siteStatus[selectedSite as keyof typeof siteStatus]?.live ? statusColors.live : statusColors.pending}>
                 {siteStatus[selectedSite as keyof typeof siteStatus]?.live ? "Live" : "Pending"}
               </Badge>
             </div>
