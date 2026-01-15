@@ -10,6 +10,7 @@
     "lint": "echo \"No lint script configured; skipping.\" && exit 0",
     "typecheck": "echo \"No typecheck script configured; skipping.\" && exit 0",
     "check": "tsc",
+    "audit:repo": "node ./scripts/repo-audit.mjs",
     "test": "bash script/smoke-test.sh",
     "gates": "node ./scripts/watchdog.mjs",
     "deploy:shadow": "bash ./scripts/shadow-deploy.sh",
