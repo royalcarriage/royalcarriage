@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { AdminSidebar, AdminSection } from "@/components/admin/AdminSidebar";
 import { SiteSelector } from "@/components/admin/SiteSelector";
 import { OverviewDashboard } from "@/components/admin/OverviewDashboard";
+import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { Bell, User, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
@@ -22,7 +23,7 @@ export default function AdminDashboardV2() {
       case "images":
         return <ImagesPlaceholder />;
       case "analytics":
-        return <AnalyticsPlaceholder />;
+        return <AnalyticsDashboard />;
       case "deploy":
         return <DeployPlaceholder />;
       case "settings":
@@ -120,16 +121,6 @@ function ImagesPlaceholder() {
     <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
       <h2 className="text-2xl font-bold text-gray-900 mb-2">Image Management</h2>
       <p className="text-gray-600 mb-4">Upload, generate, and manage website images</p>
-      <p className="text-sm text-gray-500">Coming soon...</p>
-    </div>
-  );
-}
-
-function AnalyticsPlaceholder() {
-  return (
-    <div className="bg-white rounded-lg border border-gray-200 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Analytics & ROI</h2>
-      <p className="text-gray-600 mb-4">Upload CSVs, view reports, and track profitability</p>
       <p className="text-sm text-gray-500">Coming soon...</p>
     </div>
   );
