@@ -103,14 +103,8 @@ royalcarriage/
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 - **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
-- **[🎉 Final System Review](docs/FINAL_SYSTEM_REVIEW.md)** - ✅ Complete audit with 9.8/10 score - START HERE
-- **[Firebase Audit Summary](docs/FIREBASE_AUDIT_SUMMARY.md)** - Quick overview of Firebase audit findings
-- **[Firebase Audit](docs/FIREBASE_AUDIT.md)** - Firebase system configuration audit report
-- **[Firebase Security Hardening](docs/FIREBASE_SECURITY_HARDENING.md)** - Security fixes and best practices
-- **[Firebase Integration Guide](docs/FIREBASE_INTEGRATION_GUIDE.md)** - How to connect all components
-- **[Firebase Integration Complete](docs/FIREBASE_INTEGRATION_COMPLETE.md)** - ✅ Implementation complete
-- **[Firebase Emulator Guide](docs/FIREBASE_EMULATOR_GUIDE.md)** - Local development with Firebase emulators
-- **[Firebase Completion Summary](docs/FIREBASE_COMPLETION_SUMMARY.md)** - All commits and work completed
+- **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
+- **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
 
 ## AI Features
 

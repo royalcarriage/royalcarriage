@@ -1,5 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "tailwindcss";
+import autoprefixer from "autoprefixer";
 import path from "path";
 import { fileURLToPath } from "url";
 import runtimeErrorModal from "@replit/vite-plugin-runtime-error-modal";
@@ -7,12 +9,24 @@ import { devBanner } from "@replit/vite-plugin-dev-banner";
 import { cartographer } from "@replit/vite-plugin-cartographer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const isDev = process.env.NODE_ENV === 'development';
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  const isDev = mode === 'development';
+  
+  return {
   plugins: [
     react(),
     ...(mode === 'development' ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
   ],
+  css: {
+    postcss: {
+      plugins: [
+        tailwindcss,
+        autoprefixer,
+      ],
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "client", "src"),
@@ -39,4 +53,5 @@ export default defineConfig(({ mode }) => ({
     },
     chunkSizeWarningLimit: 600,
   },
-}));
+}});
+

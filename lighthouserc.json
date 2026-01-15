@@ -1,0 +1,26 @@
+{
+  "ci": {
+    "collect": {
+      "url": [
+        "https://chicagoairportblackcar.com/",
+        "https://chicagoairportblackcar.com/ohare-airport-limo",
+        "https://chicagoairportblackcar.com/midway-airport-limo",
+        "https://chicagoairportblackcar.com/fleet",
+        "https://chicagoairportblackcar.com/pricing"
+      ],
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:performance": ["warn", {"minScore": 0.7}],
+        "categories:accessibility": ["error", {"minScore": 0.9}],
+        "categories:best-practices": ["warn", {"minScore": 0.8}],
+        "categories:seo": ["error", {"minScore": 0.9}]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

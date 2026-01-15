@@ -6,6 +6,7 @@ import { CTASection } from "@/components/CTASection";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Check, Phone, Calendar } from "lucide-react";
+import { LocalBusinessSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_suv_downtown_chicago.png";
 import suvImage from "@assets/stock_images/luxury_black_limousi_51737498.jpg";
