@@ -1,5 +1,7 @@
 # Chicago Airport Black Car
 
+[![Build and Deploy](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml)
+
 Professional airport transportation serving Chicago O'Hare, Midway, and 80+ suburbs.
 
 ## Quick Start
@@ -70,6 +72,7 @@ royalcarriage/
 ## Documentation
 
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Complete setup, build, deployment, and troubleshooting guide
+- **[CI/CD Workflow](docs/CICD_WORKFLOW.md)** - Comprehensive GitHub Actions workflow documentation
 - **[Repository Audit](docs/REPO_AUDIT.md)** - Repository structure and audit report
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 
