@@ -21,6 +21,8 @@ All notable changes to this project will be documented in this file.
 ### Fixed
 - TypeScript error TS2339 in `server/firebase-claims.ts` - proper error type casting
 - npm ci failure - regenerate package-lock.json to sync with package.json (missing bufferutil@4.1.0 and @opentelemetry/api@1.9.0)
+- vite.config.ts ReferenceError - define isDev variable before use
+- Merge conflicts in README, App.tsx, admin pages, docs/QUICK_START, routes, storage (combined features from both branches)
 
 ### Changed
 - All AI agents now follow unified autonomous mode: plan-first, batch changes, run gates, auto-fix, commit
