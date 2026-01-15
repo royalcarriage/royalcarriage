@@ -108,6 +108,8 @@ royalcarriage/
 - **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
 - **[Firebase Audit Summary](docs/FIREBASE_AUDIT_SUMMARY.md)** - Quick overview of Firebase audit findings
 - **[Firebase Audit](docs/FIREBASE_AUDIT.md)** - Firebase system configuration audit report
+- **[Firebase Security Hardening](docs/FIREBASE_SECURITY_HARDENING.md)** - Security fixes and best practices
+- **[Firebase Integration Guide](docs/FIREBASE_INTEGRATION_GUIDE.md)** - 🔗 How to connect all components
 - **[Firebase Emulator Guide](docs/FIREBASE_EMULATOR_GUIDE.md)** - Local development with Firebase emulators
 
 ## AI Features
