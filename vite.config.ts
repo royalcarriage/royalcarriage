@@ -11,9 +11,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig({
   plugins: [
     react(),
-    runtimeErrorModal(),
-    devBanner(),
-    cartographer(),
+    ...(isDev ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
   ],
   resolve: {
     alias: {
@@ -28,6 +26,17 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: path.resolve(__dirname, "client", "index.html"),
+      output: {
+        manualChunks: {
+          // Split React and related libraries into a separate chunk
+          'react-vendor': ['react', 'react-dom', 'wouter'],
+          // Split React Query into its own chunk
+          'query-vendor': ['@tanstack/react-query'],
+          // Split UI libraries
+          'ui-vendor': ['lucide-react'],
+        },
+      },
     },
+    chunkSizeWarningLimit: 600,
   },
 });

@@ -6,6 +6,12 @@ dist/
 build/
 .vite/
 *.tsbuildinfo
+.next/
+out/
+
+# Firebase Functions
+functions/lib/
+functions/node_modules/
 
 # Firebase Functions
 functions/lib/
