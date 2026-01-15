@@ -404,10 +404,28 @@ The Firebase system audit has been completed successfully. All critical and high
 
 **Next Steps:**
 1. Update functions dependencies: `cd functions && npm install`
-2. Test with Firebase emulators locally
-3. Deploy rules and functions to Firebase
-4. Verify production deployment
-5. Monitor function logs and performance
+2. Set up admin custom claims (see Important Note below)
+3. Test with Firebase emulators locally
+4. Deploy rules and functions to Firebase
+5. Verify production deployment
+6. Monitor function logs and performance
+
+**Important Note - Admin Custom Claims:**
+The Storage rules use Firebase Auth custom claims to check admin role. You must set these claims for admin users:
+
+```javascript
+// In your Firebase Functions or admin SDK setup:
+const admin = require('firebase-admin');
+
+// Set admin role for a user
+await admin.auth().setCustomUserClaims(userId, { role: 'admin' });
+
+// Verify custom claims
+const user = await admin.auth().getUser(userId);
+console.log(user.customClaims); // Should show { role: 'admin' }
+```
+
+This is different from Firestore rules which can query the `/users/{userId}` document directly. Storage rules cannot access Firestore, so they rely on custom claims set in the auth token.
 
 ---
 
