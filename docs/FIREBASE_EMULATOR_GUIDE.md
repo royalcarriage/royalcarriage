@@ -152,7 +152,7 @@ if (process.env.NODE_ENV === 'development') {
 
 ```bash
 # Using curl
-curl http://localhost:5001/your-project-id/us-central1/triggerPageAnalysis \
+curl http://localhost:5001/${FIREBASE_PROJECT_ID}/us-central1/triggerPageAnalysis \
   -H "Content-Type: application/json" \
   -d '{"pageUrl": "/test", "pageName": "Test Page", "pageContent": "<html>test</html>"}'
 

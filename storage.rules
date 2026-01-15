@@ -12,6 +12,7 @@ service firebase.storage {
     // Helper function to check if user is admin
     function isAdmin() {
       return isAuthenticated() && 
+             request.auth.token.role != null &&
              request.auth.token.role == 'admin';
     }
     
