@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Check, Globe } from "lucide-react";
@@ -45,6 +45,11 @@ interface SiteSelectorProps {
 
 export function SiteSelector({ selectedSite = "airport", onSiteChange }: SiteSelectorProps) {
   const [currentSite, setCurrentSite] = useState(selectedSite);
+
+  // Sync local state with prop changes
+  useEffect(() => {
+    setCurrentSite(selectedSite);
+  }, [selectedSite]);
 
   const handleSiteChange = (siteId: string) => {
     setCurrentSite(siteId);
