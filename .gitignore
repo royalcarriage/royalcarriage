@@ -13,6 +13,10 @@ out/
 functions/lib/
 functions/node_modules/
 
+# Firebase Functions
+functions/lib/
+functions/node_modules/
+
 # Environment variables
 .env
 .env.local

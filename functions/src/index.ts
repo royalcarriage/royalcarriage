@@ -99,27 +99,22 @@ export const weeklySeoReport = functions.pubsub
 /**
  * HTTP function: Trigger page analysis
  * Manual trigger for page analysis via API
- * Configured with invoker access for public use
  */
-export const triggerPageAnalysis = functions
-  .runWith({
-    invoker: 'public',
-  })
-  .https.onRequest(async (req, res) => {
-    // Enable CORS
-    res.set('Access-Control-Allow-Origin', '*');
+export const triggerPageAnalysis = functions.https.onRequest(async (req, res) => {
+  // Enable CORS
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).send('');
+    return;
+  }
 
-    if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      res.status(204).send('');
-      return;
-    }
-
-    if (req.method !== 'POST') {
-      res.status(405).send('Method Not Allowed');
-      return;
-    }
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
   try {
     const { pageUrl, pageName, pageContent } = req.body;
@@ -168,27 +163,22 @@ export const triggerPageAnalysis = functions
 /**
  * HTTP function: Generate content
  * Trigger AI content generation
- * Configured with invoker access for public use
  */
-export const generateContent = functions
-  .runWith({
-    invoker: 'public',
-  })
-  .https.onRequest(async (req, res) => {
-    // Enable CORS
-    res.set('Access-Control-Allow-Origin', '*');
+export const generateContent = functions.https.onRequest(async (req, res) => {
+  // Enable CORS
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).send('');
+    return;
+  }
 
-    if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      res.status(204).send('');
-      return;
-    }
-
-    if (req.method !== 'POST') {
-      res.status(405).send('Method Not Allowed');
-      return;
-    }
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
   try {
     const { pageType, location, vehicle, targetKeywords } = req.body;
@@ -237,27 +227,22 @@ export const generateContent = functions
 /**
  * HTTP function: Generate image
  * Trigger AI image generation
- * Configured with invoker access for public use
  */
-export const generateImage = functions
-  .runWith({
-    invoker: 'public',
-  })
-  .https.onRequest(async (req, res) => {
-    // Enable CORS
-    res.set('Access-Control-Allow-Origin', '*');
+export const generateImage = functions.https.onRequest(async (req, res) => {
+  // Enable CORS
+  res.set('Access-Control-Allow-Origin', '*');
+  
+  if (req.method === 'OPTIONS') {
+    res.set('Access-Control-Allow-Methods', 'POST');
+    res.set('Access-Control-Allow-Headers', 'Content-Type');
+    res.status(204).send('');
+    return;
+  }
 
-    if (req.method === 'OPTIONS') {
-      res.set('Access-Control-Allow-Methods', 'POST');
-      res.set('Access-Control-Allow-Headers', 'Content-Type');
-      res.status(204).send('');
-      return;
-    }
-
-    if (req.method !== 'POST') {
-      res.status(405).send('Method Not Allowed');
-      return;
-    }
+  if (req.method !== 'POST') {
+    res.status(405).send('Method Not Allowed');
+    return;
+  }
 
   try {
     const { purpose, location, vehicle } = req.body;

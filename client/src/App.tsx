@@ -15,6 +15,8 @@ import Fleet from "@/pages/Fleet";
 import Pricing from "@/pages/Pricing";
 import About from "@/pages/About";
 import Contact from "@/pages/Contact";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 
 function Router() {
   return (
@@ -29,6 +31,11 @@ function Router() {
       <Route path="/pricing" component={Pricing} />
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
+      
+      {/* Admin Routes */}
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/analyze" component={PageAnalyzer} />
+      
       <Route component={NotFound} />
     </Switch>
   );
