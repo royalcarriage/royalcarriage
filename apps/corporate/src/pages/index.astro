@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('corporate');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Chicago Executive Car Service',
+  serviceDescription: 'Professional executive car service in Chicago. Corporate black car transportation, hourly chauffeur services, and business travel solutions. Reliable, discreet, punctual service for professionals.',
+  serviceType: 'Executive Transportation',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Chicago Executive Car Service - Corporate Black Car Transportation"
+  description="Professional executive car service in Chicago. Corporate black car transportation, hourly chauffeur services, and business travel solutions. Reliable, discreet, punctual service for professionals."
+  canonical="/index"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Chicago Executive Car Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="corporate" location="hero" size="lg" />
+        <CallButton target="corporate" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage Limousine provides premium executive car service tailored to the needs of business professionals and corporate clients throughout Chicago. Our professional chauffeur service delivers punctual, discreet, and comfortable transportation for meetings, airport transfers, and corporate events.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Chicago Businesses Choose Us</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Punctuality Guaranteed:</strong> Your time is valuable. We're always on time, every time</li>
+  <li><strong>Professional Chauffeurs:</strong> Background-checked drivers with business etiquette training</li>
+  <li><strong>Luxury Fleet:</strong> Executive sedans and SUVs maintained to the highest standards</li>
+  <li><strong>Productive Environment:</strong> Wi-Fi, power outlets, and privacy for calls and work</li>
+  <li><strong>Flexible Billing:</strong> Corporate accounts with monthly invoicing available</li>
+  <li><strong>Confidentiality:</strong> Complete discretion for all business transportation needs</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Corporate Transportation Services</h2>
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Airport Transfers</h3>
+    <p>Professional transportation to O'Hare and Midway airports. Flight tracking, meet & greet service, and reliable pickup for business travelers.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Corporate Events</h3>
+    <p>Transportation coordination for conferences, seminars, client entertainment, and company events throughout Chicago.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Hourly Services</h3>
+    <p>Dedicated chauffeur and vehicle for multiple stops, meetings, or full-day business needs.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Executive Travel</h3>
+    <p>Premium transportation for C-suite executives, visiting clients, and VIP business guests.</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Corporate Account Benefits</h2>
+<p class="mb-4">Establish a corporate account with Royal Carriage for streamlined business transportation:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Monthly consolidated billing and detailed ride reports</li>
+  <li>Priority booking and dedicated account management</li>
+  <li>Employee travel management and tracking</li>
+  <li>Customizable approval workflows</li>
+  <li>Preferred rates for regular clients</li>
+  <li>24/7 customer support for urgent needs</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="corporate" location="bottom-cta" size="lg" />
+        <CallButton target="corporate" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

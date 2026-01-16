@@ -1,0 +1,107 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Party Bus Rental Service',
+  serviceDescription: 'Rent a party bus in Chicago for your group event. Spacious vehicles with entertainment systems, LED lighting, and professional drivers. Book your party bus rental today.',
+  serviceType: 'Party Bus',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Party Bus Rental Chicago - Luxury Group Transportation"
+  description="Rent a party bus in Chicago for your group event. Spacious vehicles with entertainment systems, LED lighting, and professional drivers. Book your party bus rental today."
+  canonical="/party-bus-rental"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Party Bus Rental Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage Limousine offers premium party bus rentals in Chicago, providing the ultimate mobile party experience. Our luxury party buses combine comfortable transportation with entertainment features for unforgettable group celebrations.</p>
+
+<h2 class="text-2xl font-bold mb-4">Our Party Bus Fleet</h2>
+<div class="space-y-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">20-Passenger Party Bus</h3>
+    <p class="mb-3">Perfect for medium-sized groups wanting a party atmosphere.</p>
+    <ul class="text-sm space-y-1 mb-3">
+      <li>• Seating for up to 20 passengers</li>
+      <li>• Premium sound and lighting</li>
+      <li>• Bar area with coolers</li>
+      <li>• Starting at $150/hour (4-hour minimum)</li>
+    </ul>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">30-Passenger Party Bus</h3>
+    <p class="mb-3">Our largest party bus for big celebrations.</p>
+    <ul class="text-sm space-y-1 mb-3">
+      <li>• Seating for up to 30 passengers</li>
+      <li>• Multiple bar areas</li>
+      <li>• Dance floor with pole</li>
+      <li>• Premium entertainment system</li>
+      <li>• Starting at $180/hour (4-hour minimum)</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">What's Included</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Professional chauffeur for entire rental period</li>
+  <li>Fuel and vehicle costs</li>
+  <li>Sound system with Bluetooth connectivity</li>
+  <li>LED mood lighting and dance lights</li>
+  <li>Bar areas with ice and coolers (BYOB)</li>
+  <li>Climate control</li>
+  <li>Waiting time at stops (within reason)</li>
+  <li>Unlimited mileage within Chicagoland</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Party Bus Rules & Guidelines</h2>
+<div class="bg-yellow-50 p-6 rounded-lg mb-6">
+  <ul class="space-y-2 text-sm">
+    <li>• Must be 21+ to consume alcohol (BYOB - we provide coolers and ice)</li>
+    <li>• No smoking inside vehicles</li>
+    <li>• Respect chauffeur and follow instructions</li>
+    <li>• No illegal substances or activities</li>
+    <li>• Damage deposits may be required</li>
+    <li>• Excessive mess or damage subject to cleaning/repair fees</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Popular Party Bus Routes</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Downtown Bar Crawl:</strong> River North, West Loop, Wrigleyville</li>
+  <li><strong>Concert Transportation:</strong> United Center, Wrigley Field, Ravinia</li>
+  <li><strong>Suburban Nightlife:</strong> Schaumburg, Naperville, Oak Brook entertainment districts</li>
+  <li><strong>Special Events:</strong> Sporting events, festivals, shows</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

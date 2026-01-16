@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('wedding');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Chicago Wedding Transportation',
+  serviceDescription: 'Elegant wedding limousine service in Chicago. Professional transportation for weddings, bridal parties, and special occasions. Luxury vehicles and experienced chauffeurs.',
+  serviceType: 'Wedding Transportation',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Chicago Wedding Transportation - Elegant Limousine Service"
+  description="Elegant wedding limousine service in Chicago. Professional transportation for weddings, bridal parties, and special occasions. Luxury vehicles and experienced chauffeurs."
+  canonical="/index"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Chicago Wedding Transportation</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="wedding" location="hero" size="lg" />
+        <CallButton target="wedding" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Make your special day even more memorable with Royal Carriage Limousine's elegant wedding transportation service. We provide luxury vehicles, professional chauffeurs, and meticulous attention to detail for weddings throughout Chicago and surrounding suburbs.</p>
+
+<h2 class="text-2xl font-bold mb-4">Wedding Transportation Services</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Bridal Party Transportation:</strong> Comfortable transport for the wedding party to ceremony and reception</li>
+  <li><strong>Bride & Groom Service:</strong> Elegant limousine for the happy couple's grand entrance and exit</li>
+  <li><strong>Guest Shuttles:</strong> Coordinate transportation for guests between venues and hotels</li>
+  <li><strong>Bachelor/Bachelorette Parties:</strong> Safe, fun transportation for pre-wedding celebrations</li>
+  <li><strong>Rehearsal Dinner:</strong> Professional service for pre-wedding events</li>
+  <li><strong>Airport Transfers:</strong> Transportation for out-of-town guests arriving for your wedding</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Why Choose Royal Carriage for Your Wedding</h2>
+<div class="grid md:grid-cols-3 gap-6 mb-6">
+  <div class="text-center bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Elegant Fleet</h3>
+    <p class="text-sm">Luxury limousines and vehicles perfect for wedding photography and elegant arrivals</p>
+  </div>
+  <div class="text-center bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Professional Chauffeurs</h3>
+    <p class="text-sm">Experienced drivers who understand wedding timelines and special day protocols</p>
+  </div>
+  <div class="text-center bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Stress-Free Service</h3>
+    <p class="text-sm">Coordination with wedding planners, on-time arrivals, and seamless execution</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Wedding Package Options</h2>
+<p class="mb-4">We offer flexible wedding transportation packages to fit your needs:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Hourly service with minimum booking (typically 3-4 hours)</li>
+  <li>Point-to-point transfers (ceremony to reception)</li>
+  <li>Multiple vehicle coordination for large wedding parties</li>
+  <li>Custom packages combining various services</li>
+  <li>Complimentary champagne service available</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="wedding" location="bottom-cta" size="lg" />
+        <CallButton target="wedding" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

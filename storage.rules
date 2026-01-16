@@ -1,0 +1,45 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // --- Helper Functions ---
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.role == 'Admin' || 
+        request.auth.token.role == 'SuperAdmin'
+      );
+    }
+    
+    function isEditor() {
+      return isAdmin() || (isAuthenticated() && request.auth.token.role == 'Editor');
+    }
+
+    // --- Path Rules ---
+
+    // Site images (Public read)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isEditor();
+    }
+
+    // Raw imports (Admin only)
+    match /imports/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // User-specific files
+    match /users/{userId}/{allPaths=**} {
+      allow read, write: if isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

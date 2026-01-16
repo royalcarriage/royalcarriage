@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Midway Airport Limousine Service',
+  serviceDescription: 'Reliable limousine service to Chicago Midway Airport. Professional black car service with experienced drivers, luxury vehicles, and on-time guarantee. Book Midway limo transportation now.',
+  serviceType: 'Airport Limousine Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Midway Airport Limousine Service - Chicago South Side Transportation"
+  description="Reliable limousine service to Chicago Midway Airport. Professional black car service with experienced drivers, luxury vehicles, and on-time guarantee. Book Midway limo transportation now."
+  canonical="/midway-airport-limo"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Midway Airport Limousine Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Experience premium transportation to and from Chicago Midway International Airport (MDW) with Royal Carriage Limousine. Conveniently located on Chicago's southwest side, Midway Airport serves millions of travelers annually. Our professional chauffeur service ensures stress-free airport transportation with punctual, reliable service.</p>
+
+<h2 class="text-2xl font-bold mb-4">Midway Airport Limo Features</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li><strong>Real-Time Flight Tracking:</strong> Automatic adjustments for flight delays or early arrivals</li>
+  <li><strong>Curbside Pickup:</strong> Convenient meetup at designated pickup areas</li>
+  <li><strong>Quick Access:</strong> Midway's smaller size means faster pickups and drop-offs</li>
+  <li><strong>All Concourses:</strong> Service to Gates A, B, and C</li>
+  <li><strong>Competitive Rates:</strong> Affordable luxury transportation to Midway</li>
+  <li><strong>Professional Service:</strong> Courteous chauffeurs familiar with Midway's layout</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Popular Midway Routes</h2>
+<div class="grid md:grid-cols-2 gap-4 mb-6">
+  <div class="bg-gray-50 p-4 rounded">
+    <h3 class="font-bold mb-2">From Midway Airport:</h3>
+    <ul class="text-sm space-y-1 text-gray-700">
+      <li>• Downtown Chicago</li>
+      <li>• South Loop</li>
+      <li>• Hyde Park</li>
+      <li>• South Suburbs</li>
+      <li>• Indiana Border Cities</li>
+    </ul>
+  </div>
+  <div class="bg-gray-50 p-4 rounded">
+    <h3 class="font-bold mb-2">To Midway Airport:</h3>
+    <ul class="text-sm space-y-1 text-gray-700">
+      <li>• Hotel Pickups</li>
+      <li>• Residential Addresses</li>
+      <li>• Corporate Offices</li>
+      <li>• Special Events</li>
+      <li>• Convention Centers</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Why Travelers Choose Us for Midway</h2>
+<p class="text-gray-700 mb-4">Midway Airport's location makes it a popular choice for South Side and suburban travelers. Our chauffeurs know the optimal routes to avoid traffic on the Stevenson Expressway (I-55) and surface streets. Whether you're flying Southwest, Delta, or another carrier, we provide seamless door-to-door service.</p>
+
+<p class="text-gray-700 mb-6">We serve frequent Midway travelers including business professionals commuting to Springfield or St. Louis, families visiting relatives, and tourists exploring Chicago. Our service includes luggage handling, vehicle cleanliness, and courteous drivers who make your journey comfortable and efficient.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

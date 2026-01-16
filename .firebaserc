@@ -1,5 +1,28 @@
 {
   "projects": {
     "default": "royalcarriagelimoseo"
-  }
+  },
+  "targets": {
+    "royalcarriagelimoseo": {
+      "hosting": {
+        "admin": [
+          "royalcarriagelimoseo"
+        ],
+        "airport": [
+          "chicagoairportblackcar"
+        ],
+        "corporate": [
+          "chicagoexecutivecarservice"
+        ],
+        "wedding": [
+          "chicagoweddingtransportation"
+        ],
+        "partybus": [
+          "chicago-partybus"
+        ]
+      }
+    }
+  },
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Our Party Bus Fleet',
+  serviceDescription: 'View our fleet of party buses in Chicago. Various sizes from 20-30 passengers with entertainment systems, LED lighting, and premium features.',
+  serviceType: 'Transportation Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Party Bus Fleet - View Our Chicago Party Buses"
+  description="View our fleet of party buses in Chicago. Various sizes from 20-30 passengers with entertainment systems, LED lighting, and premium features."
+  canonical="/fleet"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Party Bus Fleet</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage Limousine maintains a modern fleet of party buses designed for group celebrations. Each vehicle features entertainment systems, comfortable seating, and amenities to keep your party going while traveling throughout Chicago.</p>
+
+<h2 class="text-2xl font-bold mb-4">20-Passenger Party Bus</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Medium Group Party Bus</h3>
+  <p class="mb-4">Perfect for smaller groups wanting a party atmosphere without excess space.</p>
+
+  <h4 class="font-bold mb-2">Features:</h4>
+  <ul class="list-disc list-inside space-y-1 mb-4 text-sm">
+    <li>Seating for up to 20 passengers</li>
+    <li>Premium sound system with subwoofers</li>
+    <li>LED lighting with multiple color modes</li>
+    <li>Bar area with coolers</li>
+    <li>Flat screen TVs</li>
+    <li>Bluetooth connectivity</li>
+    <li>Climate control</li>
+    <li>Privacy windows</li>
+  </ul>
+
+  <h4 class="font-bold mb-2">Perfect For:</h4>
+  <ul class="text-sm space-y-1">
+    <li>• Birthday parties</li>
+    <li>• Bachelor/Bachelorette parties</li>
+    <li>• Small concert groups</li>
+    <li>• Bar crawls</li>
+    <li>• Corporate team outings</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">30-Passenger Party Bus</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Large Group Party Bus</h3>
+  <p class="mb-4">Our largest party bus for big celebrations and events.</p>
+
+  <h4 class="font-bold mb-2">Features:</h4>
+  <ul class="list-disc list-inside space-y-1 mb-4 text-sm">
+    <li>Seating for up to 30 passengers</li>
+    <li>Professional-grade sound system</li>
+    <li>Advanced LED lighting with dance floor effects</li>
+    <li>Multiple bar areas</li>
+    <li>Dance floor area with pole</li>
+    <li>Multiple flat screen TVs</li>
+    <li>Bluetooth and aux connectivity</li>
+    <li>Premium climate control</li>
+    <li>Privacy windows throughout</li>
+    <li>Laser lighting effects</li>
+  </ul>
+
+  <h4 class="font-bold mb-2">Perfect For:</h4>
+  <ul class="text-sm space-y-1">
+    <li>• Large birthday celebrations</li>
+    <li>• Wedding parties</li>
+    <li>• Concert groups</li>
+    <li>• Corporate events</li>
+    <li>• Proms and homecoming</li>
+    <li>• Any large group celebration</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">All Party Buses Include</h2>
+<div class="grid md:grid-cols-2 gap-4 mb-6">
+  <ul class="space-y-2 text-sm">
+    <li>✓ Professional chauffeur</li>
+    <li>✓ Fuel and tolls</li>
+    <li>✓ Premium sound systems</li>
+    <li>✓ LED mood lighting</li>
+    <li>✓ Climate control</li>
+  </ul>
+  <ul class="space-y-2 text-sm">
+    <li>✓ Bar areas with coolers and ice</li>
+    <li>✓ Bluetooth connectivity</li>
+    <li>✓ Entertainment systems</li>
+    <li>✓ Privacy windows</li>
+    <li>✓ Unlimited mileage (Chicagoland)</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Choosing the Right Size</h2>
+<p class="mb-4">Select your party bus based on group size:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>12-20 guests:</strong> 20-passenger party bus provides comfortable space</li>
+  <li><strong>20-30 guests:</strong> 30-passenger party bus ensures everyone fits comfortably</li>
+  <li><strong>Need more space?:</strong> Consider renting multiple vehicles or our largest bus</li>
+  <li><strong>Want room to move?:</strong> Choose larger bus even with smaller group for dance space</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Vehicle Maintenance</h2>
+<p class="mb-4">All party buses maintained to highest standards:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Regular mechanical inspections and servicing</li>
+  <li>Professional cleaning and sanitization between rentals</li>
+  <li>Entertainment system testing and updates</li>
+  <li>Safety equipment checks</li>
+  <li>DOT and licensing compliance</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

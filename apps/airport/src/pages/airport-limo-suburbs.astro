@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "Airport Limousine Service to Chicago Suburbs",
+  serviceDescription: "Airport limousine service to all Chicago suburbs. Professional transportation from O'Hare and Midway to Naperville, Schaumburg, Oak Brook, and throughout Chicagoland.",
+  serviceType: "Airport Limousine Service",
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Chicago Suburbs Airport Limousine Service - Naperville, Schaumburg & More"
+  description="Airport limousine service to all Chicago suburbs. Professional transportation from O'Hare and Midway to Naperville, Schaumburg, Oak Brook, and throughout Chicagoland."
+  canonical="/airport-limo-suburbs"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Airport Limousine Service to Chicago Suburbs</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine provides comprehensive airport transportation throughout the Chicago metropolitan area. Whether you're traveling to the North Shore, western suburbs, or south suburbs, our professional chauffeur service delivers reliable, comfortable transportation to and from both O'Hare and Midway airports.</p>
+
+<h2 class="text-2xl font-bold mb-4">Suburbs We Serve</h2>
+
+<h3 class="text-xl font-bold mb-3 mt-6">North & Northwest Suburbs</h3>
+<div class="grid md:grid-cols-4 gap-3 mb-6">
+  <div class="bg-gray-100 p-3 rounded text-center">Evanston</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Skokie</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Wilmette</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Highland Park</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Schaumburg</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Arlington Heights</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Palatine</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Wheeling</div>
+</div>
+
+<h3 class="text-xl font-bold mb-3 mt-6">Western Suburbs</h3>
+<div class="grid md:grid-cols-4 gap-3 mb-6">
+  <div class="bg-gray-100 p-3 rounded text-center">Naperville</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Oak Brook</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Wheaton</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Downers Grove</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Elmhurst</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Hinsdale</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Lombard</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Glen Ellyn</div>
+</div>
+
+<h3 class="text-xl font-bold mb-3 mt-6">South Suburbs</h3>
+<div class="grid md:grid-cols-4 gap-3 mb-6">
+  <div class="bg-gray-100 p-3 rounded text-center">Orland Park</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Tinley Park</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Oak Lawn</div>
+  <div class="bg-gray-100 p-3 rounded text-center">Frankfort</div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Why Suburban Travelers Choose Us</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li><strong>Local Knowledge:</strong> Chauffeurs familiar with suburban routes and traffic patterns</li>
+  <li><strong>Door-to-Door Service:</strong> Pickup and drop-off at your exact residential or business address</li>
+  <li><strong>Competitive Suburban Rates:</strong> Fair pricing for longer-distance airport transportation</li>
+  <li><strong>Early Morning Service:</strong> Available for dawn flights from suburban locations</li>
+  <li><strong>Toll-Inclusive Pricing:</strong> No surprise fees for highway tolls on expressways</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Suburban Corporate Accounts</h2>
+<p class="text-gray-700 mb-6">Many suburban businesses rely on Royal Carriage for employee airport transportation. We provide account billing, ride reports, and dedicated service for corporate locations in business parks and office complexes throughout Chicagoland. Contact us about establishing a corporate account for your suburban location.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

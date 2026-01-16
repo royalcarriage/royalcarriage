@@ -1,0 +1,88 @@
+---
+import Header from '@packages/astro-components/Header.astro';
+import NavBar from '@packages/astro-components/NavBar.astro';
+import Footer from '@packages/astro-components/Footer.astro';
+import { getSiteConfig } from '@packages/astro-utils/config';
+import { generateMetaTags } from '@packages/astro-utils/seo';
+import { generateLocalBusinessSchema } from '@packages/astro-utils/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  schema?: any;
+  noindex?: boolean;
+}
+
+const { title, description, canonical, ogImage, schema, noindex = false } = Astro.props;
+
+const config = getSiteConfig('airport');
+const metaTags = generateMetaTags({
+  title: `${title} | ${config.name}`,
+  description,
+  canonical: canonical || Astro.url.pathname,
+  ogImage,
+  noindex
+});
+
+const businessSchema = generateLocalBusinessSchema({
+  config,
+  url: Astro.url.pathname
+});
+
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/ohare-airport-limo', label: "O'Hare" },
+  { href: '/midway-airport-limo', label: 'Midway' },
+  { href: '/fleet', label: 'Fleet' },
+  { href: '/pricing', label: 'Pricing' },
+  { href: '/about', label: 'About' },
+  { href: '/contact', label: 'Contact' }
+];
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{metaTags.title}</title>
+  <meta name="description" content={metaTags.description}>
+  <meta name="robots" content={metaTags.robots}>
+  {canonical && <link rel="canonical" href={`${config.domain}${canonical}`}>}
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={metaTags.title}>
+  <meta property="og:description" content={metaTags.description}>
+  <meta property="og:url" content={`${config.domain}${Astro.url.pathname}`}>
+  <meta property="og:image" content={metaTags.ogImage}>
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content={metaTags.title}>
+  <meta name="twitter:description" content={metaTags.description}>
+  <meta name="twitter:image" content={metaTags.ogImage}>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+
+  <!-- JSON-LD Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(businessSchema)}></script>
+  {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>}
+
+  <!-- Google Analytics - Add your measurement ID -->
+  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
+</head>
+<body class="flex flex-col min-h-screen">
+  <Header target="airport" />
+  <NavBar target="airport" siteName="Airport Limo Service" navLinks={navLinks} />
+
+  <main class="flex-grow">
+    <slot />
+  </main>
+
+  <Footer target="airport" siteName="Airport Limo Service" navLinks={navLinks} socialMedia={config.socialMedia} />
+</body>
+</html>

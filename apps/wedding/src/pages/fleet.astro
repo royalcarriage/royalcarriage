@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('wedding');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Our Wedding Fleet',
+  serviceDescription: 'View our wedding fleet featuring elegant limousines, luxury sedans, and party buses. Beautiful vehicles for your special day in Chicago.',
+  serviceType: 'Transportation Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Wedding Fleet - Luxury Limousines & Elegant Vehicles"
+  description="View our wedding fleet featuring elegant limousines, luxury sedans, and party buses. Beautiful vehicles for your special day in Chicago."
+  canonical="/fleet"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Wedding Fleet</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="wedding" location="hero" size="lg" />
+        <CallButton target="wedding" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage Limousine maintains an elegant fleet specifically suited for weddings and special occasions. Every vehicle is immaculately detailed and decorated for your big day.</p>
+
+<h2 class="text-2xl font-bold mb-4">Stretch Limousines</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <p class="mb-4">Our classic stretch limousines provide timeless elegance for weddings.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: 6-10 passengers</li>
+    <li>Features: Champagne bar, mood lighting, privacy partition, premium sound</li>
+    <li>Perfect for: Bride and groom, bridal party, VIP guests</li>
+    <li>Available in: White, Black</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Luxury Sedans</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <p class="mb-4">Elegant sedans for intimate wedding transportation.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: 2-3 passengers</li>
+    <li>Features: Leather interior, climate control, elegant styling</li>
+    <li>Perfect for: Intimate weddings, couple's departure, parents</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">SUV Limousines</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <p class="mb-4">Spacious SUV limos perfect for larger bridal parties.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: 8-14 passengers</li>
+    <li>Features: Extra headroom for formal wear, entertainment system, bar</li>
+    <li>Perfect for: Full bridal party, group transportation</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Party Buses</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <p class="mb-4">For larger wedding parties wanting mobile celebration.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: 20-30 passengers</li>
+    <li>Features: Dance floor, lighting, premium sound, bars</li>
+    <li>Perfect for: Large wedding parties, guest shuttles, after-parties</li>
+  </ul>
+</div>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="wedding" location="bottom-cta" size="lg" />
+        <CallButton target="wedding" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

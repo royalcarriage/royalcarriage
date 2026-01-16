@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "Airport Limousine Service to Downtown Chicago",
+  serviceDescription: "Professional airport limousine service between downtown Chicago and O'Hare or Midway airports. Luxury transportation to the Loop, River North, and all downtown destinations.",
+  serviceType: "Airport Limousine Service",
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Airport Limousine to Downtown Chicago - O'Hare & Midway Service"
+  description="Professional airport limousine service between downtown Chicago and O'Hare or Midway airports. Luxury transportation to the Loop, River North, and all downtown destinations."
+  canonical="/airport-limo-downtown-chicago"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Airport Limousine Service to Downtown Chicago</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine specializes in seamless transportation between Chicago's airports and downtown locations. Whether you're heading to a hotel in the Loop, a meeting in River North, or any downtown destination, our professional chauffeur service ensures timely, comfortable arrivals.</p>
+
+<h2 class="text-2xl font-bold mb-4">Downtown Chicago Destinations We Serve</h2>
+<div class="grid md:grid-cols-3 gap-4 mb-6">
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">The Loop</h3>
+    <p class="text-sm text-gray-700">Chicago's central business district, financial institutions, and City Hall area</p>
+  </div>
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">River North</h3>
+    <p class="text-sm text-gray-700">Gallery district, restaurants, and boutique hotels near the Chicago River</p>
+  </div>
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">Streeterville</h3>
+    <p class="text-sm text-gray-700">Navy Pier area, Northwestern Memorial Hospital, and lakefront hotels</p>
+  </div>
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">Gold Coast</h3>
+    <p class="text-sm text-gray-700">Luxury shopping on Michigan Avenue and upscale residential area</p>
+  </div>
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">South Loop</h3>
+    <p class="text-sm text-gray-700">Museum Campus, Soldier Field, and McCormick Place convention center</p>
+  </div>
+  <div class="bg-blue-50 p-4 rounded">
+    <h3 class="font-bold text-blue-600 mb-2">West Loop</h3>
+    <p class="text-sm text-gray-700">Restaurant Row, Google offices, and United Center sports venue</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Travel Times to Downtown</h2>
+<ul class="space-y-2 mb-6 text-gray-700">
+  <li><strong>O'Hare to Downtown:</strong> 35-45 minutes depending on traffic and destination</li>
+  <li><strong>Midway to Downtown:</strong> 25-35 minutes via I-55 or surface streets</li>
+  <li><strong>Peak Hour Adjustments:</strong> We factor in rush hour traffic (7-9 AM, 4-6 PM)</li>
+  <li><strong>Express Lane Access:</strong> I-Pass equipped vehicles for faster travel</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Hotel Partnerships</h2>
+<p class="text-gray-700 mb-6">We provide preferred airport transportation for guests at major downtown Chicago hotels including The Palmer House, The Langham, Four Seasons, Peninsula Chicago, and many others. Ask your hotel concierge about Royal Carriage Limousine for your airport transfers.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

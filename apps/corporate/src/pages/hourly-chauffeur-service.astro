@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('corporate');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Hourly Chauffeur Service',
+  serviceDescription: 'Hourly chauffeur service in Chicago. Dedicated vehicle and driver for multiple stops, meetings, or full-day business needs. Flexible, professional service by the hour.',
+  serviceType: 'Hourly Transportation',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Hourly Chauffeur Service Chicago - By the Hour Transportation"
+  description="Hourly chauffeur service in Chicago. Dedicated vehicle and driver for multiple stops, meetings, or full-day business needs. Flexible, professional service by the hour."
+  canonical="/hourly-chauffeur-service"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Hourly Chauffeur Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="corporate" location="hero" size="lg" />
+        <CallButton target="corporate" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Need a vehicle and chauffeur for multiple hours? Royal Carriage provides flexible hourly chauffeur service perfect for business professionals with multiple meetings, running errands, or requiring a dedicated vehicle for the day.</p>
+
+<h2 class="text-2xl font-bold mb-4">How Hourly Service Works</h2>
+<ol class="list-decimal list-inside space-y-2 mb-6">
+  <li>Book minimum 3 hours (additional hours as needed)</li>
+  <li>Your chauffeur and vehicle are dedicated to you</li>
+  <li>Make unlimited stops within your booked time</li>
+  <li>Chauffeur waits at each location</li>
+  <li>Flexible routing based on your schedule</li>
+  <li>Pay simple hourly rate with no per-stop fees</li>
+</ol>
+
+<h2 class="text-2xl font-bold mb-4">Perfect For</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Multiple business meetings across Chicago</li>
+  <li>Shopping or personal errands</li>
+  <li>Visiting multiple properties (real estate)</li>
+  <li>Medical appointments and follow-ups</li>
+  <li>Tourist sightseeing with driver/guide</li>
+  <li>Evening entertainment and dining</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Hourly Rates</h2>
+<p class="mb-4">Transparent pricing with no hidden fees:</p>
+<ul class="space-y-2 mb-6">
+  <li><strong>Executive Sedan:</strong> Starting at $75/hour (3-hour minimum)</li>
+  <li><strong>Luxury SUV:</strong> Starting at $95/hour (3-hour minimum)</li>
+  <li><strong>Additional Hours:</strong> Prorated hourly rate</li>
+  <li><strong>Includes:</strong> Vehicle, chauffeur, fuel, and standard waiting time</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="corporate" location="bottom-cta" size="lg" />
+        <CallButton target="corporate" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
