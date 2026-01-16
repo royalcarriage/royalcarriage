@@ -1,0 +1,122 @@
+[
+  {
+    "id": "doc_1",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 1",
+    "service": "Airport Transfer",
+    "amount": 430.0434840421874
+  },
+  {
+    "id": "doc_2",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 2",
+    "service": "Airport Transfer",
+    "amount": 124.83282452817714
+  },
+  {
+    "id": "doc_3",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 3",
+    "service": "Airport Transfer",
+    "amount": 352.83796462303553
+  },
+  {
+    "id": "doc_4",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 4",
+    "service": "Airport Transfer",
+    "amount": 553.8281200452411
+  },
+  {
+    "id": "doc_5",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 5",
+    "service": "Airport Transfer",
+    "amount": 417.68326729846206
+  },
+  {
+    "id": "doc_6",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 6",
+    "service": "Airport Transfer",
+    "amount": 173.54506462877032
+  },
+  {
+    "id": "doc_7",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 7",
+    "service": "Airport Transfer",
+    "amount": 314.0450427758618
+  },
+  {
+    "id": "doc_8",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 8",
+    "service": "Airport Transfer",
+    "amount": 482.4974028160927
+  },
+  {
+    "id": "doc_9",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 9",
+    "service": "Airport Transfer",
+    "amount": 434.50114843625954
+  },
+  {
+    "id": "doc_10",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 10",
+    "service": "Airport Transfer",
+    "amount": 235.80841876462958
+  },
+  {
+    "id": "doc_11",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 11",
+    "service": "Airport Transfer",
+    "amount": 340.87891486043856
+  },
+  {
+    "id": "doc_12",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 12",
+    "service": "Airport Transfer",
+    "amount": 190.1111999990154
+  },
+  {
+    "id": "doc_13",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 13",
+    "service": "Airport Transfer",
+    "amount": 164.47633832097677
+  },
+  {
+    "id": "doc_14",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 14",
+    "service": "Airport Transfer",
+    "amount": 402.60393531252015
+  },
+  {
+    "id": "doc_15",
+    "collection": "bookings",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "customerName": "Customer 15",
+    "service": "Airport Transfer",
+    "amount": 206.25914054449848
+  }
+]
