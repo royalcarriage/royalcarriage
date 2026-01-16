@@ -13,3 +13,11 @@
     *   Schemas: PASS (shared/fleetSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/fleetFunctions.ts)
     *   UI: PENDING
+*   **Dispatch Module:**
+    *   Schemas: PASS (shared/dispatchSchemas.ts)
+    *   Functions: IN_PROGRESS (functions/src/dispatchFunctions.ts)
+    *   UI: PENDING
+*   **Affiliate Module:**
+    *   Schemas: PASS (shared/affiliateSchemas.ts)
+    *   Functions: IN_PROGRESS (functions/src/affiliateFunctions.ts)
+    *   UI: PENDING
