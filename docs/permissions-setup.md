@@ -1,12 +1,12 @@
-# GCP / GitHub OIDC Setup Guide
+# GCP / GitHub OIDC Setup Guide (royalcarriagelimoseo)
 
 This document contains step-by-step commands and notes to set up Workload Identity Federation (OIDC) so GitHub Actions can deploy to GCP/Firebase without long-lived JSON keys.
 
 1) Create a service account for CI deploys
 
 ```bash
-# Replace PROJECT with your GCP project id
-PROJECT=your-gcp-project-id
+# Replace PROJECT with your GCP project id (default: royalcarriagelimoseo)
+PROJECT=royalcarriagelimoseo
 gcloud iam service-accounts create github-deployer --project="$PROJECT" --display-name="GitHub Actions Deployer"
 SA_EMAIL=github-deployer@$PROJECT.iam.gserviceaccount.com
 
@@ -43,15 +43,15 @@ gcloud iam workload-identity-pools providers create-oidc "$PROVIDER_ID" \
 gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" \
   --project="$PROJECT" \
   --role roles/iam.workloadIdentityUser \
-  --member "principalSet://iam.googleapis.com/projects/$PROJECT/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/your-org/your-repo"
+  --member "principalSet://iam.googleapis.com/projects/$PROJECT/locations/global/workloadIdentityPools/$POOL_ID/attribute.repository/royalcarriage/royalcarriage"
 ```
 
 4) Update your GitHub workflow
 
-- Use `google-github-actions/auth@v1` with `workload_identity_provider` and `service_account` (see `.github/workflows/firebase-deploy-oidc.yml`).
+- Use `google-github-actions/auth@v2` with `workload_identity_provider` and `service_account` (see `.github/workflows/apphosting-admin.yml`).
 
 5) Verify
 
-- Run the workflow in a branch and confirm `gcloud auth list` shows the service account and `firebase deploy` succeeds.
+- Run the workflow in a branch and confirm `gcloud auth list` shows the service account and `firebase deploy` succeeds for Hosting + App Hosting + Functions.
 
 If you want, I can prepare the exact `gcloud` commands with your project number and repo/org details and submit them as a PR to `docs`.

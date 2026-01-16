@@ -1,0 +1,201 @@
+name: Deploy Admin via App Hosting
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'client/**'
+      - 'functions/**'
+      - '.github/workflows/apphosting-admin.yml'
+      - 'firebase.json'
+      - 'firestore.rules'
+      - 'storage.rules'
+      - 'firestore.indexes.json'
+  workflow_dispatch:
+    inputs:
+      backend_id:
+        description: 'App Hosting backend id (default: royalcarriage)'
+        required: false
+        default: royalcarriage
+      project_id:
+        description: 'Firebase project id'
+        required: false
+        default: royalcarriagelimoseo
+      region:
+        description: 'App Hosting region'
+        required: false
+        default: us-east4
+
+env:
+  PROJECT_ID: royalcarriagelimoseo
+  BACKEND_ID: royalcarriage
+  REGION: us-east4
+  BACKENDS: royalcarriage airport executive wedding partybus
+  HOSTING_TARGETS: hosting:admin,hosting:airport,hosting:executive,hosting:wedding,hosting:partybus
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  apphosting-rollout:
+    name: Create App Hosting rollout(s)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use dispatch inputs if provided
+        run: |
+          echo "PROJECT_ID=${{ github.event.inputs.project_id || env.PROJECT_ID }}" >> $GITHUB_ENV
+          echo "BACKEND_ID=${{ github.event.inputs.backend_id || env.BACKEND_ID }}" >> $GITHUB_ENV
+          echo "REGION=${{ github.event.inputs.region || env.REGION }}" >> $GITHUB_ENV
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13.16.0
+
+      - name: Validate auth inputs and secrets
+        run: |
+          echo "Validating GitHub secrets and inputs for Google/Firebase auth..."
+          if [ -n "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}" ] && [ -n "${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}" ]; then
+            echo "Workload identity config appears set."
+          elif [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "Service account key secret appears set."
+          elif [ -n "${{ secrets.FIREBASE_CLI_TOKEN }}" ]; then
+            echo "Firebase CLI token present."
+          else
+            echo "No auth secrets found. Set one of: WORKLOAD_IDENTITY_PROVIDER + WORKLOAD_IDENTITY_SERVICE_ACCOUNT, GCP_SA_KEY, or FIREBASE_CLI_TOKEN (for token auth)."
+            exit 1
+          fi
+
+      - name: Authenticate to Google Cloud (OIDC or service account key)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER || '' }}
+          service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT || '' }}
+          credentials_json: ${{ secrets.GCP_SA_KEY || '' }}
+
+      - name: Create rollout(s) to App Hosting backends
+        run: |
+          BACKENDS_TO_DEPLOY="${{ github.event.inputs.backend_id || '' }}"
+          if [ -z "$BACKENDS_TO_DEPLOY" ]; then
+            BACKENDS_TO_DEPLOY="$BACKENDS"
+          fi
+
+          for B in $BACKENDS_TO_DEPLOY; do
+            echo "Creating rollout for backend: $B"
+            firebase apphosting:rollouts:create "$B" \
+              --git-commit "$GITHUB_SHA" \
+              --project "$PROJECT_ID" \
+              --force
+          done
+
+  deploy-functions:
+    name: Deploy Cloud Functions
+    runs-on: ubuntu-latest
+    needs: apphosting-rollout
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: functions/package-lock.json
+
+      - name: Install dependencies (functions)
+        run: |
+          cd functions
+          npm ci
+
+      - name: Validate auth inputs and secrets
+        run: |
+          echo "Validating GitHub secrets and inputs for Google/Firebase auth (functions deploy)..."
+          if [ -n "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}" ] && [ -n "${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}" ]; then
+            echo "Workload identity config appears set."
+          elif [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "Service account key secret appears set."
+          elif [ -n "${{ secrets.FIREBASE_CLI_TOKEN }}" ]; then
+            echo "Firebase CLI token present."
+          else
+            echo "No auth secrets found. Set one of: WORKLOAD_IDENTITY_PROVIDER + WORKLOAD_IDENTITY_SERVICE_ACCOUNT, GCP_SA_KEY, or FIREBASE_CLI_TOKEN (for token auth)."
+            exit 1
+          fi
+
+      - name: Authenticate to Google Cloud (OIDC or service account key)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER || '' }}
+          service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT || '' }}
+          credentials_json: ${{ secrets.GCP_SA_KEY || '' }}
+
+      - name: Deploy Cloud Functions
+        run: |
+          firebase deploy --only functions \
+            --project "${{ github.event.inputs.project_id || env.PROJECT_ID }}" \
+            --force
+
+  deploy-hosting:
+    name: Deploy Hosting targets
+    runs-on: ubuntu-latest
+    needs: apphosting-rollout
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application (root or client fallback)
+        run: |
+          if [ -d "dist/public" ]; then
+            echo "dist/public exists; skipping build."
+            exit 0
+          fi
+
+      - name: Validate auth inputs and secrets
+        run: |
+          echo "Validating GitHub secrets and inputs for Google/Firebase auth (hosting deploy)..."
+          if [ -n "${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}" ] && [ -n "${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}" ]; then
+            echo "Workload identity config appears set."
+          elif [ -n "${{ secrets.GCP_SA_KEY }}" ]; then
+            echo "Service account key secret appears set."
+          elif [ -n "${{ secrets.FIREBASE_CLI_TOKEN }}" ]; then
+            echo "Firebase CLI token present."
+          else
+            echo "No auth secrets found. Set one of: WORKLOAD_IDENTITY_PROVIDER + WORKLOAD_IDENTITY_SERVICE_ACCOUNT, GCP_SA_KEY, or FIREBASE_CLI_TOKEN (for token auth)."
+            exit 1
+          fi
+          echo "Attempting root build..."
+          if ! npm run build --if-present; then
+            echo "Root build failed or missing; attempting client build fallback."
+            cd client
+            npm ci
+            npm run build
+          fi
+
+      - name: Authenticate to Google Cloud (OIDC or service account key)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER || '' }}
+          service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT || '' }}
+          credentials_json: ${{ secrets.GCP_SA_KEY || '' }}
+
+      - name: Deploy Hosting sites
+        run: |
+          firebase deploy --only $HOSTING_TARGETS \
+            --project "${{ github.event.inputs.project_id || env.PROJECT_ID }}" \
+            --force

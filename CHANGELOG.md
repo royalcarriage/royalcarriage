@@ -1,6 +1,8 @@
 # Changelog
 
 ## [Unreleased]
+- Extended multi-site Firebase/App Hosting wiring: clarified OIDC setup for `royalcarriagelimoseo` repo, kept hosting targets for all four domains, and documented multi-site deploy prerequisites.
+- Fixed CI/Firebase build break: pointed `build:all` to `script/build.ts`, rebuilt `AdminDashboardV2` layout, and rewrote `server/ai/routes.ts` (drafts/queue endpoints) so `npm run build` succeeds again.
 - Initialized autonomous audit cycle (2026-01-15): set up `.agent/*`, refreshed PLAN/STATUS/CHANGELOG on branch `merge/consolidation-2026-01-15`.
 - Added repository map artifact (`.agent/artifacts/repo-map.md`) summarizing apps/packages/frameworks/Firebase config.
 - Completed MD audit and backlog (20 items) logged in `.agent/artifacts/md-audit.md` and `.agent/artifacts/backlog.md`; roadmap injected into PLAN.md.

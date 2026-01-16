@@ -1,0 +1,5 @@
+
+> royalcarriage-functions@1.0.0 build
+> tsc && node scripts/postbuild.js
+
+postbuild: copied index.js to lib/index.js for Firebase deploy.

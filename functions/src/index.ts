@@ -10,8 +10,18 @@ import type { EventContext } from 'firebase-functions/v1';
 import type { Request, Response } from 'firebase-functions/v1';
 import type { DocumentSnapshot } from 'firebase-functions/v1/firestore';
 
+type SiteConfig = {
+  id: string;
+  baseUrl: string;
+  analysisApiUrl?: string;
+  pages?: string[];
+};
+
 // Initialize Firebase Admin
 admin.initializeApp();
+
+const DEFAULT_PAGES =
+  '/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact';
 
 // Helper function to get backend API URL
 function getBackendUrl(): string {
@@ -23,17 +33,146 @@ function getBackendUrl(): string {
 
 // Helper function to get allowed origins from environment
 function getAllowedOrigins(): string[] {
-  const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 
-    'https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com';
-  
+  const allowedOriginsEnv =
+    process.env.ALLOWED_ORIGINS ||
+    [
+      'https://royalcarriagelimoseo.web.app',
+      'https://admin.royalcarriagelimo.com',
+      'https://chicagoairportblackcar.com',
+      'https://chicagoexecutivecarservice.com',
+      'https://chicagoweddingtransportation.com',
+      'https://chicago-partybus.com',
+    ].join(',');
+
   const origins = allowedOriginsEnv.split(',').map((o: string) => o.trim());
-  
+
   // Add localhost for development
   if (process.env.NODE_ENV === 'development' || process.env.FUNCTIONS_EMULATOR === 'true') {
     origins.push('http://localhost:5000', 'http://127.0.0.1:5000');
   }
   
   return origins;
+}
+
+// Helper to load site configs (one per domain)
+function getSiteConfigs(): SiteConfig[] {
+  // Optional JSON override: [{"id":"airport","baseUrl":"https://chicagoairportblackcar.com","analysisApiUrl":"https://...","pages":["/","/fleet"]}]
+  if (process.env.SITE_CONFIG_JSON) {
+    try {
+      const parsed = JSON.parse(process.env.SITE_CONFIG_JSON);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (error) {
+      console.error('Failed to parse SITE_CONFIG_JSON; falling back to defaults:', error);
+    }
+  }
+
+  const pages = (process.env.PAGES_TO_ANALYZE || DEFAULT_PAGES)
+    .split(',')
+    .map((url: string) => url.trim());
+
+  return [
+    {
+      id: 'royalcarriagelimoseo',
+      baseUrl: 'https://royalcarriagelimoseo.web.app',
+      analysisApiUrl: getBackendUrl(),
+      pages,
+    },
+    {
+      id: 'airport',
+      baseUrl: 'https://chicagoairportblackcar.com',
+      pages,
+    },
+    {
+      id: 'executive',
+      baseUrl: 'https://chicagoexecutivecarservice.com',
+      pages,
+    },
+    {
+      id: 'wedding',
+      baseUrl: 'https://chicagoweddingtransportation.com',
+      pages,
+    },
+    {
+      id: 'partybus',
+      baseUrl: 'https://chicago-partybus.com',
+      pages,
+    },
+  ];
+}
+
+type PageDescriptor = { url: string; name: string };
+
+function buildPageDescriptors(pages: string[]): PageDescriptor[] {
+  return pages.map((url: string) => {
+    const name =
+      url === '/'
+        ? 'Home'
+        : url
+            .split('/')
+            .filter(Boolean)
+            .join(' ')
+            .split('-')
+            .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+            .join(' ');
+    return { url, name };
+  });
+}
+
+async function runPageAnalysisForSite(site: SiteConfig) {
+  const pageDescriptors = buildPageDescriptors(site.pages || (DEFAULT_PAGES.split(',') as string[]));
+  const analysisBackend = site.analysisApiUrl || getBackendUrl();
+
+  for (const page of pageDescriptors) {
+    console.log(`Analyzing site=${site.id} page=${page.name} (${page.url})`);
+
+    try {
+      const pageResponse = await fetch(`${site.baseUrl}${page.url}`);
+      const pageContent = await pageResponse.text();
+
+      const analysisResponse = await fetch(`${analysisBackend}/api/ai/analyze-page`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pageUrl: page.url,
+          pageName: page.name,
+          pageContent,
+        }),
+      });
+
+      if (!analysisResponse.ok) {
+        throw new Error(`API returned ${analysisResponse.status}`);
+      }
+
+      const analysisData = await analysisResponse.json();
+
+      await admin.firestore().collection('page_analyses').add({
+        siteId: site.id,
+        baseUrl: site.baseUrl,
+        pageUrl: page.url,
+        pageName: page.name,
+        seoScore: analysisData.analysis.seoScore,
+        contentScore: analysisData.analysis.contentScore,
+        recommendations: analysisData.analysis.recommendations,
+        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'completed',
+      });
+
+      console.log(`✓ ${site.id} ${page.name} analyzed`);
+    } catch (error) {
+      console.error(`✗ Failed site=${site.id} page=${page.name}:`, error);
+      await admin.firestore().collection('page_analyses').add({
+        siteId: site.id,
+        baseUrl: site.baseUrl,
+        pageUrl: page.url,
+        pageName: page.name,
+        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: 'failed',
+        error: error instanceof Error ? error.message : 'Unknown error',
+      });
+    }
+  }
 }
 
 /**
@@ -44,84 +183,43 @@ export const dailyPageAnalysis = functions.pubsub
   .schedule('0 2 * * *')
   .timeZone(process.env.SCHEDULED_TIMEZONE || 'America/Chicago')
   .onRun(async (context: EventContext) => {
-    console.log('Starting daily page analysis...');
+    console.log('Starting multi-site daily page analysis...');
 
     try {
-      // Get pages to analyze from environment or use defaults
-      const pagesToAnalyzeEnv = process.env.PAGES_TO_ANALYZE || 
-        '/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact';
-      
-      const pageUrls = pagesToAnalyzeEnv.split(',').map((url: string) => url.trim());
-      
-      const pages = pageUrls.map((url: string) => {
-        // Extract page name from URL
-        const name = url === '/' ? 'Home' : 
-          url.split('/').filter(Boolean).join(' ')
-            .split('-').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        return { url, name };
-      });
-
-      // Analyze each page
-      const backendUrl = getBackendUrl();
-      
-      for (const page of pages) {
-        console.log(`Analyzing page: ${page.name} (${page.url})`);
-        
-        try {
-          // Fetch the actual page content
-          const pageResponse = await fetch(`${backendUrl}${page.url}`);
-          const pageContent = await pageResponse.text();
-          
-          // Call backend API for analysis
-          const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              pageUrl: page.url,
-              pageName: page.name,
-              pageContent: pageContent,
-            }),
-          });
-          
-          if (analysisResponse.ok) {
-            const analysisData = await analysisResponse.json();
-            
-            // Store successful analysis results in Firestore
-            await admin.firestore().collection('page_analyses').add({
-              pageUrl: page.url,
-              pageName: page.name,
-              seoScore: analysisData.analysis.seoScore,
-              contentScore: analysisData.analysis.contentScore,
-              recommendations: analysisData.analysis.recommendations,
-              analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-              status: 'completed',
-            });
-            console.log(`✓ Successfully analyzed: ${page.name}`);
-          } else {
-            throw new Error(`API returned ${analysisResponse.status}`);
-          }
-        } catch (error) {
-          console.error(`✗ Failed to analyze ${page.name}:`, error);
-          // Store failed analysis
-          await admin.firestore().collection('page_analyses').add({
-            pageUrl: page.url,
-            pageName: page.name,
-            analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-            status: 'failed',
-            error: error instanceof Error ? error.message : 'Unknown error',
-          });
-        }
+      const sites = getSiteConfigs();
+      for (const site of sites) {
+        await runPageAnalysisForSite(site);
       }
 
-      console.log(`Daily analysis completed for ${pages.length} pages`);
+      console.log(`Daily analysis completed for ${sites.length} sites`);
       return null;
     } catch (error) {
       console.error('Daily analysis failed:', error);
       throw error;
     }
   });
+
+/**
+ * HTTP function: host-aware redirector
+ * - Redirects requests coming to the default firebase hosts to the canonical admin domain
+ * - Returns 404 for other hosts so Hosting can serve static content when not redirected
+ */
+export const hostRedirector = functions.https.onRequest((req: Request, res: Response) => {
+  const hostHeader = (req.get('x-forwarded-host') || req.get('host') || '').toLowerCase();
+  const defaultHosts = new Set([
+    'royalcarriagelimoseo.web.app',
+    'royalcarriagelimoseo.firebaseapp.com'
+  ]);
+
+  if (defaultHosts.has(hostHeader)) {
+    const target = 'https://admin.royalcarriagelimo.com' + (req.originalUrl || req.url || '/');
+    res.set('Cache-Control', 'no-cache');
+    return res.redirect(301, target);
+  }
+
+  // Not a default host — let hosting serve content (return 404 so Hosting's static files are used when possible)
+  res.status(404).send('Not handled by hostRedirector');
+});
 
 /**
  * Scheduled function: Weekly SEO report

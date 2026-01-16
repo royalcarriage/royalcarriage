@@ -6,6 +6,8 @@ node_modules/
 dist/
 build/
 .vite/
+.gcpsa-*.json
+rc-admin-sa.json
 *.tsbuildinfo
 .next/
 out/

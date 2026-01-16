@@ -1,15 +1,15 @@
-name: Build and Deploy to Firebase
+name: CI — Build & Firebase Deploy
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+  workflow_dispatch: {}
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   audit:
@@ -17,24 +17,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run npm audit
         run: npm audit --audit-level=moderate
         continue-on-error: true
-      
+
       - name: Check for security vulnerabilities
         run: |
           echo "Running security audit..."
@@ -46,29 +45,28 @@ jobs:
     needs: audit
     permissions:
       contents: read
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run TypeScript check
         run: npm run check
-      
+
       - name: Build application
         run: npm run build
-      
+
       - name: Run smoke tests
         run: npm test
-      
+
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -84,39 +82,43 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-output
           path: dist/
-      
-      - name: Authenticate to GCP (OIDC) — fallback when `FIREBASE_SERVICE_ACCOUNT` not provided
-        if: ${{ !secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Prepare deploy auth (OIDC or service-account)
+        id: auth
+        run: |
+          echo "Preparing auth"
+
+      - name: Authenticate with OIDC (when configured)
+        if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER && secrets.SERVICE_ACCOUNT_EMAIL }}
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: 'projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER'
-          service_account: 'SERVICE_ACCOUNT_EMAIL@PROJECT.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT_EMAIL }}
 
-      - name: Deploy to Firebase Hosting (service-account)
+      - name: Deploy (service-account secret)
         if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           channelId: live
-          projectId: ${{ secrets.FIREBASE_PROJECT_ID || 'default' }}
+          projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
 
-      - name: Deploy to Firebase Hosting (OIDC)
+      - name: Deploy (OIDC / ADC)
         if: ${{ !secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
-          echo "Deploying via firebase-tools using OIDC-authenticated ADC"
-          npm install -g firebase-tools@13.16.0
-          firebase deploy --project "${{ secrets.FIREBASE_PROJECT_ID || 'default' }}" --only hosting --non-interactive
+          echo "Deploying via firebase-tools using ADC (OIDC)"
+          npm install -g firebase-tools
+          firebase deploy --project "${{ secrets.FIREBASE_PROJECT_ID }}" --only hosting --non-interactive
 
   deploy-preview:
     name: Deploy Preview
@@ -126,25 +128,24 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           name: build-output
           path: dist/
-      
+
       - name: Deploy to Firebase Hosting Preview
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
-          projectId: ${{ secrets.FIREBASE_PROJECT_ID || 'default' }}
+          projectId: ${{ secrets.FIREBASE_PROJECT_ID }}
         id: deploy-preview
-      
+
       - name: Comment PR with preview URL
         uses: actions/github-script@v7
         if: github.event_name == 'pull_request'
@@ -153,7 +154,6 @@ jobs:
           script: |
             const previewUrl = '${{ steps.deploy-preview.outputs.details_url }}';
             const message = `🚀 **Preview Deployment**\n\nYour changes have been deployed to Firebase Hosting!\n\n**Preview URL:** ${previewUrl}\n\n*This preview will expire in 7 days.*`;
-            
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
