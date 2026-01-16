@@ -6,21 +6,29 @@
 /**
  * Safely remove HTML tags from a string
  * This function removes all HTML tags to prevent injection vulnerabilities
+ * Uses iterative removal to handle nested or encoded tags that could form new tags after decoding
  */
 function sanitizeHtml(html: string): string {
   if (!html) return "";
 
-  // Remove all HTML tags in a single pass using global regex
-  // The regex matches any tag including self-closing and nested content
-  const text = html
-    .replace(/<[^>]*>/g, "")
-    // Decode HTML entities in a safe order (amp must be last to avoid double-decoding)
+  let text = html;
+  let previousLength: number;
+
+  // First, decode HTML entities (before removing tags to handle &lt;script&gt; cases)
+  text = text
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&"); // Always decode &amp; last
+
+  // Remove all HTML tags iteratively to handle nested/encoded tags
+  // that could form new tags after entity decoding
+  do {
+    previousLength = text.length;
+    text = text.replace(/<[^>]*>/g, "");
+  } while (text.length !== previousLength);
 
   return text.trim();
 }
