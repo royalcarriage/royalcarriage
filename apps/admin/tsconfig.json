@@ -1,0 +1,13 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/layouts/*": ["src/layouts/*"],
+      "@/components/*": ["src/components/*"],
+      "@royal-carriage/ui/*": ["../../packages/ui/*"],
+      "@royal-carriage/seo/*": ["../../packages/seo/*"],
+      "@royal-carriage/firebase/*": ["../../packages/firebase/*"]
+    }
+  }
+}

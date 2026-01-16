@@ -6,9 +6,22 @@
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
 import fetch from "node-fetch";
-import type { EventContext } from "firebase-functions/v1";
 import type { Request, Response } from "firebase-functions/v1";
 import type { DocumentSnapshot } from "firebase-functions/v1/firestore";
+
+import { ImagePurpose } from '../../server/ai/image-generator';
+
+interface PageAnalysis {
+  pageId: string;
+  pageUrl: string;
+  pageName: string;
+  seoScore: number;
+  contentScore: number;
+  recommendations: string[];
+  analyzedAt: admin.firestore.FieldValue;
+  status: "completed" | "failed";
+  error?: string;
+}
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -49,14 +62,14 @@ function getAllowedOrigins(): string[] {
 export const dailyPageAnalysis = functions.pubsub
   .schedule("0 2 * * *")
   .timeZone(process.env.SCHEDULED_TIMEZONE || "America/Chicago")
-  .onRun(async (context: EventContext) => {
-    console.log("Starting daily page analysis...");
+  .onRun(async () => {
+    functions.logger.info("Starting daily page analysis...");
 
     try {
       // Get pages to analyze from environment or use defaults
       const pagesToAnalyzeEnv =
         process.env.PAGES_TO_ANALYZE ||
-        "/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact";
+        "/,/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact";
 
       const pageUrls = pagesToAnalyzeEnv
         .split(",")
@@ -81,7 +94,7 @@ export const dailyPageAnalysis = functions.pubsub
       const backendUrl = getBackendUrl();
 
       for (const page of pages) {
-        console.log(`Analyzing page: ${page.name} (${page.url})`);
+        functions.logger.info(`Analyzing page: ${page.name} (${page.url})`);
 
         try {
           // Fetch the actual page content
@@ -117,12 +130,12 @@ export const dailyPageAnalysis = functions.pubsub
               analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
               status: "completed",
             });
-            console.log(`✓ Successfully analyzed: ${page.name}`);
+            functions.logger.info(`✓ Successfully analyzed: ${page.name}`);
           } else {
             throw new Error(`API returned ${analysisResponse.status}`);
           }
         } catch (error) {
-          console.error(`✗ Failed to analyze ${page.name}:`, error);
+          functions.logger.error(`✗ Failed to analyze ${page.name}:`, error);
           // Store failed analysis
           await admin
             .firestore()
@@ -137,10 +150,10 @@ export const dailyPageAnalysis = functions.pubsub
         }
       }
 
-      console.log(`Daily analysis completed for ${pages.length} pages`);
+      functions.logger.info(`Daily analysis completed for ${pages.length} pages`);
       return null;
     } catch (error) {
-      console.error("Daily analysis failed:", error);
+      functions.logger.error("Daily analysis failed:", error);
       throw error;
     }
   });
@@ -152,8 +165,8 @@ export const dailyPageAnalysis = functions.pubsub
 export const weeklySeoReport = functions.pubsub
   .schedule("0 9 * * 1")
   .timeZone(process.env.SCHEDULED_TIMEZONE || "America/Chicago")
-  .onRun(async (context: EventContext) => {
-    console.log("Generating weekly SEO report...");
+  .onRun(async () => {
+    functions.logger.info("Generating weekly SEO report...");
 
     try {
       // Get all page analyses from the past week
@@ -166,7 +179,7 @@ export const weeklySeoReport = functions.pubsub
         .where("analyzedAt", ">=", oneWeekAgo)
         .get();
 
-      const analyses = snapshot.docs.map((doc) => doc.data());
+      const analyses = snapshot.docs.map((doc) => doc.data() as PageAnalysis);
 
       // Generate summary report
       const report = {
@@ -174,11 +187,11 @@ export const weeklySeoReport = functions.pubsub
         periodEnd: new Date(),
         totalPages: analyses.length,
         averageSeoScore:
-          analyses.reduce((sum: number, a: any) => sum + (a.seoScore || 0), 0) /
+          analyses.reduce((sum: number, a: PageAnalysis) => sum + (a.seoScore || 0), 0) /
           analyses.length,
         averageContentScore:
           analyses.reduce(
-            (sum: number, a: any) => sum + (a.contentScore || 0),
+            (sum: number, a: PageAnalysis) => sum + (a.contentScore || 0),
             0,
           ) / analyses.length,
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -187,10 +200,10 @@ export const weeklySeoReport = functions.pubsub
       // Store report
       await admin.firestore().collection("seo_reports").add(report);
 
-      console.log("Weekly SEO report generated successfully");
+      functions.logger.info("Weekly SEO report generated successfully");
       return null;
     } catch (error) {
-      console.error("Weekly report generation failed:", error);
+      functions.logger.error("Weekly report generation failed:", error);
       throw error;
     }
   });
@@ -282,7 +295,7 @@ export const triggerPageAnalysis = functions.https.onRequest(
       const analysisData = await analysisResponse.json();
 
       // Store analysis results in Firestore
-      const analysis = {
+      const analysisToStore = {
         pageUrl: sanitizedPageUrl,
         pageName: sanitizedPageName,
         seoScore: analysisData.analysis.seoScore,
@@ -292,19 +305,20 @@ export const triggerPageAnalysis = functions.https.onRequest(
         status: "completed",
       };
 
-      // Store in Firestore
       const docRef = await admin
         .firestore()
         .collection("page_analyses")
-        .add(analysis);
+        .add(analysisToStore);
 
+      // Now that we have the docRef.id, we can create the full analysis object if needed,
+      // or just return the relevant data.
       res.status(200).json({
         success: true,
         analysisId: docRef.id,
-        analysis: analysisData.analysis,
+        analysis: { ...analysisToStore, pageId: docRef.id },
       });
     } catch (error) {
-      console.error("Page analysis failed:", error);
+      functions.logger.error("Page analysis failed:", error);
       res.status(500).json({
         error: "Analysis failed",
         message: error instanceof Error ? error.message : "Unknown error",
@@ -405,7 +419,7 @@ export const generateContent = functions.https.onRequest(
         content,
       });
     } catch (error) {
-      console.error("Content generation failed:", error);
+      functions.logger.error("Content generation failed:", error);
       res.status(500).json({
         error: "Content generation failed",
         message: error instanceof Error ? error.message : "Unknown error",
@@ -470,7 +484,7 @@ export const generateImage = functions.https.onRequest(
 
       // Generate the image
       const result = await imageGenerator.generateImage({
-        purpose: purpose as any,
+        purpose: purpose as ImagePurpose,
         location,
         vehicle,
         style,
@@ -535,7 +549,7 @@ export const generateImage = functions.https.onRequest(
         imageId: docRef.id,
       });
     } catch (error) {
-      console.error("Image generation failed:", error);
+      functions.logger.error("Image generation failed:", error);
 
       // Log failure in audit logs
       try {
@@ -553,7 +567,7 @@ export const generateImage = functions.https.onRequest(
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
           });
       } catch (logError) {
-        console.error("Failed to log error:", logError);
+        functions.logger.error("Failed to log error:", logError);
       }
 
       res.status(500).json({
@@ -574,20 +588,21 @@ export const autoAnalyzeNewPage = functions.firestore
     const page = snap.data();
 
     if (!page) {
-      console.error("Page data is undefined");
+      functions.logger.error("Page data is undefined");
       return null;
     }
 
-    console.log(`Auto-analyzing new page: ${page.name}`);
+    functions.logger.info(`Auto-analyzing new page: ${page.name}`);
 
     try {
       // Perform analysis
-      const analysis = {
+      const analysis: PageAnalysis = {
         pageId: context.params.pageId,
         pageUrl: page.url,
         pageName: page.name,
         seoScore: Math.floor(Math.random() * 40) + 60,
         contentScore: Math.floor(Math.random() * 40) + 60,
+        recommendations: [],
         analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
         status: "completed",
       };
@@ -595,9 +610,9 @@ export const autoAnalyzeNewPage = functions.firestore
       // Store analysis
       await admin.firestore().collection("page_analyses").add(analysis);
 
-      console.log(`Auto-analysis completed for page: ${page.name}`);
+      functions.logger.info(`Auto-analysis completed for page: ${page.name}`);
     } catch (error) {
-      console.error("Auto-analysis failed:", error);
+      functions.logger.error("Auto-analysis failed:", error);
     }
 
     return null;

@@ -1,68 +1,9 @@
 {
-  "hosting": [
-    {
-      "target": "admin",
-      "public": "apps/admin/out",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ],
-      "redirects": [
-        {
-          "source": "/admin",
-          "destination": "/",
-          "type": 301
-        }
-      ]
-    },
-    {
-      "target": "airport",
-      "public": "apps/airport/dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "partybus",
-      "public": "apps/partybus/dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "corporate",
-      "public": "apps/corporate/dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    },
-    {
-      "target": "wedding",
-      "public": "apps/wedding/dist",
-      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.html"
-        }
-      ]
-    }
-  ],
+  "hosting": {
+    "public": "apps/admin/dist",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [{ "source": "**", "destination": "/index.html" }]
+  },
   "functions": {
     "source": "functions",
     "runtime": "nodejs20",

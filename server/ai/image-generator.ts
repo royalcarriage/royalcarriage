@@ -5,8 +5,10 @@
 
 import { VertexAI } from "@google-cloud/vertexai";
 
+export type ImagePurpose = "hero" | "service_card" | "fleet" | "location" | "testimonial";
+
 interface ImageGenerationRequest {
-  purpose: "hero" | "service_card" | "fleet" | "location" | "testimonial";
+  purpose: ImagePurpose;
   location?: string;
   vehicle?: string;
   style?: string;
