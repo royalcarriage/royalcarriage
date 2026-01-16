@@ -211,17 +211,25 @@ export async function ensureUserProfile(user: User): Promise<UserProfile> {
   };
 
   if (db) {
-    const ref = doc(db, "users", user.uid);
-    const snap = await getDoc(ref);
-    if (snap.exists()) {
-      const data = snap.data() as UserProfile;
-      await updateDoc(ref, { lastLogin: serverTimestamp() });
-      return data;
+    try {
+      const ref = doc(db, "users", user.uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()) {
+        const data = snap.data() as UserProfile;
+        await updateDoc(ref, { lastLogin: serverTimestamp() });
+        console.log("[DataStore] Updated existing user profile:", user.uid);
+        return data;
+      }
+      await setDoc(ref, { ...profile, createdAt: serverTimestamp() });
+      console.log("[DataStore] Created new user profile:", user.uid);
+      return profile;
+    } catch (error) {
+      console.warn("[DataStore] Firestore error, falling back to memory:", error);
+      // If Firestore fails, fall through to memory store
     }
-    await setDoc(ref, { ...profile, createdAt: serverTimestamp() });
-    return profile;
   }
 
+  console.log("[DataStore] Using memory store for user profile:", user.uid);
   const existing = memory.users.find((u) => u.uid === user.uid);
   if (existing) return existing;
   memory.users.push(profile);
