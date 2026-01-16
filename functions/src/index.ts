@@ -23,7 +23,7 @@ interface PageAnalysis {
   error?: string;
 }
 
-export * from "./dispatchFunctions";
+export * from "./affiliateFunctions";
 admin.initializeApp();
 
 // Helper function to get backend API URL
