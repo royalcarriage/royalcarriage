@@ -86,7 +86,8 @@ export default function AdminDashboardV2() {
                   <User className="h-5 w-5" />
                 </Button>
               </div>
-              </div>
+            </div>
+          </header>
 
           {/* Content Area */}
           <main className="flex-1 p-6">{renderContent()}</main>
@@ -95,4 +96,3 @@ export default function AdminDashboardV2() {
     </>
   );
 }
-                    <aside className="md:col-span-1">
