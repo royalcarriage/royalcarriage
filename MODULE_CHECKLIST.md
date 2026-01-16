@@ -12,7 +12,7 @@
 *   **Fleet Module:**
     *   Schemas: PASS (shared/fleetSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/fleetFunctions.ts)
-    *   UI: PENDING
+    *   UI: IN_PROGRESS
 *   **Dispatch Module:**
     *   Schemas: PASS (shared/dispatchSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/dispatchFunctions.ts)
