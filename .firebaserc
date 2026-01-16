@@ -9,16 +9,16 @@
           "royalcarriagelimoseo"
         ],
         "airport": [
-          "airport-royalcarriage"
+          "chicagoairportblackcar"
         ],
         "partybus": [
-          "partybus-royalcarriage"
+          "chicago-partybus"
         ],
         "corporate": [
-          "corporate-royalcarriage"
+          "chicagoexecutivecarservice"
         ],
         "wedding": [
-          "wedding-royalcarriage"
+          "chicagoweddingtransportation"
         ]
       }
     }

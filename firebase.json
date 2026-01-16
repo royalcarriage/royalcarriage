@@ -2,12 +2,19 @@
   "hosting": [
     {
       "target": "admin",
-      "public": "dist/public",
+      "public": "apps/admin/out",
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
       "rewrites": [
         {
           "source": "**",
           "destination": "/index.html"
+        }
+      ],
+      "redirects": [
+        {
+          "source": "/admin",
+          "destination": "/",
+          "type": 301
         }
       ]
     },
