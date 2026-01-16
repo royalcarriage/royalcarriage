@@ -1,0 +1,44 @@
+name: Auto-merge PRs on CI success
+
+on:
+  workflow_run:
+    workflows: ["Python Tests"]
+    types: [completed]
+
+jobs:
+  automerge:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Show workflow run info
+        run: |
+          echo "Workflow run ID: ${{ github.event.workflow_run.id }}"
+          echo "Pull requests: $(jq -r '.workflow_run.pull_requests | length' $GITHUB_EVENT_PATH)"
+
+      - name: Auto-merge PRs from workflow run
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prs = context.payload.workflow_run.pull_requests || [];
+            if (prs.length === 0) {
+              core.info('No pull requests associated with this workflow run.');
+            }
+            for (const pr of prs) {
+              const number = pr.number;
+              core.info(`Merging PR ${number}`);
+              try {
+                await github.pulls.merge({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: number,
+                  merge_method: 'squash',
+                  commit_title: `Auto-merge PR #${number} (CI success)`
+                });
+                core.info(`Merged PR ${number}`);
+              } catch (err) {
+                core.warning(`Failed to merge PR ${number}: ${err}`);
+              }
+            }
