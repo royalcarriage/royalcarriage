@@ -13,6 +13,16 @@
           "source": "**",
           "destination": "/index.html"
         }
+      ],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            {"key": "X-Frame-Options", "value": "DENY"},
+            {"key": "X-Content-Type-Options", "value": "nosniff"},
+            {"key": "X-XSS-Protection", "value": "1; mode=block"}
+          ]
+        }
       ]
     },
     {
@@ -26,7 +36,7 @@
       "rewrites": [
         {
           "source": "**",
-          "destination": "/index.json"
+          "destination": "/index.html"
         }
       ]
     },
@@ -41,22 +51,7 @@
       "rewrites": [
         {
           "source": "**",
-          "destination": "/index.json"
-        }
-      ]
-    },
-    {
-      "target": "wedding",
-      "public": "apps/wedding/dist",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
-      ],
-      "rewrites": [
-        {
-          "source": "**",
-          "destination": "/index.json"
+          "destination": "/index.html"
         }
       ]
     },
@@ -71,7 +66,37 @@
       "rewrites": [
         {
           "source": "**",
-          "destination": "/index.json"
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "executive",
+      "public": "apps/corporate/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "wedding",
+      "public": "apps/wedding/dist",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
         }
       ]
     }

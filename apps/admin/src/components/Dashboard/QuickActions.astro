@@ -1,0 +1,86 @@
+---
+const actions = [
+  { icon: '➕', title: 'New Booking', description: 'Create a new reservation', href: '#' },
+  { icon: '📊', title: 'View Reports', description: 'Analytics and insights', href: '#' },
+  { icon: '🔍', title: 'SEO Analysis', description: 'Check site performance', href: '#' },
+  { icon: '⚙️', title: 'Settings', description: 'Configure system', href: '#' },
+];
+---
+
+<div class="quick-actions">
+  <h3>Quick Actions</h3>
+  <div class="actions-grid">
+    {actions.map(action => (
+      <a href={action.href} class="action-card">
+        <div class="action-icon">{action.icon}</div>
+        <div class="action-content">
+          <h4>{action.title}</h4>
+          <p>{action.description}</p>
+        </div>
+      </a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .quick-actions {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .quick-actions h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+
+  .actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .action-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  .action-card:hover {
+    background: #f9fafb;
+    border-color: #3b82f6;
+    transform: translateY(-1px);
+  }
+
+  .action-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border-radius: 6px;
+  }
+
+  .action-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #111827;
+  }
+
+  .action-content p {
+    font-size: 12px;
+    color: #6b7280;
+  }
+</style>
