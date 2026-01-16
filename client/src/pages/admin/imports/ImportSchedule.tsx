@@ -173,6 +173,8 @@ export default function ImportSchedule() {
   );
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [filterType, setFilterType] = useState<string>("all");
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [scheduleToDelete, setScheduleToDelete] = useState<ImportSchedule | null>(null);
 
   const activeReminders = reminders.filter((r) => !r.dismissed);
 
