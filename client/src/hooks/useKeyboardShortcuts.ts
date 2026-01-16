@@ -40,7 +40,7 @@ const SHORTCUTS: Record<string, KeyboardShortcut> = {
 };
 
 export function useKeyboardShortcuts() {
-  const handleKeyPress = useCallback((event: KeyboardEvent) => {
+  const handleKeyPress = useCallback(async (event: KeyboardEvent) => {
     // Don't trigger shortcuts when typing in inputs
     if (
       event.target instanceof HTMLInputElement ||
@@ -59,12 +59,14 @@ export function useKeyboardShortcuts() {
     // Handle 'g' sequences
     if (event.key === "g") {
       const nextKey = await new Promise<string>((resolve) => {
+        let timeoutId: NodeJS.Timeout;
         const handler = (e: KeyboardEvent) => {
+          clearTimeout(timeoutId);
           window.removeEventListener("keydown", handler);
           resolve(e.key);
         };
         window.addEventListener("keydown", handler);
-        setTimeout(() => {
+        timeoutId = setTimeout(() => {
           window.removeEventListener("keydown", handler);
           resolve("");
         }, 1000); // 1 second timeout for sequence
