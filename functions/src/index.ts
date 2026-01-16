@@ -5,11 +5,18 @@
 
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import fetch from "node-fetch";
 import type { Request, Response } from "firebase-functions/v1";
 import type { DocumentSnapshot } from "firebase-functions/v1/firestore";
 
-import { ImagePurpose } from "../../server/ai/image-generator";
+// ImagePurpose type definition (inline to avoid import issues)
+type ImagePurpose = 
+  | "hero"
+  | "vehicle"
+  | "location"
+  | "service"
+  | "testimonial"
+  | "blog"
+  | "general";
 
 interface PageAnalysis {
   pageId: string;
