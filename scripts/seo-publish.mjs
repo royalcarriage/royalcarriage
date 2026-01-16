@@ -1,45 +1,54 @@
 #!/usr/bin/env node
 
-import fs from 'fs/promises';
-import path from 'path';
-import os from 'os';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import fs from "fs/promises";
+import path from "path";
+import os from "os";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DRAFTS_DIR = path.join(__dirname, '../packages/content/seo-bot/drafts');
-const PUBLISHED_DIR = path.join(__dirname, '../packages/content/seo-bot/published');
-const MANIFESTS_DIR = path.join(__dirname, '../packages/content/seo-bot/manifests');
-const TOPICS_FILE = path.join(__dirname, '../packages/content/seo-bot/queue/topics.json');
+const DRAFTS_DIR = path.join(__dirname, "../packages/content/seo-bot/drafts");
+const PUBLISHED_DIR = path.join(
+  __dirname,
+  "../packages/content/seo-bot/published",
+);
+const MANIFESTS_DIR = path.join(
+  __dirname,
+  "../packages/content/seo-bot/manifests",
+);
+const TOPICS_FILE = path.join(
+  __dirname,
+  "../packages/content/seo-bot/queue/topics.json",
+);
 
 // Helper function to count words accurately
 function countWords(text) {
-  return text.split(/\s+/).filter(word => word.length > 0).length;
+  return text.split(/\s+/).filter((word) => word.length > 0).length;
 }
 
 async function loadDraft(filename) {
   const filepath = path.join(DRAFTS_DIR, filename);
-  const data = await fs.readFile(filepath, 'utf-8');
+  const data = await fs.readFile(filepath, "utf-8");
   return { data: JSON.parse(data), filepath, filename };
 }
 
 async function loadTopics() {
-  const data = await fs.readFile(TOPICS_FILE, 'utf-8');
+  const data = await fs.readFile(TOPICS_FILE, "utf-8");
   return JSON.parse(data);
 }
 
 async function saveTopics(data) {
-  await fs.writeFile(TOPICS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  await fs.writeFile(TOPICS_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
 function execCommand(command, options = {}) {
   try {
     return execSync(command, {
-      encoding: 'utf-8',
-      stdio: options.silent ? 'pipe' : 'inherit',
-      ...options
+      encoding: "utf-8",
+      stdio: options.silent ? "pipe" : "inherit",
+      ...options,
     });
   } catch (error) {
     throw new Error(`Command failed: ${command}\n${error.message}`);
@@ -47,49 +56,53 @@ function execCommand(command, options = {}) {
 }
 
 function getCurrentBranch() {
-  return execCommand('git rev-parse --abbrev-ref HEAD', { silent: true }).trim();
+  return execCommand("git rev-parse --abbrev-ref HEAD", {
+    silent: true,
+  }).trim();
 }
 
 function hasUncommittedChanges() {
-  const status = execCommand('git status --porcelain', { silent: true }).trim();
+  const status = execCommand("git status --porcelain", { silent: true }).trim();
   return status.length > 0;
 }
 
 async function createBranch(branchName) {
   console.log(`🌿 Creating branch: ${branchName}`);
-  
+
   const currentBranch = getCurrentBranch();
-  
+
   if (hasUncommittedChanges()) {
-    console.error('❌ Working directory has uncommitted changes. Please commit or stash them first.');
+    console.error(
+      "❌ Working directory has uncommitted changes. Please commit or stash them first.",
+    );
     process.exit(1);
   }
-  
+
   // Ensure we're up to date
-  console.log('   Fetching latest changes...');
-  execCommand('git fetch origin', { silent: true });
-  
+  console.log("   Fetching latest changes...");
+  execCommand("git fetch origin", { silent: true });
+
   // Create and checkout new branch
   execCommand(`git checkout -b ${branchName}`);
-  
+
   return currentBranch;
 }
 
 async function moveDraftToPublished(draft) {
   const publishedPath = path.join(PUBLISHED_DIR, draft.filename);
-  
+
   // Move file
   await fs.rename(draft.filepath, publishedPath);
-  
+
   console.log(`📦 Moved draft to published: ${draft.filename}`);
   return publishedPath;
 }
 
 async function createManifest(draft, publishedPath) {
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const manifestFilename = `manifest-${draft.data.topicId}-${timestamp}.json`;
   const manifestPath = path.join(MANIFESTS_DIR, manifestFilename);
-  
+
   const manifest = {
     topicId: draft.data.topicId,
     keyword: draft.data.keyword,
@@ -106,20 +119,20 @@ async function createManifest(draft, publishedPath) {
       metaDescription: draft.data.content.metaDescription,
       sections: draft.data.content.sections.length,
       images: draft.data.content.images?.length || 0,
-      internalLinks: draft.data.content.internalLinks?.length || 0
-    }
+      internalLinks: draft.data.content.internalLinks?.length || 0,
+    },
   };
-  
-  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), 'utf-8');
-  
+
+  await fs.writeFile(manifestPath, JSON.stringify(manifest, null, 2), "utf-8");
+
   console.log(`📋 Created manifest: ${manifestFilename}`);
   return { manifestPath, manifestFilename, manifest };
 }
 
 async function updateTopicStatus(topicId, status) {
   const data = await loadTopics();
-  const topic = data.topics.find(t => t.id === topicId);
-  
+  const topic = data.topics.find((t) => t.id === topicId);
+
   if (topic) {
     topic.status = status;
     topic.publishedAt = new Date().toISOString();
@@ -128,14 +141,16 @@ async function updateTopicStatus(topicId, status) {
 }
 
 async function commitChanges(draft, manifest) {
-  console.log('📝 Committing changes...');
-  
+  console.log("📝 Committing changes...");
+
   // Stage files
-  execCommand('git add packages/content/seo-bot/published/', { silent: true });
-  execCommand('git add packages/content/seo-bot/manifests/', { silent: true });
-  execCommand('git add packages/content/seo-bot/drafts/', { silent: true });
-  execCommand('git add packages/content/seo-bot/queue/topics.json', { silent: true });
-  
+  execCommand("git add packages/content/seo-bot/published/", { silent: true });
+  execCommand("git add packages/content/seo-bot/manifests/", { silent: true });
+  execCommand("git add packages/content/seo-bot/drafts/", { silent: true });
+  execCommand("git add packages/content/seo-bot/queue/topics.json", {
+    silent: true,
+  });
+
   // Commit - write message to temp file to avoid shell injection
   const commitMessage = `feat(seo): publish "${draft.data.content.title}"
 
@@ -145,35 +160,37 @@ Word count: ${manifest.manifest.wordCount}
 Target site: ${draft.data.targetSite}
 
 Generated by seo-publish automation`;
-  
+
   const tmpFile = path.join(os.tmpdir(), `commit-msg-${Date.now()}.txt`);
-  await fs.writeFile(tmpFile, commitMessage, 'utf-8');
-  
+  await fs.writeFile(tmpFile, commitMessage, "utf-8");
+
   try {
     execCommand(`git commit -F "${tmpFile}"`, { silent: true });
-    console.log('✅ Changes committed');
+    console.log("✅ Changes committed");
   } finally {
     await fs.unlink(tmpFile).catch(() => {});
   }
 }
 
 async function pushBranch(branchName) {
-  console.log('⬆️  Pushing branch to remote...');
-  
+  console.log("⬆️  Pushing branch to remote...");
+
   try {
     execCommand(`git push -u origin ${branchName}`, { silent: true });
-    console.log('✅ Branch pushed successfully');
+    console.log("✅ Branch pushed successfully");
     return true;
   } catch (error) {
-    console.error('⚠️  Failed to push branch:', error.message);
-    console.log('   You may need to push manually or check your git credentials');
+    console.error("⚠️  Failed to push branch:", error.message);
+    console.log(
+      "   You may need to push manually or check your git credentials",
+    );
     return false;
   }
 }
 
 async function createPullRequest(branchName, draft, manifest) {
-  console.log('\n📬 Creating Pull Request...');
-  
+  console.log("\n📬 Creating Pull Request...");
+
   const prTitle = `SEO Content: ${draft.data.content.title}`;
   const prBody = `## SEO Content Publication
 
@@ -202,20 +219,20 @@ ${draft.data.content.metaDescription}
   // Try to create PR using GitHub CLI with file-based approach to avoid injection
   try {
     execCommand(`gh --version`, { silent: true });
-    
+
     const tmpTitle = path.join(os.tmpdir(), `pr-title-${Date.now()}.txt`);
     const tmpBody = path.join(os.tmpdir(), `pr-body-${Date.now()}.txt`);
-    
-    await fs.writeFile(tmpTitle, prTitle, 'utf-8');
-    await fs.writeFile(tmpBody, prBody, 'utf-8');
-    
+
+    await fs.writeFile(tmpTitle, prTitle, "utf-8");
+    await fs.writeFile(tmpBody, prBody, "utf-8");
+
     try {
       const prUrl = execCommand(
         `gh pr create --title-file "${tmpTitle}" --body-file "${tmpBody}" --base main`,
-        { silent: true }
+        { silent: true },
       ).trim();
-      
-      console.log('✅ Pull Request created successfully!');
+
+      console.log("✅ Pull Request created successfully!");
       console.log(`   ${prUrl}`);
       return prUrl;
     } finally {
@@ -223,70 +240,77 @@ ${draft.data.content.metaDescription}
       await fs.unlink(tmpBody).catch(() => {});
     }
   } catch (error) {
-    console.log('⚠️  GitHub CLI not available or failed');
-    console.log('\n📋 Manual PR Creation Instructions:');
-    console.log('─'.repeat(60));
+    console.log("⚠️  GitHub CLI not available or failed");
+    console.log("\n📋 Manual PR Creation Instructions:");
+    console.log("─".repeat(60));
     console.log(`1. Go to your repository on GitHub`);
     console.log(`2. Click "Pull Requests" → "New Pull Request"`);
     console.log(`3. Select base: main, compare: ${branchName}`);
     console.log(`4. Use this title:`);
     console.log(`   ${prTitle}`);
     console.log(`5. Use this description:`);
-    console.log('─'.repeat(60));
+    console.log("─".repeat(60));
     console.log(prBody);
-    console.log('─'.repeat(60));
+    console.log("─".repeat(60));
     return null;
   }
 }
 
 async function publish(draftFilename, options = {}) {
   console.log(`\n🚀 Starting publication process for: ${draftFilename}\n`);
-  
+
   // Load draft
   const draft = await loadDraft(draftFilename);
-  
+
   // Create branch
   const branchName = `seo/${draft.data.topicId}-${draft.data.content.slug}`;
   const originalBranch = await createBranch(branchName);
-  
+
   try {
     // Move draft to published
     const publishedPath = await moveDraftToPublished(draft);
-    
+
     // Create manifest
-    const { manifestPath, manifestFilename, manifest } = await createManifest(draft, publishedPath);
-    
+    const { manifestPath, manifestFilename, manifest } = await createManifest(
+      draft,
+      publishedPath,
+    );
+
     // Update topic status
-    await updateTopicStatus(draft.data.topicId, 'published');
-    
+    await updateTopicStatus(draft.data.topicId, "published");
+
     // Commit changes
     await commitChanges(draft, { manifestFilename, manifest });
-    
+
     // Push branch
     const pushed = await pushBranch(branchName);
-    
+
     // Create PR
     if (pushed && !options.noPr) {
-      await createPullRequest(branchName, draft, { manifestFilename, manifest });
+      await createPullRequest(branchName, draft, {
+        manifestFilename,
+        manifest,
+      });
     } else if (!pushed) {
-      console.log('\n📋 To push manually and create PR:');
+      console.log("\n📋 To push manually and create PR:");
       console.log(`   git push -u origin ${branchName}`);
       console.log(`   gh pr create --base main --head ${branchName}`);
     }
-    
-    console.log('\n✅ Publication process complete!');
+
+    console.log("\n✅ Publication process complete!");
     console.log(`   Branch: ${branchName}`);
     console.log(`   Next: Review and merge the PR to publish`);
-    
   } catch (error) {
-    console.error('\n❌ Publication failed:', error.message);
-    console.log(`\n🔄 Attempting to restore original branch: ${originalBranch}`);
+    console.error("\n❌ Publication failed:", error.message);
+    console.log(
+      `\n🔄 Attempting to restore original branch: ${originalBranch}`,
+    );
     try {
       execCommand(`git checkout ${originalBranch}`, { silent: true });
       execCommand(`git branch -D ${branchName}`, { silent: true });
-      console.log('✅ Cleaned up failed publication attempt');
+      console.log("✅ Cleaned up failed publication attempt");
     } catch (cleanupError) {
-      console.error('⚠️  Manual cleanup may be required');
+      console.error("⚠️  Manual cleanup may be required");
     }
     process.exit(1);
   }
@@ -294,8 +318,8 @@ async function publish(draftFilename, options = {}) {
 
 async function main() {
   const args = process.argv.slice(2);
-  
-  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+
+  if (args.length === 0 || args[0] === "--help" || args[0] === "-h") {
     console.log(`
 Usage: node seo-publish.mjs [options]
 
@@ -323,20 +347,20 @@ Example:
     `);
     return;
   }
-  
+
   const options = {
-    noPr: args.includes('--no-pr')
+    noPr: args.includes("--no-pr"),
   };
-  
-  if (args[0] === '--draft' && args[1]) {
+
+  if (args[0] === "--draft" && args[1]) {
     await publish(args[1], options);
   } else {
-    console.error('❌ Invalid arguments. Use --help for usage information.');
+    console.error("❌ Invalid arguments. Use --help for usage information.");
     process.exit(1);
   }
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error.message);
+main().catch((error) => {
+  console.error("❌ Error:", error.message);
   process.exit(1);
 });

@@ -1,11 +1,11 @@
-const { execSync } = require('child_process');
+const { execSync } = require("child_process");
 
 // Get build info
 function getBuildSHA() {
   try {
-    return execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+    return execSync("git rev-parse --short HEAD", { encoding: "utf-8" }).trim();
   } catch (e) {
-    return 'unknown';
+    return "unknown";
   }
 }
 
@@ -15,10 +15,16 @@ function getBuildTimestamp() {
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['lucide-react', 'undici', 'firebase', '@firebase/storage', '@firebase/app'],
+  transpilePackages: [
+    "lucide-react",
+    "undici",
+    "firebase",
+    "@firebase/storage",
+    "@firebase/app",
+  ],
 
   // Client-side app with Firebase backend
-  output: 'export',
+  output: "export",
 
   // Image optimization disabled for static export
   images: {
@@ -48,7 +54,11 @@ const nextConfig = {
 
   // Performance optimizations
   experimental: {
-    optimizePackageImports: ['lucide-react', '@firebase/firestore', '@firebase/storage'],
+    optimizePackageImports: [
+      "lucide-react",
+      "@firebase/firestore",
+      "@firebase/storage",
+    ],
   },
 };
 

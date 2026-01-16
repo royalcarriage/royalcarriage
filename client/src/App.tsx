@@ -63,7 +63,10 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/ohare-airport-limo" component={OHareAirport} />
       <Route path="/midway-airport-limo" component={MidwayAirport} />
-      <Route path="/airport-limo-downtown-chicago" component={DowntownChicago} />
+      <Route
+        path="/airport-limo-downtown-chicago"
+        component={DowntownChicago}
+      />
       <Route path="/airport-limo-suburbs" component={SuburbsService} />
       <Route path="/city/:slug" component={CityPage} />
       <Route path="/fleet" component={Fleet} />
@@ -71,7 +74,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/login" component={Login} />
-      
+
       {/* Protected Admin Routes */}
       <Route path="/admin">
         {() => (
@@ -185,121 +188,7 @@ function Router() {
           </ProtectedRoute>
         )}
       </Route>
-      
-      {/* New Admin Routes */}
-      <Route path="/admin/overview">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <OverviewPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/imports/moovs">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.ADMIN}>
-            <MoovsImportPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/imports/ads">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.ADMIN}>
-            <AdsImportPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/roi">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <RoiPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/sites/airport">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <AirportSitePage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/sites/partybus">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <PartyBusSitePage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/sites/corporate">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <CorporateSitePage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/sites/wedding">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.VIEWER}>
-            <WeddingSitePage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/seo-bot/queue">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.EDITOR}>
-            <QueuePage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/seo-bot/drafts">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.EDITOR}>
-            <DraftsPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/seo-bot/runs">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.EDITOR}>
-            <RunsPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/seo-bot/publish">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.SUPER_ADMIN}>
-            <PublishPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/images/library">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.EDITOR}>
-            <LibraryPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/images/missing">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.EDITOR}>
-            <MissingPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/deploy">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.SUPER_ADMIN}>
-            <DeployPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      <Route path="/admin/logs">
-        {() => (
-          <ProtectedRoute requiredRole={UserRole.ADMIN}>
-            <LogsPage />
-          </ProtectedRoute>
-        )}
-      </Route>
-      
+
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Check, Globe } from "lucide-react";
 
@@ -43,7 +49,10 @@ interface SiteSelectorProps {
   onSiteChange?: (siteId: string) => void;
 }
 
-export function SiteSelector({ selectedSite = "airport", onSiteChange }: SiteSelectorProps) {
+export function SiteSelector({
+  selectedSite = "airport",
+  onSiteChange,
+}: SiteSelectorProps) {
   const [currentSite, setCurrentSite] = useState(selectedSite);
 
   // Sync local state with prop changes
@@ -56,7 +65,7 @@ export function SiteSelector({ selectedSite = "airport", onSiteChange }: SiteSel
     onSiteChange?.(siteId);
   };
 
-  const currentSiteData = SITES.find(s => s.id === currentSite);
+  const currentSiteData = SITES.find((s) => s.id === currentSite);
   const statusColors = {
     live: "bg-green-500",
     pending: "bg-yellow-500",
@@ -71,9 +80,9 @@ export function SiteSelector({ selectedSite = "airport", onSiteChange }: SiteSel
           <SelectValue>
             <div className="flex items-center gap-2">
               <span className="font-medium">{currentSiteData?.name}</span>
-              <Badge 
-                variant="outline" 
-                className={`${statusColors[currentSiteData?.status || 'pending']} text-white border-none px-2 py-0 text-xs`}
+              <Badge
+                variant="outline"
+                className={`${statusColors[currentSiteData?.status || "pending"]} text-white border-none px-2 py-0 text-xs`}
               >
                 {currentSiteData?.status}
               </Badge>
@@ -88,8 +97,8 @@ export function SiteSelector({ selectedSite = "airport", onSiteChange }: SiteSel
                   <div className="font-medium">{site.name}</div>
                   <div className="text-xs text-gray-500">{site.domain}</div>
                 </div>
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className={`${statusColors[site.status]} text-white border-none px-2 py-0 text-xs`}
                 >
                   {site.status}

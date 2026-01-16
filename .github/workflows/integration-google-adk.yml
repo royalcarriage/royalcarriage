@@ -3,10 +3,10 @@ name: Google ADK BSO Integration
 on:
   push:
     paths:
-      - 'packages/integrations/google-adk-bso/**'
+      - "packages/integrations/google-adk-bso/**"
   pull_request:
     paths:
-      - 'packages/integrations/google-adk-bso/**'
+      - "packages/integrations/google-adk-bso/**"
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install requirements
         run: |
           python -m pip install --upgrade pip

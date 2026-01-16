@@ -4,7 +4,10 @@ import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Phone, Mail, Star, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -86,9 +89,11 @@ const drivers: Driver[] = [
 ];
 
 const statusColors: Record<Driver["status"], string> = {
-  active: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  active:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   inactive: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
-  pending: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  pending:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
 };
 
 const statusLabels: Record<Driver["status"], string> = {

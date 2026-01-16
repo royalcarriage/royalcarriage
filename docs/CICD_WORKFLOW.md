@@ -37,6 +37,7 @@ The workflow consists of four main jobs that run in sequence:
 **Purpose:** Detect security vulnerabilities in dependencies before building and deploying.
 
 **Steps:**
+
 - Checkout code
 - Setup Node.js 20.x
 - Install dependencies (`npm ci`)
@@ -44,12 +45,14 @@ The workflow consists of four main jobs that run in sequence:
 - Check for high severity vulnerabilities
 
 **Key Features:**
+
 - Runs before any build or deployment
 - Checks for vulnerabilities at moderate and high severity levels
 - Warns about high severity issues without failing the workflow
 - Uses `continue-on-error: true` to allow workflow to proceed with warnings
 
 **When it runs:**
+
 - On every push to `main` branch
 - On every pull request to `main` branch
 
@@ -60,6 +63,7 @@ The workflow consists of four main jobs that run in sequence:
 **Dependencies:** Requires `audit` job to complete first.
 
 **Steps:**
+
 1. **Checkout code** - Get latest code from repository
 2. **Setup Node.js** - Install Node.js 20.x with npm caching
 3. **Install dependencies** - Run `npm ci` for consistent installs
@@ -69,15 +73,18 @@ The workflow consists of four main jobs that run in sequence:
 7. **Upload artifacts** - Save build output for deployment jobs
 
 **Build Output:**
+
 - Client bundle: `dist/public/` (HTML, CSS, JS, assets)
 - Server bundle: `dist/index.cjs` (Express server)
 
 **Artifacts:**
+
 - Name: `build-output`
 - Contents: Complete `dist/` directory
 - Retention: 7 days
 
 **When it runs:**
+
 - After audit job completes successfully
 - On every push to `main` branch
 - On every pull request to `main` branch
@@ -89,21 +96,25 @@ The workflow consists of four main jobs that run in sequence:
 **Dependencies:** Requires `build` job to complete first.
 
 **Conditions:**
+
 - Only runs on push to `main` branch
 - Does NOT run on pull requests
 
 **Steps:**
+
 1. **Checkout code** - Get repository configuration files
 2. **Download artifacts** - Get build output from build job
 3. **Deploy to Firebase** - Deploy to production using Firebase Hosting
 
 **Firebase Configuration:**
+
 - Uses Firebase Action: `FirebaseExtended/action-hosting-deploy@v0`
 - Deploys to: Production (live channel)
 - Authentication: `FIREBASE_SERVICE_ACCOUNT` secret
 - Project ID: From `FIREBASE_PROJECT_ID` secret or default
 
 **When it runs:**
+
 - Only when code is pushed to `main` branch
 - After successful build
 
@@ -114,28 +125,33 @@ The workflow consists of four main jobs that run in sequence:
 **Dependencies:** Requires `build` job to complete first.
 
 **Conditions:**
+
 - Only runs on pull requests to `main` branch
 - Does NOT run on direct pushes to `main`
 
 **Steps:**
+
 1. **Checkout code** - Get repository configuration files
 2. **Download artifacts** - Get build output from build job
 3. **Deploy to preview** - Create preview channel in Firebase
 4. **Comment on PR** - Post preview URL to pull request
 
 **Firebase Configuration:**
+
 - Uses Firebase Action: `FirebaseExtended/action-hosting-deploy@v0`
 - Deploys to: Preview channel (temporary)
 - Authentication: `FIREBASE_SERVICE_ACCOUNT` secret
 - Expiration: 7 days
 
 **Preview Features:**
+
 - Unique URL for each PR
 - Automatic comment on PR with preview link
 - Isolated from production
 - Automatically expires after 7 days
 
 **When it runs:**
+
 - On every pull request to `main` branch
 - After successful build
 
@@ -148,19 +164,22 @@ Configure these in: **Repository Settings → Secrets and variables → Actions*
 **Purpose:** Authenticate with Firebase for deployments
 
 **How to obtain:**
+
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Select your project
 3. Go to Project Settings → Service Accounts
 4. Click "Generate New Private Key"
 5. Download the JSON file
 6. Base64 encode it:
+
    ```bash
    # Linux/WSL
    base64 -w 0 < service-account-key.json
-   
+
    # macOS
    base64 -i service-account-key.json
    ```
+
 7. Add the base64-encoded string as the secret value
 
 ### 2. FIREBASE_PROJECT_ID (Optional)
@@ -176,22 +195,26 @@ Configure these in: **Repository Settings → Secrets and variables → Actions*
 ### Push to Main Branch
 
 **Triggers:**
+
 - Security Audit job
 - Build job
 - Deploy to Production job
 
 **Result:**
+
 - Code is automatically deployed to production
 - No preview deployment
 
 ### Pull Request to Main Branch
 
 **Triggers:**
+
 - Security Audit job
 - Build job
 - Deploy Preview job
 
 **Result:**
+
 - Preview deployment created
 - PR comment with preview URL
 - No production deployment
@@ -216,6 +239,7 @@ npm run build
 ```
 
 **Process:**
+
 1. Clean `dist/` directory
 2. Build client with Vite
    - Bundles React application
@@ -228,6 +252,7 @@ npm run build
    - Output: `dist/index.cjs`
 
 **Build Outputs:**
+
 - `dist/public/index.html` - Main HTML file
 - `dist/public/assets/*.js` - JavaScript bundles
 - `dist/public/assets/*.css` - Stylesheet bundles
@@ -242,6 +267,7 @@ npm test
 ```
 
 **Tests verify:**
+
 - `dist/public/index.html` exists
 - `dist/index.cjs` server bundle exists
 - `dist/public/assets/` directory exists
@@ -286,12 +312,14 @@ npm test
 **When:** Automatic on merge to `main`
 
 **Process:**
+
 1. Build passes all checks
 2. Artifacts uploaded to Firebase
 3. Deployed to live channel
 4. Available immediately at production URL
 
 **Rollback:**
+
 - Use Firebase Console → Hosting → Release History
 - Or deploy previous commit from `main`
 
@@ -302,6 +330,7 @@ npm test
 **When:** Automatic on pull request
 
 **Process:**
+
 1. Build passes all checks
 2. Artifacts uploaded to Firebase
 3. Deployed to preview channel
@@ -331,6 +360,7 @@ npm test
 **Symptom:** `npm ci` fails with lock file error
 
 **Solution:**
+
 - Ensure `package-lock.json` is committed
 - Run `npm install` locally and commit lock file
 
@@ -339,6 +369,7 @@ npm test
 **Symptom:** `npm run check` fails
 
 **Solution:**
+
 - Run `npm run check` locally
 - Fix reported type errors
 - Commit fixes
@@ -348,6 +379,7 @@ npm test
 **Symptom:** Firebase deployment step fails
 
 **Solution:**
+
 - Verify `FIREBASE_SERVICE_ACCOUNT` secret is set
 - Check secret is valid and not expired
 - Verify `.firebaserc` has correct project ID
@@ -358,6 +390,7 @@ npm test
 **Symptom:** Preview deploys but no PR comment
 
 **Solution:**
+
 - Check GitHub Actions permissions
 - Verify workflow has write access to pull requests
 - Check `GITHUB_TOKEN` has correct scopes
@@ -393,6 +426,7 @@ npm test
 **Current:** ~2-3 minutes per build
 
 **Breakdown:**
+
 - Security audit: ~30 seconds
 - Build: ~1-2 minutes
 - Deploy: ~30 seconds
@@ -407,11 +441,13 @@ npm test
 ### Build Size
 
 **Current:**
+
 - JavaScript bundle: ~541 KB (minified, ~131 KB gzipped)
 - CSS bundle: ~7 KB (minified, ~1.2 KB gzipped)
 - Total assets: ~5.3 MB (includes images)
 
 **Optimization Notes:**
+
 - Consider code splitting for JS bundle > 500 KB
 - Images are already optimized
 - Consider lazy loading for large images

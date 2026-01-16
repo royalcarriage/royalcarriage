@@ -87,6 +87,8 @@
     "seo:gate": "node ./scripts/seo-gate.mjs",
     "seo:publish": "node ./scripts/seo-publish.mjs",
     "seo:run": "node ./scripts/seo-run.mjs",
+    "report:weekly": "node ./scripts/generate-weekly-report.mjs",
+    "backup:firestore": "node ./scripts/backup-firestore.mjs",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc"
   },

@@ -1,12 +1,18 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
+import React, { createContext, useContext, useEffect, useState } from "react";
+import {
   User,
   signInWithPopup,
   signOut as firebaseSignOut,
-  onAuthStateChanged
-} from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { auth, googleProvider, db, UserRole, isSuperAdmin } from '@/lib/firebase';
+  onAuthStateChanged,
+} from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  auth,
+  googleProvider,
+  db,
+  UserRole,
+  isSuperAdmin,
+} from "@/lib/firebase";
 
 interface UserData {
   uid: string;
@@ -29,23 +35,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
 
   // Fetch or create user data in Firestore
   const fetchUserData = async (firebaseUser: User): Promise<UserData> => {
-    const userRef = doc(db, 'users', firebaseUser.uid);
+    const userRef = doc(db, "users", firebaseUser.uid);
     const userSnap = await getDoc(userRef);
 
     let role = UserRole.VIEWER; // Default role
-    
+
     // Assign SuperAdmin role if email matches
     if (isSuperAdmin(firebaseUser.email)) {
       role = UserRole.SUPER_ADMIN;
@@ -56,21 +64,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const userData: UserData = {
       uid: firebaseUser.uid,
-      email: firebaseUser.email || '',
+      email: firebaseUser.email || "",
       displayName: firebaseUser.displayName,
       photoURL: firebaseUser.photoURL,
-      role: role
+      role: role,
     };
 
     // Create or update user document in Firestore
-    await setDoc(userRef, {
-      email: userData.email,
-      displayName: userData.displayName,
-      photoURL: userData.photoURL,
-      role: userData.role,
-      lastLogin: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }, { merge: true });
+    await setDoc(
+      userRef,
+      {
+        email: userData.email,
+        displayName: userData.displayName,
+        photoURL: userData.photoURL,
+        role: userData.role,
+        lastLogin: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      { merge: true },
+    );
 
     return userData;
   };
@@ -79,14 +91,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setLoading(true);
-      
+
       if (firebaseUser) {
         try {
           const data = await fetchUserData(firebaseUser);
           setUser(firebaseUser);
           setUserData(data);
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
           setUser(null);
           setUserData(null);
         }
@@ -94,7 +106,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
         setUserData(null);
       }
-      
+
       setLoading(false);
     });
 
@@ -110,7 +122,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(result.user);
       setUserData(data);
     } catch (error) {
-      console.error('Error signing in with Google:', error);
+      console.error("Error signing in with Google:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -124,7 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null);
       setUserData(null);
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error("Error signing out:", error);
       throw error;
     }
   };
@@ -134,7 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     userData,
     loading,
     signInWithGoogle,
-    signOut
+    signOut,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

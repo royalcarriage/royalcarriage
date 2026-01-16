@@ -44,6 +44,7 @@ gcloud billing budgets create \
 ```
 
 **Threshold Explanation:**
+
 - **50%** ($10 spent) - Early warning to monitor usage
 - **90%** ($18 spent) - Critical warning to reduce usage
 - **100%** ($20 spent) - Budget fully utilized
@@ -86,14 +87,16 @@ gcloud billing budgets create \
 2. Fill in the details:
 
 **Step 1: Set budget scope**
+
 - Projects: Select "royalcarriagelimoseo"
-- Services: 
+- Services:
   - Select "Vertex AI API"
   - Select "Cloud Storage"
 - Credits: Include credits in cost
 - Click "NEXT"
 
 **Step 2: Set budget amount**
+
 - Budget type: Specified amount
 - Target amount: $20.00
 - Budget time period: Monthly
@@ -101,12 +104,14 @@ gcloud billing budgets create \
 - Click "NEXT"
 
 **Step 3: Set threshold rules**
+
 - Add threshold: 50% ($10.00)
 - Add threshold: 90% ($18.00)
 - Add threshold: 100% ($20.00)
 - Click "NEXT"
 
 **Step 4: Manage notifications**
+
 - Email alerts recipients:
   - devops@royalcarriage.com
   - finance@royalcarriage.com
@@ -117,6 +122,7 @@ gcloud billing budgets create \
 #### Step 3: Verify Budget Creation
 
 You should see your budget listed with:
+
 - Name: "Royal Carriage AI Image Generation Budget"
 - Amount: $20.00/month
 - Alerts: 3 thresholds configured
@@ -173,6 +179,7 @@ Repeat for all team members who should receive alerts.
 #### Step 2: Add Vertex AI Metrics
 
 **Chart 1: API Request Count**
+
 1. Click "ADD CHART"
 2. Chart type: Line
 3. Resource type: "Vertex AI API"
@@ -184,6 +191,7 @@ Repeat for all team members who should receive alerts.
 9. Click "SAVE"
 
 **Chart 2: API Error Rate**
+
 1. Click "ADD CHART"
 2. Chart type: Line
 3. Resource type: "Vertex AI API"
@@ -194,6 +202,7 @@ Repeat for all team members who should receive alerts.
 8. Click "SAVE"
 
 **Chart 3: API Latency**
+
 1. Click "ADD CHART"
 2. Chart type: Heatmap
 3. Resource type: "Vertex AI API"
@@ -205,6 +214,7 @@ Repeat for all team members who should receive alerts.
 #### Step 3: Add Cloud Storage Metrics
 
 **Chart 4: Storage Usage**
+
 1. Click "ADD CHART"
 2. Chart type: Stacked area
 3. Resource type: "GCS Bucket"
@@ -215,6 +225,7 @@ Repeat for all team members who should receive alerts.
 8. Click "SAVE"
 
 **Chart 5: Object Count**
+
 1. Click "ADD CHART"
 2. Chart type: Line
 3. Resource type: "GCS Bucket"
@@ -226,6 +237,7 @@ Repeat for all team members who should receive alerts.
 #### Step 4: Add Cost Metrics
 
 **Chart 6: Estimated Daily Cost**
+
 1. Click "ADD CHART"
 2. Chart type: Line
 3. Use custom query:
@@ -241,21 +253,23 @@ Repeat for all team members who should receive alerts.
 #### Step 5: Add Firebase Functions Metrics
 
 **Chart 7: Function Invocations**
+
 1. Click "ADD CHART"
 2. Chart type: Stacked bar
 3. Resource type: "Cloud Function"
 4. Metric: "Execution count"
-5. Filter: function_name=~".*Image.*"
+5. Filter: function_name=~"._Image._"
 6. Group by: function_name
 7. Chart title: "Image-Related Function Calls"
 8. Click "SAVE"
 
 **Chart 8: Function Errors**
+
 1. Click "ADD CHART"
 2. Chart type: Line
 3. Resource type: "Cloud Function"
 4. Metric: "Execution error count"
-5. Filter: function_name=~".*Image.*"
+5. Filter: function_name=~"._Image._"
 6. Chart title: "Function Error Count"
 7. Click "SAVE"
 
@@ -284,6 +298,7 @@ gcloud alpha monitoring policies create \
 ### Create Alert: Approaching Budget Limit
 
 Via Console:
+
 1. Go to: https://console.cloud.google.com/monitoring/alerting/policies/create
 2. Click "ADD CONDITION"
 3. **Target:**
@@ -313,6 +328,7 @@ gcloud alpha monitoring policies create \
 ### Create Alert: Daily Image Generation Spike
 
 Via Console:
+
 1. Create alert policy
 2. Target: Vertex AI API request count
 3. Condition: Rate of increase > 200% compared to previous day
@@ -363,17 +379,17 @@ You can query Firestore to see real-time usage:
 
 ```javascript
 // Get today's usage for a user
-const today = new Date().toISOString().split('T')[0];
-const userId = 'admin-user-id';
+const today = new Date().toISOString().split("T")[0];
+const userId = "admin-user-id";
 
-const usageRef = firestore.collection('usage_stats').doc(`${userId}_${today}`);
+const usageRef = firestore.collection("usage_stats").doc(`${userId}_${today}`);
 const doc = await usageRef.get();
 
 if (doc.exists) {
-  console.log('Images generated today:', doc.data().imageGenerations);
-  console.log('Estimated cost:', doc.data().totalCost);
+  console.log("Images generated today:", doc.data().imageGenerations);
+  console.log("Estimated cost:", doc.data().totalCost);
 } else {
-  console.log('No usage today');
+  console.log("No usage today");
 }
 ```
 
@@ -384,14 +400,15 @@ if (doc.exists) {
 const sevenDaysAgo = new Date();
 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-const usageSnapshot = await firestore.collection('usage_stats')
-  .where('date', '>=', sevenDaysAgo.toISOString().split('T')[0])
+const usageSnapshot = await firestore
+  .collection("usage_stats")
+  .where("date", ">=", sevenDaysAgo.toISOString().split("T")[0])
   .get();
 
 let totalImages = 0;
 let totalCost = 0;
 
-usageSnapshot.forEach(doc => {
+usageSnapshot.forEach((doc) => {
   totalImages += doc.data().imageGenerations;
   totalCost += doc.data().totalCost;
 });
@@ -406,12 +423,14 @@ console.log(`Last 7 days: ${totalImages} images, $${totalCost.toFixed(2)}`);
 After completing setup, verify:
 
 ### Budget Alerts
+
 - [ ] Budget created with $20 monthly limit
 - [ ] Three threshold alerts configured (50%, 90%, 100%)
 - [ ] Email notifications configured
 - [ ] Test notification received
 
 ### Monitoring Dashboard
+
 - [ ] Dashboard created and accessible
 - [ ] Vertex AI metrics displaying
 - [ ] Cloud Storage metrics displaying
@@ -420,12 +439,14 @@ After completing setup, verify:
 - [ ] Dashboard URL bookmarked
 
 ### Alerting Policies
+
 - [ ] High error rate alert configured
 - [ ] Budget warning alert configured
 - [ ] Storage quota alert configured
 - [ ] Notification channels tested
 
 ### Reporting
+
 - [ ] Weekly cost reports scheduled
 - [ ] Report recipients confirmed
 - [ ] First report received
@@ -468,12 +489,14 @@ After completing setup, verify:
 ### Issue: Not Receiving Budget Alerts
 
 **Check:**
+
 1. Email addresses are correct
 2. Notification channels are active
 3. Emails not in spam folder
 4. Budget thresholds are properly set
 
 **Fix:**
+
 ```bash
 # Verify notification channels
 gcloud alpha monitoring channels list
@@ -485,12 +508,14 @@ gcloud alpha monitoring channels send-verification-code CHANNEL_ID
 ### Issue: Dashboard Not Showing Data
 
 **Check:**
+
 1. Correct project selected
 2. Time range is appropriate
 3. Metrics exist (need some usage first)
 4. Permissions are correct
 
 **Fix:**
+
 - Wait 5-10 minutes for initial data
 - Generate a test image to create data
 - Verify API calls are being made
@@ -498,11 +523,13 @@ gcloud alpha monitoring channels send-verification-code CHANNEL_ID
 ### Issue: Cost Reports Not Generating
 
 **Check:**
+
 1. Billing export is enabled
 2. Permissions are set correctly
 3. Destination exists (email/BigQuery)
 
 **Fix:**
+
 ```bash
 # Re-enable billing export
 gcloud billing accounts update BILLING_ACCOUNT_ID \

@@ -103,6 +103,7 @@ gcloud projects get-iam-policy royalcarriagelimoseo \
 ```
 
 Expected output should include:
+
 - `roles/aiplatform.user`
 - `roles/storage.objectCreator`
 - `roles/storage.objectViewer`
@@ -139,6 +140,7 @@ gcloud services list --enabled --project=royalcarriagelimoseo | grep -E "aiplatf
 ```
 
 Should show:
+
 - `aiplatform.googleapis.com`
 - `storage-api.googleapis.com`
 
@@ -197,6 +199,7 @@ firebase deploy --only hosting,functions
 **Cause:** API not enabled or service account lacks permissions
 
 **Solution:**
+
 ```bash
 # Re-enable the API
 gcloud services enable aiplatform.googleapis.com --project=royalcarriagelimoseo
@@ -215,6 +218,7 @@ gcloud projects add-iam-policy-binding royalcarriagelimoseo \
 ### Error: "Permission denied" uploading to storage
 
 **Solution:**
+
 ```bash
 # Grant storage permissions
 SERVICE_ACCOUNT=$(gcloud iam service-accounts list \
@@ -229,6 +233,7 @@ gsutil iam ch serviceAccount:${SERVICE_ACCOUNT}:objectCreator \
 ### Error: "Bucket not found"
 
 **Solution:**
+
 ```bash
 # Create the bucket
 gsutil mb -p royalcarriagelimoseo \
@@ -242,6 +247,7 @@ gsutil mb -p royalcarriagelimoseo \
 **Cause:** Incorrect model name or model not available in region
 
 **Solution:**
+
 ```bash
 # List available models
 gcloud ai models list \
@@ -257,6 +263,7 @@ gcloud ai models list \
 **Cause:** CORS not configured or bucket not public
 
 **Solution:**
+
 ```bash
 # Set CORS
 cat > /tmp/cors.json << 'EOF'
@@ -280,13 +287,14 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 
 After enabling image generation:
 
-| Usage | Images/Month | Estimated Cost |
-|-------|--------------|----------------|
-| Light | 50 | $1-2 |
-| Medium | 200 | $4-8 |
-| Heavy | 1000 | $20-40 |
+| Usage  | Images/Month | Estimated Cost |
+| ------ | ------------ | -------------- |
+| Light  | 50           | $1-2           |
+| Medium | 200          | $4-8           |
+| Heavy  | 1000         | $20-40         |
 
 **Recommendations:**
+
 - Start with light usage to test
 - Set up budget alerts (see main audit document)
 - Monitor usage in Google Cloud Console
@@ -349,6 +357,7 @@ After completing setup:
 ## Support
 
 For detailed information, see:
+
 - [Google Cloud Security Audit](GOOGLE_CLOUD_SECURITY_AUDIT.md) - Complete audit and recommendations
 - [AI System Guide](AI_SYSTEM_GUIDE.md) - Full AI system documentation
 - [Deployment Guide](DEPLOYMENT_GUIDE.md) - Deployment instructions
