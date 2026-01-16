@@ -618,3 +618,41 @@ export const autoAnalyzeNewPage = functions.firestore
 
     return null;
   });
+
+/**
+ * Firestore trigger: Sync user role to custom claims
+ * Updates Firebase Auth custom claims when a user's role changes in Firestore
+ */
+export const syncUserRole = functions.firestore
+  .document("users/{userId}")
+  .onWrite(async (change: functions.Change<functions.firestore.DocumentSnapshot>, context: functions.EventContext) => {
+    const userId = context.params.userId;
+    const newData = change.after.exists ? change.after.data() : null;
+    const previousData = change.before.exists ? change.before.data() : null;
+
+    const newRole = newData?.role;
+    const previousRole = previousData?.role;
+
+    // If role hasn't changed, do nothing
+    if (newRole === previousRole) {
+      return null;
+    }
+
+    functions.logger.info(`Syncing role for user ${userId}: ${previousRole} -> ${newRole}`);
+
+    try {
+      if (newRole) {
+        // Set custom claim
+        await admin.auth().setCustomUserClaims(userId, { role: newRole });
+        functions.logger.info(`Successfully set role '${newRole}' for user ${userId}`);
+      } else {
+        // Remove custom claim if role is removed
+        await admin.auth().setCustomUserClaims(userId, { role: null });
+        functions.logger.info(`Removed role claim for user ${userId}`);
+      }
+    } catch (error) {
+      functions.logger.error(`Failed to sync role for user ${userId}:`, error);
+    }
+
+    return null;
+  });

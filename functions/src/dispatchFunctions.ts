@@ -34,14 +34,15 @@ export const createTrip = functions.https.onRequest(async (req, res) => {
       createdBy: req.body.auth?.uid || null,
     };
 
-    // Signal completion for accounting (e.g., by updating a status or writing to a related collection)
-      await admin.firestore().collection('trip_completions').add({
-        tripId: writeResult.id,
-        completedAt: admin.firestore.FieldValue.serverTimestamp(),
-        // Potentially other data relevant for accounting posting rules
-      });
-      res.status(201).json({ id: writeResult.id, ...trip });
+    const writeResult = await admin.firestore().collection("trips").add(trip);
 
+    // Signal completion for accounting (e.g., by updating a status or writing to a related collection)
+    await admin.firestore().collection("trip_completions").add({
+      tripId: writeResult.id,
+      completedAt: admin.firestore.FieldValue.serverTimestamp(),
+      // Potentially other data relevant for accounting posting rules
+    });
+    res.status(201).json({ id: writeResult.id, ...trip });
   } catch (error) {
     functions.logger.error("Error creating trip:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -50,12 +51,13 @@ export const createTrip = functions.https.onRequest(async (req, res) => {
 
 export const getTrips = functions.https.onRequest(async (req, res) => {
   if (req.method !== "GET") {
-    return res.status(405).send("Method Not Allowed");
+    res.status(405).send("Method Not Allowed");
+    return;
   }
 
   try {
     const snapshot = await admin.firestore().collection("trips").get();
-    const trips = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const trips = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.status(200).json(trips);
   } catch (error) {
     functions.logger.error("Error fetching trips:", error);

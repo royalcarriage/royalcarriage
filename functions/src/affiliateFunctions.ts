@@ -10,14 +10,16 @@ admin.initializeApp();
 
 export const createPartnerProfile = functions.https.onRequest(async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).send("Method Not Allowed");
+    res.status(405).send("Method Not Allowed");
+    return;
   }
 
   try {
     const { name, contactPerson, email, phone, address, website, commissionRate, commissionType, status } = req.body;
 
     if (!name || !email || !commissionRate || !commissionType) {
-      return res.status(400).json({ error: "Missing required fields: name, email, commissionRate, commissionType" });
+      res.status(400).json({ error: "Missing required fields: name, email, commissionRate, commissionType" });
+      return;
     }
 
     const profile = {
@@ -45,7 +47,8 @@ export const createPartnerProfile = functions.https.onRequest(async (req, res) =
 
 export const getPartnerProfiles = functions.https.onRequest(async (req, res) => {
   if (req.method !== "GET") {
-    return res.status(405).send("Method Not Allowed");
+    res.status(405).send("Method Not Allowed");
+    return;
   }
 
   try {

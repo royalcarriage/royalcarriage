@@ -2,7 +2,7 @@
 
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import type { Change, EventContext } from "firebase-functions/v1/firestore";
+import type { EventContext } from "firebase-functions";
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -12,14 +12,16 @@ admin.initializeApp();
 export const createLedgerEntry = functions.https.onRequest(
   async (req, res) => {
     if (req.method !== "POST") {
-      return res.status(405).send("Method Not Allowed");
+      res.status(405).send("Method Not Allowed");
+      return;
     }
 
     try {
       const { amount, date, description, category, accountId, transactionType } = req.body;
 
       if (!amount || !date || !description || !category || !accountId || !transactionType) {
-        return res.status(400).json({ error: "Missing required fields" });
+        res.status(400).json({ error: "Missing required fields" });
+        return;
       }
 
       const newEntry = {
@@ -46,7 +48,8 @@ export const createLedgerEntry = functions.https.onRequest(
 export const getLedgerEntries = functions.https.onRequest(
   async (req, res) => {
     if (req.method !== "GET") {
-      return res.status(405).send("Method Not Allowed");
+      res.status(405).send("Method Not Allowed");
+      return;
     }
 
     try {
@@ -103,7 +106,7 @@ export const getProfitAndLoss = functions.https.onRequest((req, res) => {
 
 export const onTripComplete = functions.firestore
   .document('trip_completions/{tripCompletionId}')
-  .onCreate(async (snap: Change<admin.firestore.DocumentSnapshot>, context: EventContext) => {
+  .onCreate(async (snap: functions.firestore.QueryDocumentSnapshot, context: EventContext) => {
     const tripCompletionData = snap.data();
 
     if (!tripCompletionData) {
