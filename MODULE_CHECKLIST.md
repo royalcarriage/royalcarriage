@@ -9,7 +9,7 @@
     *   Schemas: PASS (shared/payrollSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/payrollFunctions.ts)
     *   UI: PENDING
-*   **Fleet Module:**
-    *   Schemas: PASS (shared/fleetSchemas.ts)
-    *   Functions: IN_PROGRESS (functions/src/fleetFunctions.ts)
+*   **Dispatch Module:**
+    *   Schemas: PASS (shared/dispatchSchemas.ts)
+    *   Functions: IN_PROGRESS (functions/src/dispatchFunctions.ts)
     *   UI: PENDING
