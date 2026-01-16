@@ -359,24 +359,23 @@ export class ImageGenerator {
   }
 
   /**
-   * Generate multiple variations
+   * Generate multiple variations in parallel for better performance
    */
   async generateVariations(
     request: ImageGenerationRequest,
     count: number = 3,
   ): Promise<ImageGenerationResult[]> {
-    const results: ImageGenerationResult[] = [];
+    // Generate all images in parallel instead of sequentially
+    const promises = Array.from({ length: count }, () =>
+      this.generateImage(request).catch((error) => {
+        console.error("Failed to generate variation:", error);
+        return null;
+      }),
+    );
 
-    for (let i = 0; i < count; i++) {
-      try {
-        const result = await this.generateImage(request);
-        results.push(result);
-      } catch (error) {
-        console.error(`Failed to generate variation ${i + 1}:`, error);
-      }
-    }
-
-    return results;
+    const results = await Promise.all(promises);
+    // Filter out failed generations (null values)
+    return results.filter((r): r is ImageGenerationResult => r !== null);
   }
 
   /**

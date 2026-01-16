@@ -35,7 +35,7 @@ module.exports = {
     "**/.next/**",
     "**/_next/**",
     "**/.output/**",
-    "**/dist/**",
+    --ignore-pattern "**/dist/**" --ignore-pattern "**/functions/lib/**",
     "**/build/**",
     "pnpm-lock.yaml",
   ],
