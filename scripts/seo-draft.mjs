@@ -1,51 +1,62 @@
 #!/usr/bin/env node
 
-import fs from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const TOPICS_FILE = path.join(__dirname, '../packages/content/seo-bot/queue/topics.json');
 const DRAFTS_DIR = path.join(__dirname, '../packages/content/seo-bot/drafts');
+const TEMPLATES_DIR = path.join(__dirname, '../templates');
+
+// Load templates
+async function loadTemplate(templateName) {
+  const templatePath = path.join(TEMPLATES_DIR, templateName);
+  const data = await fs.readFile(templatePath, 'utf-8');
+  return JSON.parse(data);
+}
 
 // Helper function to count words accurately
 function countWords(text) {
-  return text.split(/\s+/).filter(word => word.length > 0).length;
+  return text.split(/\s+/).filter((word) => word.length > 0).length;
 }
 
 async function loadTopics() {
-  const data = await fs.readFile(TOPICS_FILE, 'utf-8');
+  const data = await fs.readFile(TOPICS_FILE, "utf-8");
   return JSON.parse(data);
 }
 
 async function saveTopics(data) {
-  await fs.writeFile(TOPICS_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  await fs.writeFile(TOPICS_FILE, JSON.stringify(data, null, 2), "utf-8");
 }
 
-async function callOpenAI(prompt, systemMessage = 'You are a helpful SEO content writer.') {
+async function callOpenAI(
+  prompt,
+  systemMessage = "You are a helpful SEO content writer.",
+) {
   const apiKey = process.env.OPENAI_API_KEY;
-  
+
   if (!apiKey) {
-    throw new Error('OPENAI_API_KEY environment variable not set');
+    throw new Error("OPENAI_API_KEY environment variable not set");
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: "gpt-4o-mini",
       messages: [
-        { role: 'system', content: systemMessage },
-        { role: 'user', content: prompt }
+        { role: "system", content: systemMessage },
+        { role: "user", content: prompt },
       ],
       temperature: 0.7,
-      max_tokens: 4000
-    })
+      max_tokens: 4000,
+    }),
   });
 
   if (!response.ok) {
@@ -59,6 +70,25 @@ async function callOpenAI(prompt, systemMessage = 'You are a helpful SEO content
 
 async function generateDraft(topic) {
   console.log(`📝 Generating draft for: "${topic.keyword}"`);
+  
+  // Determine page type and load appropriate template
+  const pageType = topic.pageType || 'cityService'; // default to city service page
+  let template;
+  let templateName;
+  
+  try {
+    if (pageType === 'cityService' || pageType === 'city') {
+      templateName = 'city-page-template.json';
+      template = await loadTemplate(templateName);
+    } else if (pageType === 'airport') {
+      templateName = 'airport-page-template.json';
+      template = await loadTemplate(templateName);
+    }
+    console.log(`   Using template: ${templateName}`);
+  } catch (error) {
+    console.warn(`   Template not found, using default structure`);
+    template = null;
+  }
   
   const systemMessage = `You are an expert SEO content writer for Royal Carriage, a luxury transportation service in Chicago. 
 Write engaging, informative content that ranks well while genuinely helping potential customers.
@@ -74,11 +104,33 @@ Master Rules (STRICT):
 - Image requirements (minimum 3 images with descriptive alt text)
 - Internal link suggestions (minimum 3 relevant links)`;
 
-  const prompt = `Create a comprehensive blog post outline and content for the keyword: "${topic.keyword}"
+${template ? `IMPORTANT: Follow this exact template structure:\n${JSON.stringify(template.sections || template, null, 2)}` : ''}`;
+
+  let prompt = `Create a comprehensive ${pageType} page outline and content for the keyword: "${topic.keyword}"
 
 Target site: ${topic.targetSite}
 Intent: ${topic.intent}
-Difficulty: ${topic.difficulty}
+Difficulty: ${topic.difficulty}`;
+
+  if (template) {
+    prompt += `
+
+TEMPLATE REQUIREMENTS:
+- Minimum ${template.qualityGates?.minWords || 1200} words
+- ${template.qualityGates?.minLocalEntities || 6}+ local entities (specific venues, hotels, landmarks)
+- Exactly ${template.qualityGates?.requiredH1Count || 1} H1 tag
+- Hero image required
+- Follow all section requirements from template`;
+
+    if (template.sections) {
+      prompt += `\n\nREQUIRED SECTIONS:`;
+      template.sections.forEach(section => {
+        prompt += `\n- ${section.heading}: ${section.description || ''} (${section.minWords || 100}+ words)`;
+      });
+    }
+  }
+
+  prompt += `
 
 REQUIREMENTS:
 - Minimum 1500 words (target 2000+)
@@ -133,7 +185,7 @@ Please provide a JSON response with the following structure:
 Make the content informative, naturally incorporate the keyword, and include specific Chicago-area information.`;
 
   const responseText = await callOpenAI(prompt, systemMessage);
-  
+
   // Extract JSON from response (handle markdown code blocks)
   let jsonText = responseText;
   const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
@@ -146,13 +198,13 @@ Make the content informative, naturally incorporate the keyword, and include spe
       jsonText = objMatch[0];
     }
   }
-  
+
   try {
     return JSON.parse(jsonText);
   } catch (error) {
-    console.error('Failed to parse OpenAI response as JSON');
-    console.error('Response:', responseText);
-    throw new Error('Invalid JSON response from OpenAI');
+    console.error("Failed to parse OpenAI response as JSON");
+    console.error("Response:", responseText);
+    throw new Error("Invalid JSON response from OpenAI");
   }
 }
 
@@ -161,97 +213,102 @@ async function saveDraft(topic, content) {
     topicId: topic.id,
     keyword: topic.keyword,
     targetSite: topic.targetSite,
-    status: 'draft',
+    status: "draft",
     createdAt: new Date().toISOString(),
-    content
+    content,
   };
 
-  const filename = `${topic.id}-${topic.keyword.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.json`;
+  const filename = `${topic.id}-${topic.keyword.toLowerCase().replace(/[^a-z0-9]+/g, "-")}.json`;
   const filepath = path.join(DRAFTS_DIR, filename);
-  
-  await fs.writeFile(filepath, JSON.stringify(draft, null, 2), 'utf-8');
-  
+
+  await fs.writeFile(filepath, JSON.stringify(draft, null, 2), "utf-8");
+
   console.log(`💾 Draft saved: ${filename}`);
   return filename;
 }
 
 async function updateTopicStatus(topicId, status, draftFile = null) {
   const data = await loadTopics();
-  const topic = data.topics.find(t => t.id === topicId);
-  
+  const topic = data.topics.find((t) => t.id === topicId);
+
   if (!topic) {
     throw new Error(`Topic ${topicId} not found`);
   }
-  
+
   topic.status = status;
   topic.draftFile = draftFile;
   topic.draftedAt = new Date().toISOString();
-  
+
   await saveTopics(data);
 }
 
 async function draftTopic(topicId) {
   const data = await loadTopics();
-  const topic = data.topics.find(t => t.id === topicId);
-  
+  const topic = data.topics.find((t) => t.id === topicId);
+
   if (!topic) {
     console.error(`❌ Topic ${topicId} not found`);
     process.exit(1);
   }
-  
-  if (topic.status !== 'queued') {
-    console.error(`❌ Topic ${topicId} is not in 'queued' status (current: ${topic.status})`);
+
+  if (topic.status !== "queued") {
+    console.error(
+      `❌ Topic ${topicId} is not in 'queued' status (current: ${topic.status})`,
+    );
     process.exit(1);
   }
-  
+
   console.log(`\n🚀 Starting draft generation for topic: ${topic.id}`);
   console.log(`   Keyword: "${topic.keyword}"`);
   console.log(`   Target Site: ${topic.targetSite}`);
-  
+
   try {
     const content = await generateDraft(topic);
     const filename = await saveDraft(topic, content);
-    await updateTopicStatus(topic.id, 'draft', filename);
-    
-    console.log('\n✅ Draft generation complete!');
+    await updateTopicStatus(topic.id, "draft", filename);
+
+    console.log("\n✅ Draft generation complete!");
     console.log(`   Title: ${content.title}`);
     console.log(`   Sections: ${content.sections.length}`);
-    const wordCount = content.sections.reduce((sum, s) => sum + countWords(s.content), 0);
+    const wordCount = content.sections.reduce(
+      (sum, s) => sum + countWords(s.content),
+      0,
+    );
     console.log(`   Word count: ~${wordCount}`);
   } catch (error) {
-    console.error('\n❌ Draft generation failed:', error.message);
+    console.error("\n❌ Draft generation failed:", error.message);
     process.exit(1);
   }
 }
 
 async function draftAll() {
   const data = await loadTopics();
-  const queuedTopics = data.topics.filter(t => t.status === 'queued');
-  
+  const queuedTopics = data.topics.filter((t) => t.status === "queued");
+
   if (queuedTopics.length === 0) {
-    console.log('📭 No queued topics to draft');
+    console.log("📭 No queued topics to draft");
     return;
   }
-  
+
   console.log(`\n📝 Found ${queuedTopics.length} queued topic(s)\n`);
-  
+
   for (const topic of queuedTopics) {
     try {
       await draftTopic(topic.id);
-      console.log('');
+      console.log("");
     } catch (error) {
       console.error(`Failed to draft ${topic.id}:`, error.message);
-      console.log('Continuing with next topic...\n');
+      console.log("Continuing with next topic...\n");
     }
   }
-  
-  console.log('✅ Batch drafting complete!');
+
+  console.log("✅ Batch drafting complete!");
 }
 
 async function main() {
   const args = process.argv.slice(2);
-  
-  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+
+  if (args.length === 0 || args[0] === "--help" || args[0] === "-h") {
     console.log(`
 Usage: node seo-draft.mjs [options]
 
@@ -266,18 +323,18 @@ Examples:
     `);
     return;
   }
-  
-  if (args[0] === '--all') {
+
+  if (args[0] === "--all") {
     await draftAll();
-  } else if (args[0] === '--topic' && args[1]) {
+  } else if (args[0] === "--topic" && args[1]) {
     await draftTopic(args[1]);
   } else {
-    console.error('❌ Invalid arguments. Use --help for usage information.');
+    console.error("❌ Invalid arguments. Use --help for usage information.");
     process.exit(1);
   }
 }
 
-main().catch(error => {
-  console.error('❌ Error:', error.message);
+main().catch((error) => {
+  console.error("❌ Error:", error.message);
   process.exit(1);
 });

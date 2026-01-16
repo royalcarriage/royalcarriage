@@ -2,7 +2,13 @@ import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -122,10 +128,13 @@ const importHistory: ImportRecord[] = [
 ];
 
 const statusColors: Record<ImportRecord["status"], string> = {
-  completed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  completed:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
-  processing: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  pending_review: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  processing:
+    "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  pending_review:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
 };
 
 const statusLabels: Record<ImportRecord["status"], string> = {
@@ -144,13 +153,48 @@ const statusIcons: Record<ImportRecord["status"], React.ElementType> = {
 
 // Sample preview data for mapping
 const previewData = [
-  { col1: "TRP-001", col2: "John Smith", col3: "O'Hare Airport", col4: "Downtown", col5: "2024-01-15" },
-  { col1: "TRP-002", col2: "Jane Doe", col3: "Midway Airport", col4: "Naperville", col5: "2024-01-16" },
-  { col1: "TRP-003", col2: "Bob Wilson", col3: "Downtown", col4: "O'Hare Airport", col5: "2024-01-17" },
+  {
+    col1: "TRP-001",
+    col2: "John Smith",
+    col3: "O'Hare Airport",
+    col4: "Downtown",
+    col5: "2024-01-15",
+  },
+  {
+    col1: "TRP-002",
+    col2: "Jane Doe",
+    col3: "Midway Airport",
+    col4: "Naperville",
+    col5: "2024-01-16",
+  },
+  {
+    col1: "TRP-003",
+    col2: "Bob Wilson",
+    col3: "Downtown",
+    col4: "O'Hare Airport",
+    col5: "2024-01-17",
+  },
 ];
 
-const csvColumns = ["trip_number", "customer_name", "pickup_location", "dropoff_location", "date"];
-const systemFields = ["Trip ID", "Customer", "Pickup", "Dropoff", "Date", "Time", "Amount", "Driver", "Vehicle", "Status"];
+const csvColumns = [
+  "trip_number",
+  "customer_name",
+  "pickup_location",
+  "dropoff_location",
+  "date",
+];
+const systemFields = [
+  "Trip ID",
+  "Customer",
+  "Pickup",
+  "Dropoff",
+  "Date",
+  "Time",
+  "Amount",
+  "Driver",
+  "Vehicle",
+  "Status",
+];
 
 export default function ImportsPage() {
   const [isUploadOpen, setIsUploadOpen] = useState(false);
@@ -197,7 +241,14 @@ export default function ImportsPage() {
               <DialogHeader>
                 <DialogTitle>Import Data</DialogTitle>
                 <DialogDescription>
-                  Step {uploadStep} of 4: {uploadStep === 1 ? "Select Data Type" : uploadStep === 2 ? "Upload File" : uploadStep === 3 ? "Map Fields" : "Review & Import"}
+                  Step {uploadStep} of 4:{" "}
+                  {uploadStep === 1
+                    ? "Select Data Type"
+                    : uploadStep === 2
+                      ? "Upload File"
+                      : uploadStep === 3
+                        ? "Map Fields"
+                        : "Review & Import"}
                 </DialogDescription>
               </DialogHeader>
 
@@ -230,25 +281,29 @@ export default function ImportsPage() {
                 <div className="space-y-4">
                   <Label>What type of data are you importing?</Label>
                   <div className="grid grid-cols-2 gap-4">
-                    {["trips", "drivers", "vehicles", "customers"].map((type) => (
-                      <Card
-                        key={type}
-                        className={`cursor-pointer transition-colors hover:border-primary ${
-                          selectedType === type ? "border-primary bg-primary/5" : ""
-                        }`}
-                        onClick={() => setSelectedType(type)}
-                      >
-                        <CardContent className="p-4 flex items-center gap-3">
-                          <FileText className="h-8 w-8 text-muted-foreground" />
-                          <div>
-                            <p className="font-medium capitalize">{type}</p>
-                            <p className="text-xs text-muted-foreground">
-                              Import {type} data from CSV
-                            </p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
+                    {["trips", "drivers", "vehicles", "customers"].map(
+                      (type) => (
+                        <Card
+                          key={type}
+                          className={`cursor-pointer transition-colors hover:border-primary ${
+                            selectedType === type
+                              ? "border-primary bg-primary/5"
+                              : ""
+                          }`}
+                          onClick={() => setSelectedType(type)}
+                        >
+                          <CardContent className="p-4 flex items-center gap-3">
+                            <FileText className="h-8 w-8 text-muted-foreground" />
+                            <div>
+                              <p className="font-medium capitalize">{type}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Import {type} data from CSV
+                              </p>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ),
+                    )}
                   </div>
                 </div>
               )}
@@ -258,7 +313,9 @@ export default function ImportsPage() {
                 <div className="space-y-4">
                   <div className="border-2 border-dashed rounded-lg p-12 text-center">
                     <FileUp className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                    <p className="text-lg font-medium mb-2">Drop your CSV file here</p>
+                    <p className="text-lg font-medium mb-2">
+                      Drop your CSV file here
+                    </p>
                     <p className="text-sm text-muted-foreground mb-4">
                       or click to browse your files
                     </p>
@@ -275,7 +332,8 @@ export default function ImportsPage() {
               {uploadStep === 3 && (
                 <div className="space-y-4">
                   <p className="text-sm text-muted-foreground">
-                    Map your CSV columns to system fields. Preview shows first 3 rows.
+                    Map your CSV columns to system fields. Preview shows first 3
+                    rows.
                   </p>
                   <ScrollArea className="h-[300px] border rounded-lg">
                     <Table>
@@ -301,7 +359,9 @@ export default function ImportsPage() {
                                       {field}
                                     </SelectItem>
                                   ))}
-                                  <SelectItem value="skip">Skip this column</SelectItem>
+                                  <SelectItem value="skip">
+                                    Skip this column
+                                  </SelectItem>
                                 </SelectContent>
                               </Select>
                             </TableCell>
@@ -336,14 +396,20 @@ export default function ImportsPage() {
                         </div>
                         <div>
                           <p className="text-sm text-muted-foreground">Type</p>
-                          <p className="font-medium capitalize">{selectedType || "trips"}</p>
+                          <p className="font-medium capitalize">
+                            {selectedType || "trips"}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Total Records</p>
+                          <p className="text-sm text-muted-foreground">
+                            Total Records
+                          </p>
                           <p className="font-medium">150</p>
                         </div>
                         <div>
-                          <p className="text-sm text-muted-foreground">Fields Mapped</p>
+                          <p className="text-sm text-muted-foreground">
+                            Fields Mapped
+                          </p>
                           <p className="font-medium">5 of 5</p>
                         </div>
                       </div>
@@ -360,7 +426,10 @@ export default function ImportsPage() {
 
               <DialogFooter>
                 {uploadStep > 1 && (
-                  <Button variant="outline" onClick={() => setUploadStep(uploadStep - 1)}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setUploadStep(uploadStep - 1)}
+                  >
                     Back
                   </Button>
                 )}
@@ -390,7 +459,9 @@ export default function ImportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Records Imported</p>
+                  <p className="text-sm text-muted-foreground">
+                    Records Imported
+                  </p>
                   <p className="text-2xl font-bold">2,450</p>
                 </div>
                 <CheckCircle className="h-8 w-8 text-green-500" />
@@ -401,7 +472,9 @@ export default function ImportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Pending Review</p>
+                  <p className="text-sm text-muted-foreground">
+                    Pending Review
+                  </p>
                   <p className="text-2xl font-bold">3</p>
                 </div>
                 <AlertTriangle className="h-8 w-8 text-amber-500" />
@@ -412,7 +485,9 @@ export default function ImportsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Failed Imports</p>
+                  <p className="text-sm text-muted-foreground">
+                    Failed Imports
+                  </p>
                   <p className="text-2xl font-bold">1</p>
                 </div>
                 <XCircle className="h-8 w-8 text-red-500" />
@@ -456,7 +531,9 @@ export default function ImportsPage() {
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <FileText className="h-4 w-4 text-muted-foreground" />
-                              <span className="font-medium">{record.filename}</span>
+                              <span className="font-medium">
+                                {record.filename}
+                              </span>
                             </div>
                           </TableCell>
                           <TableCell>
@@ -465,8 +542,13 @@ export default function ImportsPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <Badge className={statusColors[record.status]} variant="secondary">
-                              <StatusIcon className={`h-3 w-3 mr-1 ${record.status === 'processing' ? 'animate-spin' : ''}`} />
+                            <Badge
+                              className={statusColors[record.status]}
+                              variant="secondary"
+                            >
+                              <StatusIcon
+                                className={`h-3 w-3 mr-1 ${record.status === "processing" ? "animate-spin" : ""}`}
+                              />
                               {statusLabels[record.status]}
                             </Badge>
                           </TableCell>
@@ -476,17 +558,28 @@ export default function ImportsPage() {
                                 <span>{record.recordsTotal} total</span>
                                 {record.status === "processing" && (
                                   <Progress
-                                    value={(record.recordsCreated + record.recordsUpdated) / record.recordsTotal * 100}
+                                    value={
+                                      ((record.recordsCreated +
+                                        record.recordsUpdated) /
+                                        record.recordsTotal) *
+                                      100
+                                    }
                                     className="w-20 h-2"
                                   />
                                 )}
                               </div>
                               {record.status === "completed" && (
                                 <div className="flex gap-2 text-xs text-muted-foreground">
-                                  <span className="text-green-600">{record.recordsCreated} created</span>
-                                  <span className="text-blue-600">{record.recordsUpdated} updated</span>
+                                  <span className="text-green-600">
+                                    {record.recordsCreated} created
+                                  </span>
+                                  <span className="text-blue-600">
+                                    {record.recordsUpdated} updated
+                                  </span>
                                   {record.recordsFailed > 0 && (
-                                    <span className="text-red-600">{record.recordsFailed} failed</span>
+                                    <span className="text-red-600">
+                                      {record.recordsFailed} failed
+                                    </span>
                                   )}
                                 </div>
                               )}
@@ -500,16 +593,28 @@ export default function ImportsPage() {
                           </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-1">
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                              >
                                 <Eye className="h-4 w-4" />
                               </Button>
                               {record.recordsFailed > 0 && (
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                >
                                   <Download className="h-4 w-4" />
                                 </Button>
                               )}
                               {record.status === "failed" && (
-                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8"
+                                >
                                   <RefreshCw className="h-4 w-4" />
                                 </Button>
                               )}

@@ -105,6 +105,7 @@ Select from the dropdown menu:
 #### Step 2: Provide Details
 
 **Location (Optional but Recommended)**
+
 - Enter specific Chicago locations for better results
 - Examples:
   - "Chicago O'Hare International Airport"
@@ -114,6 +115,7 @@ Select from the dropdown menu:
   - "Willis Tower"
 
 **Vehicle (Optional but Recommended)**
+
 - Specify the type of vehicle
 - Examples:
   - "Black Sedan"
@@ -122,6 +124,7 @@ Select from the dropdown menu:
   - "Executive Van"
 
 **Style (Optional)**
+
 - Add style preferences
 - Examples:
   - "Professional, nighttime, dramatic lighting"
@@ -130,6 +133,7 @@ Select from the dropdown menu:
   - "Studio photography, black background"
 
 **Description (Optional)**
+
 - Add any additional details
 - Keep it under 200 characters
 
@@ -154,17 +158,20 @@ Evaluate the image for:
 #### Step 5: Save or Regenerate
 
 **If the image is good:**
+
 1. Right-click on the image
 2. Select "Save image as..."
 3. Save to your desired location
 4. Note the image URL from Firestore for future reference
 
 **If you want to try again:**
+
 1. Modify your prompt details
 2. Click "Generate Image" again
 3. Compare the new result
 
 **Tips for Better Results:**
+
 - Be specific in your descriptions
 - Include time of day (daytime, evening, night)
 - Mention lighting preferences
@@ -206,6 +213,7 @@ Evaluate the image for:
 ### Cost Alerts
 
 You'll receive email notifications when:
+
 - 50% of monthly budget is used
 - 90% of monthly budget is used
 - 100% of monthly budget is reached
@@ -219,6 +227,7 @@ You'll receive email notifications when:
 ### When to Use AI-Generated Images
 
 ✅ **Good Use Cases:**
+
 - Need specific location/vehicle combinations
 - Quick turnaround required
 - Multiple variations needed
@@ -226,6 +235,7 @@ You'll receive email notifications when:
 - Budget-conscious projects
 
 ❌ **Not Ideal For:**
+
 - Real customer testimonials (use actual photos)
 - Specific vehicle VINs (use actual photos)
 - Brand partnerships (use provided assets)
@@ -234,12 +244,14 @@ You'll receive email notifications when:
 ### Writing Effective Prompts
 
 **DO:**
+
 - ✅ Be specific: "Black Mercedes S-Class at O'Hare Terminal 1"
 - ✅ Include lighting: "Evening, golden hour lighting"
 - ✅ Mention style: "Professional photography, wide angle"
 - ✅ Add context: "Professional chauffeur standing beside car"
 
 **DON'T:**
+
 - ❌ Be vague: "Car at airport"
 - ❌ Use brand names in unusual contexts
 - ❌ Request inappropriate content
@@ -277,11 +289,13 @@ Before using an image, ensure:
 ### Issue: "Image generation unavailable"
 
 **Possible Causes:**
+
 - Vertex AI API not enabled
 - Service account lacks permissions
 - Daily quota exceeded
 
 **Solutions:**
+
 1. Check if you've reached your daily limit (50 images)
 2. Wait until midnight for quota reset
 3. Contact DevOps team if API issues suspected
@@ -289,11 +303,13 @@ Before using an image, ensure:
 ### Issue: "Generation failed" or Error Message
 
 **Possible Causes:**
+
 - Invalid prompt
 - API timeout
 - Service temporarily unavailable
 
 **Solutions:**
+
 1. Simplify your prompt and try again
 2. Wait 30 seconds and retry
 3. Check your internet connection
@@ -303,6 +319,7 @@ Before using an image, ensure:
 ### Issue: Image Quality is Poor
 
 **Solutions:**
+
 1. Be more specific in your prompt
 2. Add style keywords: "high quality", "professional photography"
 3. Specify lighting conditions
@@ -314,6 +331,7 @@ Before using an image, ensure:
 **Message:** "You have reached your daily limit of 50 images"
 
 **Solution:**
+
 - Wait until midnight CT for quota reset
 - Contact management if you need increased limits
 - Review if all generated images were necessary
@@ -321,6 +339,7 @@ Before using an image, ensure:
 ### Issue: Image Doesn't Load
 
 **Solutions:**
+
 1. Refresh the page
 2. Check your internet connection
 3. Verify image URL is correct
@@ -330,6 +349,7 @@ Before using an image, ensure:
 ### Issue: Can't Access Admin Dashboard
 
 **Solutions:**
+
 1. Verify you're using the correct URL
 2. Check your admin credentials
 3. Clear browser cache
@@ -379,6 +399,7 @@ Before using an image, ensure:
 ### Q: How do I report an issue or bug?
 
 **A:** Contact the development team via email or your internal support channel with:
+
 - Screenshot of the issue
 - Exact error message
 - Steps to reproduce
@@ -403,6 +424,7 @@ Before using an image, ensure:
 ### Provide Feedback
 
 Your feedback helps improve the system:
+
 - What features would you like?
 - What's confusing or unclear?
 - What's working well?
@@ -416,6 +438,7 @@ Send feedback to: product@royalcarriage.com (example)
 ### Hero Images
 
 **Example 1:**
+
 - Purpose: hero
 - Location: Chicago O'Hare International Airport
 - Vehicle: Black Mercedes S-Class Sedan
@@ -423,6 +446,7 @@ Send feedback to: product@royalcarriage.com (example)
 - Description: Cinematic composition, city lights in background
 
 **Example 2:**
+
 - Purpose: hero
 - Location: Downtown Chicago on Michigan Avenue
 - Vehicle: Stretch Limousine
@@ -432,6 +456,7 @@ Send feedback to: product@royalcarriage.com (example)
 ### Service Card Images
 
 **Example 1:**
+
 - Purpose: service_card
 - Location: Modern airport terminal
 - Vehicle: Black SUV
@@ -439,6 +464,7 @@ Send feedback to: product@royalcarriage.com (example)
 - Description: Front 3/4 view
 
 **Example 2:**
+
 - Purpose: service_card
 - Location: Suburban Chicago street
 - Vehicle: Executive Van
@@ -448,12 +474,14 @@ Send feedback to: product@royalcarriage.com (example)
 ### Fleet Images
 
 **Example 1:**
+
 - Purpose: fleet
 - Vehicle: Lincoln Town Car
 - Style: Studio lighting, professional product photography
 - Description: Side profile, leather interior visible
 
 **Example 2:**
+
 - Purpose: fleet
 - Vehicle: Cadillac Escalade ESV
 - Style: Dark background, spotlight

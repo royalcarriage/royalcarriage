@@ -3,77 +3,77 @@ name: SEO Health Check
 on:
   schedule:
     # Run daily at 9 AM CT (2 PM UTC)
-    - cron: '0 14 * * *'
+    - cron: "0 14 * * *"
   workflow_dispatch:
 
 jobs:
   seo-audit:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20.x'
-      
+          node-version: "20.x"
+
       - name: Install Lighthouse CI
         run: npm install -g @lhci/cli@0.12.x
-      
+
       - name: Run Lighthouse audit
         run: |
           lhci autorun --config=lighthouserc.json || true
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
-      
+
       - name: Check sitemap accessibility
         run: |
           echo "Checking sitemap..."
           curl -I https://chicagoairportblackcar.com/sitemap.xml || echo "Sitemap not accessible"
-      
+
       - name: Check robots.txt
         run: |
           echo "Checking robots.txt..."
           curl https://chicagoairportblackcar.com/robots.txt || echo "Robots.txt not accessible"
-      
+
       - name: Verify JSON-LD schemas
         run: |
           echo "Verifying JSON-LD schemas..."
           curl -s https://chicagoairportblackcar.com | grep -o '<script type="application/ld+json">' | wc -l || echo "0"
-      
+
       - name: Check Core Web Vitals
         run: |
           echo "Core Web Vitals check (placeholder)"
           echo "TODO: Integrate PageSpeed Insights API"
-      
+
       - name: Create SEO Report
         if: always()
         run: |
           cat << EOF > $GITHUB_STEP_SUMMARY
           ## Daily SEO Health Check
-          
+
           **Date:** $(date)
           **Site:** https://chicagoairportblackcar.com
-          
+
           ### Checks Performed
           - ✅ Lighthouse audit
           - ✅ Sitemap accessibility
           - ✅ Robots.txt verification
           - ✅ JSON-LD schema validation
-          
+
           ### Findings
           - Schema instances found: Check logs above
           - Sitemap status: Accessible
           - Robots.txt status: Configured
-          
+
           ### Recommendations
           1. Monitor organic traffic in GA4
           2. Track keyword rankings weekly
           3. Review Search Console for indexing issues
           4. Check for rich snippet appearances
-          
+
           ### Next Manual Actions
           - Review Google Search Console weekly
           - Update content based on performance data

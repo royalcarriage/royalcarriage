@@ -84,6 +84,7 @@ For full AI image generation functionality:
 ```
 
 This script will:
+
 - Enable required Google Cloud APIs
 - Create Cloud Storage bucket
 - Grant IAM permissions
@@ -116,6 +117,7 @@ npm run build
 ```
 
 Expected output:
+
 - `dist/` directory created
 - Client assets generated
 - Server bundle created
@@ -168,6 +170,7 @@ Fix any issues reported before proceeding.
 ```
 
 This will:
+
 1. Check deployment readiness
 2. Build the project
 3. Build Firebase Functions
@@ -190,6 +193,7 @@ This will:
 #### 4.4 Deployment Output
 
 Expected output:
+
 ```
 ✓ Deployment readiness check passed
 ✓ Build completed successfully
@@ -215,6 +219,7 @@ curl -I https://royalcarriagelimoseo.web.app
 ```
 
 Visit in browser:
+
 - Main site: https://royalcarriagelimoseo.web.app
 - Admin dashboard: https://royalcarriagelimoseo.web.app/admin
 
@@ -283,11 +288,13 @@ Follow: `docs/COST_MONITORING_SETUP.md`
 #### 6.3 Regular Maintenance
 
 Weekly:
+
 - Check function logs for errors
 - Review usage statistics
 - Monitor costs
 
 Monthly:
+
 - Update dependencies
 - Review security
 - Optimize performance
@@ -301,6 +308,7 @@ Monthly:
 **Issue:** `Error: HTTP Error: 403`
 
 **Solution:**
+
 ```bash
 # Re-authenticate
 firebase login --reauth
@@ -314,6 +322,7 @@ firebase use --project royalcarriagelimoseo
 **Issue:** TypeScript errors
 
 **Solution:**
+
 ```bash
 # Clear cache
 rm -rf node_modules dist
@@ -326,6 +335,7 @@ npm run build
 **Issue:** Functions take too long to deploy
 
 **Solution:**
+
 ```bash
 # Deploy functions one at a time
 firebase deploy --only functions:generateImage
@@ -338,6 +348,7 @@ firebase deploy --only functions:generateContent
 **Issue:** Invalid syntax in firestore.rules
 
 **Solution:**
+
 ```bash
 # Validate rules locally
 firebase firestore:rules get
@@ -351,6 +362,7 @@ firebase emulators:start --only firestore
 **Issue:** Hosting not updated
 
 **Solution:**
+
 ```bash
 # Force redeploy hosting
 firebase deploy --only hosting --force
@@ -399,6 +411,7 @@ firebase deploy --only firestore:rules
 ## Deployment Checklist
 
 ### Pre-Deployment
+
 - [ ] All tests passing
 - [ ] Dependencies up to date
 - [ ] Environment variables configured
@@ -407,6 +420,7 @@ firebase deploy --only firestore:rules
 - [ ] Documentation updated
 
 ### During Deployment
+
 - [ ] Deployment readiness check passed
 - [ ] Build successful
 - [ ] Functions built successfully
@@ -414,6 +428,7 @@ firebase deploy --only firestore:rules
 - [ ] No errors in deployment logs
 
 ### Post-Deployment
+
 - [ ] Site accessible
 - [ ] Admin dashboard loads
 - [ ] Functions responding
@@ -427,20 +442,24 @@ firebase deploy --only firestore:rules
 ## Additional Resources
 
 ### Documentation
+
 - [Google Cloud Security Audit](GOOGLE_CLOUD_SECURITY_AUDIT.md)
 - [Implementation Guide](IMPLEMENTATION_GUIDE.md)
 - [Admin User Guide](ADMIN_USER_GUIDE.md)
 - [Cost Monitoring Setup](COST_MONITORING_SETUP.md)
 
 ### Firebase Resources
+
 - Firebase Console: https://console.firebase.google.com/project/royalcarriagelimoseo
 - Firebase Documentation: https://firebase.google.com/docs
 
 ### Google Cloud Resources
+
 - Cloud Console: https://console.cloud.google.com
 - Vertex AI Documentation: https://cloud.google.com/vertex-ai/docs
 
 ### Support
+
 - Firebase Support: https://firebase.google.com/support
 - Stack Overflow: [firebase] tag
 

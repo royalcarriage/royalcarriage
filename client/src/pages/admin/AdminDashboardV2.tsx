@@ -48,9 +48,9 @@ export default function AdminDashboardV2() {
 
       <div className="flex min-h-screen bg-gray-50">
         {/* Sidebar */}
-        <AdminSidebar 
-          activeSection={activeSection} 
-          onSectionChange={setActiveSection} 
+        <AdminSidebar
+          activeSection={activeSection}
+          onSectionChange={setActiveSection}
         />
 
         {/* Main Content Area */}
@@ -59,7 +59,7 @@ export default function AdminDashboardV2() {
           <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
             <div className="px-6 py-4 flex items-center justify-between">
               {/* Left: Site Selector */}
-              <SiteSelector 
+              <SiteSelector
                 selectedSite={selectedSite}
                 onSiteChange={setSelectedSite}
               />
@@ -69,9 +69,7 @@ export default function AdminDashboardV2() {
                 {/* Notifications */}
                 <Button variant="ghost" size="icon" className="relative">
                   <Bell className="h-5 w-5" />
-                  <Badge 
-                    className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-red-500"
-                  >
+                  <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 flex items-center justify-center text-xs bg-red-500">
                     3
                   </Badge>
                 </Button>
@@ -91,9 +89,7 @@ export default function AdminDashboardV2() {
           </header>
 
           {/* Content Area */}
-          <main className="flex-1 p-6">
-            {renderContent()}
-          </main>
+          <main className="flex-1 p-6">{renderContent()}</main>
         </div>
       </div>
     </>

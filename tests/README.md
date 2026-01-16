@@ -27,6 +27,7 @@ npm run test:smoke
 ## Test Coverage
 
 Tests cover:
+
 - ✅ Image generation with different purposes (hero, service_card, fleet, location, testimonial)
 - ✅ Prompt generation and customization
 - ✅ Graceful fallbacks when services unavailable
@@ -47,15 +48,15 @@ When adding new tests:
 Example:
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { YourModule } from '../path/to/module';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { YourModule } from "../path/to/module";
 
-describe('YourModule', () => {
+describe("YourModule", () => {
   beforeEach(() => {
     // Setup code
   });
 
-  it('should do something', () => {
+  it("should do something", () => {
     // Test code
     expect(something).toBe(expected);
   });
@@ -65,6 +66,7 @@ describe('YourModule', () => {
 ## Mocking
 
 The test setup includes mocks for:
+
 - `@google-cloud/vertexai` - Vertex AI API
 - `@google-cloud/storage` - Cloud Storage API
 - Console methods (log, error, warn)
@@ -73,6 +75,7 @@ The test setup includes mocks for:
 ## Coverage
 
 Coverage reports are generated in the `coverage/` directory and include:
+
 - Line coverage
 - Branch coverage
 - Function coverage
@@ -83,7 +86,8 @@ Aim for >80% coverage for new code.
 ## CI/CD
 
 Tests run automatically on:
-- Push to main, develop, or copilot/** branches
+
+- Push to main, develop, or copilot/\*\* branches
 - Pull requests to main or develop
 - Manual workflow dispatch
 

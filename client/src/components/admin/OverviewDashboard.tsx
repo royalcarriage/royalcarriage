@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -12,7 +18,7 @@ import {
   Play,
   FileText,
   BarChart3,
-  AlertTriangle
+  AlertTriangle,
 } from "lucide-react";
 
 interface OverviewDashboardProps {
@@ -46,17 +52,45 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
   };
 
   const recentActivity = [
-    { time: "2 hours ago", icon: BarChart3, text: "Daily page analysis completed (12 pages, avg score: 78)", type: "success" },
-    { time: "1 day ago", icon: DollarSign, text: "ROI report generated ($45K revenue, ROAS 5.4)", type: "success" },
-    { time: "2 days ago", icon: AlertTriangle, text: "3 high-priority SEO issues detected", type: "warning" },
-    { time: "3 days ago", icon: CheckCircle, text: "Phase 1 improvements deployed (GA4, trust signals)", type: "success" },
+    {
+      time: "2 hours ago",
+      icon: BarChart3,
+      text: "Daily page analysis completed (12 pages, avg score: 78)",
+      type: "success",
+    },
+    {
+      time: "1 day ago",
+      icon: DollarSign,
+      text: "ROI report generated ($45K revenue, ROAS 5.4)",
+      type: "success",
+    },
+    {
+      time: "2 days ago",
+      icon: AlertTriangle,
+      text: "3 high-priority SEO issues detected",
+      type: "warning",
+    },
+    {
+      time: "3 days ago",
+      icon: CheckCircle,
+      text: "Phase 1 improvements deployed (GA4, trust signals)",
+      type: "success",
+    },
   ];
 
   const automationSchedule = [
     { name: "Daily Page Analysis", schedule: "2:00 AM CT", status: "active" },
     { name: "Weekly SEO Report", schedule: "Mon 9:00 AM CT", status: "active" },
-    { name: "Biweekly Content Proposals", schedule: "Mon 10:00 AM CT", status: "active" },
-    { name: "Monthly Full Site Audit", schedule: "1st of month", status: "active" },
+    {
+      name: "Biweekly Content Proposals",
+      schedule: "Mon 10:00 AM CT",
+      status: "active",
+    },
+    {
+      name: "Monthly Full Site Audit",
+      schedule: "1st of month",
+      status: "active",
+    },
   ];
 
   return (
@@ -74,13 +108,26 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Status</span>
-              <Badge className={siteStatus[selectedSite as keyof typeof siteStatus]?.live ? statusColors.live : statusColors.pending}>
-                {siteStatus[selectedSite as keyof typeof siteStatus]?.live ? "Live" : "Pending"}
+              <Badge
+                className={
+                  siteStatus[selectedSite as keyof typeof siteStatus]?.live
+                    ? statusColors.live
+                    : statusColors.pending
+                }
+              >
+                {siteStatus[selectedSite as keyof typeof siteStatus]?.live
+                  ? "Live"
+                  : "Pending"}
               </Badge>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Last Deploy</span>
-              <span className="text-sm font-medium">{siteStatus[selectedSite as keyof typeof siteStatus]?.lastDeploy}</span>
+              <span className="text-sm font-medium">
+                {
+                  siteStatus[selectedSite as keyof typeof siteStatus]
+                    ?.lastDeploy
+                }
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Health</span>
@@ -103,19 +150,27 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Avg SEO Score</span>
               <div className="flex items-center gap-2">
-                <span className="text-lg font-bold text-blue-600">{metrics.seoScore}</span>
+                <span className="text-lg font-bold text-blue-600">
+                  {metrics.seoScore}
+                </span>
                 <span className="text-xs text-gray-500">/100</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Pages Analyzed</span>
-              <span className="text-sm font-medium">{metrics.pagesAnalyzed}</span>
+              <span className="text-sm font-medium">
+                {metrics.pagesAnalyzed}
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Issues</span>
               <div className="flex gap-2">
-                <Badge variant="destructive" className="text-xs">{metrics.highIssues} High</Badge>
-                <Badge variant="outline" className="text-xs">{metrics.medIssues} Med</Badge>
+                <Badge variant="destructive" className="text-xs">
+                  {metrics.highIssues} High
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {metrics.medIssues} Med
+                </Badge>
               </div>
             </div>
           </CardContent>
@@ -132,11 +187,15 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Revenue</span>
-              <span className="text-sm font-bold text-green-600">${(metrics.revenue30d / 1000).toFixed(1)}K</span>
+              <span className="text-sm font-bold text-green-600">
+                ${(metrics.revenue30d / 1000).toFixed(1)}K
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">Ad Spend</span>
-              <span className="text-sm font-medium">${(metrics.adSpend30d / 1000).toFixed(1)}K</span>
+              <span className="text-sm font-medium">
+                ${(metrics.adSpend30d / 1000).toFixed(1)}K
+              </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600">ROAS</span>
@@ -193,14 +252,22 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
             <div className="space-y-3">
               {recentActivity.map((activity, index) => {
                 const Icon = activity.icon;
-                const iconColor = activity.type === "success" ? "text-green-600" : 
-                                 activity.type === "warning" ? "text-yellow-600" : "text-blue-600";
+                const iconColor =
+                  activity.type === "success"
+                    ? "text-green-600"
+                    : activity.type === "warning"
+                      ? "text-yellow-600"
+                      : "text-blue-600";
                 return (
                   <div key={index} className="flex gap-3">
-                    <Icon className={`h-5 w-5 ${iconColor} flex-shrink-0 mt-0.5`} />
+                    <Icon
+                      className={`h-5 w-5 ${iconColor} flex-shrink-0 mt-0.5`}
+                    />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-900">{activity.text}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{activity.time}</p>
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {activity.time}
+                      </p>
                     </div>
                   </div>
                 );
@@ -222,13 +289,21 @@ export function OverviewDashboard({ selectedSite }: OverviewDashboardProps) {
         <CardContent>
           <div className="space-y-3">
             {automationSchedule.map((job, index) => (
-              <div key={index} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+              <div
+                key={index}
+                className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+              >
                 <div className="flex-1">
                   <div className="font-medium text-sm">{job.name}</div>
-                  <div className="text-xs text-gray-500 mt-1">Runs {job.schedule}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    Runs {job.schedule}
+                  </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                  <Badge
+                    variant="outline"
+                    className="bg-green-50 text-green-700 border-green-200"
+                  >
                     {job.status}
                   </Badge>
                   <Button size="sm" variant="ghost">

@@ -1,0 +1,506 @@
+[
+  {
+    "id": "doc_1",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.419Z",
+    "date": "2026-01-16",
+    "spend": 168.58611495527225,
+    "clicks": 19
+  },
+  {
+    "id": "doc_2",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 69.90894291697688,
+    "clicks": 49
+  },
+  {
+    "id": "doc_3",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 245.17580309941138,
+    "clicks": 62
+  },
+  {
+    "id": "doc_4",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 241.99813699576103,
+    "clicks": 25
+  },
+  {
+    "id": "doc_5",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 51.00345183684239,
+    "clicks": 59
+  },
+  {
+    "id": "doc_6",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 113.51821867837666,
+    "clicks": 80
+  },
+  {
+    "id": "doc_7",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 150.93086699507865,
+    "clicks": 39
+  },
+  {
+    "id": "doc_8",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 105.52317024295057,
+    "clicks": 13
+  },
+  {
+    "id": "doc_9",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 62.68776331192378,
+    "clicks": 85
+  },
+  {
+    "id": "doc_10",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 187.96146826306796,
+    "clicks": 59
+  },
+  {
+    "id": "doc_11",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 87.01293178971348,
+    "clicks": 51
+  },
+  {
+    "id": "doc_12",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 139.2657092445627,
+    "clicks": 82
+  },
+  {
+    "id": "doc_13",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 164.58261835535208,
+    "clicks": 100
+  },
+  {
+    "id": "doc_14",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 110.05855137331571,
+    "clicks": 58
+  },
+  {
+    "id": "doc_15",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 207.6044315065589,
+    "clicks": 20
+  },
+  {
+    "id": "doc_16",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 116.49271309917717,
+    "clicks": 29
+  },
+  {
+    "id": "doc_17",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 164.96024030387707,
+    "clicks": 44
+  },
+  {
+    "id": "doc_18",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 104.35372730402239,
+    "clicks": 74
+  },
+  {
+    "id": "doc_19",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 81.28900024596697,
+    "clicks": 107
+  },
+  {
+    "id": "doc_20",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 176.6791928267443,
+    "clicks": 55
+  },
+  {
+    "id": "doc_21",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 200.6676218715416,
+    "clicks": 99
+  },
+  {
+    "id": "doc_22",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 156.7364138056115,
+    "clicks": 74
+  },
+  {
+    "id": "doc_23",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 94.90258915410203,
+    "clicks": 33
+  },
+  {
+    "id": "doc_24",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 150.06639496109057,
+    "clicks": 68
+  },
+  {
+    "id": "doc_25",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 189.50175402936645,
+    "clicks": 34
+  },
+  {
+    "id": "doc_26",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 91.79157554186541,
+    "clicks": 40
+  },
+  {
+    "id": "doc_27",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 211.4493539789049,
+    "clicks": 31
+  },
+  {
+    "id": "doc_28",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 118.04417815427688,
+    "clicks": 15
+  },
+  {
+    "id": "doc_29",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 111.57491425816697,
+    "clicks": 29
+  },
+  {
+    "id": "doc_30",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 180.60869805897048,
+    "clicks": 53
+  },
+  {
+    "id": "doc_31",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 56.38899214195256,
+    "clicks": 109
+  },
+  {
+    "id": "doc_32",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 145.2762021461155,
+    "clicks": 58
+  },
+  {
+    "id": "doc_33",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 108.87063279106272,
+    "clicks": 73
+  },
+  {
+    "id": "doc_34",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 147.72025550132753,
+    "clicks": 17
+  },
+  {
+    "id": "doc_35",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 89.03578155843164,
+    "clicks": 101
+  },
+  {
+    "id": "doc_36",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 94.60870932571308,
+    "clicks": 82
+  },
+  {
+    "id": "doc_37",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 228.75779613605678,
+    "clicks": 65
+  },
+  {
+    "id": "doc_38",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 134.948659583643,
+    "clicks": 49
+  },
+  {
+    "id": "doc_39",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 153.7652385353398,
+    "clicks": 46
+  },
+  {
+    "id": "doc_40",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 86.69979494836922,
+    "clicks": 39
+  },
+  {
+    "id": "doc_41",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 80.64652112889505,
+    "clicks": 25
+  },
+  {
+    "id": "doc_42",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 236.1864777218615,
+    "clicks": 86
+  },
+  {
+    "id": "doc_43",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 199.46385789689947,
+    "clicks": 91
+  },
+  {
+    "id": "doc_44",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 226.13023654109102,
+    "clicks": 15
+  },
+  {
+    "id": "doc_45",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 83.47765854832296,
+    "clicks": 105
+  },
+  {
+    "id": "doc_46",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 97.49881952170969,
+    "clicks": 19
+  },
+  {
+    "id": "doc_47",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 135.51421847585743,
+    "clicks": 87
+  },
+  {
+    "id": "doc_48",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 52.24696790121888,
+    "clicks": 53
+  },
+  {
+    "id": "doc_49",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 235.5173230424235,
+    "clicks": 76
+  },
+  {
+    "id": "doc_50",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 89.40883781251374,
+    "clicks": 31
+  },
+  {
+    "id": "doc_51",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 236.907074836797,
+    "clicks": 102
+  },
+  {
+    "id": "doc_52",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 173.74698186027558,
+    "clicks": 108
+  },
+  {
+    "id": "doc_53",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 246.49471282743053,
+    "clicks": 28
+  },
+  {
+    "id": "doc_54",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 136.91336462769755,
+    "clicks": 72
+  },
+  {
+    "id": "doc_55",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 113.52509569493003,
+    "clicks": 38
+  },
+  {
+    "id": "doc_56",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 64.15225651715302,
+    "clicks": 82
+  },
+  {
+    "id": "doc_57",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 234.9288289198152,
+    "clicks": 102
+  },
+  {
+    "id": "doc_58",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 212.04764377583686,
+    "clicks": 24
+  },
+  {
+    "id": "doc_59",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 108.13144743539439,
+    "clicks": 29
+  },
+  {
+    "id": "doc_60",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 213.3047261656494,
+    "clicks": 29
+  },
+  {
+    "id": "doc_61",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 86.95559046002654,
+    "clicks": 11
+  },
+  {
+    "id": "doc_62",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 119.9406970715553,
+    "clicks": 50
+  },
+  {
+    "id": "doc_63",
+    "collection": "ads_imports",
+    "createdAt": "2026-01-16T02:20:33.420Z",
+    "date": "2026-01-16",
+    "spend": 140.48939467820034,
+    "clicks": 92
+  }
+]

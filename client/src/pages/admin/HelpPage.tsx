@@ -1,6 +1,12 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { SEO } from "@/components/SEO";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -31,27 +37,33 @@ import {
 const faqs = [
   {
     question: "How do I add a new driver to the system?",
-    answer: "Navigate to Operations > Drivers and click 'Add Driver'. Fill in the required information including name, contact details, and upload any required documents. The driver will be marked as pending until their documents are verified.",
+    answer:
+      "Navigate to Operations > Drivers and click 'Add Driver'. Fill in the required information including name, contact details, and upload any required documents. The driver will be marked as pending until their documents are verified.",
   },
   {
     question: "How do I import trip data from a CSV file?",
-    answer: "Go to Data Management > Import Center and click 'New Import'. Select 'Trips' as the data type, upload your CSV file, map the columns to the appropriate fields, review the preview, and click 'Start Import'. You can track the progress and see any errors in the Import History.",
+    answer:
+      "Go to Data Management > Import Center and click 'New Import'. Select 'Trips' as the data type, upload your CSV file, map the columns to the appropriate fields, review the preview, and click 'Start Import'. You can track the progress and see any errors in the Import History.",
   },
   {
     question: "How do I process weekly payouts for drivers?",
-    answer: "Navigate to Finance > Payroll. The system automatically calculates weekly payouts based on completed trips. Review the payout amounts, apply any necessary deductions, select the drivers to include, and click 'Approve Selected' to process the batch.",
+    answer:
+      "Navigate to Finance > Payroll. The system automatically calculates weekly payouts based on completed trips. Review the payout amounts, apply any necessary deductions, select the drivers to include, and click 'Approve Selected' to process the batch.",
   },
   {
     question: "How can I generate an invoice for a corporate customer?",
-    answer: "Go to Finance > Invoices and click 'Create Invoice'. Select the customer, choose the date range for trips to include, review the line items, and click 'Create'. You can then send the invoice directly to the customer via email or download it as a PDF.",
+    answer:
+      "Go to Finance > Invoices and click 'Create Invoice'. Select the customer, choose the date range for trips to include, review the line items, and click 'Create'. You can then send the invoice directly to the customer via email or download it as a PDF.",
   },
   {
     question: "How do I set up user permissions and roles?",
-    answer: "Navigate to Settings > Team & Users to manage your team members. You can invite new users, assign roles (Owner, Admin, Manager, Viewer), and view the permissions matrix to understand what each role can access.",
+    answer:
+      "Navigate to Settings > Team & Users to manage your team members. You can invite new users, assign roles (Owner, Admin, Manager, Viewer), and view the permissions matrix to understand what each role can access.",
   },
   {
     question: "How do I track vehicle maintenance schedules?",
-    answer: "Go to Operations > Vehicles to view your fleet. Each vehicle card shows the last service date and mileage. You can set up maintenance reminders and mark vehicles as 'Maintenance' status when they're being serviced.",
+    answer:
+      "Go to Operations > Vehicles to view your fleet. Each vehicle card shows the last service date and mileage. You can set up maintenance reminders and mark vehicles as 'Maintenance' status when they're being serviced.",
   },
 ];
 
@@ -235,7 +247,8 @@ export default function HelpPage() {
           <CardHeader>
             <CardTitle>Submit a Support Request</CardTitle>
             <CardDescription>
-              Can't find what you're looking for? Send us a message and we'll get back to you.
+              Can't find what you're looking for? Send us a message and we'll
+              get back to you.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -247,7 +260,11 @@ export default function HelpPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" type="email" placeholder="john@example.com" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@example.com"
+                  />
                 </div>
               </div>
               <div className="space-y-2">
@@ -262,9 +279,7 @@ export default function HelpPage() {
                   rows={5}
                 />
               </div>
-              <Button type="submit">
-                Submit Request
-              </Button>
+              <Button type="submit">Submit Request</Button>
             </form>
           </CardContent>
         </Card>
@@ -275,9 +290,13 @@ export default function HelpPage() {
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle>System Status</CardTitle>
-                <CardDescription>Current status of all services</CardDescription>
+                <CardDescription>
+                  Current status of all services
+                </CardDescription>
               </div>
-              <Badge className="bg-green-100 text-green-800">All Systems Operational</Badge>
+              <Badge className="bg-green-100 text-green-800">
+                All Systems Operational
+              </Badge>
             </div>
           </CardHeader>
           <CardContent>

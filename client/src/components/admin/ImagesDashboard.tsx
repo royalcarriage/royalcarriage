@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { Image as ImageIcon, Upload, Wand2, AlertCircle, Check, X } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Image as ImageIcon,
+  Upload,
+  Wand2,
+  AlertCircle,
+  Check,
+  X,
+} from "lucide-react";
 
 interface ImageItem {
   id: string;
@@ -11,77 +18,87 @@ interface ImageItem {
   height: number;
   alt: string;
   usedIn: string[];
-  status: 'optimized' | 'needs-optimization' | 'missing-alt';
+  status: "optimized" | "needs-optimization" | "missing-alt";
 }
 
 const ImagesDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'inventory' | 'upload' | 'ai-generate' | 'missing'>('inventory');
+  const [activeTab, setActiveTab] = useState<
+    "inventory" | "upload" | "ai-generate" | "missing"
+  >("inventory");
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
 
   // Sample data
   const images: ImageItem[] = [
     {
-      id: '1',
-      filename: 'hero-airport.png',
-      path: '/images/airport/hero-airport.png',
+      id: "1",
+      filename: "hero-airport.png",
+      path: "/images/airport/hero-airport.png",
       size: 5242880, // 5MB
-      format: 'PNG',
+      format: "PNG",
       width: 1920,
       height: 1080,
-      alt: 'Luxury black car at O\'Hare Airport',
-      usedIn: ['Home', 'O\'Hare Airport'],
-      status: 'needs-optimization'
+      alt: "Luxury black car at O'Hare Airport",
+      usedIn: ["Home", "O'Hare Airport"],
+      status: "needs-optimization",
     },
     {
-      id: '2',
-      filename: 'fleet-sedan-01.webp',
-      path: '/images/fleet/sedan-01.webp',
+      id: "2",
+      filename: "fleet-sedan-01.webp",
+      path: "/images/fleet/sedan-01.webp",
       size: 186420, // 182KB
-      format: 'WebP',
+      format: "WebP",
       width: 1200,
       height: 800,
-      alt: 'Mercedes-Benz S-Class sedan',
-      usedIn: ['Fleet'],
-      status: 'optimized'
+      alt: "Mercedes-Benz S-Class sedan",
+      usedIn: ["Fleet"],
+      status: "optimized",
     },
     {
-      id: '3',
-      filename: 'midway-terminal.png',
-      path: '/images/airport/midway-terminal.png',
+      id: "3",
+      filename: "midway-terminal.png",
+      path: "/images/airport/midway-terminal.png",
       size: 3145728, // 3MB
-      format: 'PNG',
+      format: "PNG",
       width: 1600,
       height: 900,
-      alt: '',
-      usedIn: ['Midway Airport'],
-      status: 'missing-alt'
-    }
+      alt: "",
+      usedIn: ["Midway Airport"],
+      status: "missing-alt",
+    },
   ];
 
   const missingImagesCount = 8;
-  const needsOptimizationCount = images.filter(img => img.status === 'needs-optimization').length;
+  const needsOptimizationCount = images.filter(
+    (img) => img.status === "needs-optimization",
+  ).length;
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + ' B';
-    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB';
-    return (bytes / 1048576).toFixed(1) + ' MB';
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1048576) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / 1048576).toFixed(1) + " MB";
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case 'optimized':
-        return <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
-          <Check className="w-3 h-3" /> Optimized
-        </span>;
-      case 'needs-optimization':
-        return <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
-          <AlertCircle className="w-3 h-3" /> Needs Optimization
-        </span>;
-      case 'missing-alt':
-        return <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
-          <X className="w-3 h-3" /> Missing Alt Text
-        </span>;
+      case "optimized":
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800">
+            <Check className="w-3 h-3" /> Optimized
+          </span>
+        );
+      case "needs-optimization":
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-orange-100 text-orange-800">
+            <AlertCircle className="w-3 h-3" /> Needs Optimization
+          </span>
+        );
+      case "missing-alt":
+        return (
+          <span className="flex items-center gap-1 px-2 py-1 text-xs font-medium rounded-full bg-red-100 text-red-800">
+            <X className="w-3 h-3" /> Missing Alt Text
+          </span>
+        );
       default:
         return null;
     }
@@ -90,9 +107,9 @@ const ImagesDashboard: React.FC = () => {
   const handleFileUpload = () => {
     setIsUploading(true);
     setUploadProgress(0);
-    
+
     const interval = setInterval(() => {
-      setUploadProgress(prev => {
+      setUploadProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
           setTimeout(() => {
@@ -126,23 +143,23 @@ const ImagesDashboard: React.FC = () => {
 
       {/* Tabs */}
       <div className="flex gap-2 border-b border-gray-200">
-        {['inventory', 'upload', 'ai-generate', 'missing'].map((tab) => (
+        {["inventory", "upload", "ai-generate", "missing"].map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab as any)}
             className={`px-4 py-2 border-b-2 transition-colors capitalize ${
               activeTab === tab
-                ? 'border-blue-600 text-blue-600 font-medium'
-                : 'border-transparent text-gray-600 hover:text-gray-900'
+                ? "border-blue-600 text-blue-600 font-medium"
+                : "border-transparent text-gray-600 hover:text-gray-900"
             }`}
           >
-            {tab.replace('-', ' ')}
+            {tab.replace("-", " ")}
           </button>
         ))}
       </div>
 
       {/* Content */}
-      {activeTab === 'inventory' && (
+      {activeTab === "inventory" && (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -176,8 +193,12 @@ const ImagesDashboard: React.FC = () => {
                         <ImageIcon className="w-8 h-8 text-gray-400" />
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">{image.filename}</div>
-                        <div className="text-sm text-gray-500">{image.format}</div>
+                        <div className="font-medium text-gray-900">
+                          {image.filename}
+                        </div>
+                        <div className="text-sm text-gray-500">
+                          {image.format}
+                        </div>
                       </div>
                     </div>
                   </td>
@@ -185,30 +206,37 @@ const ImagesDashboard: React.FC = () => {
                     {image.width} × {image.height}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={image.size > 1048576 ? 'text-orange-600 font-medium' : 'text-gray-900'}>
+                    <span
+                      className={
+                        image.size > 1048576
+                          ? "text-orange-600 font-medium"
+                          : "text-gray-900"
+                      }
+                    >
                       {formatFileSize(image.size)}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex flex-wrap gap-1">
                       {image.usedIn.map((page, idx) => (
-                        <span key={idx} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
+                        <span
+                          key={idx}
+                          className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded"
+                        >
                           {page}
                         </span>
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    {getStatusBadge(image.status)}
-                  </td>
+                  <td className="px-6 py-4">{getStatusBadge(image.status)}</td>
                   <td className="px-6 py-4">
                     <div className="flex items-center justify-end gap-2">
-                      {image.status === 'needs-optimization' && (
+                      {image.status === "needs-optimization" && (
                         <button className="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded hover:bg-orange-200">
                           Optimize
                         </button>
                       )}
-                      {image.status === 'missing-alt' && (
+                      {image.status === "missing-alt" && (
                         <button className="px-3 py-1 text-sm bg-red-100 text-red-700 rounded hover:bg-red-200">
                           Add Alt
                         </button>
@@ -222,12 +250,14 @@ const ImagesDashboard: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'upload' && (
+      {activeTab === "upload" && (
         <div className="bg-white border border-gray-200 rounded-lg p-8">
           <div className="max-w-2xl mx-auto">
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-blue-400 transition-colors cursor-pointer">
               <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Upload Images</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Upload Images
+              </h3>
               <p className="text-gray-600 mb-4">
                 Drag and drop images here, or click to browse
               </p>
@@ -236,7 +266,7 @@ const ImagesDashboard: React.FC = () => {
                 disabled={isUploading}
                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                {isUploading ? 'Uploading...' : 'Select Files'}
+                {isUploading ? "Uploading..." : "Select Files"}
               </button>
             </div>
 
@@ -256,7 +286,9 @@ const ImagesDashboard: React.FC = () => {
             )}
 
             <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h4 className="font-medium text-blue-900 mb-2">Image Requirements:</h4>
+              <h4 className="font-medium text-blue-900 mb-2">
+                Image Requirements:
+              </h4>
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• Supported formats: PNG, JPG, WebP</li>
                 <li>• Maximum file size: 10 MB</li>
@@ -268,11 +300,13 @@ const ImagesDashboard: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'ai-generate' && (
+      {activeTab === "ai-generate" && (
         <div className="bg-white border border-gray-200 rounded-lg p-8">
           <div className="max-w-2xl mx-auto text-center">
             <Wand2 className="w-12 h-12 text-purple-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">AI Image Generation</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              AI Image Generation
+            </h3>
             <p className="text-gray-600 mb-6">
               Generate professional images using AI based on your prompts.
             </p>
@@ -317,7 +351,7 @@ const ImagesDashboard: React.FC = () => {
         </div>
       )}
 
-      {activeTab === 'missing' && (
+      {activeTab === "missing" && (
         <div className="bg-white border border-gray-200 rounded-lg p-6">
           <div className="flex items-start gap-4 p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
             <AlertCircle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
@@ -326,21 +360,44 @@ const ImagesDashboard: React.FC = () => {
                 {missingImagesCount} Missing Images Detected
               </h3>
               <p className="text-sm text-red-800">
-                These pages reference images that don't exist. Generate or upload them to fix broken image links.
+                These pages reference images that don't exist. Generate or
+                upload them to fix broken image links.
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
             {[
-              { page: 'Party Bus Page', missing: 3, paths: ['party-bus-exterior.jpg', 'party-bus-interior.jpg', 'party-bus-lights.jpg'] },
-              { page: 'Wedding Transportation', missing: 2, paths: ['wedding-couple-car.jpg', 'wedding-limousine.jpg'] },
-              { page: 'Corporate Service', missing: 3, paths: ['executive-sedan.jpg', 'corporate-fleet.jpg', 'business-meeting.jpg'] }
+              {
+                page: "Party Bus Page",
+                missing: 3,
+                paths: [
+                  "party-bus-exterior.jpg",
+                  "party-bus-interior.jpg",
+                  "party-bus-lights.jpg",
+                ],
+              },
+              {
+                page: "Wedding Transportation",
+                missing: 2,
+                paths: ["wedding-couple-car.jpg", "wedding-limousine.jpg"],
+              },
+              {
+                page: "Corporate Service",
+                missing: 3,
+                paths: [
+                  "executive-sedan.jpg",
+                  "corporate-fleet.jpg",
+                  "business-meeting.jpg",
+                ],
+              },
             ].map((item, idx) => (
               <div key={idx} className="p-4 border border-gray-200 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <h4 className="font-medium text-gray-900">{item.page}</h4>
-                  <span className="text-sm text-red-600 font-medium">{item.missing} missing</span>
+                  <span className="text-sm text-red-600 font-medium">
+                    {item.missing} missing
+                  </span>
                 </div>
                 <div className="space-y-1 mb-3">
                   {item.paths.map((path, pidx) => (

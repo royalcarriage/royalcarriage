@@ -76,12 +76,19 @@ const navigation: NavGroup[] = [
     label: "Overview",
     items: [
       { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
+      { title: "KPI Dashboard", href: "/admin/kpi", icon: TrendingUp, badge: "New", badgeVariant: "default" },
     ],
   },
   {
     label: "Operations",
     items: [
-      { title: "Trips", href: "/admin/trips", icon: MapPin, badge: "12", badgeVariant: "secondary" },
+      {
+        title: "Trips",
+        href: "/admin/trips",
+        icon: MapPin,
+        badge: "12",
+        badgeVariant: "secondary",
+      },
       { title: "Drivers", href: "/admin/drivers", icon: Users },
       { title: "Vehicles", href: "/admin/vehicles", icon: Car },
       { title: "Customers", href: "/admin/customers", icon: Building2 },
@@ -90,7 +97,13 @@ const navigation: NavGroup[] = [
   {
     label: "Data Management",
     items: [
-      { title: "Import Center", href: "/admin/imports", icon: FileUp, badge: "3", badgeVariant: "destructive" },
+      {
+        title: "Import Center",
+        href: "/admin/imports",
+        icon: FileUp,
+        badge: "3",
+        badgeVariant: "destructive",
+      },
       { title: "Analytics", href: "/admin/analytics", icon: BarChart3 },
     ],
   },
@@ -154,7 +167,7 @@ export function AdminLayout({
           className={cn(
             "fixed inset-y-0 left-0 z-50 flex flex-col border-r border-border bg-card transition-all duration-300",
             collapsed ? "w-16" : "w-64",
-            mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+            mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
           )}
         >
           {/* Logo */}
@@ -164,7 +177,9 @@ export function AdminLayout({
                 <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                   <Car className="h-5 w-5 text-primary-foreground" />
                 </div>
-                <span className="font-semibold text-foreground">Royal Carriage</span>
+                <span className="font-semibold text-foreground">
+                  Royal Carriage
+                </span>
               </Link>
             )}
             {collapsed && (
@@ -182,7 +197,7 @@ export function AdminLayout({
                   variant="ghost"
                   className={cn(
                     "w-full justify-start gap-2 h-auto py-2",
-                    collapsed && "justify-center px-2"
+                    collapsed && "justify-center px-2",
                   )}
                 >
                   <Avatar className="h-8 w-8 rounded-lg">
@@ -213,9 +228,13 @@ export function AdminLayout({
                     </Avatar>
                     <div className="flex-1">
                       <p className="text-sm font-medium">{org.name}</p>
-                      <p className="text-xs text-muted-foreground">{org.role}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {org.role}
+                      </p>
                     </div>
-                    {org.id === "1" && <Check className="h-4 w-4 text-primary" />}
+                    {org.id === "1" && (
+                      <Check className="h-4 w-4 text-primary" />
+                    )}
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
@@ -239,9 +258,12 @@ export function AdminLayout({
                   )}
                   <div className="space-y-1">
                     {group.items.map((item) => {
-                      const isActive = location === item.href || (item.href !== "/admin" && location.startsWith(item.href));
+                      const isActive =
+                        location === item.href ||
+                        (item.href !== "/admin" &&
+                          location.startsWith(item.href));
                       const Icon = item.icon;
-                      
+
                       const linkContent = (
                         <Link
                           href={item.href}
@@ -250,7 +272,7 @@ export function AdminLayout({
                             isActive
                               ? "bg-primary text-primary-foreground"
                               : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                            collapsed && "justify-center px-2"
+                            collapsed && "justify-center px-2",
                           )}
                         >
                           <Icon className="h-5 w-5 flex-shrink-0" />
@@ -273,11 +295,19 @@ export function AdminLayout({
                       if (collapsed) {
                         return (
                           <Tooltip key={item.href}>
-                            <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-                            <TooltipContent side="right" className="flex items-center gap-2">
+                            <TooltipTrigger asChild>
+                              {linkContent}
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="right"
+                              className="flex items-center gap-2"
+                            >
                               {item.title}
                               {item.badge && (
-                                <Badge variant={item.badgeVariant || "secondary"} className="text-xs">
+                                <Badge
+                                  variant={item.badgeVariant || "secondary"}
+                                  className="text-xs"
+                                >
                                   {item.badge}
                                 </Badge>
                               )}
@@ -316,7 +346,7 @@ export function AdminLayout({
         <div
           className={cn(
             "flex-1 flex flex-col min-h-screen transition-all duration-300",
-            collapsed ? "md:ml-16" : "md:ml-64"
+            collapsed ? "md:ml-16" : "md:ml-64",
           )}
         >
           {/* Top header */}
@@ -345,6 +375,20 @@ export function AdminLayout({
 
               {/* Right side actions */}
               <div className="flex items-center gap-2">
+                {/* Quick KPI Indicators */}
+                <Link href="/admin/kpi">
+                  <Button variant="ghost" size="sm" className="hidden lg:flex gap-2">
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-muted-foreground">Data:</span>
+                      <span className="font-semibold">🟢</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-muted-foreground">Gates:</span>
+                      <span className="font-semibold">🟢</span>
+                    </div>
+                  </Button>
+                </Link>
+                
                 {/* Theme toggle */}
                 <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
                   {darkMode ? (
@@ -374,7 +418,9 @@ export function AdminLayout({
                       </span>
                     </DropdownMenuItem>
                     <DropdownMenuItem className="flex flex-col items-start gap-1 cursor-pointer">
-                      <span className="font-medium">Payout pending approval</span>
+                      <span className="font-medium">
+                        Payout pending approval
+                      </span>
                       <span className="text-xs text-muted-foreground">
                         Weekly payout batch ready for review
                       </span>
@@ -387,7 +433,9 @@ export function AdminLayout({
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem className="text-center cursor-pointer">
-                      <span className="text-sm text-primary">View all notifications</span>
+                      <span className="text-sm text-primary">
+                        View all notifications
+                      </span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -405,7 +453,9 @@ export function AdminLayout({
                       </Avatar>
                       <div className="hidden md:flex flex-col items-start">
                         <span className="text-sm font-medium">Admin User</span>
-                        <span className="text-xs text-muted-foreground">Administrator</span>
+                        <span className="text-xs text-muted-foreground">
+                          Administrator
+                        </span>
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
@@ -464,7 +514,9 @@ export function AdminLayout({
                   <p className="text-muted-foreground mt-1">{subtitle}</p>
                 )}
               </div>
-              {actions && <div className="flex items-center gap-2">{actions}</div>}
+              {actions && (
+                <div className="flex items-center gap-2">{actions}</div>
+              )}
             </div>
 
             {children}

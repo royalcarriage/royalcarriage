@@ -7,5 +7,6 @@
 - Note: Functions deploy emitted deprecation notice for `functions.config()`; migrate to `params` before March 2026.
 
 Pending:
+
 - Add automated smoke checks against preview/prod (home/admin/auth/flows).
 - Monitor functions logs post-deploy.
