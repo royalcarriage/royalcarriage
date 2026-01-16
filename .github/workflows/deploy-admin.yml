@@ -72,4 +72,4 @@ jobs:
       - name: Deploy to Firebase Hosting
         run: |
           cd apps/admin
-          firebase deploy --project="$PROJECT_ID" --only hosting:admin --non-interactive
+          firebase deploy --project="$PROJECT_ID" --only hosting --non-interactive

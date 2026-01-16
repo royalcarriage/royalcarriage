@@ -1,0 +1,9 @@
+{
+  "name": "@royal-carriage/ui",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "dependencies": {
+    "astro": "^4.12.2"
+  }
+}
