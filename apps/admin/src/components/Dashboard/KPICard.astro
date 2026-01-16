@@ -1,0 +1,90 @@
+---
+export interface Props {
+  title: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+  icon: string;
+}
+
+const { title, value, change, trend, icon } = Astro.props;
+---
+
+<div class="kpi-card">
+  <div class="kpi-icon">{icon}</div>
+  <div class="kpi-content">
+    <h3>{title}</h3>
+    <div class="kpi-value">{value}</div>
+    <div class={`kpi-change ${trend}`}>
+      <span class="trend-icon">{trend === 'up' ? '↗' : '↘'}</span>
+      <span>{change}</span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .kpi-card {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .kpi-icon {
+    font-size: 32px;
+    background: #f3f4f6;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+
+  .kpi-content {
+    flex: 1;
+  }
+
+  .kpi-content h3 {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+
+  .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 8px;
+  }
+
+  .kpi-change {
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .kpi-change.up {
+    color: #10b981;
+  }
+
+  .kpi-change.down {
+    color: #ef4444;
+  }
+
+  .trend-icon {
+    font-size: 16px;
+  }
+</style>

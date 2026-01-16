@@ -1,0 +1,65 @@
+name: Deploy to Firebase Hosting
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Deployment environment"
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+      site:
+        description: "Site to deploy"
+        required: true
+        type: choice
+        options:
+          - admin
+          - airport
+          - partybus
+          - executive
+          - wedding
+          - all
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+      
+      - name: Enable Corepack and pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build all sites
+        run: pnpm run build:all
+      
+      - name: Authenticate to GCP
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}
+      
+      - name: Deploy to Firebase
+        run: |
+          npm install -g firebase-tools
+          if [ "${{ inputs.site }}" = "all" ]; then
+            firebase deploy --only hosting --project royalcarriagelimoseo
+          else
+            firebase deploy --only hosting:${{ inputs.site }} --project royalcarriagelimoseo
+          fi

@@ -8,42 +8,61 @@ admin.initializeApp();
 
 // --- Driver Profiles Functions ---
 
-export const createDriverProfile = functions.https.onRequest(async (req, res) => {
-  if (req.method !== "POST") {
-    return res.status(405).send("Method Not Allowed");
-  }
-
-  try {
-    const { firstName, lastName, email, phone, hireDate, status, payRate, payRateType, paymentMethod, bankInfo, deductions } = req.body;
-
-    if (!firstName || !lastName || !email || !payRate || !payRateType) {
-      return res.status(400).json({ error: "Missing required fields: firstName, lastName, email, payRate, payRateType" });
+export const createDriverProfile = functions.https.onRequest(
+  async (req, res) => {
+    if (req.method !== "POST") {
+      return res.status(405).send("Method Not Allowed");
     }
 
-    const profile = {
-      firstName,
-      lastName,
-      email,
-      phone,
-      hireDate: new Date(hireDate), // Ensure date is valid
-      status: status || "active",
-      payRate: parseFloat(payRate),
-      payRateType,
-      paymentMethod,
-      bankInfo,
-      deductions: deductions || [],
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      createdBy: req.body.auth?.uid || null,
-    };
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        phone,
+        hireDate,
+        status,
+        payRate,
+        payRateType,
+        paymentMethod,
+        bankInfo,
+        deductions,
+      } = req.body;
 
-    const writeResult = await admin.firestore().collection("driverProfiles").add(profile);
-    res.status(201).json({ id: writeResult.id, ...profile });
+      if (!firstName || !lastName || !email || !payRate || !payRateType) {
+        return res.status(400).json({
+          error:
+            "Missing required fields: firstName, lastName, email, payRate, payRateType",
+        });
+      }
 
-  } catch (error) {
-    functions.logger.error("Error creating driver profile:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
+      const profile = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        hireDate: new Date(hireDate), // Ensure date is valid
+        status: status || "active",
+        payRate: parseFloat(payRate),
+        payRateType,
+        paymentMethod,
+        bankInfo,
+        deductions: deductions || [],
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdBy: req.body.auth?.uid || null,
+      };
+
+      const writeResult = await admin
+        .firestore()
+        .collection("driverProfiles")
+        .add(profile);
+      res.status(201).json({ id: writeResult.id, ...profile });
+    } catch (error) {
+      functions.logger.error("Error creating driver profile:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
 export const getDriverProfiles = functions.https.onRequest(async (req, res) => {
   if (req.method !== "GET") {
@@ -52,7 +71,10 @@ export const getDriverProfiles = functions.https.onRequest(async (req, res) => {
 
   try {
     const snapshot = await admin.firestore().collection("driverProfiles").get();
-    const profiles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const profiles = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.status(200).json(profiles);
   } catch (error) {
     functions.logger.error("Error fetching driver profiles:", error);
