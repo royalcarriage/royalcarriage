@@ -29,7 +29,6 @@ interface ContentProposal {
 export default function SEOWorkflow() {
   const [proposals, setProposals] = useState<ContentProposal[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedProposal, setSelectedProposal] = useState<ContentProposal | null>(null);
 
   const loadProposals = async () => {
     setLoading(true);

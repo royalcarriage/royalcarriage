@@ -449,4 +449,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </div>
   </section>
+
+  <!-- Schema.org JSON-LD for Pricing -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "PriceSpecification",
+      "name": "Chicago Wedding Transportation Pricing",
+      "description": "Transparent pricing for wedding transportation services in Chicago including luxury sedans, stretch limos, SUV limos, and shuttle buses",
+      "priceCurrency": "USD",
+      "provider": {
+        "@type": "LocalBusiness",
+        "name": "Chicago Wedding Transportation",
+        "url": "https://chicagoweddingtransportation.com",
+        "telephone": "+12248013090"
+      }
+    }
+  </script>
 </BaseLayout>

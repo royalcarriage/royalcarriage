@@ -6,7 +6,6 @@ import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import { 
   TrendingUp, 
-  DollarSign,
   Target,
   BarChart3,
   CheckCircle,

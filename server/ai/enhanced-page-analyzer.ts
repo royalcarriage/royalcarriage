@@ -81,7 +81,6 @@ export class EnhancedPageAnalyzer {
    */
   private extractKeywords(content: string): string[] {
     const text = this.stripHtml(content).toLowerCase();
-    const words = text.split(/\s+/);
     
     // Common transportation/service keywords
     const serviceKeywords = [

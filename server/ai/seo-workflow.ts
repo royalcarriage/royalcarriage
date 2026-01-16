@@ -131,7 +131,7 @@ export class SEOWorkflow {
   // Private helper methods
   
   private generateId(): string {
-    return `prop_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `prop_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
   }
   
   private determinePageType(cluster: string): string {
@@ -164,7 +164,7 @@ export class SEOWorkflow {
   }
   
   private generateUrl(cluster: string): string {
-    return `/${cluster.replace(/-/g, '-')}`;
+    return `/${cluster}`;
   }
   
   private calculateProfitScore(opp: any): number {
