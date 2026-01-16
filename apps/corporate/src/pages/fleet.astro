@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('corporate');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Our Corporate Fleet',
+  serviceDescription: 'View our corporate fleet of executive sedans, luxury SUVs, and passenger vans. Professional vehicles for business transportation in Chicago.',
+  serviceType: 'Transportation Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Corporate Fleet - Executive Sedans & Luxury Vehicles"
+  description="View our corporate fleet of executive sedans, luxury SUVs, and passenger vans. Professional vehicles for business transportation in Chicago."
+  canonical="/fleet"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Corporate Fleet</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="corporate" location="hero" size="lg" />
+        <CallButton target="corporate" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage maintains a premium fleet specifically selected for corporate and executive transportation needs. Every vehicle is professionally maintained, regularly detailed, and equipped with business amenities.</p>
+
+<h2 class="text-2xl font-bold mb-4">Executive Sedans</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Lincoln Continental & Cadillac XTS</h3>
+  <p class="mb-4">Our flagship executive sedans provide quiet, professional transportation ideal for business travel.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: Up to 3 passengers</li>
+    <li>Luggage: 3-4 large bags</li>
+    <li>Features: Leather seats, Wi-Fi, power outlets, privacy partition</li>
+    <li>Perfect for: Individual executives, client transportation, airport transfers</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Luxury SUVs</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Cadillac Escalade & Lincoln Navigator</h3>
+  <p class="mb-4">Premium SUVs offering extra space and comfort for groups or executive teams.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: Up to 6 passengers</li>
+    <li>Luggage: 6-8 large bags</li>
+    <li>Features: Captain's chairs, entertainment system, Wi-Fi, power outlets</li>
+    <li>Perfect for: Executive teams, client groups, airport transfers with luggage</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Executive Vans</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Mercedes Sprinter</h3>
+  <p class="mb-4">Luxury passenger vans for larger corporate groups and event transportation.</p>
+  <ul class="list-disc list-inside space-y-2">
+    <li>Seating: Up to 12 passengers</li>
+    <li>Luggage: 12-14 large bags</li>
+    <li>Features: Individual seating, A/C zones, entertainment, Wi-Fi</li>
+    <li>Perfect for: Corporate events, conferences, team transportation</li>
+  </ul>
+</div>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="corporate" location="bottom-cta" size="lg" />
+        <CallButton target="corporate" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

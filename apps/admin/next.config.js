@@ -19,6 +19,7 @@ const nextConfig = {
 
   // Client-side app with Firebase backend
   output: 'export',
+  outputFileTracing: false,
 
   // Image optimization disabled for static export
   images: {

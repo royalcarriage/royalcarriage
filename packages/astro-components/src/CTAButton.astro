@@ -1,0 +1,64 @@
+---
+interface Props {
+  target: string;
+  class?: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary';
+  location?: string;
+}
+
+const { target, class: className = '', size = 'md', variant = 'primary', location = 'unknown' } = Astro.props;
+
+const bookingUrl = `https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=${target}&utm_medium=seo&utm_campaign=microsites`;
+
+const sizeClasses = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+  lg: 'px-8 py-4 text-lg'
+};
+
+const variantClasses = {
+  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+  secondary: 'bg-white hover:bg-gray-100 text-blue-600 border-2 border-blue-600'
+};
+---
+
+<a
+  href={bookingUrl}
+  class:list={[
+    'inline-block font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl',
+    sizeClasses[size],
+    variantClasses[variant],
+    className
+  ]}
+  data-track-event="book_now_click"
+  data-track-target={target}
+  data-track-location={location}
+  rel="noopener noreferrer"
+>
+  Book Now
+</a>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('[data-track-event="book_now_click"]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const target = button.getAttribute('data-track-target');
+        const location = button.getAttribute('data-track-location');
+
+        if (typeof window !== 'undefined' && (window as any).dataLayer) {
+          (window as any).dataLayer.push({
+            event: 'book_now_click',
+            eventCategory: 'Engagement',
+            eventAction: 'Click',
+            eventLabel: `${target} - ${location}`,
+            button_location: location,
+            site_target: target
+          });
+        }
+      });
+    });
+  });
+</script>

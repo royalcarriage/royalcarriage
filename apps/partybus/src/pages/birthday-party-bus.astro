@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Birthday Party Bus Rental',
+  serviceDescription: 'Celebrate birthdays with a party bus in Chicago. Perfect for milestone birthdays, surprise parties, and group celebrations. Book your birthday party bus now.',
+  serviceType: 'Birthday Party Bus',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Birthday Party Bus Chicago - Mobile Birthday Celebrations"
+  description="Celebrate birthdays with a party bus in Chicago. Perfect for milestone birthdays, surprise parties, and group celebrations. Book your birthday party bus now."
+  canonical="/birthday-party-bus"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Birthday Party Bus Rental</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Make your birthday celebration unforgettable with a Royal Carriage party bus rental. Whether it's a milestone 21st, 30th, 40th, or any birthday worth celebrating, our party buses provide a unique mobile venue for your celebration.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Party Buses Are Perfect for Birthdays</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Keep Everyone Together:</strong> Your entire group travels and celebrates together</li>
+  <li><strong>No Designated Driver:</strong> Professional chauffeur means everyone can enjoy</li>
+  <li><strong>Visit Multiple Venues:</strong> Dinner, bars, clubs - visit them all in one night</li>
+  <li><strong>Mobile Party:</strong> The celebration starts the moment you board</li>
+  <li><strong>Photo Opportunities:</strong> Unique setting for birthday photos and videos</li>
+  <li><strong>Surprise Factor:</strong> Arriving in a party bus makes an impression</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Popular Birthday Party Bus Ideas</h2>
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">21st Birthday Pub Crawl</h3>
+    <p class="text-sm mb-3">Celebrate turning 21 legally with friends:</p>
+    <ul class="text-xs space-y-1">
+      <li>• Visit multiple bars and clubs</li>
+      <li>• Safe transportation all night</li>
+      <li>• Keep the party going between stops</li>
+      <li>• Create unforgettable memories</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Milestone Birthdays (30, 40, 50+)</h3>
+    <p class="text-sm mb-3">Celebrate life milestones in style:</p>
+    <ul class="text-xs space-y-1">
+      <li>• Elegant group transportation</li>
+      <li>• Visit upscale restaurants and lounges</li>
+      <li>• Sophisticated celebration atmosphere</li>
+      <li>• Perfect for surprise parties</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Teen Birthday Parties (Sweet 16, etc)</h3>
+    <p class="text-sm mb-3">Safe, supervised fun for teenagers:</p>
+    <ul class="text-xs space-y-1">
+      <li>• Visit movies, restaurants, activities</li>
+      <li>• Parent-approved safe transportation</li>
+      <li>• Chaperoned by professional driver</li>
+      <li>• Memorable experience for teens</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Birthday Winery/Brewery Tours</h3>
+    <p class="text-sm mb-3">Combine birthday with tasting tour:</p>
+    <ul class="text-xs space-y-1">
+      <li>• Visit multiple wineries or breweries</li>
+      <li>• Everyone can taste safely</li>
+      <li>• Relaxed birthday celebration</li>
+      <li>• Professional tour coordination</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Birthday Party Bus Packages</h2>
+<p class="mb-4">We offer flexible packages for birthday celebrations:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>4-Hour Package:</strong> Perfect for dinner and a few stops</li>
+  <li><strong>6-Hour Package:</strong> Full evening of birthday celebration</li>
+  <li><strong>8-Hour Package:</strong> All-day or all-night birthday extravaganza</li>
+  <li><strong>Custom Packages:</strong> Create your own itinerary and timing</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Birthday Decorations & Add-Ons</h2>
+<p class="mb-4">Make it extra special with optional additions:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Birthday banners and decorations (inquire for availability)</li>
+  <li>Red carpet for birthday VIP entrance</li>
+  <li>Champagne service (where permitted)</li>
+  <li>Customized playlist for birthday person</li>
+  <li>Photo packages at stops</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

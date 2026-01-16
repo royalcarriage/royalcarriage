@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('corporate');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Corporate Black Car Service',
+  serviceDescription: 'Corporate black car service in Chicago. Professional transportation for businesses, employees, and clients. Flexible billing, reliable service, and luxury vehicles.',
+  serviceType: 'Corporate Transportation',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Corporate Black Car Service Chicago - Business Transportation"
+  description="Corporate black car service in Chicago. Professional transportation for businesses, employees, and clients. Flexible billing, reliable service, and luxury vehicles."
+  canonical="/corporate-black-car-service"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Corporate Black Car Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="corporate" location="hero" size="lg" />
+        <CallButton target="corporate" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage Limousine specializes in corporate black car service for Chicago businesses. Whether you need regular airport transportation for employees, client entertainment, or event coordination, our professional service delivers consistent quality and reliability.</p>
+
+<h2 class="text-2xl font-bold mb-4">Corporate Solutions</h2>
+<p class="mb-4">We understand the unique needs of corporate transportation:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Employee Transportation:</strong> Regular airport transfers for traveling staff</li>
+  <li><strong>Client Services:</strong> Impressive transportation for visiting clients and partners</li>
+  <li><strong>Event Management:</strong> Coordination of multiple vehicles for company events</li>
+  <li><strong>Executive Services:</strong> Dedicated transportation for leadership team</li>
+  <li><strong>Flexible Scheduling:</strong> Last-minute bookings and changes accommodated</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Billing & Reporting</h2>
+<div class="bg-blue-50 p-6 rounded-lg mb-6">
+  <ul class="space-y-2">
+    <li>✓ Monthly consolidated invoicing</li>
+    <li>✓ Detailed trip reports by employee/department</li>
+    <li>✓ Customizable approval workflows</li>
+    <li>✓ Online booking portal for employees</li>
+    <li>✓ Real-time ride tracking and notifications</li>
+    <li>✓ Expense reporting integration available</li>
+  </ul>
+</div>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="corporate" location="bottom-cta" size="lg" />
+        <CallButton target="corporate" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

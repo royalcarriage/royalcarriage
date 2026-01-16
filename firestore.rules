@@ -2,69 +2,91 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Helper function to check if user is authenticated
+    // --- Helper Functions ---
+    
     function isAuthenticated() {
       return request.auth != null;
     }
     
-    // Helper function to check if user is admin
+    function getRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    
+    function hasRole(role) {
+      return isAuthenticated() && getRole() == role;
+    }
+    
+    function isSuperAdmin() {
+      return hasRole('SuperAdmin');
+    }
+    
     function isAdmin() {
-      return isAuthenticated() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+      return isSuperAdmin() || hasRole('Admin');
     }
     
-    // Users collection - only admins can read/write
+    function isEditor() {
+      return isAdmin() || hasRole('Editor');
+    }
+    
+    function isViewer() {
+      return isEditor() || hasRole('Viewer');
+    }
+
+    // --- Collection Rules ---
+
+    // User profiles and roles
     match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isSuperAdmin() || (isAdmin() && request.resource.data.role == resource.data.role); // Admins can't change roles
+      allow delete: if isSuperAdmin();
+    }
+
+    // Site configuration and master spec
+    match /settings/{settingId} {
+      allow read: if isViewer();
+      allow write: if isSuperAdmin();
+    }
+
+    // Data imports (Moovs, Ads)
+    match /imports/{importId} {
       allow read: if isAdmin();
       allow write: if isAdmin();
     }
-    
-    // Page analyses - admin only
-    match /page_analyses/{analysisId} {
-      allow read: if isAdmin();
+
+    // Metrics and ROI data
+    match /metrics/{metricId} {
+      allow read: if isViewer();
+      allow write: if isAdmin();
+    }
+
+    // SEO Bot tasks and drafts
+    match /seo_bot/{taskId} {
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+
+    // Image metadata
+    match /images/{imageId} {
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+
+    // Deployment logs
+    match /deploy_logs/{logId} {
+      allow read: if isViewer();
+      allow write: if isAdmin();
+    }
+
+    // Audit reports
+    match /reports/{reportId} {
+      allow read: if isViewer();
       allow write: if isAdmin();
     }
     
-    // Content suggestions - admin only
-    match /content_suggestions/{suggestionId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
-    // AI images - admin only
-    match /ai_images/{imageId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
-    // Audit logs - read only for admins
-    match /audit_logs/{logId} {
-      allow read: if isAdmin();
-      allow write: if false; // Only system can write
-    }
-    
-    // Scheduled jobs - admin only
-    match /scheduled_jobs/{jobId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
-    // AI settings - admin only
-    match /ai_settings/{settingId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
-    // SEO reports - admin only
-    match /seo_reports/{reportId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
-    
-    // Pages - admin only
-    match /pages/{pageId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
-    }
+    // Legacy support (optional, can be removed once migrated)
+    match /page_analyses/{id} { allow read: if isViewer(); allow write: if isAdmin(); }
+    match /content_suggestions/{id} { allow read: if isViewer(); allow write: if isEditor(); }
+    match /ai_images/{id} { allow read: if isViewer(); allow write: if isEditor(); }
   }
 }

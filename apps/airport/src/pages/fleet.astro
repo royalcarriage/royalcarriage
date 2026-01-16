@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Our Luxury Fleet',
+  serviceDescription: 'View our luxury fleet of airport limousines including executive sedans, SUVs, and passenger vans. Immaculately maintained vehicles with professional chauffeurs for Chicago airport transportation.',
+  serviceType: 'Airport Limousine Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Luxury Airport Limousine Fleet - Sedans, SUVs & Vans"
+  description="View our luxury fleet of airport limousines including executive sedans, SUVs, and passenger vans. Immaculately maintained vehicles with professional chauffeurs for Chicago airport transportation."
+  canonical="/fleet"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Our Luxury Fleet</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine maintains a premium fleet of vehicles to accommodate all your airport transportation needs. Every vehicle is meticulously maintained, regularly detailed, and equipped with modern amenities for your comfort and convenience.</p>
+
+<h2 class="text-2xl font-bold mb-4">Executive Sedans</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Lincoln Continental & Similar</h3>
+  <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+    <li>Seating capacity: Up to 3 passengers</li>
+    <li>Luggage capacity: 3-4 large suitcases</li>
+    <li>Perfect for: Individual travelers, couples, small business groups</li>
+    <li>Features: Leather seating, climate control, smartphone connectivity, bottled water</li>
+  </ul>
+  <p class="text-gray-700">Our executive sedans provide a quiet, comfortable ride ideal for business travelers or anyone seeking a premium airport transportation experience.</p>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Luxury SUVs</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Cadillac Escalade & Similar</h3>
+  <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+    <li>Seating capacity: Up to 6 passengers</li>
+    <li>Luggage capacity: 6-8 large suitcases</li>
+    <li>Perfect for: Families, small groups, travelers with extra luggage</li>
+    <li>Features: Spacious interior, entertainment system, Wi-Fi, power outlets, privacy glass</li>
+  </ul>
+  <p class="text-gray-700">Luxury SUVs offer extra space and comfort for groups or travelers with additional luggage needs while maintaining a premium travel experience.</p>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Passenger Vans</h2>
+<div class="bg-white p-6 rounded-lg shadow-md mb-6">
+  <h3 class="text-xl font-bold mb-3">Mercedes Sprinter & Similar</h3>
+  <ul class="list-disc list-inside space-y-2 text-gray-700 mb-4">
+    <li>Seating capacity: Up to 12 passengers</li>
+    <li>Luggage capacity: 12-14 large suitcases</li>
+    <li>Perfect for: Corporate groups, wedding parties, family reunions</li>
+    <li>Features: Individual captain's chairs, A/C zones, entertainment, ample headroom</li>
+  </ul>
+  <p class="text-gray-700">Our luxury passenger vans are ideal for group airport transportation, offering comfort and convenience for everyone traveling together.</p>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Fleet Standards</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li>All vehicles less than 3 years old</li>
+  <li>Regular professional detailing and sanitization</li>
+  <li>Comprehensive safety inspections</li>
+  <li>GPS tracking for optimal routing</li>
+  <li>Fully insured and licensed</li>
+  <li>Complimentary amenities: bottled water, phone chargers, Wi-Fi</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

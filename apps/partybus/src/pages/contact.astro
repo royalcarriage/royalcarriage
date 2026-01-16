@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Contact Us - Party Bus Rentals',
+  serviceDescription: 'Contact Royal Carriage for party bus rental quotes in Chicago. Check availability, get pricing, and book your party bus. Call (224) 801-3090.',
+  serviceType: 'Transportation Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Contact - Party Bus Rental Quotes"
+  description="Contact Royal Carriage for party bus rental quotes in Chicago. Check availability, get pricing, and book your party bus. Call (224) 801-3090."
+  canonical="/contact"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Contact Us - Party Bus Rentals</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Ready to book your party bus rental in Chicago? Contact Royal Carriage Limousine for availability, quotes, and to plan your group celebration or event transportation.</p>
+
+<div class="grid md:grid-cols-2 gap-8 mb-8">
+  <div>
+    <h2 class="text-2xl font-bold mb-4">Get a Quote</h2>
+    <div class="space-y-4 mb-6">
+      <div class="flex items-start">
+        <svg class="w-6 h-6 text-blue-600 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Phone</p>
+          <a href="tel:+12248013090" class="text-blue-600 hover:text-blue-800 text-lg">(224) 801-3090</a>
+          <p class="text-sm text-gray-600">Available 7 days/week</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-bold mb-3">Party Bus Quote Information</h3>
+    <p class="mb-4">To provide accurate pricing, please provide:</p>
+    <ul class="list-disc list-inside space-y-2 text-sm mb-6">
+      <li>Event date and day of week</li>
+      <li>Number of passengers in your group</li>
+      <li>Approximate hours needed (4-hour minimum)</li>
+      <li>Pickup location(s)</li>
+      <li>Destination(s) or general itinerary</li>
+      <li>Type of event (birthday, concert, etc)</li>
+      <li>Any special requests or requirements</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h2 class="text-2xl font-bold mb-4">Booking Information</h2>
+
+    <h3 class="font-bold mb-2">Minimum Rental:</h3>
+    <p class="text-sm mb-4">4 hours minimum rental required for all party buses. Additional hours available.</p>
+
+    <h3 class="font-bold mb-2">Peak Times:</h3>
+    <p class="text-sm mb-4">Friday and Saturday nights, prom season (April-May), and major concert dates book quickly. Reserve early!</p>
+
+    <h3 class="font-bold mb-2">Deposit:</h3>
+    <p class="text-sm mb-4">Deposit required to secure booking. Balance due before or on event day.</p>
+
+    <h3 class="font-bold mb-2">Age Requirements:</h3>
+    <p class="text-sm mb-4">Renter must be 21+ and sign rental agreement. All passengers must follow rules regarding alcohol consumption (21+only).</p>
+
+    <h3 class="font-bold mb-2">Cancellation Policy:</h3>
+    <p class="text-sm">Full refund if cancelled 7+ days before event. See rental agreement for details.</p>
+  </div>
+</div>
+
+<div class="bg-blue-50 p-6 rounded-lg mb-6">
+  <h2 class="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
+  <div class="space-y-4">
+    <div>
+      <p class="font-bold">Can we bring our own alcohol?</p>
+      <p class="text-sm">Yes (BYOB), must be 21+. We provide coolers and ice. No kegs or glass bottles.</p>
+    </div>
+    <div>
+      <p class="font-bold">How many stops can we make?</p>
+      <p class="text-sm">Unlimited stops within your rental time. Each stop's waiting time counts against total hours.</p>
+    </div>
+    <div>
+      <p class="font-bold">Can we smoke on the party bus?</p>
+      <p class="text-sm">No smoking (including vaping) allowed inside any vehicle.</p>
+    </div>
+    <div>
+      <p class="font-bold">What happens if we go over our rental time?</p>
+      <p class="text-sm">Overtime charged at prorated hourly rate. Please plan accordingly.</p>
+    </div>
+  </div>
+</div>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

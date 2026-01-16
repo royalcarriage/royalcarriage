@@ -1,0 +1,152 @@
+[
+  {
+    "name": "Chicago",
+    "slug": "chicago",
+    "description": "Downtown Chicago and surrounding neighborhoods including the Loop, River North, Gold Coast, and more",
+    "distance_ohare": "17 miles",
+    "distance_midway": "11 miles",
+    "travel_time_ohare": "30-45 minutes",
+    "travel_time_midway": "25-35 minutes",
+    "highlights": [
+      "Financial district and corporate headquarters",
+      "World-class hotels and convention centers",
+      "Cultural attractions and museums",
+      "Lakefront and tourist destinations"
+    ]
+  },
+  {
+    "name": "Naperville",
+    "slug": "naperville",
+    "description": "Western suburb known for excellent schools, family-friendly atmosphere, and thriving business community",
+    "distance_ohare": "28 miles",
+    "distance_midway": "23 miles",
+    "travel_time_ohare": "40-55 minutes",
+    "travel_time_midway": "35-50 minutes",
+    "highlights": [
+      "Major corporate headquarters and tech companies",
+      "Naperville Riverwalk and downtown district",
+      "Residential neighborhoods and shopping centers",
+      "Easy I-88 access to airports"
+    ]
+  },
+  {
+    "name": "Schaumburg",
+    "slug": "schaumburg",
+    "description": "Northwest suburb home to Woodfield Mall and numerous corporate offices",
+    "distance_ohare": "12 miles",
+    "distance_midway": "32 miles",
+    "travel_time_ohare": "20-30 minutes",
+    "travel_time_midway": "45-60 minutes",
+    "highlights": [
+      "Woodfield Mall - one of largest shopping centers",
+      "Major business district with Fortune 500 companies",
+      "Convention Center and hotels",
+      "Close proximity to O'Hare Airport"
+    ]
+  },
+  {
+    "name": "Oak Brook",
+    "slug": "oak-brook",
+    "description": "Upscale western suburb featuring luxury shopping, corporate headquarters, and affluent residential areas",
+    "distance_ohare": "20 miles",
+    "distance_midway": "18 miles",
+    "travel_time_ohare": "30-40 minutes",
+    "travel_time_midway": "30-40 minutes",
+    "highlights": [
+      "Oakbrook Center luxury shopping",
+      "Major corporate headquarters",
+      "Golf courses and country clubs",
+      "Central location between both airports"
+    ]
+  },
+  {
+    "name": "Evanston",
+    "slug": "evanston",
+    "description": "North Shore suburb home to Northwestern University and lakefront community",
+    "distance_ohare": "15 miles",
+    "distance_midway": "25 miles",
+    "travel_time_ohare": "25-35 minutes",
+    "travel_time_midway": "40-55 minutes",
+    "highlights": [
+      "Northwestern University campus",
+      "Historic downtown with dining and shopping",
+      "Lakefront beaches and parks",
+      "Cultural venues and theaters"
+    ]
+  },
+  {
+    "name": "Highland Park",
+    "slug": "highland-park",
+    "description": "Affluent North Shore community with beautiful estates and Ravinia Festival",
+    "distance_ohare": "23 miles",
+    "distance_midway": "35 miles",
+    "travel_time_ohare": "35-45 minutes",
+    "travel_time_midway": "50-65 minutes",
+    "highlights": [
+      "Ravinia Festival - outdoor music venue",
+      "Upscale shopping and dining",
+      "Lakefront parks and beaches",
+      "Historic estates and neighborhoods"
+    ]
+  },
+  {
+    "name": "Hinsdale",
+    "slug": "hinsdale",
+    "description": "Prestigious western suburb known for historic homes, excellent schools, and upscale downtown",
+    "distance_ohare": "22 miles",
+    "distance_midway": "16 miles",
+    "travel_time_ohare": "35-45 minutes",
+    "travel_time_midway": "28-38 minutes",
+    "highlights": [
+      "Charming downtown village",
+      "Historic Victorian homes",
+      "Top-rated school district",
+      "Country clubs and recreation"
+    ]
+  },
+  {
+    "name": "Elmhurst",
+    "slug": "elmhurst",
+    "description": "Central western suburb with vibrant downtown, parks, and Elmhurst University",
+    "distance_ohare": "16 miles",
+    "distance_midway": "18 miles",
+    "travel_time_ohare": "25-35 minutes",
+    "travel_time_midway": "30-40 minutes",
+    "highlights": [
+      "Walkable downtown district",
+      "Elmhurst University campus",
+      "Numerous parks and recreational facilities",
+      "Central location for easy airport access"
+    ]
+  },
+  {
+    "name": "Rosemont",
+    "slug": "rosemont",
+    "description": "Entertainment district next to O'Hare with hotels, restaurants, and convention facilities",
+    "distance_ohare": "2 miles",
+    "distance_midway": "22 miles",
+    "travel_time_ohare": "5-10 minutes",
+    "travel_time_midway": "35-45 minutes",
+    "highlights": [
+      "Rosemont Theatre and entertainment venues",
+      "Major hotels and conference centers",
+      "Fashion Outlets of Chicago shopping",
+      "Immediately adjacent to O'Hare Airport"
+    ]
+  },
+  {
+    "name": "Wheeling",
+    "slug": "wheeling",
+    "description": "Northwest suburb with diverse community, restaurants, and convenient airport access",
+    "distance_ohare": "14 miles",
+    "distance_midway": "32 miles",
+    "travel_time_ohare": "20-30 minutes",
+    "travel_time_midway": "45-60 minutes",
+    "highlights": [
+      "Restaurant Row with diverse dining options",
+      "Business parks and corporate offices",
+      "Residential neighborhoods",
+      "Quick access to O'Hare via I-294"
+    ]
+  }
+]

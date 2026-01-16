@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Chicago Party Bus Rental',
+  serviceDescription: 'Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation.',
+  serviceType: 'Party Bus Rental',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Chicago Party Bus Rental - Premium Group Transportation"
+  description="Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation."
+  canonical="/index"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Chicago Party Bus Rental</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Experience the ultimate group celebration with Royal Carriage Limousine's premium party bus rentals. Perfect for birthdays, bachelor/bachelorette parties, concerts, and any event where your group wants to travel and party together in style.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Choose Our Party Buses</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Spacious Interior:</strong> Room for 20-30 passengers with space to move and socialize</li>
+  <li><strong>Entertainment Systems:</strong> Premium sound, LED lighting, and entertainment features</li>
+  <li><strong>Safety First:</strong> Professional chauffeurs ensure safe transportation while you party</li>
+  <li><strong>No Designated Driver Needed:</strong> Everyone can enjoy the celebration</li>
+  <li><strong>Multiple Stops:</strong> Visit multiple venues without parking hassles</li>
+  <li><strong>Climate Controlled:</strong> Comfortable regardless of Chicago weather</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Perfect For</h2>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Birthday Parties</h3>
+    <p class="text-sm">Celebrate milestone birthdays with friends in a mobile party venue</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Bachelor/Bachelorette</h3>
+    <p class="text-sm">Pre-wedding celebrations with the wedding party</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Concerts & Events</h3>
+    <p class="text-sm">Transportation to concerts, sporting events, and shows</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Bar Crawls</h3>
+    <p class="text-sm">Visit multiple bars and clubs without driving</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Corporate Events</h3>
+    <p class="text-sm">Team building, company parties, and outings</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md text-center">
+    <h3 class="font-bold mb-2">Proms & Homecoming</h3>
+    <p class="text-sm">Safe group transportation for school dances</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Party Bus Features</h2>
+<div class="bg-blue-50 p-6 rounded-lg mb-6">
+  <ul class="grid md:grid-cols-2 gap-3">
+    <li>✓ Premium sound systems</li>
+    <li>✓ LED mood lighting</li>
+    <li>✓ Dance floor area</li>
+    <li>✓ Bar areas with coolers</li>
+    <li>✓ Comfortable seating</li>
+    <li>✓ Privacy windows</li>
+    <li>✓ Climate control</li>
+    <li>✓ Bluetooth connectivity</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">How Party Bus Rental Works</h2>
+<ol class="list-decimal list-inside space-y-2 mb-6">
+  <li><strong>Choose Your Bus:</strong> Select size based on your group</li>
+  <li><strong>Book Your Time:</strong> Minimum 4-hour rental, additional hours available</li>
+  <li><strong>Plan Your Route:</strong> Tell us your stops or let us suggest popular locations</li>
+  <li><strong>Enjoy the Ride:</strong> Your chauffeur handles driving while you party</li>
+  <li><strong>Multiple Stops:</strong> Visit bars, clubs, restaurants, or event venues</li>
+  <li><strong>Safe Return:</strong> Everyone gets home safely</li>
+</ol>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Party Bus Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
