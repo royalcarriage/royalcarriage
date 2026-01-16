@@ -220,8 +220,11 @@ export default function CityBatchPublisher() {
   const handlePublish = () => {
     if (selectedCities.size === 0) return;
 
+    // Use timestamp with random suffix to prevent collisions
+    const jobId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
+
     const job: PublishJob = {
-      id: Date.now().toString(),
+      id: jobId,
       status: "running",
       progress: 0,
       totalCities: selectedCities.size,

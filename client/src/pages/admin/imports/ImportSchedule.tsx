@@ -33,6 +33,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Calendar, Clock, Bell, Plus, Trash2, CheckCircle } from "lucide-react";
 
@@ -181,11 +191,22 @@ export default function ImportSchedule() {
   };
 
   const handleDeleteSchedule = (scheduleId: string) => {
-    if (!confirm("Are you sure you want to delete this schedule?")) return;
+    const schedule = schedules.find((s) => s.id === scheduleId);
+    if (!schedule) return;
+    
+    setScheduleToDelete(schedule);
+    setDeleteConfirmOpen(true);
+  };
 
-    setSchedules((prev) => prev.filter((s) => s.id !== scheduleId));
+  const confirmDelete = () => {
+    if (!scheduleToDelete) return;
+
+    setSchedules((prev) => prev.filter((s) => s.id !== scheduleToDelete.id));
+    setDeleteConfirmOpen(false);
+    setScheduleToDelete(null);
+    
     // TODO: Firebase delete
-    console.log("Deleted schedule:", scheduleId);
+    console.log("Deleted schedule:", scheduleToDelete.id);
   };
 
   const handleDismissReminder = (reminderId: string) => {
@@ -517,6 +538,23 @@ export default function ImportSchedule() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Schedule</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete "{scheduleToDelete?.name}"? This
+              action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* TODO: Firebase Integration */}
       <div className="p-4 bg-gray-50 rounded border border-gray-200 text-sm text-gray-600">

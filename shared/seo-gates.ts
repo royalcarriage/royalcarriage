@@ -240,7 +240,7 @@ export function validateSchema(schemaJson: string): GateCheckResult {
   } catch (error) {
     return {
       passed: false,
-      details: `Invalid JSON: ${error.message}`,
+      details: error instanceof Error ? `Invalid JSON: ${error.message}` : "Invalid JSON format",
       severity: "error",
     };
   }
