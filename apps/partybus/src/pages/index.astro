@@ -1,0 +1,39 @@
+---
+import { MainLayout } from '@royal-carriage/ui';
+---
+
+<MainLayout
+  title="Chicago Party Bus Rental | Luxury Event Transportation"
+  description="Chicago's premier party bus rental service. Perfect for weddings, birthdays, corporate events, and nights out."
+  siteTitle="Chicago Party Bus"
+  navLinks={[
+    { href: '/', text: 'Home' },
+    { href: '/fleet', text: 'Fleet' },
+    { href: '/events', text: 'Events' },
+    { href: '/pricing', text: 'Pricing' },
+    { href: '/contact', text: 'Contact' }
+  ]}
+  utmSource="partybus"
+>
+  <div class="container mx-auto p-8">
+    <h1 class="text-5xl font-bold mb-6">Chicago Party Bus Rentals</h1>
+    <p class="text-xl mb-4">
+      Make your celebration unforgettable with our luxury party bus service.
+      Perfect for any occasion - birthdays, bachelor/bachelorette parties, corporate events, and more.
+    </p>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Birthdays</h2>
+        <p>Celebrate in style with our spacious party buses</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Weddings</h2>
+        <p>Transport your bridal party in luxury</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Corporate</h2>
+        <p>Professional event transportation</p>
+      </div>
+    </div>
+  </div>
+</MainLayout>
