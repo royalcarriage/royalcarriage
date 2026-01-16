@@ -37,6 +37,8 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 import UsersPage from "@/pages/admin/UsersPage";
+import SystemStatus from "@/pages/admin/SystemStatus";
+import AuditPanel from "@/pages/admin/AuditPanel";
 
 function Router() {
   return (
@@ -164,6 +166,20 @@ function Router() {
         {() => (
           <ProtectedRoute requiredRole={UserRole.EDITOR}>
             <PageAnalyzer />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/system-status">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.ADMIN}>
+            <SystemStatus />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/audit">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.ADMIN}>
+            <AuditPanel />
           </ProtectedRoute>
         )}
       </Route>

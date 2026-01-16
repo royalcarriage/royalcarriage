@@ -47,6 +47,8 @@ import {
   ChevronsUpDown,
   Check,
   Plus,
+  Activity,
+  AlertCircle,
 } from "lucide-react";
 
 // Mock organizations for the switcher
@@ -103,6 +105,8 @@ const navigation: NavGroup[] = [
   {
     label: "System",
     items: [
+      { title: "System Status", href: "/admin/system-status", icon: Activity, badge: "1", badgeVariant: "destructive" },
+      { title: "Audit Panel", href: "/admin/audit", icon: AlertCircle, badge: "34", badgeVariant: "secondary" },
       { title: "Settings", href: "/admin/settings", icon: Settings },
       { title: "Help & Support", href: "/admin/help", icon: HelpCircle },
     ],
