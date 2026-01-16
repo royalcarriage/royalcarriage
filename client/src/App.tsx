@@ -38,6 +38,24 @@ import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 import UsersPage from "@/pages/admin/UsersPage";
 
+// New Admin Pages
+import OverviewPage from "@/pages/admin/OverviewPage";
+import MoovsImportPage from "@/pages/admin/imports/MoovsImportPage";
+import AdsImportPage from "@/pages/admin/imports/AdsImportPage";
+import RoiPage from "@/pages/admin/RoiPage";
+import AirportSitePage from "@/pages/admin/sites/AirportSitePage";
+import PartyBusSitePage from "@/pages/admin/sites/PartyBusSitePage";
+import CorporateSitePage from "@/pages/admin/sites/CorporateSitePage";
+import WeddingSitePage from "@/pages/admin/sites/WeddingSitePage";
+import QueuePage from "@/pages/admin/seo-bot/QueuePage";
+import DraftsPage from "@/pages/admin/seo-bot/DraftsPage";
+import RunsPage from "@/pages/admin/seo-bot/RunsPage";
+import PublishPage from "@/pages/admin/seo-bot/PublishPage";
+import LibraryPage from "@/pages/admin/images/LibraryPage";
+import MissingPage from "@/pages/admin/images/MissingPage";
+import DeployPage from "@/pages/admin/DeployPage";
+import LogsPage from "@/pages/admin/LogsPage";
+
 function Router() {
   return (
     <Switch>
@@ -164,6 +182,120 @@ function Router() {
         {() => (
           <ProtectedRoute requiredRole={UserRole.EDITOR}>
             <PageAnalyzer />
+          </ProtectedRoute>
+        )}
+      </Route>
+      
+      {/* New Admin Routes */}
+      <Route path="/admin/overview">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <OverviewPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/imports/moovs">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.ADMIN}>
+            <MoovsImportPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/imports/ads">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.ADMIN}>
+            <AdsImportPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/roi">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <RoiPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/sites/airport">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <AirportSitePage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/sites/party-bus">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <PartyBusSitePage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/sites/corporate">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <CorporateSitePage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/sites/wedding">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <WeddingSitePage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/seo-bot/queue">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.EDITOR}>
+            <QueuePage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/seo-bot/drafts">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.EDITOR}>
+            <DraftsPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/seo-bot/runs">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.EDITOR}>
+            <RunsPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/seo-bot/publish">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.SUPER_ADMIN}>
+            <PublishPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/images/library">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.EDITOR}>
+            <LibraryPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/images/missing">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.EDITOR}>
+            <MissingPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/deploy">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.SUPER_ADMIN}>
+            <DeployPage />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/logs">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.ADMIN}>
+            <LogsPage />
           </ProtectedRoute>
         )}
       </Route>
