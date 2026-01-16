@@ -8,8 +8,9 @@ import * as admin from "firebase-admin";
 import fetch from "node-fetch";
 import type { Request, Response } from "firebase-functions/v1";
 import type { DocumentSnapshot } from "firebase-functions/v1/firestore";
+import type { EventContext } from "firebase-functions";
 
-import { ImagePurpose } from '../../server/ai/image-generator';
+import { ImageGenerator, ImagePurpose } from "./image-generator";
 
 interface PageAnalysis {
   pageId: string;
@@ -150,7 +151,9 @@ export const dailyPageAnalysis = functions.pubsub
         }
       }
 
-      functions.logger.info(`Daily analysis completed for ${pages.length} pages`);
+      functions.logger.info(
+        `Daily analysis completed for ${pages.length} pages`,
+      );
       return null;
     } catch (error) {
       functions.logger.error("Daily analysis failed:", error);
@@ -187,8 +190,10 @@ export const weeklySeoReport = functions.pubsub
         periodEnd: new Date(),
         totalPages: analyses.length,
         averageSeoScore:
-          analyses.reduce((sum: number, a: PageAnalysis) => sum + (a.seoScore || 0), 0) /
-          analyses.length,
+          analyses.reduce(
+            (sum: number, a: PageAnalysis) => sum + (a.seoScore || 0),
+            0,
+          ) / analyses.length,
         averageContentScore:
           analyses.reduce(
             (sum: number, a: PageAnalysis) => sum + (a.contentScore || 0),
@@ -472,10 +477,6 @@ export const generateImage = functions.https.onRequest(
         });
         return;
       }
-
-      // Import ImageGenerator dynamically
-      const { ImageGenerator } =
-        await import("../../server/ai/image-generator");
 
       // Create image generator instance
       const projectId =

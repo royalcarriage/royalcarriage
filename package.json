@@ -1,1 +1,17 @@
-"audit:images:content": "node ./scripts/audit-images-content.mjs",
+{
+	"name": "royalcarriage",
+	"version": "0.0.0",
+ "private": true,
+ "type": "module",
+ "scripts": {
+    "audit:images:content": "node ./scripts/audit-images-content.mjs",
+    "build:admin": "pnpm --filter admin-dashboard build",
+    "build:functions": "pnpm --filter royalcarriage-functions build",
+    "build": "pnpm run build:admin && pnpm run build:functions",
+    "deploy:admin": "firebase deploy --only hosting:admin",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy": "firebase deploy"
+  },
+  "packageManager": "pnpm@10.28.0"
+}

@@ -1,31 +1,30 @@
 # VSCODE AI AUDIT
 
-This document provides a guide for auditing and extending the system using AI-powered tools.
+Playbook for auditing/extending the Royal Carriage stack with AI assistance.
 
-## System Overview
+## Quick System Map
+- Monorepo with Firebase Hosting (5 targets) + Functions.
+- Admin app: Astro static site in `apps/admin` → build to `apps/admin/dist`.
+- Marketing sites: static assets already in `apps/{airport,corporate,wedding,partybus}/dist` (sources absent; tread carefully).
+- Functions: TypeScript in `functions/src`, compiled to `functions/lib` via `pnpm run build:functions`.
+- Hosting target mapping lives in `.firebaserc` (admin→royalcarriagelimoseo, airport→chicagoairportblackcar, corporate→chicagoexecutivecarservice, wedding→chicagoweddingtransportation, partybus→chicago-partybus).
 
-The system is a monorepo that contains a number of web applications, a Firebase backend, and a number of shared packages. The main application is the admin dashboard, which is located in the `apps/admin` directory. The admin dashboard is an Astro application that is deployed to Firebase Hosting.
+## Audit Steps
+1) **Firebase config**: Check `firebase.json` + `.firebaserc` for target/public alignment; confirm `predeploy` uses `pnpm run build`.
+2) **Build health**:
+   - `pnpm run build:admin`
+   - `pnpm run build:functions`
+3) **Hosting outputs**: Ensure `apps/admin/dist` exists post-build; confirm marketing `dist` assets present before deploying hosting targets.
+4) **Functions**: Inspect `functions/src/image-generator.ts` (Vertex AI + Storage fallback) and `functions/lib` after build.
+5) **Rules**: Review `firestore.rules`, `firestore.indexes.json`, `storage.rules`; deploy with `firebase deploy --only firestore:rules,firestore:indexes,storage`.
+6) **Deploy check**: For admin, `firebase deploy --only hosting:admin`; verify `https://admin.royalcarriagelimo.com` resolves to the new build.
 
-## Auditing the System
+## Extending
+- Add new UI to `apps/admin` (Astro); use Tailwind (integrated via `@astrojs/tailwind`).
+- Shared UI lives in `packages/ui`.
+- For new functions, add under `functions/src`, run `pnpm run build:functions`, then `firebase deploy --only functions`.
 
-The following are the steps to audit the system:
-
-1.  **Review the Firebase configuration.** The Firebase configuration is located in the `firebase.json` file. This file contains the configuration for Firebase Hosting, Firebase Functions, and other Firebase services.
-
-2.  **Review the GitHub Actions workflows.** The GitHub Actions workflows are located in the `.github/workflows` directory. These workflows define the continuous integration and continuous deployment (CI/CD) pipelines for the system.
-
-3.  **Review the Firestore rules.** The Firestore rules are located in the `firestore.rules` file. These rules define the security rules for the Firestore database.
-
-4.  **Review the Storage rules.** The Storage rules are located in the `storage.rules` file. These rules define the security rules for the Cloud Storage buckets.
-
-## Extending the System
-
-The following are the steps to extend the system:
-
-1.  **Create a new application.** To create a new application, create a new directory in the `apps` directory.
-
-2.  **Create a new package.** To create a new package, create a new directory in the `packages` directory.
-
-3.  **Create a new Firebase Function.** To create a new Firebase Function, create a new file in the `functions/src` directory.
-
-4.  **Create a new GitHub Actions workflow.** To create a new GitHub Actions workflow, create a new file in the `.github/workflows` directory.
+## Gotchas
+- Local Node is v24; Functions target nodejs20 (CLI warns).
+- Marketing app sources are missing—do not overwrite existing `dist` unless you have rebuildable sources.
+- Vertex AI/Storage credentials must exist in runtime env; generator falls back to placeholders when absent.

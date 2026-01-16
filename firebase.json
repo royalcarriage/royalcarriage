@@ -79,7 +79,7 @@
   "functions": {
     "source": "functions",
     "runtime": "nodejs20",
-    "predeploy": ["cd functions && npx tsc"]
+    "predeploy": ["cd functions && pnpm run build"]
   },
   "firestore": {
     "rules": "firestore.rules",

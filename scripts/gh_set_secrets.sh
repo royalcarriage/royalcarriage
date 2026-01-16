@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+Here I amAlways#!/usr/bin/env bash
 # Helper to set common repository secrets via the `gh` CLI.
 # Run locally (not in CI). Requires `gh` authenticated and the private key file readable.
 
@@ -21,25 +21,29 @@ set_secret() {
   gh secret set "$name" --body "$value"
 }
 
-read -p "Path to SSH private key (default: $PRIVATE_KEY_FILE): " inputpath
-if [ -n "$inputpath" ]; then PRIVATE_KEY_FILE="$inputpath"; fi
+# Path to SSH private key can be set via PRIVATE_KEY_FILE env var.
+# Default is $HOME/.ssh/deploy_key
+PRIVATE_KEY_FILE=${PRIVATE_KEY_FILE:-$HOME/.ssh/deploy_key}
+
+echo "Using private key file: $PRIVATE_KEY_FILE"
 
 if [ -f "$PRIVATE_KEY_FILE" ]; then
   SSH_PRIVATE_KEY_VALUE="$(cat "$PRIVATE_KEY_FILE")"
 else
+  echo "Warning: Private key file not found at $PRIVATE_KEY_FILE. SSH_PRIVATE_KEY will be empty."
   SSH_PRIVATE_KEY_VALUE=""
 fi
 
-read -p "SSH user (deploy user) [deploy]: " ssh_user
-ssh_user=${ssh_user:-deploy}
-read -p "SSH host (example.com): " ssh_host
-read -p "SSH port [22]: " ssh_port
-ssh_port=${ssh_port:-22}
-read -p "SSH remote dir (/var/www/site): " ssh_remote_dir
+# Values are read from environment variables.
+# Example: export SSH_USER=deploy
+ssh_user=${SSH_USER:-deploy}
+ssh_host=${SSH_HOST:-}
+ssh_port=${SSH_PORT:-22}
+ssh_remote_dir=${SSH_REMOTE_DIR:-}
 
-read -p "Firebase token (leave blank to skip): " firebase_token
-read -p "Firebase project id (leave blank to skip): " firebase_project
-read -p "Claude/Anthropic API key (leave blank to skip): " claude_key
+firebase_token=${FIREBASE_TOKEN:-}
+firebase_project=${FIREBASE_PROJECT:-}
+claude_key=${CLAUDE_API_KEY:-}
 
 # Set secrets
 set_secret SSH_PRIVATE_KEY "$SSH_PRIVATE_KEY_VALUE"

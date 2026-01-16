@@ -1,1 +1,1 @@
-export { default as MainLayout } from './components/MainLayout.astro';
+export { default as MainLayout } from "./components/MainLayout.astro";
