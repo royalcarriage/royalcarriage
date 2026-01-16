@@ -44,6 +44,8 @@ export default function LocationsManagementPage() {
   const [locations, setLocations] = useState<LocationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedLocations, setSelectedLocations] = useState<Set<string>>(new Set());
   const [selectedWebsites, setSelectedWebsites] = useState<Set<string>>(new Set(['airport', 'corporate']));
   const [generatingContent, setGeneratingContent] = useState(false);
@@ -81,9 +83,14 @@ export default function LocationsManagementPage() {
     }
   }
 
-  const filteredLocations = selectedRegion === 'all'
-    ? locations
-    : locations.filter((loc) => loc.region === selectedRegion);
+  const filteredLocations = locations.filter((loc) => {
+    const matchesRegion = selectedRegion === 'all' || loc.region === selectedRegion;
+    const matchesType = selectedType === 'all' || loc.type === selectedType;
+    const matchesSearch = searchQuery === '' ||
+      loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      loc.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesRegion && matchesType && matchesSearch;
+  });
 
   async function handleGenerateContent() {
     if (selectedLocations.size === 0) {

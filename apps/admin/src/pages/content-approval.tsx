@@ -6,7 +6,9 @@ import { useAuth } from '../state/AuthProvider';
 interface ApprovalItem {
   id: string;
   serviceId: string;
+  serviceName?: string;
   locationId: string;
+  locationName?: string;
   websiteId: string;
   title: string;
   metaDescription: string;
@@ -15,6 +17,7 @@ interface ApprovalItem {
   status: 'pending' | 'approved' | 'rejected';
   generatedAt: string;
   aiQualityScore?: number;
+  approvalStatus?: 'pending' | 'approved' | 'rejected';
 }
 
 export default function ContentApprovalPage() {
@@ -25,6 +28,9 @@ export default function ContentApprovalPage() {
   const [filter, setFilter] = useState<'pending' | 'all'>('pending');
   const [feedback, setFeedback] = useState('');
   const [bulkApproveCount, setBulkApproveCount] = useState(10);
+  const [websiteFilter, setWebsiteFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (role !== 'admin' && role !== 'superadmin') {
@@ -41,10 +47,31 @@ export default function ContentApprovalPage() {
         : collection(db, 'service_content');
 
       const snapshot = await getDocs(q);
-      const items = snapshot.docs.map((doc) => ({
+      let items = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as ApprovalItem[];
+
+      if (websiteFilter !== 'all') {
+        items = items.filter((item) => item.websiteId === websiteFilter);
+      }
+
+      if (dateFilter !== 'all') {
+        const now = new Date();
+        const filterDate = new Date();
+
+        if (dateFilter === 'today') {
+          filterDate.setHours(0, 0, 0, 0);
+        } else if (dateFilter === 'week') {
+          filterDate.setDate(now.getDate() - 7);
+        } else if (dateFilter === 'month') {
+          filterDate.setMonth(now.getMonth() - 1);
+        }
+
+        items = items.filter((item) => new Date(item.generatedAt) >= filterDate);
+      }
+
+      items.sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime());
 
       setContent(items);
     } catch (error) {
@@ -90,7 +117,34 @@ export default function ContentApprovalPage() {
 
   async function handleBulkApprove() {
     try {
-      const itemsToApprove = content.slice(0, bulkApproveCount);
+      const itemsToApprove = selectedItems.size > 0
+        ? content.filter((item) => selectedItems.has(item.id))
+        : content.slice(0, bulkApproveCount);
+
+      for (const item of itemsToApprove) {
+        const contentRef = doc(db, 'service_content', item.id);
+        await updateDoc(contentRef, {
+          approvalStatus: 'approved',
+          approvedAt: new Date(),
+          approvedBy: user?.email,
+        });
+      }
+
+      setSelectedItems(new Set());
+      loadContent();
+      alert(`Successfully approved ${itemsToApprove.length} items`);
+    } catch (error) {
+      console.error('Error bulk approving:', error);
+      alert('Failed to approve items. Check console for details.');
+    }
+  }
+
+  async function handleBulkApproveQuality() {
+    try {
+      const qualityThreshold = 0.75;
+      const itemsToApprove = content.filter((item) =>
+        item.aiQualityScore && item.aiQualityScore >= qualityThreshold
+      );
 
       for (const item of itemsToApprove) {
         const contentRef = doc(db, 'service_content', item.id);
@@ -102,8 +156,28 @@ export default function ContentApprovalPage() {
       }
 
       loadContent();
+      alert(`Successfully approved ${itemsToApprove.length} items with quality score >= 75%`);
     } catch (error) {
-      console.error('Error bulk approving:', error);
+      console.error('Error bulk approving by quality:', error);
+      alert('Failed to approve items. Check console for details.');
+    }
+  }
+
+  function toggleItemSelection(itemId: string) {
+    const newSelected = new Set(selectedItems);
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId);
+    } else {
+      newSelected.add(itemId);
+    }
+    setSelectedItems(newSelected);
+  }
+
+  function toggleSelectAll() {
+    if (selectedItems.size === content.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(content.map((item) => item.id)));
     }
   }
 
@@ -140,49 +214,85 @@ export default function ContentApprovalPage() {
           </div>
         </div>
 
-        {/* Bulk Approve Section */}
-        <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg mb-8">
-          <h2 className="font-bold mb-4">Bulk Approve</h2>
-          <div className="flex gap-4">
-            <input
-              type="number"
-              min="1"
-              max={content.length}
-              value={bulkApproveCount}
-              onChange={(e) => setBulkApproveCount(parseInt(e.target.value))}
-              className="px-4 py-2 border rounded"
-            />
-            <button
-              onClick={handleBulkApprove}
-              className="px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700"
-            >
-              Approve {bulkApproveCount} Items
-            </button>
+        {/* Filters */}
+        <div className="bg-gray-50 border border-gray-200 p-6 rounded-lg mb-6">
+          <h2 className="font-bold mb-4">Filters</h2>
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Website
+              </label>
+              <select
+                value={websiteFilter}
+                onChange={(e) => setWebsiteFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Websites</option>
+                <option value="airport">Airport</option>
+                <option value="corporate">Corporate</option>
+                <option value="wedding">Wedding</option>
+                <option value="partyBus">Party Bus</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date Range
+              </label>
+              <select
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Time</option>
+                <option value="today">Today</option>
+                <option value="week">Last 7 Days</option>
+                <option value="month">Last 30 Days</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Status
+              </label>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value as 'pending' | 'all')}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="pending">Pending Only</option>
+                <option value="all">All Statuses</option>
+              </select>
+            </div>
           </div>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="mb-6 border-b">
-          <button
-            onClick={() => setFilter('pending')}
-            className={`px-4 py-2 ${
-              filter === 'pending'
-                ? 'border-b-2 border-blue-600 font-bold text-blue-600'
-                : 'text-gray-600'
-            }`}
-          >
-            Pending ({content.length})
-          </button>
-          <button
-            onClick={() => setFilter('all')}
-            className={`px-4 py-2 ${
-              filter === 'all'
-                ? 'border-b-2 border-blue-600 font-bold text-blue-600'
-                : 'text-gray-600'
-            }`}
-          >
-            All Items
-          </button>
+        {/* Bulk Approve Section */}
+        <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-lg mb-8">
+          <h2 className="font-bold mb-4">Bulk Actions</h2>
+          <div className="flex gap-4 flex-wrap">
+            <button
+              onClick={toggleSelectAll}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            >
+              {selectedItems.size === content.length ? 'Deselect All' : 'Select All'}
+            </button>
+            <button
+              onClick={handleBulkApprove}
+              disabled={selectedItems.size === 0}
+              className={`px-6 py-2 rounded-lg font-medium ${
+                selectedItems.size > 0
+                  ? 'bg-green-600 text-white hover:bg-green-700'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
+            >
+              Approve Selected ({selectedItems.size})
+            </button>
+            <button
+              onClick={handleBulkApproveQuality}
+              className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium"
+            >
+              Auto-Approve High Quality (75%+)
+            </button>
+          </div>
         </div>
 
         {/* Content List */}
@@ -196,26 +306,59 @@ export default function ContentApprovalPage() {
                 {content.slice(0, 20).map((item) => (
                   <div
                     key={item.id}
-                    onClick={() => setSelectedContent(item)}
-                    className={`p-4 rounded-lg border-2 cursor-pointer transition ${
+                    className={`p-4 rounded-lg border-2 transition ${
                       selectedContent?.id === item.id
                         ? 'border-blue-600 bg-blue-50'
+                        : selectedItems.has(item.id)
+                        ? 'border-green-500 bg-green-50'
                         : 'border-gray-200 hover:border-gray-300'
                     }`}
                   >
-                    <div className="font-bold text-sm mb-1">
-                      {item.serviceId}
-                    </div>
-                    <div className="text-sm text-gray-600">{item.locationId}</div>
-                    <div className="text-xs text-gray-400 mt-2">
-                      {item.aiQualityScore && (
-                        <div>
-                          Quality Score:{' '}
-                          <span className="text-blue-600 font-bold">
-                            {(item.aiQualityScore * 100).toFixed(0)}%
+                    <div className="flex items-start gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedItems.has(item.id)}
+                        onChange={() => toggleItemSelection(item.id)}
+                        className="w-5 h-5 mt-1"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <div
+                        className="flex-1 cursor-pointer"
+                        onClick={() => setSelectedContent(item)}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <div className="font-bold text-sm">
+                            {item.serviceName || item.serviceId}
+                          </div>
+                          <span className="text-xs px-2 py-1 bg-blue-100 text-blue-800 rounded capitalize">
+                            {item.websiteId}
                           </span>
                         </div>
-                      )}
+                        <div className="text-sm text-gray-600 mb-2">
+                          {item.locationName || item.locationId}
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-gray-400">
+                          {item.aiQualityScore && (
+                            <div>
+                              Quality:{' '}
+                              <span
+                                className={`font-bold ${
+                                  item.aiQualityScore >= 0.75
+                                    ? 'text-green-600'
+                                    : item.aiQualityScore >= 0.5
+                                    ? 'text-yellow-600'
+                                    : 'text-red-600'
+                                }`}
+                              >
+                                {(item.aiQualityScore * 100).toFixed(0)}%
+                              </span>
+                            </div>
+                          )}
+                          <div>
+                            {new Date(item.generatedAt).toLocaleDateString()}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
