@@ -13,8 +13,9 @@ const router = Router();
 // Initialize AI services
 const pageAnalyzer = new PageAnalyzer();
 const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'royalcarriagelimoseo';
-const contentGenerator = new ContentGenerator(projectId);
-const imageGenerator = new ImageGenerator(projectId, `${projectId}-ai-images`);
+const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const contentGenerator = new ContentGenerator(projectId, location);
+const imageGenerator = new ImageGenerator(projectId, location);
 
 /**
  * Analyze a page for SEO and content quality
