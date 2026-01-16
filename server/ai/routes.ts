@@ -265,39 +265,6 @@ router.get("/config-status", async (_req: Request, res: Response) => {
 });
 
 export { router as aiRoutes };
-
-      image,
-      generatedAt: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error("Image generation error:", error);
-    res.status(500).json({
-      error: "Failed to generate image",
-      message: error instanceof Error ? error.message : "Unknown error",
-    });
-  }
-});
-
-/**
- * Generate multiple image variations
- * POST /api/ai/generate-image-variations
- */
-router.post("/generate-image-variations", async (req, res) => {
-  try {
-    const { purpose, location, vehicle, style, description, count } = req.body;
-
-    if (!purpose) {
-      return res.status(400).json({
-        error: "Missing required field: purpose",
-      });
-    }
-
-    const images = await imageGenerator.generateVariations(
-      {
-        purpose,
-        location,
-        vehicle,
-        style,
         description,
       },
       count || 3,
