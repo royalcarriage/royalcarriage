@@ -12,9 +12,11 @@ export interface IStorage {
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
+  private usernameIndex: Map<string, string>; // username -> id for O(1) lookups
 
   constructor() {
     this.users = new Map();
+    this.usernameIndex = new Map();
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -22,9 +24,10 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    // O(1) lookup using username index instead of O(n) linear search
+    const id = this.usernameIndex.get(username);
+    if (!id) return undefined;
+    return this.users.get(id);
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
@@ -36,6 +39,7 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
     };
     this.users.set(id, user);
+    this.usernameIndex.set(user.username, id);
     return user;
   }
 }

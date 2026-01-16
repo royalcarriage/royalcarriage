@@ -112,20 +112,24 @@ async function processJob(job: any) {
 export async function listDrafts() {
   await ensureDirs();
   const files = await fs.readdir(DRAFTS_DIR).catch(() => []);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const drafts = [] as any[];
-  for (const f of files) {
-    if (f.endsWith(".json")) {
-      try {
-        const data = JSON.parse(
-          await fs.readFile(path.join(DRAFTS_DIR, f), "utf8"),
-        );
-        drafts.push(data);
-      } catch (_e) {
-        // skip
-      }
+  const jsonFiles = files.filter((f) => f.endsWith(".json"));
+
+  // Read all draft files in parallel for better performance
+  const draftPromises = jsonFiles.map(async (f) => {
+    try {
+      const data = JSON.parse(
+        await fs.readFile(path.join(DRAFTS_DIR, f), "utf8"),
+      );
+      return data;
+    } catch (_e) {
+      return null;
     }
-  }
+  });
+
+  const results = await Promise.all(draftPromises);
+  // Filter out failed reads (null values)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const drafts = results.filter((d): d is any => d !== null);
   return drafts.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1));
 }
 
