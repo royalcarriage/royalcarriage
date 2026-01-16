@@ -13,9 +13,26 @@ const TOPICS_FILE = path.join(
   "../packages/content/seo-bot/queue/topics.json",
 );
 
+// Import quality gate rules from shared constants
+import { 
+  CONTENT_GATES, 
+  TECHNICAL_GATES, 
+  IMAGE_GATES, 
+  UX_GATES, 
+  SPAM_GATES,
+  checkWordCount,
+  checkH1Count,
+  checkTitleLength,
+  checkMetaDescriptionLength,
+  checkKeywordDensity,
+  checkHeroImage,
+  checkImageAltText,
+  checkLocalValue
+} from '../shared/quality-gate-rules.ts';
+
 // Quality thresholds
-const HIGH_SIMILARITY_THRESHOLD = 0.7; // 70%+ = critical issue
-const MODERATE_SIMILARITY_THRESHOLD = 0.5; // 50%+ = warning
+const HIGH_SIMILARITY_THRESHOLD = CONTENT_GATES.semanticSimilarity.maxScore;  // 80%+ = critical issue
+const MODERATE_SIMILARITY_THRESHOLD = 0.5;  // 50%+ = warning
 
 // Helper function to count words accurately
 function countWords(text) {
@@ -97,11 +114,18 @@ function checkThinContent(draft) {
   const totalWords = content.sections.reduce((sum, section) => {
     return sum + countWords(section.content);
   }, 0);
-
-  if (totalWords < 1000) {
-    issues.push(`Content too short: ${totalWords} words (minimum 1000)`);
-  } else if (totalWords < 1200) {
-    warnings.push(`Content is short: ${totalWords} words (recommended 1200+)`);
+  
+  // Determine page type from draft metadata or default to city service
+  const pageType = draft.data.pageType || 'cityService';
+  const minWords = pageType === 'blog' 
+    ? CONTENT_GATES.blogPosts.minWords 
+    : CONTENT_GATES.cityServicePages.minWords;
+  
+  // HARD FAIL for thin content
+  if (totalWords < minWords) {
+    issues.push(`HARD FAIL: Content too short: ${totalWords} words (minimum ${minWords} for ${pageType})`);
+  } else if (totalWords < minWords + 200) {
+    warnings.push(`Content is short: ${totalWords} words (recommended ${minWords + 200}+)`);
   }
 
   // Check section distribution
@@ -253,6 +277,165 @@ function checkMetadata(draft) {
   return { issues, warnings };
 }
 
+  return { issues, warnings };
+}
+
+function checkDoorwayPages(draft, allDrafts) {
+  const issues = [];
+  const warnings = [];
+  
+  // Check if this looks like a doorway page
+  const draftContent = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ');
+  
+  // Remove city names for comparison
+  const normalizedDraft = draftContent
+    .replace(/\b[A-Z][a-z]+\b/g, '[CITY]')
+    .toLowerCase();
+  
+  let doorwayMatches = 0;
+  
+  for (const otherDraft of allDrafts) {
+    if (otherDraft.filename === draft.filename) continue;
+    
+    const otherContent = otherDraft.data.content.sections
+      .map(s => s.content)
+      .join(' ');
+    
+    const normalizedOther = otherContent
+      .replace(/\b[A-Z][a-z]+\b/g, '[CITY]')
+      .toLowerCase();
+    
+    const similarity = calculateSimilarity(normalizedDraft, normalizedOther);
+    
+    if (similarity > 0.85) {
+      doorwayMatches++;
+    }
+  }
+  
+  if (doorwayMatches >= 3) {
+    issues.push(`HARD FAIL: Doorway page detection - ${doorwayMatches} pages with >85% similarity`);
+  } else if (doorwayMatches >= 2) {
+    warnings.push(`Possible doorway page - ${doorwayMatches} similar pages detected`);
+  }
+  
+  return { issues, warnings };
+}
+
+function checkKeywordStuffing(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const content = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ');
+  
+  const keyword = draft.data.keyword || draft.data.content.keywords?.[0];
+  
+  if (!keyword) {
+    warnings.push('No primary keyword specified');
+    return { issues, warnings };
+  }
+  
+  const words = content.toLowerCase().split(/\s+/);
+  const keywordWords = keyword.toLowerCase().split(/\s+/);
+  
+  let keywordCount = 0;
+  for (let i = 0; i <= words.length - keywordWords.length; i++) {
+    const slice = words.slice(i, i + keywordWords.length).join(' ');
+    if (slice === keywordWords.join(' ')) {
+      keywordCount++;
+    }
+  }
+  
+  const density = keywordCount / words.length;
+  
+  if (density > SPAM_GATES.keywordStuffing.maxDensity) {
+    issues.push(`HARD FAIL: Keyword stuffing - ${(density * 100).toFixed(2)}% density (max ${SPAM_GATES.keywordStuffing.maxDensity * 100}%)`);
+  } else if (density > SPAM_GATES.keywordStuffing.maxDensity * 0.8) {
+    warnings.push(`High keyword density: ${(density * 100).toFixed(2)}%`);
+  }
+  
+  return { issues, warnings };
+}
+
+function checkLocalValue(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const pageType = draft.data.pageType || 'cityService';
+  
+  if (pageType !== 'cityService' && pageType !== 'city') {
+    return { issues, warnings };
+  }
+  
+  const content = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ');
+  
+  const hasAirportRoutes = /\b(to|from)\s+[A-Z][a-z]+\s+(Airport|ORD|MDW)/i.test(content);
+  
+  const namedEntities = content.match(/\b[A-Z][a-z]+\s+[A-Z][a-z]+\s+(Hotel|Center|Park|Plaza|Stadium|Station|Airport)\b/g) || [];
+  
+  if (!hasAirportRoutes) {
+    warnings.push('Missing local airport routes');
+  }
+  
+  if (namedEntities.length < CONTENT_GATES.localEntities.min) {
+    issues.push(`HARD FAIL: Insufficient local entities - ${namedEntities.length} (minimum ${CONTENT_GATES.localEntities.min})`);
+  }
+  
+  return { issues, warnings };
+}
+
+function checkHeroImageGate(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const images = draft.data.content.images || [];
+  
+  if (images.length === 0) {
+    issues.push('HARD FAIL: No images specified');
+    return { issues, warnings };
+  }
+  
+  const hasHero = images.some(img => 
+    img.type === 'hero' || 
+    img.placement === 'hero' || 
+    images.indexOf(img) === 0
+  );
+  
+  if (!hasHero) {
+    issues.push('HARD FAIL: Hero image required but not specified');
+  }
+  
+  return { issues, warnings };
+}
+
+function checkH1Structure(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const content = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ');
+  
+  const h1Matches = content.match(/<h1[^>]*>.*?<\/h1>/gi) || [];
+  const hasH1Metadata = !!draft.data.content.h1;
+  const h1InSections = draft.data.content.sections.filter(s => 
+    s.heading && (s.level === 1 || s.isH1)
+  ).length;
+  
+  const totalH1Count = h1Matches.length + (hasH1Metadata ? 1 : 0) + h1InSections;
+  
+  if (totalH1Count !== TECHNICAL_GATES.h1Count.exact) {
+    issues.push(`HARD FAIL: Invalid H1 count - ${totalH1Count} (must be exactly ${TECHNICAL_GATES.h1Count.exact})`);
+  }
+  
+  return { issues, warnings };
+}
+
 async function runGate(filename) {
   console.log(`\n🚪 Quality Gate Check: ${filename}\n`);
 
@@ -266,6 +449,12 @@ async function runGate(filename) {
     links: checkLinks(draft),
     images: checkImages(draft),
     duplicates: await checkDuplicateContent(draft, allDrafts),
+    // New enhanced gates
+    doorwayPages: checkDoorwayPages(draft, allDrafts),
+    keywordStuffing: checkKeywordStuffing(draft),
+    localValue: checkLocalValue(draft),
+    heroImage: checkHeroImageGate(draft),
+    h1Structure: checkH1Structure(draft)
   };
 
   let totalIssues = 0;
@@ -370,12 +559,29 @@ Options:
   --help, -h           Show this help message
 
 Quality Checks:
-  ✓ Duplicate content detection (similarity > 70%)
-  ✓ Thin content detection (< 1000 words)
-  ✓ Schema markup validation
-  ✓ Internal/external links check
-  ✓ Image requirements (alt text, placement)
-  ✓ Metadata validation (title, description, slug)
+  ✓ Content Quality:
+    - Thin content detection (city pages: <1200 words, blog: <900 words) [HARD FAIL]
+    - Duplicate intent detection (semantic similarity >80%) [HARD FAIL]
+    - Local value requirements (6+ local entities for city pages) [HARD FAIL]
+  
+  ✓ SEO Technical:
+    - H1 count validation (exactly 1) [HARD FAIL]
+    - Title length (50-65 chars recommended)
+    - Meta description length (140-165 chars recommended)
+    - Schema markup validation
+    - Internal/external links check
+  
+  ✓ Image Quality:
+    - Hero image requirement [HARD FAIL]
+    - Alt text validation [HARD FAIL]
+    - Image count and placement
+  
+  ✓ Spam Prevention:
+    - Doorway page detection (>85% similarity after normalization) [HARD FAIL]
+    - Keyword stuffing (>3% density) [HARD FAIL]
+    - Auto-publish loop detection
+  
+  Note: [HARD FAIL] gates will block publishing. Other issues generate warnings.
 
 Examples:
   node seo-gate.mjs --draft topic-001-chicago-airport-limo.json

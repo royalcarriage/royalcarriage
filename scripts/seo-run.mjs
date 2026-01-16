@@ -10,6 +10,56 @@ const __dirname = path.dirname(__filename);
 
 const RUNS_DIR = path.join(__dirname, "../packages/content/seo-bot/runs");
 
+// Lifecycle configuration based on production requirements
+const LIFECYCLE = {
+  daily: {
+    description: 'Daily maintenance - data imports and KPI computation',
+    actions: [
+      'importMoovsCsv',
+      'importGoogleAdsCsv',
+      'syncGA4Events',
+      'syncGSCData',
+      'computeKPIs',
+      'flagOpportunities',
+      'checkDataFreshness'
+    ],
+    publish: false
+  },
+  weekly: {
+    description: 'Weekly analysis - proposals and technical checks',
+    actions: [
+      'runSeoProposer',
+      'runSiteCrawler',
+      'runLighthouseChecks',
+      'generateProposalReport'
+    ],
+    publish: false
+  },
+  biweekly: {
+    description: 'Bi-weekly publishing - human review and controlled rollout',
+    actions: [
+      'humanReviewProposals',
+      'approvePages',
+      'runQualityGates',
+      'publishViaPR',
+      'reindexViaGSC'
+    ],
+    publish: true,
+    maxPages: 10,  // Max 10 pages per bi-weekly cycle
+    minPages: 3    // Min 3 pages recommended
+  },
+  monthly: {
+    description: 'Monthly optimization - prune and consolidate',
+    actions: [
+      'pruneUnderperformers',
+      'mergeCannibalized',
+      'refreshTopMoneyPages',
+      'updateInternalLinks'
+    ],
+    publish: true
+  }
+};
+
 function getTimestamp() {
   return new Date().toISOString().replace(/[:.]/g, "-");
 }
@@ -78,8 +128,20 @@ async function runPipeline(options = {}) {
   await logger.section("🚀 SEO Content Pipeline Started");
   await logger.log(`Run ID: ${runId}`);
   await logger.log(`Started at: ${new Date().toISOString()}`);
+  await logger.log(`Lifecycle mode: ${options.lifecycle || 'manual'}`);
   await logger.log(`Options: ${JSON.stringify(options, null, 2)}`);
-
+  
+  // Log lifecycle info if specified
+  if (options.lifecycle && LIFECYCLE[options.lifecycle]) {
+    const lifecycleConfig = LIFECYCLE[options.lifecycle];
+    await logger.log(`\nLifecycle: ${lifecycleConfig.description}`);
+    await logger.log(`Actions: ${lifecycleConfig.actions.join(', ')}`);
+    await logger.log(`Publishing allowed: ${lifecycleConfig.publish ? 'Yes' : 'No'}`);
+    if (lifecycleConfig.maxPages) {
+      await logger.log(`Max pages: ${lifecycleConfig.maxPages}`);
+    }
+  }
+  
   const results = {
     runId,
     startTime: new Date().toISOString(),
@@ -311,24 +373,44 @@ Usage: node seo-run.mjs [options]
 
 Options:
   --run                   Run the full pipeline
+  --lifecycle <mode>      Run with specific lifecycle mode (daily/weekly/biweekly/monthly)
   --auto-publish          Automatically publish passing drafts (creates PRs)
   --no-pr                 Skip PR creation when auto-publishing
   --continue-on-error     Continue pipeline even if a step fails
   --list                  List recent pipeline runs
   --help, -h              Show this help message
 
+Lifecycle Modes:
+  daily      - Data imports, KPI computation (no publishing)
+               Actions: import data, compute KPIs, flag opportunities
+  
+  weekly     - Proposals and technical checks (no publishing)
+               Actions: propose topics, crawl site, run Lighthouse
+  
+  biweekly   - Human review and controlled publishing (3-10 pages max)
+               Actions: review proposals, run gates, publish via PR, reindex
+  
+  monthly    - Optimization and consolidation
+               Actions: prune underperformers, merge cannibalized content
+
 Pipeline Steps:
   1. Propose Topics (optional - only if topics provided via config)
   2. Generate Drafts (all queued topics)
-  3. Quality Gate (check all drafts)
-  4. Publish (optional - requires --auto-publish flag)
+  3. Quality Gate (check all drafts with HARD FAIL gates)
+  4. Publish (optional - requires --auto-publish flag or lifecycle mode)
 
 Examples:
-  # Run pipeline (draft + gate only)
-  node seo-run.mjs --run
+  # Daily run (data imports only)
+  node seo-run.mjs --run --lifecycle daily
 
-  # Run full pipeline with auto-publish
-  node seo-run.mjs --run --auto-publish
+  # Weekly run (proposals and checks)
+  node seo-run.mjs --run --lifecycle weekly
+
+  # Bi-weekly run (publish 3-10 pages)
+  node seo-run.mjs --run --lifecycle biweekly --auto-publish
+
+  # Manual run (draft + gate only)
+  node seo-run.mjs --run
 
   # List recent runs
   node seo-run.mjs --list
@@ -346,12 +428,23 @@ Logs:
     await listRuns();
     return;
   }
-
-  if (args.includes("--run")) {
+  
+  if (args.includes('--run')) {
+    const lifecycleIndex = args.indexOf('--lifecycle');
+    const lifecycle = lifecycleIndex !== -1 ? args[lifecycleIndex + 1] : null;
+    
+    // Validate lifecycle mode
+    if (lifecycle && !LIFECYCLE[lifecycle]) {
+      console.error(`❌ Invalid lifecycle mode: ${lifecycle}`);
+      console.error(`   Valid modes: ${Object.keys(LIFECYCLE).join(', ')}`);
+      process.exit(1);
+    }
+    
     const options = {
-      autoPublish: args.includes("--auto-publish"),
-      noPr: args.includes("--no-pr"),
-      continueOnError: args.includes("--continue-on-error"),
+      lifecycle,
+      autoPublish: args.includes('--auto-publish') || (lifecycle && LIFECYCLE[lifecycle]?.publish),
+      noPr: args.includes('--no-pr'),
+      continueOnError: args.includes('--continue-on-error'),
       // Note: Topic proposal is a manual step. Use `npm run seo:propose` to add topics.
       proposeTopics: [], // Pipeline starts with already-queued topics
     };

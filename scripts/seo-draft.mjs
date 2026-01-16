@@ -7,11 +7,16 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const TOPICS_FILE = path.join(
-  __dirname,
-  "../packages/content/seo-bot/queue/topics.json",
-);
-const DRAFTS_DIR = path.join(__dirname, "../packages/content/seo-bot/drafts");
+const TOPICS_FILE = path.join(__dirname, '../packages/content/seo-bot/queue/topics.json');
+const DRAFTS_DIR = path.join(__dirname, '../packages/content/seo-bot/drafts');
+const TEMPLATES_DIR = path.join(__dirname, '../templates');
+
+// Load templates
+async function loadTemplate(templateName) {
+  const templatePath = path.join(TEMPLATES_DIR, templateName);
+  const data = await fs.readFile(templatePath, 'utf-8');
+  return JSON.parse(data);
+}
 
 // Helper function to count words accurately
 function countWords(text) {
@@ -65,16 +70,57 @@ async function callOpenAI(
 
 async function generateDraft(topic) {
   console.log(`📝 Generating draft for: "${topic.keyword}"`);
-
+  
+  // Determine page type and load appropriate template
+  const pageType = topic.pageType || 'cityService'; // default to city service page
+  let template;
+  let templateName;
+  
+  try {
+    if (pageType === 'cityService' || pageType === 'city') {
+      templateName = 'city-page-template.json';
+      template = await loadTemplate(templateName);
+    } else if (pageType === 'airport') {
+      templateName = 'airport-page-template.json';
+      template = await loadTemplate(templateName);
+    }
+    console.log(`   Using template: ${templateName}`);
+  } catch (error) {
+    console.warn(`   Template not found, using default structure`);
+    template = null;
+  }
+  
   const systemMessage = `You are an expert SEO content writer for Royal Carriage, a luxury transportation service in Chicago. 
 Write engaging, informative content that ranks well while genuinely helping potential customers.
-Focus on benefits, user experience, and clear calls-to-action.`;
+Focus on benefits, user experience, and clear calls-to-action.
 
-  const prompt = `Create a comprehensive blog post outline and content for the keyword: "${topic.keyword}"
+${template ? `IMPORTANT: Follow this exact template structure:\n${JSON.stringify(template.sections || template, null, 2)}` : ''}`;
+
+  let prompt = `Create a comprehensive ${pageType} page outline and content for the keyword: "${topic.keyword}"
 
 Target site: ${topic.targetSite}
 Intent: ${topic.intent}
-Difficulty: ${topic.difficulty}
+Difficulty: ${topic.difficulty}`;
+
+  if (template) {
+    prompt += `
+
+TEMPLATE REQUIREMENTS:
+- Minimum ${template.qualityGates?.minWords || 1200} words
+- ${template.qualityGates?.minLocalEntities || 6}+ local entities (specific venues, hotels, landmarks)
+- Exactly ${template.qualityGates?.requiredH1Count || 1} H1 tag
+- Hero image required
+- Follow all section requirements from template`;
+
+    if (template.sections) {
+      prompt += `\n\nREQUIRED SECTIONS:`;
+      template.sections.forEach(section => {
+        prompt += `\n- ${section.heading}: ${section.description || ''} (${section.minWords || 100}+ words)`;
+      });
+    }
+  }
+
+  prompt += `
 
 Please provide a JSON response with the following structure:
 {
