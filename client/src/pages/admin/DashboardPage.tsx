@@ -1,7 +1,13 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatsCard, StatsGrid } from "@/components/admin/StatsCard";
 import { SEO } from "@/components/SEO";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -212,7 +218,9 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Revenue Overview</CardTitle>
-                  <CardDescription>Monthly revenue and trip trends</CardDescription>
+                  <CardDescription>
+                    Monthly revenue and trip trends
+                  </CardDescription>
                 </div>
                 <Tabs defaultValue="revenue">
                   <TabsList>
@@ -227,12 +235,29 @@ export default function DashboardPage() {
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={revenueData}>
                     <defs>
-                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                      <linearGradient
+                        id="colorRevenue"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor="hsl(var(--chart-1))"
+                          stopOpacity={0.3}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor="hsl(var(--chart-1))"
+                          stopOpacity={0}
+                        />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      className="stroke-muted"
+                    />
                     <XAxis dataKey="name" className="text-xs" />
                     <YAxis className="text-xs" />
                     <Tooltip
@@ -275,8 +300,8 @@ export default function DashboardPage() {
                             item.priority === "high"
                               ? "bg-red-500"
                               : item.priority === "medium"
-                              ? "bg-amber-500"
-                              : "bg-blue-500"
+                                ? "bg-amber-500"
+                                : "bg-blue-500"
                           }`}
                         />
                         <div className="flex-1 min-w-0">
@@ -303,7 +328,9 @@ export default function DashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Recent Activity</CardTitle>
-                  <CardDescription>Latest updates across the system</CardDescription>
+                  <CardDescription>
+                    Latest updates across the system
+                  </CardDescription>
                 </div>
                 <Button variant="outline" size="sm">
                   View All
@@ -323,7 +350,9 @@ export default function DashboardPage() {
                           <Icon className="h-4 w-4" />
                         </div>
                         <div className="flex-1 space-y-1">
-                          <p className="text-sm font-medium">{activity.title}</p>
+                          <p className="text-sm font-medium">
+                            {activity.title}
+                          </p>
                           <p className="text-xs text-muted-foreground">
                             {activity.description}
                           </p>
@@ -376,7 +405,9 @@ export default function DashboardPage() {
                     <span className="text-xs text-muted-foreground truncate">
                       {type.name}
                     </span>
-                    <span className="text-xs font-medium ml-auto">{type.value}%</span>
+                    <span className="text-xs font-medium ml-auto">
+                      {type.value}%
+                    </span>
                   </div>
                 ))}
               </div>
@@ -443,25 +474,37 @@ export default function DashboardPage() {
             <CardContent>
               <div className="grid grid-cols-2 gap-3">
                 <Link href="/admin/trips">
-                  <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-auto py-4 flex flex-col gap-2"
+                  >
                     <MapPin className="h-5 w-5" />
                     <span>New Trip</span>
                   </Button>
                 </Link>
                 <Link href="/admin/drivers">
-                  <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-auto py-4 flex flex-col gap-2"
+                  >
                     <Users className="h-5 w-5" />
                     <span>Add Driver</span>
                   </Button>
                 </Link>
                 <Link href="/admin/imports">
-                  <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-auto py-4 flex flex-col gap-2"
+                  >
                     <FileUp className="h-5 w-5" />
                     <span>Import Data</span>
                   </Button>
                 </Link>
                 <Link href="/admin/payroll">
-                  <Button variant="outline" className="w-full h-auto py-4 flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    className="w-full h-auto py-4 flex flex-col gap-2"
+                  >
                     <Wallet className="h-5 w-5" />
                     <span>Run Payroll</span>
                   </Button>
@@ -473,20 +516,34 @@ export default function DashboardPage() {
                 <h4 className="text-sm font-medium mb-4">System Status</h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">API Status</span>
-                    <Badge variant="default" className="bg-green-500/10 text-green-500 hover:bg-green-500/20">
+                    <span className="text-sm text-muted-foreground">
+                      API Status
+                    </span>
+                    <Badge
+                      variant="default"
+                      className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                    >
                       Operational
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Data Sync</span>
-                    <Badge variant="default" className="bg-green-500/10 text-green-500 hover:bg-green-500/20">
+                    <span className="text-sm text-muted-foreground">
+                      Data Sync
+                    </span>
+                    <Badge
+                      variant="default"
+                      className="bg-green-500/10 text-green-500 hover:bg-green-500/20"
+                    >
                       Up to date
                     </Badge>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">Last Backup</span>
-                    <span className="text-sm text-muted-foreground">2 hours ago</span>
+                    <span className="text-sm text-muted-foreground">
+                      Last Backup
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      2 hours ago
+                    </span>
                   </div>
                 </div>
               </div>

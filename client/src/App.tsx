@@ -39,6 +39,24 @@ import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 import UsersPage from "@/pages/admin/UsersPage";
 import KPIDashboard from "@/pages/admin/KPIDashboard";
 
+// New Admin Pages
+import OverviewPage from "@/pages/admin/OverviewPage";
+import MoovsImportPage from "@/pages/admin/imports/MoovsImportPage";
+import AdsImportPage from "@/pages/admin/imports/AdsImportPage";
+import RoiPage from "@/pages/admin/RoiPage";
+import AirportSitePage from "@/pages/admin/sites/AirportSitePage";
+import PartyBusSitePage from "@/pages/admin/sites/PartyBusSitePage";
+import CorporateSitePage from "@/pages/admin/sites/CorporateSitePage";
+import WeddingSitePage from "@/pages/admin/sites/WeddingSitePage";
+import QueuePage from "@/pages/admin/seo-bot/QueuePage";
+import DraftsPage from "@/pages/admin/seo-bot/DraftsPage";
+import RunsPage from "@/pages/admin/seo-bot/RunsPage";
+import PublishPage from "@/pages/admin/seo-bot/PublishPage";
+import LibraryPage from "@/pages/admin/images/LibraryPage";
+import MissingPage from "@/pages/admin/images/MissingPage";
+import DeployPage from "@/pages/admin/DeployPage";
+import LogsPage from "@/pages/admin/LogsPage";
+
 function Router() {
   return (
     <Switch>
@@ -46,7 +64,10 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/ohare-airport-limo" component={OHareAirport} />
       <Route path="/midway-airport-limo" component={MidwayAirport} />
-      <Route path="/airport-limo-downtown-chicago" component={DowntownChicago} />
+      <Route
+        path="/airport-limo-downtown-chicago"
+        component={DowntownChicago}
+      />
       <Route path="/airport-limo-suburbs" component={SuburbsService} />
       <Route path="/city/:slug" component={CityPage} />
       <Route path="/fleet" component={Fleet} />
@@ -54,7 +75,7 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       <Route path="/login" component={Login} />
-      
+
       {/* Protected Admin Routes */}
       <Route path="/admin">
         {() => (

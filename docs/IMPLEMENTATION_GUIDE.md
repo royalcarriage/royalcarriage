@@ -37,6 +37,7 @@ gcloud auth list --filter=status:ACTIVE
 ```
 
 **Expected Output:**
+
 ```
 Credentialed Accounts
 ACTIVE  ACCOUNT
@@ -57,6 +58,7 @@ chmod +x script/setup-gcloud-security.sh
 ```
 
 **What the script does:**
+
 1. ✅ Enables Vertex AI API
 2. ✅ Enables Cloud Storage API
 3. ✅ Enables Secret Manager API
@@ -108,6 +110,7 @@ firebase firestore:rules get
 ```
 
 **Expected Output:**
+
 ```
 ✔ Deploy complete!
 ```
@@ -146,6 +149,7 @@ cd ..
 #### 3.2 Generate Test Image
 
 **Test Case 1: Hero Image**
+
 - Purpose: hero
 - Location: Chicago O'Hare International Airport
 - Vehicle: Black Sedan
@@ -154,12 +158,14 @@ cd ..
 Click "Generate" and wait for the image (10-30 seconds)
 
 **Test Case 2: Service Card**
+
 - Purpose: service_card
 - Location: Downtown Chicago
 - Vehicle: Luxury SUV
 - Style: Daytime, clean
 
 **Test Case 3: Fleet Image**
+
 - Purpose: fleet
 - Vehicle: Stretch Limousine
 - Style: Studio photography
@@ -212,6 +218,7 @@ gcloud billing budgets create \
 ```
 
 Or via Console:
+
 1. Go to: https://console.cloud.google.com/billing
 2. Select your billing account
 3. Click "Budgets & alerts"
@@ -228,21 +235,25 @@ Or via Console:
 4. Add the following charts:
 
 **Chart 1: Vertex AI API Calls**
+
 - Resource type: Vertex AI API
 - Metric: Request count
 - Aggregation: Sum
 
 **Chart 2: Cloud Storage Usage**
+
 - Resource type: Cloud Storage bucket
 - Metric: Total bytes
 - Bucket: royalcarriagelimoseo-ai-images
 
 **Chart 3: Firebase Functions Invocations**
+
 - Resource type: Cloud Function
 - Metric: Execution count
 - Function: generateImage
 
 **Chart 4: Error Rate**
+
 - Resource type: Cloud Function
 - Metric: Error count
 - All AI-related functions
@@ -260,6 +271,7 @@ gcloud alpha monitoring policies create \
 ```
 
 Or via Console:
+
 1. Go to: https://console.cloud.google.com/monitoring/alerting
 2. Click "CREATE POLICY"
 3. Add conditions for:
@@ -276,6 +288,7 @@ Or via Console:
 A separate document has been created: `docs/ADMIN_USER_GUIDE.md`
 
 Key topics covered:
+
 - How to access admin dashboard
 - How to generate images
 - Understanding cost implications
@@ -317,14 +330,17 @@ Key topics covered:
 #### 5.3 Document Key Contacts
 
 **For Technical Issues:**
+
 - Primary: DevOps Team
 - Escalation: Development Team
 
 **For Cost/Billing Questions:**
+
 - Primary: Finance Team
 - Secondary: DevOps Team
 
 **For Content/Quality Questions:**
+
 - Primary: Marketing Team
 - Secondary: Development Team
 
@@ -335,29 +351,34 @@ Key topics covered:
 After completing all phases, verify:
 
 ### APIs and Services
+
 - [ ] Vertex AI API is enabled
 - [ ] Cloud Storage API is enabled
 - [ ] Service account has all required roles
 
 ### Storage
+
 - [ ] Bucket `royalcarriagelimoseo-ai-images` exists
 - [ ] Bucket is publicly readable
 - [ ] CORS is configured
 - [ ] Images can be uploaded
 
 ### Security
+
 - [ ] Firestore rules deployed
 - [ ] Rate limiting works (tested with 51 images)
 - [ ] Input validation works
 - [ ] Audit logs are being created
 
 ### Monitoring
+
 - [ ] Budget alert created at $50
 - [ ] Monitoring dashboard created
 - [ ] Alerting policies configured
 - [ ] Email notifications set up
 
 ### Testing
+
 - [ ] Hero image generation works
 - [ ] Service card image generation works
 - [ ] Fleet image generation works
@@ -365,6 +386,7 @@ After completing all phases, verify:
 - [ ] Metadata is stored in Firestore
 
 ### Documentation
+
 - [ ] Team has access to user guide
 - [ ] Training session scheduled
 - [ ] Key contacts documented

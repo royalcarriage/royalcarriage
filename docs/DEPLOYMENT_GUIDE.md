@@ -14,12 +14,14 @@ This guide helps you deploy the AI-powered website management system to Firebase
 ## Step 1: Configure Firebase
 
 1. **Login to Firebase**
+
 ```bash
 firebase login
 ```
 
 2. **Update Firebase Project ID**
-Edit `.firebaserc`:
+   Edit `.firebaserc`:
+
 ```json
 {
   "projects": {
@@ -29,6 +31,7 @@ Edit `.firebaserc`:
 ```
 
 3. **Initialize Firestore**
+
 ```bash
 firebase init firestore
 # Select existing project
@@ -38,13 +41,15 @@ firebase init firestore
 ## Step 2: Set Up Google Cloud
 
 1. **Enable Required APIs**
-Go to Google Cloud Console and enable:
+   Go to Google Cloud Console and enable:
+
 - Vertex AI API
 - Cloud Functions API
 - Cloud Firestore API
 - Cloud Storage API
 
 2. **Create Service Account**
+
 ```bash
 # In Google Cloud Console:
 # IAM & Admin > Service Accounts > Create Service Account
@@ -56,6 +61,7 @@ Go to Google Cloud Console and enable:
 ```
 
 3. **Download Service Account Key**
+
 ```bash
 # Download JSON key file
 # Store securely (DO NOT commit to git)
@@ -65,11 +71,13 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ## Step 3: Configure Environment
 
 1. **Create .env file**
+
 ```bash
 cp .env.example .env
 ```
 
 2. **Edit .env**
+
 ```env
 NODE_ENV=production
 PORT=5000
@@ -119,26 +127,31 @@ npm run serve
 ## Step 6: Deploy to Firebase
 
 1. **Deploy Firestore Rules and Indexes**
+
 ```bash
 firebase deploy --only firestore
 ```
 
 2. **Deploy Storage Rules**
+
 ```bash
 firebase deploy --only storage
 ```
 
 3. **Deploy Firebase Functions**
+
 ```bash
 firebase deploy --only functions
 ```
 
 4. **Deploy Hosting**
+
 ```bash
 firebase deploy --only hosting
 ```
 
 5. **Or Deploy Everything**
+
 ```bash
 firebase deploy
 ```
@@ -157,17 +170,17 @@ Create a one-time admin setup function:
 
 ```javascript
 // In functions/src/index.ts or a separate setup file
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 export const createAdminUser = functions.https.onCall(async (data, context) => {
   // Add security: only allow from specific IP or with secret key
   const { email, password, secret } = data;
-  
-  if (secret !== 'your-one-time-secret-key') {
-    throw new functions.https.HttpsError('permission-denied', 'Invalid secret');
+
+  if (secret !== "your-one-time-secret-key") {
+    throw new functions.https.HttpsError("permission-denied", "Invalid secret");
   }
-  
+
   try {
     // Create Firebase Auth user
     const userRecord = await admin.auth().createUser({
@@ -175,33 +188,38 @@ export const createAdminUser = functions.https.onCall(async (data, context) => {
       password: password,
       emailVerified: true,
     });
-    
+
     // Set custom claims for Storage rules
-    await admin.auth().setCustomUserClaims(userRecord.uid, { 
-      role: 'admin' 
+    await admin.auth().setCustomUserClaims(userRecord.uid, {
+      role: "admin",
     });
-    
+
     // Create Firestore user document for Firestore rules
-    await admin.firestore().collection('users').doc(userRecord.uid).set({
-      id: userRecord.uid,
-      username: email.split('@')[0],
-      email: email,
-      role: 'admin',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-    
-    return { 
-      success: true, 
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(userRecord.uid)
+      .set({
+        id: userRecord.uid,
+        username: email.split("@")[0],
+        email: email,
+        role: "admin",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+    return {
+      success: true,
       userId: userRecord.uid,
-      message: 'Admin user created with custom claims and Firestore document'
+      message: "Admin user created with custom claims and Firestore document",
     };
   } catch (error) {
-    throw new functions.https.HttpsError('internal', error.message);
+    throw new functions.https.HttpsError("internal", error.message);
   }
 });
 ```
 
 Call it after deployment:
+
 ```bash
 # Using Firebase CLI
 firebase functions:call createAdminUser --data '{"email":"admin@example.com","password":"secure-password","secret":"your-one-time-secret-key"}'
@@ -212,17 +230,17 @@ firebase functions:call createAdminUser --data '{"email":"admin@example.com","pa
 Create a script `scripts/create-admin.js`:
 
 ```javascript
-const admin = require('firebase-admin');
-const serviceAccount = require('../path/to/service-account-key.json');
+const admin = require("firebase-admin");
+const serviceAccount = require("../path/to/service-account-key.json");
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
 async function createAdmin() {
-  const email = 'admin@example.com';
-  const password = 'secure-password';
-  
+  const email = "admin@example.com";
+  const password = "secure-password";
+
   try {
     // Create auth user
     const userRecord = await admin.auth().createUser({
@@ -230,36 +248,39 @@ async function createAdmin() {
       password: password,
       emailVerified: true,
     });
-    
-    console.log('Created auth user:', userRecord.uid);
-    
+
+    console.log("Created auth user:", userRecord.uid);
+
     // Set custom claims for Storage rules
-    await admin.auth().setCustomUserClaims(userRecord.uid, { 
-      role: 'admin' 
+    await admin.auth().setCustomUserClaims(userRecord.uid, {
+      role: "admin",
     });
-    
-    console.log('Set custom claims: role=admin');
-    
+
+    console.log("Set custom claims: role=admin");
+
     // Create Firestore document for Firestore rules
-    await admin.firestore().collection('users').doc(userRecord.uid).set({
-      id: userRecord.uid,
-      username: email.split('@')[0],
-      email: email,
-      role: 'admin',
-      createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
-    
-    console.log('Created Firestore user document');
-    console.log('Admin user created successfully!');
-    
+    await admin
+      .firestore()
+      .collection("users")
+      .doc(userRecord.uid)
+      .set({
+        id: userRecord.uid,
+        username: email.split("@")[0],
+        email: email,
+        role: "admin",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+
+    console.log("Created Firestore user document");
+    console.log("Admin user created successfully!");
+
     // Verify
     const user = await admin.auth().getUser(userRecord.uid);
-    console.log('Custom claims:', user.customClaims);
-    
+    console.log("Custom claims:", user.customClaims);
   } catch (error) {
-    console.error('Error creating admin:', error);
+    console.error("Error creating admin:", error);
   }
-  
+
   process.exit(0);
 }
 
@@ -267,6 +288,7 @@ createAdmin();
 ```
 
 Run the script:
+
 ```bash
 node scripts/create-admin.js
 ```
@@ -280,23 +302,25 @@ node scripts/create-admin.js
    - Copy the User UID
 
 2. **Set Custom Claims (requires Cloud Shell or local script)**
-   
+
    You cannot set custom claims via the Firebase Console UI. Use one of these methods:
-   
+
    **Using gcloud Cloud Shell:**
+
    ```bash
    # In Google Cloud Console Cloud Shell
    gcloud auth application-default login
-   
+
    # Run this Node.js snippet
    const admin = require('firebase-admin');
    admin.initializeApp();
    await admin.auth().setCustomUserClaims('USER_UID_HERE', { role: 'admin' });
    ```
-   
+
    **Or create the Firestore document manually:**
    - Go to Firestore Database
    - Create document in `users` collection with ID matching the Auth UID:
+
    ```json
    {
      "id": "USER_UID_FROM_AUTH",
@@ -306,7 +330,7 @@ node scripts/create-admin.js
      "createdAt": "2024-01-01T00:00:00Z"
    }
    ```
-   
+
    **Then set custom claims using a script** (same as Option 2 above)
 
 ### Verify Admin Setup
@@ -315,22 +339,22 @@ Test that admin has access to both Firestore and Storage:
 
 ```javascript
 // Test script
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
 
 async function verifyAdmin(uid) {
   // Check Auth custom claims
   const user = await admin.auth().getUser(uid);
-  console.log('Custom claims:', user.customClaims);
-  
+  console.log("Custom claims:", user.customClaims);
+
   // Check Firestore document
-  const doc = await admin.firestore().collection('users').doc(uid).get();
-  console.log('Firestore role:', doc.data()?.role);
-  
+  const doc = await admin.firestore().collection("users").doc(uid).get();
+  console.log("Firestore role:", doc.data()?.role);
+
   // Both should show role: 'admin'
 }
 
-verifyAdmin('USER_UID_HERE');
+verifyAdmin("USER_UID_HERE");
 ```
 
 ## Step 8: Access Admin Dashboard
@@ -347,6 +371,7 @@ The following functions run automatically:
 - **Weekly SEO Report**: Every Monday at 9:00 AM CT
 
 View logs:
+
 ```bash
 firebase functions:log
 ```
@@ -354,23 +379,27 @@ firebase functions:log
 ## Monitoring
 
 ### Check Function Status
+
 ```bash
 firebase functions:list
 ```
 
 ### View Logs
+
 ```bash
 firebase functions:log --only dailyPageAnalysis
 firebase functions:log --only weeklySeoReport
 ```
 
 ### Firebase Console
+
 - Functions: https://console.firebase.google.com/project/YOUR_PROJECT/functions
 - Firestore: https://console.firebase.google.com/project/YOUR_PROJECT/firestore
 
 ## Troubleshooting
 
 ### Function Deployment Fails
+
 ```bash
 # Check Firebase CLI version
 firebase --version
@@ -383,17 +412,20 @@ firebase functions:log
 ```
 
 ### Vertex AI Errors
+
 - Verify API is enabled in Google Cloud Console
 - Check service account has Vertex AI User role
 - Verify credentials file path is correct
 - Check quota limits in Google Cloud Console
 
 ### Firestore Permission Denied
+
 - Verify Firestore rules are deployed
 - Check user has admin role
 - Review rules in Firebase Console
 
 ### Build Errors
+
 ```bash
 # Clear cache and rebuild
 rm -rf dist node_modules
@@ -404,11 +436,13 @@ npm run build
 ## Cost Estimation
 
 ### Firebase
+
 - **Hosting**: ~$0.15/GB transferred
 - **Functions**: First 2M invocations free, then $0.40/M
 - **Firestore**: First 50K reads free daily
 
 ### Google Cloud Vertex AI
+
 - **Gemini Pro**: ~$0.00025 per 1K characters
 - **Imagen**: ~$0.020 per image generation
 
@@ -434,6 +468,7 @@ npm run build
 ## Support
 
 For issues or questions:
+
 1. Check [AI_SYSTEM_GUIDE.md](./AI_SYSTEM_GUIDE.md)
 2. Review Firebase documentation
 3. Check Google Cloud Vertex AI docs
@@ -442,6 +477,7 @@ For issues or questions:
 ## Next Steps
 
 After deployment:
+
 1. Test all admin dashboard features
 2. Run initial page analysis
 3. Review AI recommendations

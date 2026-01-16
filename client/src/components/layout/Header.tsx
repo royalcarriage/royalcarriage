@@ -5,7 +5,8 @@ import { useState } from "react";
 
 const PHONE_NUMBER = "+1 (224) 801-3090";
 const PHONE_TEL = "tel:+12248013090";
-const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+const BOOKING_URL =
+  "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
 
 const navLinks = [
   { href: "/", label: "Home" },
@@ -27,13 +28,21 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b border-border">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-16 md:h-20 gap-4">
-          <Link href="/" className="flex items-center gap-2" data-testid="link-home-logo">
+          <Link
+            href="/"
+            className="flex items-center gap-2"
+            data-testid="link-home-logo"
+          >
             <div className="w-10 h-10 bg-foreground rounded-md flex items-center justify-center">
               <span className="text-background font-bold text-lg">CB</span>
             </div>
             <div className="hidden sm:block">
-              <span className="font-semibold text-foreground text-sm md:text-base">Chicago Airport</span>
-              <span className="block text-xs text-muted-foreground">Black Car Service</span>
+              <span className="font-semibold text-foreground text-sm md:text-base">
+                Chicago Airport
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                Black Car Service
+              </span>
             </div>
           </Link>
 
@@ -63,7 +72,11 @@ export function Header() {
               <Phone className="w-4 h-4" />
               {PHONE_NUMBER}
             </a>
-            <Button asChild className="hidden sm:flex" data-testid="button-header-book">
+            <Button
+              asChild
+              className="hidden sm:flex"
+              data-testid="button-header-book"
+            >
               <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer">
                 Book Now
               </a>
@@ -75,7 +88,11 @@ export function Header() {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               data-testid="button-mobile-menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </Button>
           </div>
         </div>

@@ -1,7 +1,13 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -85,28 +91,120 @@ const teamMembers: TeamMember[] = [
 ];
 
 const roleColors: Record<TeamMember["role"], string> = {
-  owner: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+  owner:
+    "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
   admin: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  manager: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  manager:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   viewer: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
 };
 
 const permissions = [
-  { feature: "Dashboard", owner: true, admin: true, manager: true, viewer: true },
-  { feature: "View Trips", owner: true, admin: true, manager: true, viewer: true },
-  { feature: "Create/Edit Trips", owner: true, admin: true, manager: true, viewer: false },
-  { feature: "Delete Trips", owner: true, admin: true, manager: false, viewer: false },
-  { feature: "View Drivers", owner: true, admin: true, manager: true, viewer: true },
-  { feature: "Manage Drivers", owner: true, admin: true, manager: true, viewer: false },
-  { feature: "View Vehicles", owner: true, admin: true, manager: true, viewer: true },
-  { feature: "Manage Vehicles", owner: true, admin: true, manager: false, viewer: false },
-  { feature: "Import Data", owner: true, admin: true, manager: false, viewer: false },
-  { feature: "View Payroll", owner: true, admin: true, manager: true, viewer: false },
-  { feature: "Approve Payouts", owner: true, admin: true, manager: false, viewer: false },
-  { feature: "Process Payments", owner: true, admin: false, manager: false, viewer: false },
-  { feature: "Manage Users", owner: true, admin: true, manager: false, viewer: false },
-  { feature: "Organization Settings", owner: true, admin: false, manager: false, viewer: false },
-  { feature: "Billing", owner: true, admin: false, manager: false, viewer: false },
+  {
+    feature: "Dashboard",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: true,
+  },
+  {
+    feature: "View Trips",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: true,
+  },
+  {
+    feature: "Create/Edit Trips",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: false,
+  },
+  {
+    feature: "Delete Trips",
+    owner: true,
+    admin: true,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "View Drivers",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: true,
+  },
+  {
+    feature: "Manage Drivers",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: false,
+  },
+  {
+    feature: "View Vehicles",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: true,
+  },
+  {
+    feature: "Manage Vehicles",
+    owner: true,
+    admin: true,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "Import Data",
+    owner: true,
+    admin: true,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "View Payroll",
+    owner: true,
+    admin: true,
+    manager: true,
+    viewer: false,
+  },
+  {
+    feature: "Approve Payouts",
+    owner: true,
+    admin: true,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "Process Payments",
+    owner: true,
+    admin: false,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "Manage Users",
+    owner: true,
+    admin: true,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "Organization Settings",
+    owner: true,
+    admin: false,
+    manager: false,
+    viewer: false,
+  },
+  {
+    feature: "Billing",
+    owner: true,
+    admin: false,
+    manager: false,
+    viewer: false,
+  },
 ];
 
 export default function SettingsPage() {
@@ -167,7 +265,10 @@ export default function SettingsPage() {
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="orgName">Organization Name</Label>
-                      <Input id="orgName" defaultValue="Royal Carriage Limousine" />
+                      <Input
+                        id="orgName"
+                        defaultValue="Royal Carriage Limousine"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="orgSlug">URL Slug</Label>
@@ -175,7 +276,11 @@ export default function SettingsPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="orgEmail">Contact Email</Label>
-                      <Input id="orgEmail" type="email" defaultValue="contact@royalcarriage.com" />
+                      <Input
+                        id="orgEmail"
+                        type="email"
+                        defaultValue="contact@royalcarriage.com"
+                      />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="orgPhone">Phone Number</Label>
@@ -193,9 +298,15 @@ export default function SettingsPage() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="america-chicago">America/Chicago (CST)</SelectItem>
-                        <SelectItem value="america-new_york">America/New_York (EST)</SelectItem>
-                        <SelectItem value="america-los_angeles">America/Los_Angeles (PST)</SelectItem>
+                        <SelectItem value="america-chicago">
+                          America/Chicago (CST)
+                        </SelectItem>
+                        <SelectItem value="america-new_york">
+                          America/New_York (EST)
+                        </SelectItem>
+                        <SelectItem value="america-los_angeles">
+                          America/Los_Angeles (PST)
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -222,7 +333,9 @@ export default function SettingsPage() {
                       <Building2 className="h-10 w-10 text-muted-foreground" />
                     </div>
                     <div>
-                      <Button variant="outline" size="sm">Upload Logo</Button>
+                      <Button variant="outline" size="sm">
+                        Upload Logo
+                      </Button>
                       <p className="text-xs text-muted-foreground mt-1">
                         PNG, JPG up to 2MB. Recommended: 200x200px
                       </p>
@@ -292,20 +405,30 @@ export default function SettingsPage() {
                             </Avatar>
                             <div>
                               <p className="font-medium">{member.name}</p>
-                              <p className="text-xs text-muted-foreground">{member.email}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {member.email}
+                              </p>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={roleColors[member.role]} variant="secondary">
-                            {member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+                          <Badge
+                            className={roleColors[member.role]}
+                            variant="secondary"
+                          >
+                            {member.role.charAt(0).toUpperCase() +
+                              member.role.slice(1)}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           {member.status === "active" ? (
-                            <Badge variant="outline" className="text-green-600">Active</Badge>
+                            <Badge variant="outline" className="text-green-600">
+                              Active
+                            </Badge>
                           ) : (
-                            <Badge variant="outline" className="text-amber-600">Pending</Badge>
+                            <Badge variant="outline" className="text-amber-600">
+                              Pending
+                            </Badge>
                           )}
                         </TableCell>
                         <TableCell className="text-muted-foreground">
@@ -313,11 +436,19 @@ export default function SettingsPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <Edit className="h-4 w-4" />
                             </Button>
                             {member.role !== "owner" && (
-                              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-destructive"
+                              >
                                 <Trash2 className="h-4 w-4" />
                               </Button>
                             )}
@@ -354,7 +485,9 @@ export default function SettingsPage() {
                   <TableBody>
                     {permissions.map((perm) => (
                       <TableRow key={perm.feature}>
-                        <TableCell className="font-medium">{perm.feature}</TableCell>
+                        <TableCell className="font-medium">
+                          {perm.feature}
+                        </TableCell>
                         <TableCell className="text-center">
                           {perm.owner ? (
                             <Check className="h-4 w-4 text-green-600 mx-auto" />
@@ -405,16 +538,36 @@ export default function SettingsPage() {
                   <h4 className="font-medium">Email Notifications</h4>
                   <div className="space-y-3">
                     {[
-                      { label: "New trip bookings", description: "Get notified when a new trip is booked" },
-                      { label: "Trip updates", description: "Changes to trip status or details" },
-                      { label: "Import completions", description: "When data imports finish" },
-                      { label: "Payout reminders", description: "Weekly payout batch reminders" },
-                      { label: "Driver alerts", description: "Important driver notifications" },
+                      {
+                        label: "New trip bookings",
+                        description: "Get notified when a new trip is booked",
+                      },
+                      {
+                        label: "Trip updates",
+                        description: "Changes to trip status or details",
+                      },
+                      {
+                        label: "Import completions",
+                        description: "When data imports finish",
+                      },
+                      {
+                        label: "Payout reminders",
+                        description: "Weekly payout batch reminders",
+                      },
+                      {
+                        label: "Driver alerts",
+                        description: "Important driver notifications",
+                      },
                     ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between">
+                      <div
+                        key={item.label}
+                        className="flex items-center justify-between"
+                      >
                         <div>
                           <p className="font-medium">{item.label}</p>
-                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
                         </div>
                         <Switch defaultChecked />
                       </div>
@@ -426,13 +579,25 @@ export default function SettingsPage() {
                   <h4 className="font-medium">Push Notifications</h4>
                   <div className="space-y-3">
                     {[
-                      { label: "Critical alerts", description: "Urgent issues requiring immediate attention" },
-                      { label: "Real-time trip updates", description: "Live updates for in-progress trips" },
+                      {
+                        label: "Critical alerts",
+                        description:
+                          "Urgent issues requiring immediate attention",
+                      },
+                      {
+                        label: "Real-time trip updates",
+                        description: "Live updates for in-progress trips",
+                      },
                     ].map((item) => (
-                      <div key={item.label} className="flex items-center justify-between">
+                      <div
+                        key={item.label}
+                        className="flex items-center justify-between"
+                      >
                         <div>
                           <p className="font-medium">{item.label}</p>
-                          <p className="text-sm text-muted-foreground">{item.description}</p>
+                          <p className="text-sm text-muted-foreground">
+                            {item.description}
+                          </p>
                         </div>
                         <Switch defaultChecked />
                       </div>
@@ -453,15 +618,21 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Current Plan</CardTitle>
-                  <CardDescription>Manage your subscription and billing</CardDescription>
+                  <CardDescription>
+                    Manage your subscription and billing
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                     <div>
                       <p className="font-medium text-lg">Professional Plan</p>
-                      <p className="text-muted-foreground">$99/month • Billed monthly</p>
+                      <p className="text-muted-foreground">
+                        $99/month • Billed monthly
+                      </p>
                     </div>
-                    <Badge className="bg-green-100 text-green-800">Active</Badge>
+                    <Badge className="bg-green-100 text-green-800">
+                      Active
+                    </Badge>
                   </div>
                   <div className="mt-4 flex gap-2">
                     <Button variant="outline">Change Plan</Button>
@@ -473,16 +644,22 @@ export default function SettingsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Payment Method</CardTitle>
-                  <CardDescription>Manage your payment information</CardDescription>
+                  <CardDescription>
+                    Manage your payment information
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center gap-4 p-4 border rounded-lg">
                     <CreditCard className="h-8 w-8 text-muted-foreground" />
                     <div className="flex-1">
                       <p className="font-medium">•••• •••• •••• 4242</p>
-                      <p className="text-sm text-muted-foreground">Expires 12/25</p>
+                      <p className="text-sm text-muted-foreground">
+                        Expires 12/25
+                      </p>
                     </div>
-                    <Button variant="outline" size="sm">Update</Button>
+                    <Button variant="outline" size="sm">
+                      Update
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -494,7 +671,9 @@ export default function SettingsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Integrations</CardTitle>
-                <CardDescription>Connect third-party services to your organization</CardDescription>
+                <CardDescription>
+                  Connect third-party services to your organization
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {[
@@ -529,13 +708,19 @@ export default function SettingsPage() {
                       </div>
                       <div>
                         <p className="font-medium">{integration.name}</p>
-                        <p className="text-sm text-muted-foreground">{integration.description}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {integration.description}
+                        </p>
                       </div>
                     </div>
                     {integration.status === "connected" ? (
                       <div className="flex items-center gap-2">
-                        <Badge className="bg-green-100 text-green-800">Connected</Badge>
-                        <Button variant="outline" size="sm">Configure</Button>
+                        <Badge className="bg-green-100 text-green-800">
+                          Connected
+                        </Badge>
+                        <Button variant="outline" size="sm">
+                          Configure
+                        </Button>
                       </div>
                     ) : (
                       <Button size="sm">Connect</Button>

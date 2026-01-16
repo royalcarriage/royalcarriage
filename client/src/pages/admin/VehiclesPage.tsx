@@ -3,7 +3,10 @@ import { DataTable, Column } from "@/components/admin/DataTable";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Car, Users, Briefcase, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -91,9 +94,11 @@ const vehicles: Vehicle[] = [
 ];
 
 const statusColors: Record<Vehicle["status"], string> = {
-  available: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  available:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   in_use: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  maintenance: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  maintenance:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
   retired: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
 };
 
@@ -134,9 +139,7 @@ const columns: Column<Vehicle>[] = [
     id: "type",
     header: "Type",
     accessorKey: "type",
-    cell: (row) => (
-      <Badge variant="outline">{typeLabels[row.type]}</Badge>
-    ),
+    cell: (row) => <Badge variant="outline">{typeLabels[row.type]}</Badge>,
   },
   {
     id: "status",
@@ -175,9 +178,7 @@ const columns: Column<Vehicle>[] = [
     header: "Mileage",
     accessorKey: "mileage",
     sortable: true,
-    cell: (row) => (
-      <span>{row.mileage.toLocaleString()} mi</span>
-    ),
+    cell: (row) => <span>{row.mileage.toLocaleString()} mi</span>,
   },
   {
     id: "lastService",

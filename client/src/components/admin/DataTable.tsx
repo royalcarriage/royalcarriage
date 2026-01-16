@@ -114,10 +114,14 @@ export function DataTable<T extends { id: string | number }>({
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
+  const [selectedRows, setSelectedRows] = useState<Set<string | number>>(
+    new Set(),
+  );
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(new Set());
-  const [activeFilters, setActiveFilters] = useState<Record<string, string>>({});
+  const [activeFilters, setActiveFilters] = useState<Record<string, string>>(
+    {},
+  );
 
   // Filter data by search
   const filteredData = data.filter((row) => {
@@ -190,7 +194,7 @@ export function DataTable<T extends { id: string | number }>({
             }
             return "";
           })
-          .join(",")
+          .join(","),
       ),
     ].join("\n");
 
@@ -256,7 +260,9 @@ export function DataTable<T extends { id: string | number }>({
             <div>
               {title && <CardTitle>{title}</CardTitle>}
               {description && (
-                <p className="text-sm text-muted-foreground mt-1">{description}</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {description}
+                </p>
               )}
             </div>
             {onAdd && (
@@ -390,7 +396,12 @@ export function DataTable<T extends { id: string | number }>({
             </DropdownMenu>
 
             {/* Export */}
-            <Button variant="outline" size="sm" onClick={handleExport} className="gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleExport}
+              className="gap-2"
+            >
               <Download className="h-4 w-4" />
               Export
             </Button>
@@ -417,7 +428,10 @@ export function DataTable<T extends { id: string | number }>({
                 {visibleColumns.map((column) => (
                   <TableHead
                     key={column.id}
-                    className={cn(column.className, column.sortable && "cursor-pointer select-none")}
+                    className={cn(
+                      column.className,
+                      column.sortable && "cursor-pointer select-none",
+                    )}
                     onClick={() => column.sortable && handleSort(column.id)}
                   >
                     <div className="flex items-center gap-2">
@@ -446,7 +460,9 @@ export function DataTable<T extends { id: string | number }>({
                 <TableRow>
                   <TableCell
                     colSpan={
-                      visibleColumns.length + (bulkActions ? 1 : 0) + (rowActions ? 1 : 0)
+                      visibleColumns.length +
+                      (bulkActions ? 1 : 0) +
+                      (rowActions ? 1 : 0)
                     }
                     className="h-64"
                   >
@@ -458,10 +474,14 @@ export function DataTable<T extends { id: string | number }>({
                         {emptyState?.title || "No results found"}
                       </h3>
                       <p className="text-muted-foreground text-sm mt-1 max-w-sm">
-                        {emptyState?.description || "Try adjusting your search or filters."}
+                        {emptyState?.description ||
+                          "Try adjusting your search or filters."}
                       </p>
                       {emptyState?.action && (
-                        <Button onClick={emptyState.action.onClick} className="mt-4">
+                        <Button
+                          onClick={emptyState.action.onClick}
+                          className="mt-4"
+                        >
                           {emptyState.action.label}
                         </Button>
                       )}
@@ -474,7 +494,7 @@ export function DataTable<T extends { id: string | number }>({
                     key={row.id}
                     className={cn(
                       onRowClick && "cursor-pointer",
-                      selectedRows.has(row.id) && "bg-muted/50"
+                      selectedRows.has(row.id) && "bg-muted/50",
                     )}
                     onClick={() => onRowClick?.(row)}
                   >
@@ -492,15 +512,19 @@ export function DataTable<T extends { id: string | number }>({
                         {column.cell
                           ? column.cell(row)
                           : column.accessorKey
-                          ? String(row[column.accessorKey] ?? "")
-                          : null}
+                            ? String(row[column.accessorKey] ?? "")
+                            : null}
                       </TableCell>
                     ))}
                     {rowActions && (
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <MoreHorizontal className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
@@ -521,7 +545,8 @@ export function DataTable<T extends { id: string | number }>({
         {totalPages > 1 && (
           <div className="p-4 border-t flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
-              Showing {startIndex + 1} to {Math.min(startIndex + pageSize, sortedData.length)} of{" "}
+              Showing {startIndex + 1} to{" "}
+              {Math.min(startIndex + pageSize, sortedData.length)} of{" "}
               {sortedData.length} results
             </p>
             <div className="flex items-center gap-1">
@@ -550,7 +575,9 @@ export function DataTable<T extends { id: string | number }>({
                 variant="outline"
                 size="icon"
                 className="h-8 w-8"
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                onClick={() =>
+                  setCurrentPage((p) => Math.min(totalPages, p + 1))
+                }
                 disabled={currentPage === totalPages}
               >
                 <ChevronRight className="h-4 w-4" />

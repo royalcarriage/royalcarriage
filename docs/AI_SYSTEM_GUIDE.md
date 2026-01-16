@@ -7,6 +7,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 ## Features
 
 ### 1. AI Page Analyzer
+
 - **Automated SEO Analysis**: Scans pages for SEO best practices
 - **Content Quality Assessment**: Evaluates readability, structure, and engagement
 - **Location-Specific Optimization**: Tailors content for Chicago locations (O'Hare, Midway, suburbs)
@@ -14,6 +15,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 - **Scoring System**: Provides 0-100 scores for SEO and content quality
 
 ### 2. AI Content Generator
+
 - **Smart Content Creation**: Generates SEO-optimized content using Vertex AI
 - **Template-Based Fallback**: Provides high-quality templates when AI is unavailable
 - **Location Integration**: Creates location-specific content for different areas
@@ -21,6 +23,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 - **Meta Tag Optimization**: Creates optimized titles and meta descriptions
 
 ### 3. AI Image Generator
+
 - **Automated Image Creation**: Generates professional images using AI
 - **Purpose-Driven Generation**: Creates images for heroes, service cards, fleet, locations
 - **Prompt Engineering**: Uses optimized prompts for consistent, professional results
@@ -28,6 +31,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 - **Placeholder Support**: Provides placeholder images during development
 
 ### 4. Admin Dashboard
+
 - **Centralized Management**: Single interface for all AI tools
 - **Page Management**: View and manage all website pages
 - **Analytics Integration**: Monitor website performance
@@ -35,6 +39,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 - **Automation Settings**: Configure scheduled tasks and rules
 
 ### 5. Firebase Functions
+
 - **Scheduled Analysis**: Daily automated page analysis at 2:00 AM
 - **Weekly Reports**: SEO reports generated every Monday
 - **Real-Time Processing**: Instant analysis on demand
@@ -44,6 +49,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 ## Architecture
 
 ### Technology Stack
+
 - **Frontend**: React 18 + TypeScript + Vite
 - **Backend**: Express.js + Node.js 20
 - **AI Services**: Google Cloud Vertex AI (Gemini Pro, Imagen)
@@ -53,6 +59,7 @@ The AI-Powered Website Management System is a comprehensive solution for automat
 - **Security**: Firebase Authentication + Firestore Rules
 
 ### Component Structure
+
 ```
 royalcarriage/
 ├── client/
@@ -77,6 +84,7 @@ royalcarriage/
 ## Setup Instructions
 
 ### Prerequisites
+
 1. Node.js 20.x or later
 2. Firebase CLI installed: `npm install -g firebase-tools`
 3. Google Cloud project with Vertex AI enabled
@@ -85,23 +93,27 @@ royalcarriage/
 ### Installation
 
 1. **Install Dependencies**
+
 ```bash
 npm install
 cd functions && npm install && cd ..
 ```
 
 2. **Configure Environment Variables**
+
 ```bash
 cp .env.example .env
 # Edit .env with your configuration
 ```
 
 Required environment variables:
+
 - `GOOGLE_CLOUD_PROJECT`: Your Google Cloud project ID
 - `GOOGLE_CLOUD_LOCATION`: Region for Vertex AI (default: us-central1)
 - `FIREBASE_PROJECT_ID`: Your Firebase project ID
 
 3. **Set Up Google Cloud Credentials**
+
 ```bash
 # Download service account key from Google Cloud Console
 # Place it in a secure location
@@ -109,6 +121,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/service-account-key.json"
 ```
 
 4. **Initialize Firestore Database**
+
 ```bash
 # Create Firestore database in Firebase Console
 # Deploy Firestore rules and indexes
@@ -116,6 +129,7 @@ firebase deploy --only firestore
 ```
 
 5. **Deploy Firebase Functions**
+
 ```bash
 cd functions
 npm run build
@@ -124,6 +138,7 @@ cd ..
 ```
 
 6. **Build and Run Application**
+
 ```bash
 npm run build
 npm start
@@ -180,18 +195,21 @@ npm start
 The system includes several automated tasks:
 
 **Daily Page Analysis** (2:00 AM CT)
+
 - Analyzes all website pages
 - Generates SEO scores
 - Creates recommendations
 - Stores results in database
 
 **Weekly SEO Report** (Mondays 9:00 AM CT)
+
 - Compiles analytics from past week
 - Calculates average scores
 - Identifies trends
 - Stores comprehensive report
 
 **On-Demand Analysis**
+
 - Triggered via API
 - Real-time processing
 - Immediate results
@@ -203,6 +221,7 @@ The system includes several automated tasks:
 All AI routes are prefixed with `/api/ai`
 
 #### Analyze Page
+
 ```
 POST /api/ai/analyze-page
 Body: {
@@ -213,6 +232,7 @@ Body: {
 ```
 
 #### Generate Content
+
 ```
 POST /api/ai/generate-content
 Body: {
@@ -226,6 +246,7 @@ Body: {
 ```
 
 #### Improve Content
+
 ```
 POST /api/ai/improve-content
 Body: {
@@ -235,6 +256,7 @@ Body: {
 ```
 
 #### Generate Image
+
 ```
 POST /api/ai/generate-image
 Body: {
@@ -246,6 +268,7 @@ Body: {
 ```
 
 #### Batch Analysis
+
 ```
 POST /api/ai/batch-analyze
 Body: {
@@ -258,6 +281,7 @@ Body: {
 ```
 
 #### Health Check
+
 ```
 GET /api/ai/health
 ```
@@ -286,17 +310,20 @@ GET /api/ai/health
 ## Security
 
 ### Authentication
+
 - Admin access required for all AI tools
 - Role-based access control (RBAC)
 - Session-based authentication
 
 ### API Security
+
 - All AI endpoints require authentication
 - Rate limiting on API calls
 - Input validation and sanitization
 - CORS configuration for production
 
 ### Data Protection
+
 - Encrypted communication (HTTPS)
 - Secure credential storage
 - Firestore security rules
@@ -305,17 +332,20 @@ GET /api/ai/health
 ## Monitoring & Maintenance
 
 ### Health Checks
+
 - `/api/ai/health` endpoint for service status
 - Firebase Functions monitoring in console
 - Error logging and alerting
 
 ### Performance Optimization
+
 - Caching of analysis results
 - Batch processing for multiple pages
 - Async operations for long-running tasks
 - Rate limiting to prevent quota exhaustion
 
 ### Cost Management
+
 - Monitor Vertex AI usage in Google Cloud Console
 - Set budget alerts
 - Optimize API calls
@@ -326,22 +356,26 @@ GET /api/ai/health
 ### Common Issues
 
 **AI Service Not Available**
+
 - Check Google Cloud credentials
 - Verify Vertex AI API is enabled
 - Check project quota limits
 - System will use template fallback
 
 **Firebase Functions Timeout**
+
 - Increase timeout in firebase.json
 - Optimize processing logic
 - Use batch operations
 
 **Authentication Errors**
+
 - Verify Firebase configuration
 - Check user roles in database
 - Review Firestore security rules
 
 ### Support Resources
+
 - [Google Cloud Vertex AI Documentation](https://cloud.google.com/vertex-ai/docs)
 - [Firebase Functions Documentation](https://firebase.google.com/docs/functions)
 - [Firestore Security Rules](https://firebase.google.com/docs/firestore/security/get-started)
@@ -349,6 +383,7 @@ GET /api/ai/health
 ## Future Enhancements
 
 ### Planned Features
+
 1. **Google Analytics Integration**: Real-time traffic data
 2. **A/B Testing**: Test content variations
 3. **Multi-language Support**: International content

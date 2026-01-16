@@ -3,7 +3,7 @@
  * Uses Google Vertex AI to generate optimized content for website pages
  */
 
-import { VertexAI } from '@google-cloud/vertexai';
+import { VertexAI } from "@google-cloud/vertexai";
 
 interface ContentGenerationRequest {
   pageType: string;
@@ -11,7 +11,7 @@ interface ContentGenerationRequest {
   vehicle?: string;
   currentContent?: string;
   targetKeywords: string[];
-  tone: 'professional' | 'friendly' | 'luxury' | 'urgent';
+  tone: "professional" | "friendly" | "luxury" | "urgent";
   maxLength?: number;
 }
 
@@ -27,11 +27,12 @@ export class ContentGenerator {
   private vertexAI: VertexAI | null = null;
   private projectId: string;
   private location: string;
-  
+
   constructor(projectId?: string, location?: string) {
-    this.projectId = projectId || process.env.GOOGLE_CLOUD_PROJECT || '';
-    this.location = location || process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
-    
+    this.projectId = projectId || process.env.GOOGLE_CLOUD_PROJECT || "";
+    this.location =
+      location || process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
+
     // Only initialize if credentials are available
     if (this.projectId) {
       try {
@@ -40,7 +41,10 @@ export class ContentGenerator {
           location: this.location,
         });
       } catch (error) {
-        console.warn('Vertex AI initialization failed, will use fallback generation:', error);
+        console.warn(
+          "Vertex AI initialization failed, will use fallback generation:",
+          error,
+        );
       }
     }
   }
@@ -48,16 +52,18 @@ export class ContentGenerator {
   /**
    * Generate optimized content for a page
    */
-  async generateContent(request: ContentGenerationRequest): Promise<ContentGenerationResult> {
+  async generateContent(
+    request: ContentGenerationRequest,
+  ): Promise<ContentGenerationResult> {
     // If Vertex AI is available, use it
     if (this.vertexAI) {
       try {
         return await this.generateWithVertexAI(request);
       } catch (error) {
-        console.error('Vertex AI generation failed, using fallback:', error);
+        console.error("Vertex AI generation failed, using fallback:", error);
       }
     }
-    
+
     // Fallback to template-based generation
     return this.generateWithTemplate(request);
   }
@@ -65,16 +71,19 @@ export class ContentGenerator {
   /**
    * Generate content using Vertex AI
    */
-  private async generateWithVertexAI(request: ContentGenerationRequest): Promise<ContentGenerationResult> {
+  private async generateWithVertexAI(
+    request: ContentGenerationRequest,
+  ): Promise<ContentGenerationResult> {
     const model = this.vertexAI!.preview.getGenerativeModel({
-      model: 'gemini-pro',
+      model: "gemini-pro",
     });
 
     const prompt = this.buildPrompt(request);
-    
+
     const result = await model.generateContent(prompt);
     const response = result.response;
-    const generatedText = response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const generatedText =
+      response.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
     // Parse the generated content
     return this.parseGeneratedContent(generatedText, request);
@@ -84,7 +93,15 @@ export class ContentGenerator {
    * Build AI prompt for content generation
    */
   private buildPrompt(request: ContentGenerationRequest): string {
-    const { pageType, location, vehicle, currentContent, targetKeywords, tone, maxLength } = request;
+    const {
+      pageType,
+      location,
+      vehicle,
+      currentContent,
+      targetKeywords,
+      tone,
+      maxLength,
+    } = request;
 
     let prompt = `You are an expert SEO copywriter for a luxury airport transportation company in Chicago.
 
@@ -106,9 +123,9 @@ Task: Generate optimized web content for a ${pageType} page.
       prompt += `\nVehicle Focus: ${vehicle}`;
     }
 
-    prompt += `\n\nTarget Keywords: ${targetKeywords.join(', ')}`;
+    prompt += `\n\nTarget Keywords: ${targetKeywords.join(", ")}`;
     prompt += `\nTone: ${tone}`;
-    
+
     if (maxLength) {
       prompt += `\nMax Length: ${maxLength} words`;
     }
@@ -151,31 +168,34 @@ Important:
   /**
    * Parse AI-generated content into structured format
    */
-  private parseGeneratedContent(text: string, request: ContentGenerationRequest): ContentGenerationResult {
-    const lines = text.split('\n');
-    
-    let title = '';
-    let metaDescription = '';
-    let heading = '';
-    let content = '';
-    let ctaText = 'Book Now';
-    
-    let currentSection = '';
-    
+  private parseGeneratedContent(
+    text: string,
+    request: ContentGenerationRequest,
+  ): ContentGenerationResult {
+    const lines = text.split("\n");
+
+    let title = "";
+    let metaDescription = "";
+    let heading = "";
+    let content = "";
+    let ctaText = "Book Now";
+
+    let currentSection = "";
+
     for (const line of lines) {
-      if (line.startsWith('TITLE:')) {
-        title = line.replace('TITLE:', '').trim();
-      } else if (line.startsWith('META_DESCRIPTION:')) {
-        metaDescription = line.replace('META_DESCRIPTION:', '').trim();
-      } else if (line.startsWith('HEADING:')) {
-        heading = line.replace('HEADING:', '').trim();
-      } else if (line.startsWith('CONTENT:')) {
-        currentSection = 'content';
-      } else if (line.startsWith('CTA_TEXT:')) {
-        ctaText = line.replace('CTA_TEXT:', '').trim();
-        currentSection = '';
-      } else if (currentSection === 'content' && line.trim()) {
-        content += line + '\n';
+      if (line.startsWith("TITLE:")) {
+        title = line.replace("TITLE:", "").trim();
+      } else if (line.startsWith("META_DESCRIPTION:")) {
+        metaDescription = line.replace("META_DESCRIPTION:", "").trim();
+      } else if (line.startsWith("HEADING:")) {
+        heading = line.replace("HEADING:", "").trim();
+      } else if (line.startsWith("CONTENT:")) {
+        currentSection = "content";
+      } else if (line.startsWith("CTA_TEXT:")) {
+        ctaText = line.replace("CTA_TEXT:", "").trim();
+        currentSection = "";
+      } else if (currentSection === "content" && line.trim()) {
+        content += line + "\n";
       }
     }
 
@@ -196,7 +216,9 @@ Important:
   /**
    * Template-based content generation (fallback)
    */
-  private generateWithTemplate(request: ContentGenerationRequest): ContentGenerationResult {
+  private generateWithTemplate(
+    request: ContentGenerationRequest,
+  ): ContentGenerationResult {
     const { pageType, location, vehicle } = request;
 
     return {
@@ -210,41 +232,42 @@ Important:
 
   private generateTitle(request: ContentGenerationRequest): string {
     const { location, vehicle, pageType } = request;
-    
-    if (pageType === 'airport' && location) {
+
+    if (pageType === "airport" && location) {
       return `${location} Airport Limo Service | Luxury Black Car Transportation`;
-    } else if (pageType === 'suburb' && location) {
+    } else if (pageType === "suburb" && location) {
       return `${location} Limo Service | Airport Transportation to O'Hare & Midway`;
-    } else if (pageType === 'vehicle' && vehicle) {
+    } else if (pageType === "vehicle" && vehicle) {
       return `Luxury ${vehicle} Service | Chicago Airport Transportation`;
     }
-    
-    return 'Chicago Airport Limo Service | Professional Black Car Transportation';
+
+    return "Chicago Airport Limo Service | Professional Black Car Transportation";
   }
 
   private generateMetaDescription(request: ContentGenerationRequest): string {
     const { location, vehicle } = request;
-    
-    let desc = 'Professional';
-    
+
+    let desc = "Professional";
+
     if (location) {
       desc += ` ${location}`;
     }
-    
-    desc += ' airport limo service';
-    
+
+    desc += " airport limo service";
+
     if (vehicle) {
       desc += ` with luxury ${vehicle}s`;
     }
-    
-    desc += '. Reliable black car transportation to O\'Hare & Midway. Book online or call (224) 801-3090.';
-    
+
+    desc +=
+      ". Reliable black car transportation to O'Hare & Midway. Book online or call (224) 801-3090.";
+
     return desc.substring(0, 155);
   }
 
   private generateHeading(request: ContentGenerationRequest): string {
     const { location, vehicle, tone } = request;
-    
+
     if (location && vehicle) {
       return `Premium ${vehicle} Service for ${location}`;
     } else if (location) {
@@ -252,58 +275,58 @@ Important:
     } else if (vehicle) {
       return `Luxury ${vehicle} Service in Chicago`;
     }
-    
-    return 'Chicago Airport Black Car Service';
+
+    return "Chicago Airport Black Car Service";
   }
 
   private generateBodyContent(request: ContentGenerationRequest): string {
     const { location, vehicle, pageType } = request;
-    
+
     let content = `Experience premium airport transportation with Chicago's most trusted black car service. `;
-    
+
     if (location) {
       content += `Our professional chauffeurs provide reliable service to and from ${location}, ensuring you arrive on time, every time. `;
     }
-    
+
     if (vehicle) {
       content += `Travel in comfort with our fleet of luxury ${vehicle}s, featuring leather seating, climate control, and complimentary amenities. `;
     }
-    
+
     content += `\n\nWhy Choose Our Service:\n`;
     content += `• Professional, licensed chauffeurs with local expertise\n`;
     content += `• Flight monitoring for timely airport pickups\n`;
     content += `• Flat-rate pricing with no hidden fees\n`;
     content += `• Immaculate, late-model luxury vehicles\n`;
     content += `• 24/7 availability and dispatch support\n\n`;
-    
+
     if (location) {
       content += `Serving ${location} and surrounding areas with dedicated airport transportation. `;
     }
-    
+
     content += `Book your ride today for a stress-free travel experience. Available 24/7 for reservations and immediate dispatch.`;
-    
+
     return content;
   }
 
   private generateCTA(request: ContentGenerationRequest): string {
     const { pageType, tone } = request;
-    
+
     // Deterministic CTA selection based on page type and tone
-    if (tone === 'urgent') {
-      return 'Call (224) 801-3090';
+    if (tone === "urgent") {
+      return "Call (224) 801-3090";
     }
-    
+
     switch (pageType) {
-      case 'airport':
-        return 'Book Your Ride Now';
-      case 'suburb':
-        return 'Schedule Pickup';
-      case 'vehicle':
-        return 'Reserve Your Limo';
-      case 'pricing':
-        return 'Get Instant Quote';
+      case "airport":
+        return "Book Your Ride Now";
+      case "suburb":
+        return "Schedule Pickup";
+      case "vehicle":
+        return "Reserve Your Limo";
+      case "pricing":
+        return "Get Instant Quote";
       default:
-        return 'Book Your Ride Now';
+        return "Book Your Ride Now";
     }
   }
 
@@ -312,12 +335,12 @@ Important:
    */
   async improveContent(
     currentContent: string,
-    recommendations: string[]
+    recommendations: string[],
   ): Promise<string> {
     if (this.vertexAI) {
       try {
         const model = this.vertexAI.preview.getGenerativeModel({
-          model: 'gemini-pro',
+          model: "gemini-pro",
         });
 
         const prompt = `You are an expert SEO copywriter. Improve the following website content based on these recommendations:
@@ -326,7 +349,7 @@ Current Content:
 ${currentContent}
 
 Recommendations:
-${recommendations.map((r, i) => `${i + 1}. ${r}`).join('\n')}
+${recommendations.map((r, i) => `${i + 1}. ${r}`).join("\n")}
 
 Provide an improved version that:
 - Implements the recommendations
@@ -338,12 +361,14 @@ Improved Content:`;
 
         const result = await model.generateContent(prompt);
         const response = result.response;
-        return response.candidates?.[0]?.content?.parts?.[0]?.text || currentContent;
+        return (
+          response.candidates?.[0]?.content?.parts?.[0]?.text || currentContent
+        );
       } catch (error) {
-        console.error('Content improvement failed:', error);
+        console.error("Content improvement failed:", error);
       }
     }
-    
+
     return currentContent;
   }
 }

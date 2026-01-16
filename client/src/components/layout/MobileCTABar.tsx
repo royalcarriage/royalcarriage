@@ -1,7 +1,8 @@
 import { Phone, Calendar } from "lucide-react";
 
 const PHONE_TEL = "tel:+12248013090";
-const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+const BOOKING_URL =
+  "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
 
 export function MobileCTABar() {
   return (

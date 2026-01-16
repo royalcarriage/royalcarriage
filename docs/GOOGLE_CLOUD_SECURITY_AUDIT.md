@@ -12,6 +12,7 @@
 This document provides a comprehensive audit of Google Cloud Platform (GCP) systems and security settings for the Royal Carriage AI-powered website management system. The audit focuses on enabling image generation capabilities from the admin dashboard while ensuring all security best practices are followed.
 
 **Current Status:**
+
 - ✅ Firebase Hosting: Configured and deployed
 - ✅ Firestore Database: Security rules configured
 - ✅ Firebase Functions: Deployed with 6 functions
@@ -28,16 +29,16 @@ This document provides a comprehensive audit of Google Cloud Platform (GCP) syst
 
 The following Google Cloud APIs must be enabled for full functionality:
 
-| API | Status | Purpose | Priority |
-|-----|--------|---------|----------|
-| Vertex AI API | ⚠️ Required | AI image generation (Imagen), content generation (Gemini Pro) | **HIGH** |
-| Cloud Functions API | ✅ Enabled | Firebase Functions for automation | Critical |
-| Cloud Firestore API | ✅ Enabled | Database operations | Critical |
-| Cloud Storage API | ⚠️ Required | Store generated images | **HIGH** |
-| Cloud Build API | ✅ Enabled | Build Firebase Functions | Critical |
-| Cloud Logging API | ✅ Enabled | Function logs and monitoring | Medium |
-| Cloud IAM API | ✅ Enabled | Permission management | Critical |
-| Secret Manager API | ⚠️ Recommended | Secure credential storage | Medium |
+| API                 | Status         | Purpose                                                       | Priority |
+| ------------------- | -------------- | ------------------------------------------------------------- | -------- |
+| Vertex AI API       | ⚠️ Required    | AI image generation (Imagen), content generation (Gemini Pro) | **HIGH** |
+| Cloud Functions API | ✅ Enabled     | Firebase Functions for automation                             | Critical |
+| Cloud Firestore API | ✅ Enabled     | Database operations                                           | Critical |
+| Cloud Storage API   | ⚠️ Required    | Store generated images                                        | **HIGH** |
+| Cloud Build API     | ✅ Enabled     | Build Firebase Functions                                      | Critical |
+| Cloud Logging API   | ✅ Enabled     | Function logs and monitoring                                  | Medium   |
+| Cloud IAM API       | ✅ Enabled     | Permission management                                         | Critical |
+| Secret Manager API  | ⚠️ Recommended | Secure credential storage                                     | Medium   |
 
 ### 1.2 How to Enable Required APIs
 
@@ -56,6 +57,7 @@ gcloud services list --enabled --project=royalcarriagelimoseo
 ```
 
 Or enable via Google Cloud Console:
+
 1. Go to https://console.cloud.google.com/apis/library
 2. Search for "Vertex AI API"
 3. Click "Enable"
@@ -70,6 +72,7 @@ Or enable via Google Cloud Console:
 **File:** `server/ai/image-generator.ts`
 
 The image generator is implemented but not fully configured:
+
 - ✅ Code structure complete
 - ✅ Prompt engineering implemented
 - ✅ Placeholder fallback system working
@@ -77,8 +80,11 @@ The image generator is implemented but not fully configured:
 - ❌ No image storage configured
 
 **Current Limitation (Line 149):**
+
 ```typescript
-throw new Error('Vertex AI image generation not yet configured. Please set up Imagen API access by following the deployment guide at docs/DEPLOYMENT_GUIDE.md. You need to enable the Vertex AI API in Google Cloud Console and configure service account credentials.');
+throw new Error(
+  "Vertex AI image generation not yet configured. Please set up Imagen API access by following the deployment guide at docs/DEPLOYMENT_GUIDE.md. You need to enable the Vertex AI API in Google Cloud Console and configure service account credentials.",
+);
 ```
 
 ### 2.2 Required Configuration Steps
@@ -86,11 +92,13 @@ throw new Error('Vertex AI image generation not yet configured. Please set up Im
 #### Step 1: Enable Vertex AI Imagen API
 
 1. **Enable the API:**
+
 ```bash
 gcloud services enable aiplatform.googleapis.com --project=royalcarriagelimoseo
 ```
 
 2. **Verify Imagen model availability:**
+
 ```bash
 gcloud ai models list \
   --region=us-central1 \
@@ -101,6 +109,7 @@ gcloud ai models list \
 #### Step 2: Configure Service Account for Imagen
 
 The service account needs the following role:
+
 - **Vertex AI User** (`roles/aiplatform.user`)
 
 ```bash
@@ -118,6 +127,7 @@ gcloud projects add-iam-policy-binding royalcarriagelimoseo \
 The `generateWithVertexAI` method in `server/ai/image-generator.ts` needs to be updated with actual Imagen API calls. Current implementation is a placeholder.
 
 **Required Updates:**
+
 ```typescript
 private async generateWithVertexAI(
   prompt: string,
@@ -143,10 +153,10 @@ private async generateWithVertexAI(
 
   // Extract image data from result
   const imageData = result.response.candidates[0].content.parts[0].inlineData;
-  
+
   // Upload to Cloud Storage and return URL
   const imageUrl = await this.uploadToStorage(imageData);
-  
+
   return {
     imageUrl,
     prompt,
@@ -160,18 +170,21 @@ private async generateWithVertexAI(
 ### 2.3 Image Generation Best Practices
 
 **Security:**
+
 - ✅ Validate all input parameters
 - ✅ Sanitize prompts to prevent injection
 - ✅ Rate limit image generation requests
 - ⚠️ Implement cost monitoring (Imagen charges per image)
 
 **Quality:**
+
 - ✅ Prompt engineering templates are well-designed
 - ✅ Multiple purpose-specific prompts implemented
 - ⚠️ Add negative prompts to improve quality
 - ⚠️ Implement image quality validation
 
 **Performance:**
+
 - ⚠️ Cache generated images
 - ⚠️ Implement async generation with status polling
 - ⚠️ Add retry logic for failed generations
@@ -185,6 +198,7 @@ private async generateWithVertexAI(
 **Issue:** No Cloud Storage bucket configured for storing generated images.
 
 **Impact:**
+
 - Generated images have nowhere to be stored permanently
 - Using placeholder URLs instead of actual AI-generated images
 - Cannot persist images for reuse
@@ -249,6 +263,7 @@ gsutil cors set cors.json gs://royalcarriagelimoseo-ai-images/
 #### Step 4: Update Environment Variables
 
 Add to `.env`:
+
 ```bash
 GOOGLE_CLOUD_STORAGE_BUCKET=royalcarriagelimoseo-ai-images
 ```
@@ -256,6 +271,7 @@ GOOGLE_CLOUD_STORAGE_BUCKET=royalcarriagelimoseo-ai-images
 #### Step 5: Implement Storage Upload in Code
 
 Add to `server/ai/image-generator.ts`:
+
 ```typescript
 import { Storage } from '@google-cloud/storage';
 
@@ -271,19 +287,19 @@ private async uploadToStorage(
   filename: string
 ): Promise<string> {
   const bucket = this.storage.bucket(
-    process.env.GOOGLE_CLOUD_STORAGE_BUCKET || 
+    process.env.GOOGLE_CLOUD_STORAGE_BUCKET ||
     'royalcarriagelimoseo-ai-images'
   );
-  
+
   const file = bucket.file(`generated/${Date.now()}-${filename}.png`);
-  
+
   await file.save(imageData, {
     metadata: {
       contentType: 'image/png',
       cacheControl: 'public, max-age=31536000',
     },
   });
-  
+
   // Return public URL
   return `https://storage.googleapis.com/${bucket.name}/${file.name}`;
 }
@@ -292,18 +308,21 @@ private async uploadToStorage(
 ### 3.3 Storage Security Recommendations
 
 **Access Control:**
+
 - ✅ Public read access for serving images
 - ✅ Service account write access only
 - ✅ No public write access
 - ⚠️ Consider signed URLs for temporary access
 
 **Cost Management:**
+
 - ⚠️ Set up lifecycle policies to delete old images
 - ⚠️ Monitor storage usage and costs
 - ⚠️ Implement image compression
 - ⚠️ Consider CDN (Firebase Hosting or Cloud CDN)
 
 **Backup:**
+
 - ⚠️ Enable versioning for important images
 - ⚠️ Set up cross-region replication (if needed)
 
@@ -317,15 +336,15 @@ private async uploadToStorage(
 
 #### Required Roles
 
-| Role | Purpose | Status | Priority |
-|------|---------|--------|----------|
-| **roles/aiplatform.user** | Vertex AI API access (Imagen, Gemini) | ⚠️ Required | **HIGH** |
-| **roles/storage.objectCreator** | Upload images to Cloud Storage | ⚠️ Required | **HIGH** |
-| **roles/storage.objectViewer** | Read images from Cloud Storage | ⚠️ Required | **HIGH** |
-| **roles/cloudfunctions.developer** | Deploy and manage functions | ✅ Has | Critical |
-| **roles/datastore.user** | Firestore read/write | ✅ Has | Critical |
-| **roles/logging.logWriter** | Write logs | ✅ Has | Medium |
-| **roles/secretmanager.secretAccessor** | Access secrets (if using Secret Manager) | ⚠️ Recommended | Medium |
+| Role                                   | Purpose                                  | Status         | Priority |
+| -------------------------------------- | ---------------------------------------- | -------------- | -------- |
+| **roles/aiplatform.user**              | Vertex AI API access (Imagen, Gemini)    | ⚠️ Required    | **HIGH** |
+| **roles/storage.objectCreator**        | Upload images to Cloud Storage           | ⚠️ Required    | **HIGH** |
+| **roles/storage.objectViewer**         | Read images from Cloud Storage           | ⚠️ Required    | **HIGH** |
+| **roles/cloudfunctions.developer**     | Deploy and manage functions              | ✅ Has         | Critical |
+| **roles/datastore.user**               | Firestore read/write                     | ✅ Has         | Critical |
+| **roles/logging.logWriter**            | Write logs                               | ✅ Has         | Medium   |
+| **roles/secretmanager.secretAccessor** | Access secrets (if using Secret Manager) | ⚠️ Recommended | Medium   |
 
 #### Verify Current Permissions
 
@@ -378,11 +397,13 @@ gcloud projects get-iam-policy royalcarriagelimoseo \
 For the admin dashboard, ensure proper role-based access control:
 
 **Current Implementation:** `firestore.rules`
+
 - ✅ Admin-only access to all AI collections
 - ✅ Role verification using Firestore user documents
 - ✅ Read-only audit logs
 
 **Recommendations:**
+
 - ⚠️ Implement Firebase Authentication for admin login
 - ⚠️ Use custom claims for role management
 - ⚠️ Add multi-factor authentication for admin accounts
@@ -392,6 +413,7 @@ For the admin dashboard, ensure proper role-based access control:
 **Current Status:** Functions are deployed but have restricted invoker access due to organization policy.
 
 **Issue (from SECURITY_DEPLOYMENT_COMPLETE.md):**
+
 > Organization policy restricts `allUsers` invoker. Functions are deployed and can be made public via Firebase Console if needed.
 
 #### Option 1: Keep Functions Private (Recommended)
@@ -440,6 +462,7 @@ gcloud functions add-iam-policy-binding generateImage \
 ```
 
 **Security Note:** If making functions public, implement:
+
 - Rate limiting
 - API key authentication
 - Request validation
@@ -456,6 +479,7 @@ gcloud functions add-iam-policy-binding generateImage \
 **Status:** ✅ Well-configured with admin-only access
 
 #### Strengths:
+
 - ✅ All collections require authentication
 - ✅ Role-based access control (RBAC) implemented
 - ✅ Audit logs are read-only (even for admins)
@@ -467,30 +491,30 @@ gcloud functions add-iam-policy-binding generateImage \
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
+
     // Helper function to check if user is authenticated
     function isAuthenticated() {
       return request.auth != null;
     }
-    
+
     // Helper function to check if user is admin
     function isAdmin() {
-      return isAuthenticated() && 
+      return isAuthenticated() &&
              get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
     }
-    
+
     // Users collection - only admins can read/write
     match /users/{userId} {
       allow read: if isAdmin();
       allow write: if isAdmin();
     }
-    
+
     // AI images - admin only
     match /ai_images/{imageId} {
       allow read: if isAdmin();
       allow write: if isAdmin();
     }
-    
+
     // Audit logs - read only for admins
     match /audit_logs/{logId} {
       allow read: if isAdmin();
@@ -508,11 +532,11 @@ service cloud.firestore {
 // Image metadata for tracking generated images
 match /ai_images/{imageId} {
   allow read: if isAdmin();
-  allow create: if isAdmin() && 
+  allow create: if isAdmin() &&
     request.resource.data.keys().hasAll([
       'imageUrl', 'purpose', 'prompt', 'createdAt', 'createdBy'
     ]);
-  allow update: if isAdmin() && 
+  allow update: if isAdmin() &&
     request.resource.data.diff(resource.data).affectedKeys()
       .hasOnly(['status', 'approvedAt', 'approvedBy']);
   allow delete: if false; // Soft delete only
@@ -527,7 +551,7 @@ function canGenerateImage() {
   let user = get(/databases/$(database)/documents/users/$(request.auth.uid));
   let today = request.time.toMillis() - request.time.toMillis() % 86400000;
   let generationsToday = get(/databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today));
-  
+
   return isAdmin() && (
     !exists(/databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today)) ||
     generationsToday.data.imageGenerations < 50  // Max 50 images per day per admin
@@ -546,6 +570,7 @@ firebase emulators:start --only firestore
 ```
 
 **Test Cases:**
+
 1. ✅ Unauthenticated users cannot read any data
 2. ✅ Authenticated non-admin users cannot access admin collections
 3. ✅ Admin users can read and write to all collections
@@ -591,6 +616,7 @@ API_RATE_LIMIT=100  # requests per 15 minutes
 ### 6.3 Credential Management Best Practices
 
 #### ✅ Current Good Practices:
+
 - Session secret is cryptographically secure (64 chars)
 - `.env` is in `.gitignore`
 - Credentials not committed to repository
@@ -649,7 +675,7 @@ For code running in Google Cloud (Firebase Functions), don't use service account
 const vertexAI = new VertexAI({
   project: projectId,
   location: location,
-  credentials: JSON.parse(fs.readFileSync(keyFile))
+  credentials: JSON.parse(fs.readFileSync(keyFile)),
 });
 
 // Do this instead:
@@ -671,6 +697,7 @@ const vertexAI = new VertexAI({
 **Status:** ✅ Well-implemented security headers
 
 #### Current Headers:
+
 - ✅ X-Frame-Options: DENY (prevents clickjacking)
 - ✅ X-Content-Type-Options: nosniff
 - ✅ X-XSS-Protection: 1; mode=block
@@ -686,13 +713,13 @@ Current CSP in `server/security.ts` line 28-34:
 
 ```typescript
 res.setHeader(
-  'Content-Security-Policy',
+  "Content-Security-Policy",
   "default-src 'self'; " +
-  "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-  "font-src 'self' https://fonts.gstatic.com; " +
-  "img-src 'self' data: https:; " +  // This is good - allows images from any HTTPS source
-  "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;"
+    "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+    "font-src 'self' https://fonts.gstatic.com; " +
+    "img-src 'self' data: https:; " + // This is good - allows images from any HTTPS source
+    "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;",
 );
 ```
 
@@ -708,34 +735,35 @@ Current rate limit config (line 50-56) is good, but add specific limits for imag
 
 ```typescript
 // In server/ai/routes.ts
-import rateLimit from 'express-rate-limit';
+import rateLimit from "express-rate-limit";
 
 // Specific rate limit for image generation (more restrictive)
 const imageGenerationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 10, // Max 10 image generations per hour per IP
-  message: 'Too many image generation requests. Please try again later.',
+  message: "Too many image generation requests. Please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
 });
 
 // Apply to image generation endpoint
-router.post('/generate-image', 
-  requireAdmin, 
-  imageGenerationLimiter, 
+router.post(
+  "/generate-image",
+  requireAdmin,
+  imageGenerationLimiter,
   async (req, res) => {
     // ... image generation logic
-  }
+  },
 );
 ```
 
 #### Add Request Validation
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const imageGenerationSchema = z.object({
-  purpose: z.enum(['hero', 'service_card', 'fleet', 'location', 'testimonial']),
+  purpose: z.enum(["hero", "service_card", "fleet", "location", "testimonial"]),
   location: z.string().max(100).optional(),
   vehicle: z.string().max(100).optional(),
   style: z.string().max(200).optional(),
@@ -743,14 +771,14 @@ const imageGenerationSchema = z.object({
 });
 
 // In route handler
-router.post('/generate-image', requireAdmin, async (req, res) => {
+router.post("/generate-image", requireAdmin, async (req, res) => {
   try {
     const validatedData = imageGenerationSchema.parse(req.body);
     // ... proceed with image generation
   } catch (error) {
-    return res.status(400).json({ 
-      error: 'Invalid request data',
-      details: error.errors 
+    return res.status(400).json({
+      error: "Invalid request data",
+      details: error.errors,
     });
   }
 });
@@ -763,16 +791,17 @@ router.post('/generate-image', requireAdmin, async (req, res) => {
 ### 8.1 Vertex AI Pricing
 
 **Imagen Pricing (as of Jan 2026):**
+
 - Standard quality: ~$0.020 per image
 - HD quality: ~$0.040 per image
 
 **Estimated Monthly Costs:**
 
 | Usage Level | Images/Month | Cost/Month |
-|-------------|--------------|------------|
-| Light | 50 images | $1-2 |
-| Medium | 200 images | $4-8 |
-| Heavy | 1000 images | $20-40 |
+| ----------- | ------------ | ---------- |
+| Light       | 50 images    | $1-2       |
+| Medium      | 200 images   | $4-8       |
+| Heavy       | 1000 images  | $20-40     |
 
 ### 8.2 Set Up Budget Alerts
 
@@ -803,28 +832,34 @@ interface UsageStats {
 
 // Increment on each generation
 async function trackImageGeneration(userId: string, cost: number) {
-  const today = new Date().toISOString().split('T')[0];
-  const docRef = admin.firestore()
-    .collection('usage_stats')
+  const today = new Date().toISOString().split("T")[0];
+  const docRef = admin
+    .firestore()
+    .collection("usage_stats")
     .doc(`${userId}_${today}`);
-  
-  await docRef.set({
-    userId,
-    date: today,
-    imageGenerations: admin.firestore.FieldValue.increment(1),
-    totalCost: admin.firestore.FieldValue.increment(cost),
-    lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
-  }, { merge: true });
+
+  await docRef.set(
+    {
+      userId,
+      date: today,
+      imageGenerations: admin.firestore.FieldValue.increment(1),
+      totalCost: admin.firestore.FieldValue.increment(cost),
+      lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
+    },
+    { merge: true },
+  );
 }
 ```
 
 ### 8.4 Cloud Storage Costs
 
 **Storage Pricing:**
+
 - Storage: $0.020 per GB per month (Standard)
 - Operations: $0.05 per 10,000 Class A operations
 
 **Estimated Costs:**
+
 - 1000 images @ 1MB each = 1GB = $0.020/month
 - CDN serving: Minimal (covered by Firebase Hosting)
 
@@ -847,12 +882,14 @@ Set up monitoring in Google Cloud Console:
 ### 9.1 Data Handling
 
 **AI-Generated Images:**
+
 - Images generated by Vertex AI Imagen
 - Stored in Cloud Storage
 - No personal data in images
 - Prompt data stored in Firestore
 
 **Compliance Considerations:**
+
 - ✅ No PII in image generation prompts
 - ✅ No user-generated content
 - ✅ All images are business-related (vehicles, locations)
@@ -861,10 +898,12 @@ Set up monitoring in Google Cloud Console:
 ### 9.2 Terms of Service
 
 **Google Cloud AI Terms:**
+
 - Review [Vertex AI Terms of Service](https://cloud.google.com/terms/service-terms)
 - Understand [Generative AI Prohibited Use Policy](https://policies.google.com/terms/generative-ai/use-policy)
 
 **Key Points:**
+
 - ✅ Commercial use allowed with proper licensing
 - ✅ Attribution not required for Imagen outputs
 - ⚠️ Don't use AI to generate misleading content
@@ -873,6 +912,7 @@ Set up monitoring in Google Cloud Console:
 ### 9.3 Audit Logging
 
 Current implementation in Firestore:
+
 ```javascript
 match /audit_logs/{logId} {
   allow read: if isAdmin();
@@ -886,14 +926,14 @@ match /audit_logs/{logId} {
 interface AuditLog {
   timestamp: Date;
   userId: string;
-  action: 'image_generated' | 'content_generated' | 'page_analyzed';
+  action: "image_generated" | "content_generated" | "page_analyzed";
   resourceId: string;
   resourceType: string;
   details: {
     prompt?: string;
     cost?: number;
     model?: string;
-    status: 'success' | 'failed';
+    status: "success" | "failed";
     error?: string;
   };
   ipAddress: string;
@@ -902,12 +942,16 @@ interface AuditLog {
 ```
 
 **Log all AI operations:**
+
 ```typescript
 async function logAuditEvent(event: AuditLog) {
-  await admin.firestore().collection('audit_logs').add({
-    ...event,
-    timestamp: admin.firestore.FieldValue.serverTimestamp(),
-  });
+  await admin
+    .firestore()
+    .collection("audit_logs")
+    .add({
+      ...event,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
 }
 ```
 
@@ -918,11 +962,13 @@ async function logAuditEvent(event: AuditLog) {
 ### Phase 1: Essential Configuration (1-2 hours)
 
 - [ ] **Enable Vertex AI API**
+
   ```bash
   gcloud services enable aiplatform.googleapis.com --project=royalcarriagelimoseo
   ```
 
 - [ ] **Create Cloud Storage Bucket**
+
   ```bash
   gsutil mb -p royalcarriagelimoseo -c STANDARD -l us-central1 \
     gs://royalcarriagelimoseo-ai-images/
@@ -1026,6 +1072,7 @@ async function logAuditEvent(event: AuditLog) {
 **Cause:** Service account doesn't have aiplatform.user role
 
 **Solution:**
+
 ```bash
 gcloud projects add-iam-policy-binding royalcarriagelimoseo \
   --member="serviceAccount:${SERVICE_ACCOUNT}" \
@@ -1037,6 +1084,7 @@ gcloud projects add-iam-policy-binding royalcarriagelimoseo \
 **Cause:** Service account lacks storage permissions
 
 **Solution:**
+
 ```bash
 gsutil iam ch serviceAccount:${SERVICE_ACCOUNT}:objectCreator \
   gs://royalcarriagelimoseo-ai-images/
@@ -1047,6 +1095,7 @@ gsutil iam ch serviceAccount:${SERVICE_ACCOUNT}:objectCreator \
 **Cause:** Imagen model not available in region
 
 **Solution:**
+
 ```bash
 # Check available models
 gcloud ai models list --region=us-central1 --project=royalcarriagelimoseo
@@ -1059,6 +1108,7 @@ gcloud ai models list --region=us-central1 --project=royalcarriagelimoseo
 **Cause:** Vertex AI quota limit reached
 
 **Solution:**
+
 1. Go to https://console.cloud.google.com/iam-admin/quotas
 2. Filter by "Vertex AI"
 3. Request quota increase
@@ -1069,6 +1119,7 @@ gcloud ai models list --region=us-central1 --project=royalcarriagelimoseo
 **Cause:** Bucket permissions not set correctly
 
 **Solution:**
+
 ```bash
 gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 ```
@@ -1078,6 +1129,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 ## 12. Security Best Practices Summary
 
 ### ✅ Currently Implemented:
+
 1. Admin-only access to all AI features
 2. Firestore security rules with RBAC
 3. Security headers (CSP, XSS protection, etc.)
@@ -1086,6 +1138,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 6. Cryptographically secure session secrets
 
 ### ⚠️ Recommended Additions:
+
 1. Firebase Authentication for admin login
 2. Multi-factor authentication for admins
 3. Google Secret Manager for credential storage
@@ -1098,6 +1151,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 10. Regular security audits
 
 ### 🔒 Critical Security Rules:
+
 1. **Never** commit service account keys to git
 2. **Always** use HTTPS for all communications
 3. **Implement** rate limiting on all AI endpoints
@@ -1114,6 +1168,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 ## 13. Next Steps
 
 ### Immediate Actions (Today)
+
 1. ✅ Review this audit document
 2. ⚠️ Enable Vertex AI API
 3. ⚠️ Create Cloud Storage bucket
@@ -1121,6 +1176,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 5. ⚠️ Update environment variables
 
 ### Short-term (This Week)
+
 1. ⚠️ Implement Imagen API integration
 2. ⚠️ Add storage upload functionality
 3. ⚠️ Test image generation flow
@@ -1128,6 +1184,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 5. ⚠️ Update documentation
 
 ### Long-term (This Month)
+
 1. ⚠️ Implement advanced security features
 2. ⚠️ Add usage analytics dashboard
 3. ⚠️ Optimize costs and performance
@@ -1141,6 +1198,7 @@ gsutil iam ch allUsers:objectViewer gs://royalcarriagelimoseo-ai-images/
 This audit has identified the following key findings:
 
 ### Current State:
+
 - ✅ Firebase infrastructure properly configured
 - ✅ Security headers and basic protections in place
 - ✅ Firestore rules well-designed
@@ -1149,6 +1207,7 @@ This audit has identified the following key findings:
 - ⚠️ Missing some IAM permissions
 
 ### Required Actions:
+
 1. **High Priority:** Enable Vertex AI and configure Imagen
 2. **High Priority:** Set up Cloud Storage for images
 3. **High Priority:** Grant required IAM permissions
@@ -1156,6 +1215,7 @@ This audit has identified the following key findings:
 5. **Medium Priority:** Add monitoring and cost controls
 
 ### Estimated Effort:
+
 - Configuration: 2-3 hours
 - Implementation: 4-6 hours
 - Testing: 2 hours
@@ -1163,6 +1223,7 @@ This audit has identified the following key findings:
 - **Total: 9-12 hours**
 
 ### Recommended Approach:
+
 1. Start with Phase 1 (Essential Configuration)
 2. Implement and test image generation
 3. Add security hardening

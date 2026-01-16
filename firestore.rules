@@ -1,174 +1,140 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if user is authenticated
-    function isAuthenticated() {
+
+    // ----------------------------
+    // Helpers
+    // ----------------------------
+    function isSignedIn() {
       return request.auth != null;
     }
-    
-    // Helper function to get user data
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid));
     }
-    
-    // Helper function to check user role
-    function hasRole(role) {
-      return isAuthenticated() && getUserData().role == role;
+
+    function userOrg() {
+      return isSignedIn() ? userDoc().data.org : null;
     }
-    
-    // Helper function to check if user has minimum role
-    function hasMinimumRole(role) {
-      let userRole = getUserData().role;
-      let roleHierarchy = {
-        'SuperAdmin': 4,
-        'Admin': 3,
-        'Editor': 2,
-        'Viewer': 1
-      };
-      return isAuthenticated() && 
-             roleHierarchy[userRole] >= roleHierarchy[role];
+
+    function userRole() {
+      return isSignedIn() ? userDoc().data.role : null;
     }
-    
-    // Helper function to check if user is SuperAdmin
+
+    function isOrg(orgId) {
+      return userOrg() == orgId;
+    }
+
     function isSuperAdmin() {
-      return hasRole('SuperAdmin');
+      return isSignedIn() && userRole() == "SuperAdmin";
     }
-    
-    // Helper function to check if user is Admin or higher
+
     function isAdmin() {
-      return hasMinimumRole('Admin');
+      return isSignedIn() && (userRole() == "Admin" || userRole() == "SuperAdmin");
     }
-    
-    // Helper function to check if user is Editor or higher
+
     function isEditor() {
-      return hasMinimumRole('Editor');
+      return isSignedIn() && (userRole() == "Editor" || userRole() == "Admin" || userRole() == "SuperAdmin");
     }
-    
-    // Helper function to check if user is authenticated (Viewer or higher)
+
     function isViewer() {
-      return hasMinimumRole('Viewer');
+      return isSignedIn() && (userRole() == "Viewer" || isEditor());
     }
-    
-    // Helper function to check image generation rate limit
-    function canGenerateImage() {
-      let today = request.time.toMillis() - (request.time.toMillis() % 86400000); // 86400000 ms = 1 day
-      let usageStatsPath = /databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today);
-      
-      // Rate limit: matches MAX_IMAGES_PER_DAY environment variable (default 50)
-      let maxImagesPerDay = 50;
-      
-      return isAdmin() && (
-        !exists(usageStatsPath) ||
-        get(usageStatsPath).data.imageGenerations < maxImagesPerDay
-      );
+
+    function docBelongsToOrg() {
+      return resource.data.org == userOrg();
     }
-    
-    // Helper function to validate image data
-    function isValidImageData() {
-      return request.resource.data.keys().hasAll(['imageUrl', 'purpose', 'prompt', 'createdAt', 'createdBy']) &&
-             request.resource.data.purpose in ['hero', 'service_card', 'fleet', 'location', 'testimonial'] &&
-             request.resource.data.imageUrl is string &&
-             request.resource.data.prompt is string &&
-             request.resource.data.createdBy == request.auth.uid;
+
+    function writeSetsOrgCorrectly() {
+      return request.resource.data.org == userOrg();
     }
-    
-    // Users collection - role-based access
-    match /users/{userId} {
-      // Users can read their own data
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      // Admins can read all users
-      allow read: if isAdmin();
-      // Users can update their own profile (but not role)
-      allow update: if isAuthenticated() && 
-                      request.auth.uid == userId && 
-                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
-      // Only SuperAdmin and Admin can manage user roles
-      allow write: if isSuperAdmin() || isAdmin();
+
+    // ----------------------------
+    // USERS
+    // ----------------------------
+    match /users/{uid} {
+      allow read: if isSignedIn() && request.auth.uid == uid;
+      allow list: if isSuperAdmin();
+      allow create: if isSignedIn() && request.auth.uid == uid
+                    && request.resource.data.email == request.auth.token.email
+                    && request.resource.data.role in ["Viewer","Editor","Admin","SuperAdmin"]
+                    && request.resource.data.org is string;
+      allow update: if isSuperAdmin();
+      allow delete: if isSuperAdmin();
     }
-    
-    // Page analyses - Editor or higher can write, Viewer can read
-    match /page_analyses/{analysisId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    // ----------------------------
+    // SITES
+    // ----------------------------
+    match /sites/{siteSlug} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create, update, delete: if isAdmin() && writeSetsOrgCorrectly();
     }
-    
-    // Content suggestions - Editor or higher
-    match /content_suggestions/{suggestionId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    // ----------------------------
+    // IMPORT LOGS
+    // ----------------------------
+    match /moovs_imports/{importId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create: if isEditor() && writeSetsOrgCorrectly();
+      allow update, delete: if isAdmin() && docBelongsToOrg();
     }
-    
-    // AI images - admin only with validation
-    match /ai_images/{imageId} {
-      allow read: if isViewer();
-      
-      // Create: admin only, must pass validation and rate limit
-      allow create: if isAdmin() && 
-                      canGenerateImage() &&
-                      isValidImageData();
-      
-      // Update: admin only, can only update status and approval fields
-      allow update: if isAdmin() && 
-                      request.resource.data.diff(resource.data).affectedKeys()
-                        .hasOnly(['status', 'approvedAt', 'approvedBy', 'updatedAt']);
-      
-      // Delete: soft delete only via status field, no hard deletes
-      allow delete: if false;
+
+    match /ads_imports/{importId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create: if isEditor() && writeSetsOrgCorrectly();
+      allow update, delete: if isAdmin() && docBelongsToOrg();
     }
-    
-    // Usage statistics - system managed, admin read-only
-    match /usage_stats/{statId} {
-      allow read: if isAdmin();
-      allow write: if false; // Only Firebase Functions can write
+
+    // ----------------------------
+    // METRICS
+    // ----------------------------
+    match /metrics_rollups/{rollupId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create, update, delete: if isAdmin() && writeSetsOrgCorrectly();
     }
-    
-    // Audit logs - read only for admins
-    match /audit_logs/{logId} {
-      allow read: if isAdmin();
-      allow write: if false; // Only system can write
+
+    // ----------------------------
+    // SEO BOT
+    // ----------------------------
+    match /seo_topics/{topicId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create: if isEditor() && writeSetsOrgCorrectly();
+      allow update: if isEditor() && docBelongsToOrg();
+      allow delete: if isAdmin() && docBelongsToOrg();
     }
-    
-    // Scheduled jobs - admin only
-    match /scheduled_jobs/{jobId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    match /seo_runs/{runId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create, update, delete: if isAdmin() && writeSetsOrgCorrectly();
     }
-    
-    // AI settings - admin only
-    match /ai_settings/{settingId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    match /seo_drafts/{draftId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create: if isEditor() && writeSetsOrgCorrectly();
+      allow update: if isEditor() && docBelongsToOrg();
+      allow delete: if isAdmin() && docBelongsToOrg();
     }
-    
-    // SEO reports - viewer can read, editor can write
-    match /seo_reports/{reportId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    match /seo_publish_manifests/{manifestId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create, update, delete: if isAdmin() && writeSetsOrgCorrectly();
     }
-    
-    // Pages - viewer can read, editor can write
-    match /pages/{pageId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    // ----------------------------
+    // IMAGES
+    // ----------------------------
+    match /images/{imageId} {
+      allow read: if isViewer() && docBelongsToOrg();
+      allow create: if isEditor() && writeSetsOrgCorrectly();
+      allow update, delete: if isAdmin() && docBelongsToOrg();
     }
-    
-    // CSV imports - admin only
-    match /csv_imports/{importId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
-    }
-    
-    // Analytics data - viewer can read, admin can write
-    match /analytics/{docId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
-    }
-    
-    // Settings - admin only
-    match /settings/{settingId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    // ----------------------------
+    // DEFAULT DENY
+    // ----------------------------
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

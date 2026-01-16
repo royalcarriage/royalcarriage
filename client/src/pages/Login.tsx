@@ -1,9 +1,15 @@
-import React, { useState } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState } from "react";
+import { useLocation } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -14,7 +20,7 @@ export default function Login() {
   // Redirect if already logged in
   React.useEffect(() => {
     if (user) {
-      setLocation('/admin');
+      setLocation("/admin");
     }
   }, [user, setLocation]);
 
@@ -23,10 +29,10 @@ export default function Login() {
       setLoading(true);
       setError(null);
       await signInWithGoogle();
-      setLocation('/admin');
+      setLocation("/admin");
     } catch (err: any) {
-      console.error('Login error:', err);
-      setError(err.message || 'Failed to sign in. Please try again.');
+      console.error("Login error:", err);
+      setError(err.message || "Failed to sign in. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -41,7 +47,9 @@ export default function Login() {
               <span className="text-white text-2xl font-bold">RC</span>
             </div>
           </div>
-          <CardTitle className="text-2xl text-center">Royal Carriage Admin</CardTitle>
+          <CardTitle className="text-2xl text-center">
+            Royal Carriage Admin
+          </CardTitle>
           <CardDescription className="text-center">
             Sign in with your Google account to access the admin dashboard
           </CardDescription>

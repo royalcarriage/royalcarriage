@@ -1,4 +1,5 @@
 # Phase 1 Deployment Guide
+
 **Date:** January 15, 2026  
 **Branch:** copilot/build-seo-ads-analytics-system  
 **Status:** Ready for Production Deployment
@@ -10,24 +11,28 @@
 ### ✅ Phase 1: Conversion Blockers Complete
 
 #### 1. Google Analytics 4 Tracking
+
 - **File:** `client/index.html`
 - **Change:** Added GA4 script with measurement ID G-CC67CH86JR
 - **Impact:** Enables conversion tracking, event tracking, and data-driven optimization
 
 #### 2. Trust Signals Above Fold
-- **Files:** 
+
+- **Files:**
   - `client/src/components/TrustSignalsInline.tsx` (NEW)
   - `client/src/components/Hero.tsx` (enhanced)
 - **Change:** Displays ⭐ 4.8/5 rating (200+ reviews), 🚗 15+ vehicles, ✓ Licensed & insured
 - **Impact:** +10-15% estimated conversion boost (credibility)
 
 #### 3. Differentiated Hero Messaging
+
 - **File:** `client/src/pages/Home.tsx`
 - **Before:** "Chicago Airport Car Service – O'Hare & Midway"
 - **After:** "Royal Carriage Airport Service — No Surge Pricing, Guaranteed Pickup"
 - **Impact:** +5-10% estimated conversion (clearer value proposition vs Uber/Lyft)
 
 #### 4. Pricing Anchors
+
 - **File:** `client/src/pages/Pricing.tsx`
 - **Change:** Added transparent sample rates:
   - O'Hare to Downtown: From $85 (Sedan) / $115 (SUV)
@@ -37,6 +42,7 @@
 - **Impact:** +10-20% estimated quote requests (reduces uncertainty)
 
 #### 5. Mobile CTA Bar
+
 - **Status:** Already implemented in previous deployment
 - **File:** `client/src/components/layout/MobileCTABar.tsx`
 - **Impact:** +15-30% mobile conversion (always visible Call + Book buttons)
@@ -44,11 +50,13 @@
 ### 📋 Documentation Added
 
 #### 1. Admin Dashboard Redesign Plan (35 KB)
+
 - **File:** `docs/ADMIN_DASHBOARD_REDESIGN.md`
 - **Contents:** Complete specification for admin dashboard v2 with accordion sidebar, site selector, 7 integrated sections
 - **Purpose:** Blueprint for next 2-4 weeks of admin development
 
 #### 2. Future Builds Integration Plan (19 KB)
+
 - **File:** `docs/FUTURE_BUILDS_INTEGRATION.md`
 - **Contents:** Agent collaboration strategy, dependency graph, handoff protocols
 - **Purpose:** Coordinate work across multiple specialized agents
@@ -56,6 +64,7 @@
 ### 🔧 Build System
 
 #### Build Status:
+
 - ✅ Client build: 3.46s
 - ✅ Server build: 84ms
 - ✅ All tests passing
@@ -64,6 +73,7 @@
 - ✅ Mobile responsive
 
 #### Output:
+
 - `dist/public/` - Client static files
 - `dist/index.cjs` - Server bundle (848.6 KB)
 
@@ -111,7 +121,7 @@ npm run build
 
 ### Option 3: GitHub Actions (Future)
 
-*Not yet configured. See Week 10-12 in Master Roadmap.*
+_Not yet configured. See Week 10-12 in Master Roadmap._
 
 ---
 
@@ -153,6 +163,7 @@ Visit these URLs and verify:
 ### 3. Performance Check
 
 Run Lighthouse audit:
+
 ```bash
 # Install Lighthouse CLI (if not already installed)
 npm install -g lighthouse
@@ -170,6 +181,7 @@ lighthouse https://chicagoairportblackcar.com --view
 ### 4. Mobile Testing
 
 Test on:
+
 - iOS Safari
 - Android Chrome
 - Verify mobile CTA bar appears and functions
@@ -181,6 +193,7 @@ Test on:
 If issues are discovered after deployment:
 
 ### Immediate Rollback:
+
 ```bash
 # Revert to previous commit
 git revert HEAD
@@ -193,6 +206,7 @@ firebase deploy --only hosting
 ```
 
 ### Selective Rollback:
+
 ```bash
 # Revert specific file (e.g., if GA4 has issues)
 git checkout 9dbe612 -- client/index.html
@@ -228,19 +242,20 @@ Monitor these metrics daily:
 
 ### Expected Improvements (Baseline → 30 Days):
 
-| Metric | Baseline | Target | Change |
-|--------|----------|--------|--------|
-| Mobile Conversion Rate | TBD | +20% | +15-30% expected |
-| Desktop Conversion Rate | TBD | +10% | +5-15% expected |
-| Quote Requests | TBD | +15% | +10-20% expected |
-| Bounce Rate | TBD | -10% | Engagement boost |
-| Phone Click-Through | TBD | +25% | Trust signals |
+| Metric                  | Baseline | Target | Change           |
+| ----------------------- | -------- | ------ | ---------------- |
+| Mobile Conversion Rate  | TBD      | +20%   | +15-30% expected |
+| Desktop Conversion Rate | TBD      | +10%   | +5-15% expected  |
+| Quote Requests          | TBD      | +15%   | +10-20% expected |
+| Bounce Rate             | TBD      | -10%   | Engagement boost |
+| Phone Click-Through     | TBD      | +25%   | Trust signals    |
 
 ---
 
 ## Known Issues & Limitations
 
 ### Non-Blocking Issues:
+
 1. ⚠️ **Images not optimized:** 1.5-1.8 MB PNGs still in use
    - **Impact:** LCP 6+ seconds (poor Core Web Vitals)
    - **Solution:** Agent 4 will optimize Week 3-4
@@ -257,6 +272,7 @@ Monitor these metrics daily:
    - **Workaround:** Submit URLs manually in Search Console
 
 ### No Critical Blockers:
+
 All Phase 1 changes are production-ready.
 
 ---
@@ -264,6 +280,7 @@ All Phase 1 changes are production-ready.
 ## Success Criteria
 
 ### Deployment Considered Successful If:
+
 - ✅ Site loads without errors
 - ✅ GA4 tracking active (verified in Realtime report)
 - ✅ All CTAs functional
@@ -275,6 +292,7 @@ All Phase 1 changes are production-ready.
 - ✅ No 404 errors
 
 ### Monitor for 48 Hours:
+
 - Mobile conversion rate trends upward
 - No user complaints
 - No technical errors in logs
@@ -285,6 +303,7 @@ All Phase 1 changes are production-ready.
 ## Next Steps After Deployment
 
 ### Immediate (This Week):
+
 1. ✅ Monitor GA4 for data collection
 2. ✅ Track conversion metrics
 3. ⬜ Import first Moovs + Ads CSV data
@@ -292,11 +311,13 @@ All Phase 1 changes are production-ready.
 5. ⬜ Begin admin dashboard accordion sidebar development
 
 ### Week 2:
+
 1. JSON-LD schema implementation (Agent 5)
 2. XML sitemap generation (Agent 5)
 3. Analytics dashboard CSV upload UI (Agent 2 - me)
 
 ### Week 3-4:
+
 1. Image optimization (Agent 4)
 2. SEO Bot UI (Agent 2 - me)
 3. First content proposals
@@ -308,6 +329,7 @@ All Phase 1 changes are production-ready.
 ### If Deployment Fails:
 
 **Error: "Build failed"**
+
 ```bash
 # Clean and rebuild
 rm -rf dist node_modules
@@ -316,6 +338,7 @@ npm run build
 ```
 
 **Error: "Firebase authentication failed"**
+
 ```bash
 # Re-authenticate
 firebase login
@@ -323,6 +346,7 @@ firebase use royalcarriagelimoseo
 ```
 
 **Error: "Deployment quota exceeded"**
+
 - Wait 24 hours (free tier limit)
 - Or upgrade to Blaze plan
 
@@ -365,9 +389,9 @@ Before marking deployment complete:
 
 ## Deployment Log
 
-| Date | Version | Status | Deployed By | Notes |
-|------|---------|--------|-------------|-------|
-| Jan 15, 2026 | v1.5.0 | ⏳ Pending | Copilot Agent | Phase 1 conversion blockers |
+| Date         | Version | Status     | Deployed By   | Notes                       |
+| ------------ | ------- | ---------- | ------------- | --------------------------- |
+| Jan 15, 2026 | v1.5.0  | ⏳ Pending | Copilot Agent | Phase 1 conversion blockers |
 
 ---
 

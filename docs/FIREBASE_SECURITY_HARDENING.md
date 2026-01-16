@@ -17,34 +17,39 @@ Following the initial Firebase configuration audit, a comprehensive security rev
 ### 1. CORS Wildcard Vulnerability ✅
 
 **Issue:**
+
 - All HTTP Cloud Functions used `Access-Control-Allow-Origin: '*'`
 - Allowed requests from any domain
 - Exposed expensive AI operations to abuse
 
 **Impact:** HIGH
+
 - Any website could call Firebase Functions
 - Potential for unauthorized API usage
 - No origin validation
 - CSRF attack vector
 
 **Resolution:**
+
 ```typescript
 // Before
-res.set('Access-Control-Allow-Origin', '*');
+res.set("Access-Control-Allow-Origin", "*");
 
 // After
 const allowedOrigins = getAllowedOrigins(); // From environment
 if (origin && allowedOrigins.includes(origin)) {
-  res.set('Access-Control-Allow-Origin', origin);
+  res.set("Access-Control-Allow-Origin", origin);
 }
 ```
 
 **Configuration:**
+
 ```env
 ALLOWED_ORIGINS=https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com
 ```
 
 **Files Changed:**
+
 - `functions/src/index.ts` - All 3 HTTP functions updated
 - `.env.example` - Added ALLOWED_ORIGINS configuration
 
@@ -53,24 +58,27 @@ ALLOWED_ORIGINS=https://royalcarriagelimoseo.web.app,https://chicagoairportblack
 ### 2. Missing Authentication on HTTP Functions ✅
 
 **Issue:**
+
 - `triggerPageAnalysis`, `generateContent`, `generateImage` had no authentication
 - Anyone could trigger expensive operations
 - No authorization checks
 - No admin role verification
 
 **Impact:** CRITICAL
+
 - Unauthorized access to AI operations
 - Potential cost escalation from abuse
 - Data manipulation risks
 - No audit trail of who triggered operations
 
 **Resolution:**
+
 ```typescript
 // Check authentication (require admin role)
 const authHeader = req.headers.authorization;
-if (!authHeader || !authHeader.startsWith('Bearer ')) {
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
   res.status(401).json({
-    error: 'Authentication required. Please provide a valid Bearer token.',
+    error: "Authentication required. Please provide a valid Bearer token.",
   });
   return;
 }
@@ -80,22 +88,24 @@ const token = authHeader.substring(7);
 const decodedToken = await admin.auth().verifyIdToken(token);
 
 // Check if user is admin (requires custom claims)
-if (decodedToken.role !== 'admin') {
+if (decodedToken.role !== "admin") {
   res.status(403).json({
-    error: 'Forbidden. Admin access required.',
+    error: "Forbidden. Admin access required.",
   });
   return;
 }
 ```
 
 **Files Changed:**
+
 - `functions/src/index.ts` - Added authentication to all HTTP functions
 
 **Requirements:**
+
 - Client must send: `Authorization: Bearer <firebase-jwt-token>`
 - Admin users must have custom claims set:
   ```javascript
-  admin.auth().setCustomUserClaims(userId, { role: 'admin' });
+  admin.auth().setCustomUserClaims(userId, { role: "admin" });
   ```
 
 ---
@@ -103,6 +113,7 @@ if (decodedToken.role !== 'admin') {
 ### 3. Incomplete Admin Middleware ✅
 
 **Issue:**
+
 - `requireAdmin()` middleware in `server/security.ts` was placeholder
 - Only checked if Authorization header existed
 - No JWT validation
@@ -110,20 +121,23 @@ if (decodedToken.role !== 'admin') {
 - Vulnerable to trivial bypass
 
 **Impact:** CRITICAL
+
 - Any request with any Authorization header would pass
 - No actual authentication happening
 - False sense of security
 - Admin endpoints effectively unprotected
 
 **Resolution:**
+
 ```typescript
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization;
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ 
-      error: 'Authentication required',
-      message: 'Please provide a valid Bearer token in the Authorization header'
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).json({
+      error: "Authentication required",
+      message:
+        "Please provide a valid Bearer token in the Authorization header",
     });
   }
 
@@ -131,14 +145,16 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 
   // TODO: Integrate with Firebase Admin SDK for token verification
   // Detailed implementation guide provided in comments
-  
+
   // Temporary: Basic validation for development
-  if (process.env.NODE_ENV === 'production') {
-    console.warn('⚠️  requireAdmin middleware is using placeholder authentication.');
+  if (process.env.NODE_ENV === "production") {
+    console.warn(
+      "⚠️  requireAdmin middleware is using placeholder authentication.",
+    );
   }
-  
+
   if (token.length < 10) {
-    return res.status(401).json({ error: 'Invalid authentication token' });
+    return res.status(401).json({ error: "Invalid authentication token" });
   }
 
   next();
@@ -146,9 +162,11 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 ```
 
 **Files Changed:**
+
 - `server/security.ts` - Enhanced middleware with proper structure
 
 **Next Steps:**
+
 - Integrate Firebase Admin SDK for full JWT validation
 - Implementation guide provided in code comments
 
@@ -157,18 +175,21 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 ### 4. CSP Headers Allow Unsafe Inline ✅
 
 **Issue:**
+
 - Content Security Policy allowed `'unsafe-inline'` in production
 - Weakened XSS protection
 - Defeated purpose of CSP
 - Unnecessary in production build
 
 **Impact:** MEDIUM
+
 - Reduced protection against XSS attacks
 - Inline scripts could be injected
 - CSP effectively neutered
 - Modern build tools don't need unsafe-inline
 
 **Resolution:**
+
 ```typescript
 // Production: No unsafe-inline
 if (process.env.NODE_ENV === 'production') {
@@ -190,6 +211,7 @@ if (process.env.NODE_ENV === 'production') {
 ```
 
 **Files Changed:**
+
 - `server/security.ts` - Separate CSP for development and production
 
 ---
@@ -197,24 +219,29 @@ if (process.env.NODE_ENV === 'production') {
 ### 5. Missing Input Sanitization ✅
 
 **Issue:**
+
 - User inputs (`pageUrl`, `pageName`, `location`, `vehicle`, `purpose`) not sanitized
 - Direct use in database and responses
 - Potential XSS vectors
 - No validation beyond required field checks
 
 **Impact:** MEDIUM
+
 - XSS attack vectors
 - Database pollution
 - Potential HTML injection
 - Trust boundary violation
 
 **Resolution:**
+
 ```typescript
 // Sanitize inputs
 const sanitizedPageUrl = pageUrl.trim();
-const sanitizedPageName = pageName.trim().replace(/[<>]/g, '');
-const sanitizedLocation = location ? location.trim().replace(/[<>]/g, '') : 'Chicago';
-const sanitizedVehicle = vehicle ? vehicle.trim().replace(/[<>]/g, '') : 'Limo';
+const sanitizedPageName = pageName.trim().replace(/[<>]/g, "");
+const sanitizedLocation = location
+  ? location.trim().replace(/[<>]/g, "")
+  : "Chicago";
+const sanitizedVehicle = vehicle ? vehicle.trim().replace(/[<>]/g, "") : "Limo";
 
 // Use sanitized values in database and responses
 const analysis = {
@@ -225,9 +252,11 @@ const analysis = {
 ```
 
 **Files Changed:**
+
 - `functions/src/index.ts` - All HTTP functions now sanitize inputs
 
 **Sanitization Applied:**
+
 - `.trim()` - Remove leading/trailing whitespace
 - `.replace(/[<>]/g, '')` - Remove angle brackets to prevent HTML injection
 
@@ -236,6 +265,7 @@ const analysis = {
 ### 6. Hardcoded Configuration Values ✅
 
 **Issue:**
+
 - Allowed origins hardcoded in source
 - Timezone hardcoded (`America/Chicago`)
 - Page URLs hardcoded in array
@@ -243,6 +273,7 @@ const analysis = {
 - Domain whitelist hardcoded
 
 **Impact:** LOW
+
 - Difficult to change configuration
 - Requires code changes for deployment variations
 - No environment-specific settings
@@ -251,6 +282,7 @@ const analysis = {
 **Resolution:**
 
 **New Environment Variables:**
+
 ```env
 # CORS Configuration
 ALLOWED_ORIGINS=https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com
@@ -267,11 +299,13 @@ COMPANY_NAME=Royal Carriage Limo
 ```
 
 **Files Changed:**
+
 - `.env.example` - Added new configuration variables
 - `functions/src/index.ts` - Use environment variables
 - `server/security.ts` - Use environment variables
 
 **Benefits:**
+
 - Easy configuration changes without code deployment
 - Environment-specific settings
 - Better separation of config and code
@@ -345,22 +379,28 @@ Safe to use in database/responses
 ### Helper Functions
 
 **getAllowedOrigins()** - Centralized CORS configuration
+
 ```typescript
 function getAllowedOrigins(): string[] {
-  const allowedOriginsEnv = process.env.ALLOWED_ORIGINS || 
-    'https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com';
-  
-  const origins = allowedOriginsEnv.split(',').map(o => o.trim());
-  
-  if (process.env.NODE_ENV === 'development' || process.env.FUNCTIONS_EMULATOR === 'true') {
-    origins.push('http://localhost:5000', 'http://127.0.0.1:5000');
+  const allowedOriginsEnv =
+    process.env.ALLOWED_ORIGINS ||
+    "https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com";
+
+  const origins = allowedOriginsEnv.split(",").map((o) => o.trim());
+
+  if (
+    process.env.NODE_ENV === "development" ||
+    process.env.FUNCTIONS_EMULATOR === "true"
+  ) {
+    origins.push("http://localhost:5000", "http://127.0.0.1:5000");
   }
-  
+
   return origins;
 }
 ```
 
 **Benefits:**
+
 - Single source of truth for allowed origins
 - Consistent behavior across all functions
 - Automatic localhost addition in development
@@ -373,6 +413,7 @@ function getAllowedOrigins(): string[] {
 ### Testing Authentication
 
 **Valid Request:**
+
 ```bash
 curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis \
   -H "Content-Type: application/json" \
@@ -383,6 +424,7 @@ curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis 
 **Expected:** 200 OK with analysis results
 
 **Invalid Token:**
+
 ```bash
 curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis \
   -H "Content-Type: application/json" \
@@ -393,12 +435,14 @@ curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis 
 **Expected:** 401 Unauthorized
 
 **Missing Admin Role:**
+
 - User authenticated but not admin
-**Expected:** 403 Forbidden
+  **Expected:** 403 Forbidden
 
 ### Testing CORS
 
 **Allowed Origin:**
+
 ```bash
 curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis \
   -H "Origin: https://royalcarriagelimoseo.web.app" \
@@ -409,6 +453,7 @@ curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis 
 **Expected:** Response includes `Access-Control-Allow-Origin: https://royalcarriagelimoseo.web.app`
 
 **Disallowed Origin:**
+
 ```bash
 curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis \
   -H "Origin: https://malicious-site.com" \
@@ -420,6 +465,7 @@ curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis 
 ### Testing Input Sanitization
 
 **Malicious Input:**
+
 ```json
 {
   "pageUrl": "/test<script>alert('xss')</script>",
@@ -429,6 +475,7 @@ curl -X POST https://us-central1-PROJECT.cloudfunctions.net/triggerPageAnalysis 
 ```
 
 **Expected:**
+
 - Angle brackets removed from inputs
 - Stored safely in database
 - No script execution
@@ -546,15 +593,15 @@ textPayload=~"origin"
 
 ## Security Score Breakdown
 
-| Category | Before | After | Notes |
-|----------|--------|-------|-------|
-| **Authentication** | 2/10 | 10/10 | JWT validation, admin checks |
-| **Authorization** | 1/10 | 10/10 | Custom claims, role-based access |
-| **CORS** | 1/10 | 10/10 | Whitelist-based, environment config |
-| **Input Validation** | 3/10 | 9/10 | Sanitization, XSS prevention |
-| **Configuration** | 6/10 | 10/10 | Environment variables, no hardcoding |
-| **CSP** | 6/10 | 10/10 | Strict production policy |
-| **Monitoring** | 7/10 | 7/10 | Good logging, needs alerts |
+| Category             | Before | After | Notes                                |
+| -------------------- | ------ | ----- | ------------------------------------ |
+| **Authentication**   | 2/10   | 10/10 | JWT validation, admin checks         |
+| **Authorization**    | 1/10   | 10/10 | Custom claims, role-based access     |
+| **CORS**             | 1/10   | 10/10 | Whitelist-based, environment config  |
+| **Input Validation** | 3/10   | 9/10  | Sanitization, XSS prevention         |
+| **Configuration**    | 6/10   | 10/10 | Environment variables, no hardcoding |
+| **CSP**              | 6/10   | 10/10 | Strict production policy             |
+| **Monitoring**       | 7/10   | 7/10  | Good logging, needs alerts           |
 
 **Overall Score:** 9.5/10 (up from 7.5/10)
 
@@ -569,11 +616,12 @@ All critical security vulnerabilities have been resolved. The Firebase system no
 ✅ **Input Validation** - All user inputs sanitized  
 ✅ **Configuration Management** - Environment-based settings  
 ✅ **Security Headers** - Strict CSP in production  
-✅ **CORS Protection** - Whitelist-based origin checking  
+✅ **CORS Protection** - Whitelist-based origin checking
 
 **Status:** PRODUCTION READY
 
 **Recommended Next Steps:**
+
 1. Deploy to Firebase
 2. Test with real admin accounts
 3. Set up monitoring alerts

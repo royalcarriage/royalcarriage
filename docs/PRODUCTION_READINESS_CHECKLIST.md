@@ -186,11 +186,13 @@ Complete checklist to ensure the AI Image Generation system is production-ready.
 ### Deployment (T-0)
 
 - [ ] Run deployment readiness check
+
   ```bash
   ./script/check-deployment-readiness.sh
   ```
 
 - [ ] Deploy to production
+
   ```bash
   ./script/deploy.sh
   ```
@@ -289,16 +291,19 @@ Complete checklist to ensure the AI Image Generation system is production-ready.
 ### Issue: High Error Rate
 
 **Symptoms:**
+
 - Many failed image generation requests
 - Error rate >5%
 
 **Investigation:**
+
 1. Check Cloud Error Reporting
 2. Verify Vertex AI API status
 3. Check service account permissions
 4. Review recent configuration changes
 
 **Resolution:**
+
 1. Rollback if recent deployment
 2. Enable fallback behavior
 3. Check API quotas
@@ -307,16 +312,19 @@ Complete checklist to ensure the AI Image Generation system is production-ready.
 ### Issue: Slow Performance
 
 **Symptoms:**
+
 - Image generation taking >30 seconds
 - Users complaining about delays
 
 **Investigation:**
+
 1. Check Cloud Trace for bottlenecks
 2. Review function memory allocation
 3. Check cold start frequency
 4. Analyze Vertex AI API latency
 
 **Resolution:**
+
 1. Increase function memory
 2. Implement keep-alive for warm functions
 3. Optimize prompt generation
@@ -325,16 +333,19 @@ Complete checklist to ensure the AI Image Generation system is production-ready.
 ### Issue: Budget Exceeded
 
 **Symptoms:**
+
 - Cost alerts triggered
 - Unexpected billing
 
 **Investigation:**
+
 1. Review usage patterns in BigQuery
 2. Check for API call spikes
 3. Verify rate limiting working
 4. Identify cost drivers
 
 **Resolution:**
+
 1. Enable stricter rate limiting
 2. Implement additional cost controls
 3. Optimize API usage
