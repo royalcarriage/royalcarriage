@@ -1,0 +1,52 @@
+{
+  "topics": [
+    {
+      "id": "topic-001",
+      "keyword": "Chicago airport limo service",
+      "intent": "commercial",
+      "profitScore": 95,
+      "estimatedTraffic": 1200,
+      "difficulty": 45,
+      "priority": "high",
+      "status": "queued",
+      "targetSite": "airport",
+      "createdAt": "2026-01-16T00:00:00Z"
+    },
+    {
+      "id": "topic-002",
+      "keyword": "O'Hare airport transportation",
+      "intent": "commercial",
+      "profitScore": 92,
+      "estimatedTraffic": 850,
+      "difficulty": 42,
+      "priority": "high",
+      "status": "queued",
+      "targetSite": "airport",
+      "createdAt": "2026-01-16T00:00:00Z"
+    },
+    {
+      "id": "topic-003",
+      "keyword": "party bus rental Chicago",
+      "intent": "commercial",
+      "profitScore": 88,
+      "estimatedTraffic": 650,
+      "difficulty": 38,
+      "priority": "medium",
+      "status": "queued",
+      "targetSite": "partybus",
+      "createdAt": "2026-01-16T00:00:00Z"
+    },
+    {
+      "id": "topic-004",
+      "keyword": "corporate transportation Chicago",
+      "intent": "commercial",
+      "profitScore": 85,
+      "estimatedTraffic": 400,
+      "difficulty": 35,
+      "priority": "high",
+      "status": "queued",
+      "targetSite": "airport",
+      "createdAt": "2026-01-16T00:30:21.531Z"
+    }
+  ]
+}
