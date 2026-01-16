@@ -1,6 +1,7 @@
 # STATUS (2026-01-15)
 
 ## Timeline
+
 - 09:02 UTC: Initialized autonomous audit run. Created `.agent/logs`, `.agent/artifacts`, `.agent/artifacts/archived-docs`.
 - 09:03 UTC: Synced to `origin/main` on branch `merge/consolidation-2026-01-15`; working tree clean; stashes preserved from earlier work.
 - 09:05 UTC: Generated repo map (`.agent/artifacts/repo-map.md`) after surveying apps/packages/scripts/frameworks/Firebase configs.
@@ -16,4 +17,5 @@
 - 10:00 UTC: Firebase dry-run `firebase deploy --only firestore:rules,storage --dry-run` ✅; preview deploy `hosting:channel:deploy canary-1768485534` ✅ (URL: https://royalcarriagelimoseo--canary-1768485534-berzffmk.web.app); production deploy hosting+rules ✅; functions deploy ✅ after fixing predeploy (npx tsc + postbuild copy). Functions.config deprecation notice logged (migrate to params).
 
 ## Notes
+
 - Pending: repo mapping, MD audit, gates, Firebase/GCP verification, deploy steps.

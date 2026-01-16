@@ -1,24 +1,65 @@
 {
-  "hosting": {
-    "public": "dist/public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  },
+  "hosting": [
+    {
+      "target": "admin",
+      "public": "dist/public",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "airport",
+      "public": "apps/airport/dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "partybus",
+      "public": "apps/partybus/dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "corporate",
+      "public": "apps/corporate/dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    },
+    {
+      "target": "wedding",
+      "public": "apps/wedding/dist",
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ]
+    }
+  ],
   "functions": {
     "source": "functions",
     "runtime": "nodejs20",
-    "predeploy": [
-      "cd functions && npx tsc"
-    ]
+    "predeploy": ["cd functions && npx tsc"]
   },
   "firestore": {
     "rules": "firestore.rules",

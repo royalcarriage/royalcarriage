@@ -3,15 +3,18 @@
  * Displays metrics, keyword clusters, and ROI reports
  */
 
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Upload, FileText, TrendingUp, DollarSign } from 'lucide-react';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Upload, FileText, TrendingUp, DollarSign } from "lucide-react";
 
 export function AnalyticsDashboard() {
   const [uploading, setUploading] = useState(false);
-  const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [uploadStatus, setUploadStatus] = useState<string>("");
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, type: string) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    type: string,
+  ) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
 
@@ -20,24 +23,28 @@ export function AnalyticsDashboard() {
 
     // Simulate upload (in production, this would send to API)
     setTimeout(() => {
-      setUploadStatus(`${type} files uploaded successfully! Run metrics import to process.`);
+      setUploadStatus(
+        `${type} files uploaded successfully! Run metrics import to process.`,
+      );
       setUploading(false);
     }, 2000);
   };
 
   const handleMetricsImport = () => {
-    setUploadStatus('Running metrics import... This may take a minute.');
-    
+    setUploadStatus("Running metrics import... This may take a minute.");
+
     // In production, this would trigger the metrics-import.mjs script via API
     setTimeout(() => {
-      setUploadStatus('Metrics import complete! Reports generated.');
+      setUploadStatus("Metrics import complete! Reports generated.");
     }, 3000);
   };
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold text-foreground mb-2">Analytics & ROI</h2>
+        <h2 className="text-2xl font-bold text-foreground mb-2">
+          Analytics & ROI
+        </h2>
         <p className="text-muted-foreground">
           Upload CSV exports, run metrics import, and view ROI reports
         </p>
@@ -52,14 +59,16 @@ export function AnalyticsDashboard() {
             </div>
             <div>
               <h3 className="font-semibold text-foreground">Google Ads CSVs</h3>
-              <p className="text-sm text-muted-foreground">Search keyword reports</p>
+              <p className="text-sm text-muted-foreground">
+                Search keyword reports
+              </p>
             </div>
           </div>
           <input
             type="file"
             accept=".csv,.tsv"
             multiple
-            onChange={(e) => handleFileUpload(e, 'Google Ads')}
+            onChange={(e) => handleFileUpload(e, "Google Ads")}
             className="block w-full text-sm text-muted-foreground
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -78,14 +87,16 @@ export function AnalyticsDashboard() {
             </div>
             <div>
               <h3 className="font-semibold text-foreground">Moovs CSVs</h3>
-              <p className="text-sm text-muted-foreground">Reservation exports</p>
+              <p className="text-sm text-muted-foreground">
+                Reservation exports
+              </p>
             </div>
           </div>
           <input
             type="file"
             accept=".csv"
             multiple
-            onChange={(e) => handleFileUpload(e, 'Moovs')}
+            onChange={(e) => handleFileUpload(e, "Moovs")}
             className="block w-full text-sm text-muted-foreground
               file:mr-4 file:py-2 file:px-4
               file:rounded-md file:border-0
@@ -100,10 +111,20 @@ export function AnalyticsDashboard() {
 
       {/* Status Message */}
       {uploadStatus && (
-        <div className={`border rounded-lg p-4 ${
-          uploadStatus.includes('complete') ? 'bg-green-500/10 border-green-500/20' : 'bg-blue-500/10 border-blue-500/20'
-        }`}>
-          <p className={uploadStatus.includes('complete') ? 'text-green-600' : 'text-blue-600'}>
+        <div
+          className={`border rounded-lg p-4 ${
+            uploadStatus.includes("complete")
+              ? "bg-green-500/10 border-green-500/20"
+              : "bg-blue-500/10 border-blue-500/20"
+          }`}
+        >
+          <p
+            className={
+              uploadStatus.includes("complete")
+                ? "text-green-600"
+                : "text-blue-600"
+            }
+          >
             {uploadStatus}
           </p>
         </div>
@@ -111,11 +132,7 @@ export function AnalyticsDashboard() {
 
       {/* Import Button */}
       <div className="flex gap-4">
-        <Button 
-          onClick={handleMetricsImport}
-          disabled={uploading}
-          size="lg"
-        >
+        <Button onClick={handleMetricsImport} disabled={uploading} size="lg">
           <TrendingUp className="w-4 h-4 mr-2" />
           Run Metrics Import
         </Button>
@@ -129,16 +146,22 @@ export function AnalyticsDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="border border-border rounded-lg p-6 bg-card">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-muted-foreground">Ad Spend (30d)</h4>
+            <h4 className="text-sm font-medium text-muted-foreground">
+              Ad Spend (30d)
+            </h4>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground">$8,400</p>
-          <p className="text-xs text-muted-foreground mt-1">Last import: 2 days ago</p>
+          <p className="text-xs text-muted-foreground mt-1">
+            Last import: 2 days ago
+          </p>
         </div>
 
         <div className="border border-border rounded-lg p-6 bg-card">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-muted-foreground">Revenue (30d)</h4>
+            <h4 className="text-sm font-medium text-muted-foreground">
+              Revenue (30d)
+            </h4>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground">$47,350</p>
@@ -147,7 +170,9 @@ export function AnalyticsDashboard() {
 
         <div className="border border-border rounded-lg p-6 bg-card">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="text-sm font-medium text-muted-foreground">Profit Proxy (30d)</h4>
+            <h4 className="text-sm font-medium text-muted-foreground">
+              Profit Proxy (30d)
+            </h4>
             <DollarSign className="w-4 h-4 text-muted-foreground" />
           </div>
           <p className="text-2xl font-bold text-foreground">$12,840</p>
@@ -157,9 +182,12 @@ export function AnalyticsDashboard() {
 
       {/* Placeholder for future sections */}
       <div className="border border-dashed border-border rounded-lg p-8 text-center bg-accent/50">
-        <h3 className="font-semibold text-foreground mb-2">Keyword Clusters & Top 100</h3>
+        <h3 className="font-semibold text-foreground mb-2">
+          Keyword Clusters & Top 100
+        </h3>
         <p className="text-sm text-muted-foreground mb-4">
-          After running metrics import, keyword clustering and top 100 report will appear here.
+          After running metrics import, keyword clustering and top 100 report
+          will appear here.
         </p>
         <Button variant="outline">View Example Reports</Button>
       </div>

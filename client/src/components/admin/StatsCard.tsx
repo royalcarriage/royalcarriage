@@ -75,7 +75,7 @@ export function StatsCard({
               <span
                 className={cn(
                   "flex items-center gap-0.5 text-xs font-medium",
-                  getTrendColor()
+                  getTrendColor(),
                 )}
               >
                 {getTrendIcon()}
@@ -98,7 +98,11 @@ interface StatsGridProps {
   className?: string;
 }
 
-export function StatsGrid({ children, columns = 4, className }: StatsGridProps) {
+export function StatsGrid({
+  children,
+  columns = 4,
+  className,
+}: StatsGridProps) {
   const gridCols = {
     2: "grid-cols-1 sm:grid-cols-2",
     3: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",

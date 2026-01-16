@@ -4,7 +4,10 @@ import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { Eye, Edit, Trash2, Building2, Phone, Mail, Plus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -86,13 +89,16 @@ const customers: Customer[] = [
 ];
 
 const statusColors: Record<Customer["status"], string> = {
-  active: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  active:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
   inactive: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
 };
 
 const typeColors: Record<Customer["type"], string> = {
-  individual: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
-  corporate: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
+  individual:
+    "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
+  corporate:
+    "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400",
 };
 
 const columns: Column<Customer>[] = [
@@ -186,7 +192,7 @@ const columns: Column<Customer>[] = [
 
 export default function CustomersPage() {
   const { toast } = useToast();
-  
+
   const handleAddCustomer = () => {
     toast({
       title: "Add Customer",

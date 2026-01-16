@@ -2,21 +2,27 @@ import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Hero } from "@/components/Hero";
 import { Button } from "@/components/ui/button";
-import { 
-  Accordion, 
-  AccordionContent, 
-  AccordionItem, 
-  AccordionTrigger 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Check, Phone, Calendar } from "lucide-react";
 import { Link } from "wouter";
-import { LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/JsonLdSchema";
+import {
+  LocalBusinessSchema,
+  ServiceSchema,
+  FAQSchema,
+  BreadcrumbSchema,
+} from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
 const PHONE_TEL = "tel:+12248013090";
 const PHONE_DISPLAY = "(224) 801-3090";
-const BOOKING_URL = "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
+const BOOKING_URL =
+  "https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=airport&utm_medium=seo&utm_campaign=microsites";
 
 const arrivalsBullets = [
   "Curbside or inside baggage claim pickup",
@@ -50,7 +56,8 @@ const faqItems = [
   },
   {
     question: "Can you handle group arrivals?",
-    answer: "Yes. Sprinters and multiple vehicles are available with coordinated staging.",
+    answer:
+      "Yes. Sprinters and multiple vehicles are available with coordinated staging.",
   },
   {
     question: "Do you serve FBOs?",
@@ -70,11 +77,18 @@ const faqItems = [
   },
   {
     question: "Are gratuities included?",
-    answer: "Quote-based; gratuity can be included or added per rider preference.",
+    answer:
+      "Quote-based; gratuity can be included or added per rider preference.",
   },
 ];
 
-function DualCTAs({ callTestId, bookTestId }: { callTestId: string; bookTestId: string }) {
+function DualCTAs({
+  callTestId,
+  bookTestId,
+}: {
+  callTestId: string;
+  bookTestId: string;
+}) {
   return (
     <div className="flex flex-col sm:flex-row gap-4">
       <Button asChild size="lg" data-testid={callTestId}>
@@ -111,24 +125,35 @@ function BulletList({ items }: { items: string[] }) {
 export default function OHareAirport() {
   return (
     <Layout>
-      <SEO 
+      <SEO
         title="O'Hare Airport Limo Service (ORD)"
         description="Professional black car service to Chicago O'Hare International Airport (ORD). Flight tracking, meet & greet, curbside pickup. Licensed chauffeurs and flat-rate pricing. Call (224) 801-3090."
         path="/ohare-airport-limo"
       />
       <LocalBusinessSchema />
-      <ServiceSchema 
+      <ServiceSchema
         name="O'Hare Airport Limousine Service"
         description="Professional black car and limousine service to Chicago O'Hare International Airport (ORD). Flight tracking, meet and greet, curbside pickup with flat-rate pricing."
         serviceType="Airport Transfer Service"
-        areaServed={["Chicago", "O'Hare", "Rosemont", "Des Plaines", "Park Ridge"]}
+        areaServed={[
+          "Chicago",
+          "O'Hare",
+          "Rosemont",
+          "Des Plaines",
+          "Park Ridge",
+        ]}
         url="https://chicagoairportblackcar.com/ohare-airport-limo"
       />
       <FAQSchema questions={faqItems} />
-      <BreadcrumbSchema items={[
-        { name: "Home", url: "https://chicagoairportblackcar.com" },
-        { name: "O'Hare Airport", url: "https://chicagoairportblackcar.com/ohare-airport-limo" }
-      ]} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: "https://chicagoairportblackcar.com" },
+          {
+            name: "O'Hare Airport",
+            url: "https://chicagoairportblackcar.com/ohare-airport-limo",
+          },
+        ]}
+      />
       <Hero
         title="O'Hare Airport Limo Service (ORD)"
         subtitle="Private car service to and from Chicago O'Hare. Professional chauffeurs, real-time flight tracking, and flat-rate pricing."
@@ -147,11 +172,18 @@ export default function OHareAirport() {
               ORD arrivals made simple
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              Skip the taxi line and rideshare surge. Your chauffeur tracks your flight and waits curbside or meets you inside baggage claim—whichever you prefer. Whether you're landing at Terminal 1, 2, 3, or International Terminal 5, we handle the logistics so you can focus on what's next.
+              Skip the taxi line and rideshare surge. Your chauffeur tracks your
+              flight and waits curbside or meets you inside baggage
+              claim—whichever you prefer. Whether you're landing at Terminal 1,
+              2, 3, or International Terminal 5, we handle the logistics so you
+              can focus on what's next.
             </p>
-            
+
             <BulletList items={arrivalsBullets} />
-            <DualCTAs callTestId="button-ohare-arrivals-call" bookTestId="button-ohare-arrivals-book" />
+            <DualCTAs
+              callTestId="button-ohare-arrivals-call"
+              bookTestId="button-ohare-arrivals-book"
+            />
           </div>
         </div>
       </section>
@@ -163,11 +195,21 @@ export default function OHareAirport() {
               Premium vehicles for every itinerary
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              From executive sedans for quick downtown trips to Sprinter vans for corporate groups, our <Link href="/fleet" className="text-foreground underline">fleet</Link> matches your travel style. Every vehicle is late-model, immaculately maintained, and stocked with bottled water and phone chargers.
+              From executive sedans for quick downtown trips to Sprinter vans
+              for corporate groups, our{" "}
+              <Link href="/fleet" className="text-foreground underline">
+                fleet
+              </Link>{" "}
+              matches your travel style. Every vehicle is late-model,
+              immaculately maintained, and stocked with bottled water and phone
+              chargers.
             </p>
-            
+
             <BulletList items={vehiclesBullets} />
-            <DualCTAs callTestId="button-ohare-vehicles-call" bookTestId="button-ohare-vehicles-book" />
+            <DualCTAs
+              callTestId="button-ohare-vehicles-call"
+              bookTestId="button-ohare-vehicles-book"
+            />
           </div>
         </div>
       </section>
@@ -179,11 +221,21 @@ export default function OHareAirport() {
               Why reserve a private car for ORD?
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-              O'Hare is one of the busiest airports in the world. Rideshare pickups can take 20+ minutes during peak hours, and taxis add stress you don't need after a long flight. Our reservation-first model means your driver is confirmed before you land. Check our <Link href="/pricing" className="text-foreground underline">pricing</Link> for transparent, flat-rate quotes.
+              O'Hare is one of the busiest airports in the world. Rideshare
+              pickups can take 20+ minutes during peak hours, and taxis add
+              stress you don't need after a long flight. Our reservation-first
+              model means your driver is confirmed before you land. Check our{" "}
+              <Link href="/pricing" className="text-foreground underline">
+                pricing
+              </Link>{" "}
+              for transparent, flat-rate quotes.
             </p>
-            
+
             <BulletList items={whyReserveBullets} />
-            <DualCTAs callTestId="button-ohare-why-call" bookTestId="button-ohare-why-book" />
+            <DualCTAs
+              callTestId="button-ohare-why-call"
+              bookTestId="button-ohare-why-book"
+            />
           </div>
         </div>
       </section>
@@ -196,7 +248,11 @@ export default function OHareAirport() {
             </h2>
             <Accordion type="single" collapsible className="w-full">
               {faqItems.map((item, index) => (
-                <AccordionItem key={index} value={`item-${index}`} data-testid={`faq-item-${index}`}>
+                <AccordionItem
+                  key={index}
+                  value={`item-${index}`}
+                  data-testid={`faq-item-${index}`}
+                >
                   <AccordionTrigger className="text-left text-foreground">
                     {item.question}
                   </AccordionTrigger>
@@ -206,12 +262,19 @@ export default function OHareAirport() {
                 </AccordionItem>
               ))}
             </Accordion>
-            
+
             <div className="mt-8 pt-8 border-t border-border">
               <p className="text-muted-foreground mb-6">
-                Have more questions? <Link href="/contact" className="text-foreground underline">Contact us</Link> or call directly.
+                Have more questions?{" "}
+                <Link href="/contact" className="text-foreground underline">
+                  Contact us
+                </Link>{" "}
+                or call directly.
               </p>
-              <DualCTAs callTestId="button-ohare-faq-call" bookTestId="button-ohare-faq-book" />
+              <DualCTAs
+                callTestId="button-ohare-faq-call"
+                bookTestId="button-ohare-faq-book"
+              />
             </div>
           </div>
         </div>

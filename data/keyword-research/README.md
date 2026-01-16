@@ -7,9 +7,11 @@ This directory contains keyword research data from tools like Google Keyword Pla
 Place your keyword research data exports here. The metrics import script will process them for SEO content prioritization.
 
 ### 1. Keyword List with Search Volume
+
 **File naming:** `keyword-research_*.xlsx` or `keywords_*.csv`
 
 **Required Columns:**
+
 - `Keyword` or `Search Term`
 - `Search Volume` or `Avg. Monthly Searches`
 - `Competition` or `Keyword Difficulty` (optional)
@@ -19,6 +21,7 @@ Place your keyword research data exports here. The metrics import script will pr
 **How to Generate:**
 
 #### Option 1: Google Keyword Planner
+
 1. Google Ads → Tools → Keyword Planner
 2. "Discover new keywords" OR "Get search volume"
 3. Enter seed keywords:
@@ -31,12 +34,15 @@ Place your keyword research data exports here. The metrics import script will pr
 4. Export results (CSV or Excel)
 
 #### Option 2: SEMrush / Ahrefs
+
 1. Enter competitor domain or seed keyword
 2. Export "Keyword Magic Tool" or "Keyword Explorer" results
 3. Filter to relevant keywords (location: Chicago/Illinois)
 
 #### Option 3: Manual Research
+
 Create CSV with keywords + estimated volume:
+
 ```csv
 Keyword,Search Volume,Intent,Notes
 "ohare airport limo",2400,transactional,High-intent airport keyword
@@ -50,6 +56,7 @@ Keyword,Search Volume,Intent,Notes
 ## Data Format Notes
 
 ### Expected Excel/CSV Format:
+
 ```csv
 Keyword,Avg. monthly searches,Competition,Top of page bid (low range),Top of page bid (high range)
 "ohare airport car service",720,Medium,$3.50,$8.20
@@ -58,6 +65,7 @@ Keyword,Avg. monthly searches,Competition,Top of page bid (low range),Top of pag
 ```
 
 **Notes:**
+
 - Excel (.xlsx) files are auto-detected and parsed
 - CSV files work too
 - Commas in numbers (1,300) are handled automatically
@@ -106,6 +114,7 @@ The importer automatically clusters keywords by intent:
    - Landing pages: chicagoairportblackcar.com → / (covers all services)
 
 ### Clustering Logic:
+
 - **Manual tagging:** Add "Intent" column with cluster name
 - **Automatic detection:** Script uses keyword patterns to infer intent
   - Contains "ohare" or "ord" → airport_ohare
@@ -118,6 +127,7 @@ The importer automatically clusters keywords by intent:
 The `scripts/metrics-import.mjs` script generates:
 
 1. **`/packages/content/metrics/keyword_clusters.json`**
+
    ```json
    {
      "airport_ohare": {
@@ -137,7 +147,7 @@ The `scripts/metrics-import.mjs` script generates:
 
 2. **`/reports/keyword-top100.md`**
    - Top 100 non-brand keywords
-   - Sorted by profit proxy (volume * CPC * estimated conversion rate)
+   - Sorted by profit proxy (volume _ CPC _ estimated conversion rate)
    - Labeled SCALE (profitable) or FIX (low ROI)
 
 3. **`/packages/content/ads_landing_page_matrix.csv`**
@@ -152,6 +162,7 @@ The `scripts/metrics-import.mjs` script generates:
 If you don't have real keyword data yet, use this starter list:
 
 **`keyword-research_sample.csv`:**
+
 ```csv
 Keyword,Avg. monthly searches,Competition,CPC,Intent
 "ohare airport limo",720,Medium,6.50,transactional
@@ -169,6 +180,7 @@ Keyword,Avg. monthly searches,Competition,CPC,Intent
 ```
 
 Then run:
+
 ```bash
 npm run metrics:import
 ```
@@ -176,6 +188,7 @@ npm run metrics:import
 ## Keyword Research Best Practices
 
 ### Seed Keywords to Start:
+
 - **Airport:** ohare airport limo, midway airport limo, chicago airport car service
 - **Corporate:** executive car service, corporate transportation, hourly chauffeur
 - **Events:** party bus rental, wedding transportation, prom limo
@@ -183,12 +196,14 @@ npm run metrics:import
 - **Geographic:** chicago limo, naperville car service, schaumburg transportation
 
 ### Filters to Apply:
+
 - **Location:** Chicago, Illinois, or remove location filter for broader view
 - **Competition:** Medium to High (indicates commercial intent)
 - **Search Volume:** >100/month (lower can still work for long-tail)
 - **CPC:** >$2.00 (indicates commercial value)
 
 ### Avoid:
+
 - ❌ Non-commercial keywords ("how to drive a limo")
 - ❌ Too broad ("transportation")
 - ❌ Competitor brand names (unless you're bidding on them)
@@ -196,7 +211,8 @@ npm run metrics:import
 
 ## Privacy & Security
 
-⚠️ **IMPORTANT:** 
+⚠️ **IMPORTANT:**
+
 - Keyword research data has no PII, safe to commit sample data
 - Real exports may include your Google Ads account info (redact if needed)
 - Do NOT commit API keys if using programmatic keyword tools

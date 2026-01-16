@@ -1,5 +1,26 @@
 {
   "projects": {
     "default": "royalcarriagelimoseo"
+  },
+  "targets": {
+    "royalcarriagelimoseo": {
+      "hosting": {
+        "admin": [
+          "royalcarriagelimoseo"
+        ],
+        "airport": [
+          "airport-royalcarriage"
+        ],
+        "partybus": [
+          "partybus-royalcarriage"
+        ],
+        "corporate": [
+          "corporate-royalcarriage"
+        ],
+        "wedding": [
+          "wedding-royalcarriage"
+        ]
+      }
+    }
   }
 }

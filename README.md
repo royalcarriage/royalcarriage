@@ -6,9 +6,10 @@ Professional airport transportation serving Chicago O'Hare, Midway, and 80+ subu
 
 ## 🚀 NEW: AI-Powered Website Management System
 
-This repository now includes a comprehensive AI-powered system for automated SEO optimization, content generation, and website analytics. 
+This repository now includes a comprehensive AI-powered system for automated SEO optimization, content generation, and website analytics.
 
 **Key Features:**
+
 - 🤖 AI Page Analyzer with SEO scoring
 - ✍️ Automated content generation using Google Vertex AI
 - 🖼️ AI-powered image generation
@@ -17,6 +18,7 @@ This repository now includes a comprehensive AI-powered system for automated SEO
 - 🔒 Secure Firebase integration with role-based access
 
 **Quick Access:**
+
 - Admin Dashboard: `https://your-domain.com/admin`
 - [AI System Guide](docs/AI_SYSTEM_GUIDE.md) - Complete documentation
 - [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Setup instructions
@@ -61,6 +63,7 @@ npm run check
 ```
 
 Build output:
+
 - Client: `dist/public/` (ready for Firebase Hosting)
 - Server: `dist/index.cjs` (Express server bundle)
 
@@ -87,13 +90,40 @@ royalcarriage/
 
 ## Key Commands
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server with HMR |
-| `npm run build` | Build for production |
-| `npm run check` | TypeScript type checking |
-| `npm test` | Run smoke tests |
+| Command           | Description                        |
+| ----------------- | ---------------------------------- |
+| `npm run dev`     | Start development server with HMR  |
+| `npm run build`   | Build for production               |
+| `npm run check`   | TypeScript type checking           |
+| `npm test`        | Run smoke tests                    |
 | `npm run db:push` | Push database schema (Drizzle ORM) |
+
+## SEO Automation Scripts
+
+The project includes a comprehensive SEO content automation pipeline:
+
+```bash
+# Propose new content topics
+node scripts/seo-propose.mjs --keyword "topic" --profit 90 --traffic 500 --difficulty 40
+
+# Generate AI-powered content drafts
+node scripts/seo-draft.mjs --all
+
+# Run quality validation gates
+node scripts/seo-gate.mjs --all
+
+# Publish content via PR workflow
+node scripts/seo-publish.mjs --draft topic-001-keyword.json
+
+# Run full pipeline
+node scripts/seo-run.mjs --run --auto-publish
+```
+
+For detailed documentation, see **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** or run:
+
+```bash
+node scripts/seo-example-workflow.mjs
+```
 
 ## Documentation
 
@@ -103,13 +133,16 @@ royalcarriage/
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 - **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
+- **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** - Content automation pipeline documentation
 - **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
 - **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
 
 ## AI Features
 
 ### Admin Dashboard
+
 Access the AI-powered admin dashboard at `/admin` to:
+
 - Analyze all website pages for SEO optimization
 - Generate AI-powered content improvements
 - Create AI-generated images
@@ -117,6 +150,7 @@ Access the AI-powered admin dashboard at `/admin` to:
 - Configure automation settings
 
 ### API Endpoints
+
 - `POST /api/ai/analyze-page` - Analyze a page for SEO
 - `POST /api/ai/generate-content` - Generate optimized content
 - `POST /api/ai/generate-image` - Create AI images
@@ -124,6 +158,7 @@ Access the AI-powered admin dashboard at `/admin` to:
 - `GET /api/ai/health` - Check AI services status
 
 ### Scheduled Tasks
+
 - **Daily Analysis**: 2:00 AM CT - Analyzes all pages automatically
 - **Weekly Reports**: Monday 9:00 AM CT - Generates SEO reports
 

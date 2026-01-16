@@ -1,4 +1,5 @@
 # Technical SEO Audit — Royal Carriage Primary Site
+
 **Audit Date:** January 15, 2026  
 **Site:** chicagoairportblackcar.com  
 **Framework:** React SPA (Vite + Wouter)  
@@ -13,6 +14,7 @@
 The site has basic SEO components (title, meta description, canonical) but lacks critical elements for competitive ranking: structured data (JSON-LD), XML sitemap, proper heading hierarchy, internal linking strategy, and content depth. Before scaling to 4 sites or generating hundreds of SEO pages, these foundational issues must be fixed.
 
 **Critical Issues:**
+
 - ❌ No JSON-LD structured data (Schema.org)
 - ❌ No XML sitemap generation
 - ❌ No internal linking strategy
@@ -51,6 +53,7 @@ export function SEO({ title, description, path = "/", type = "website", noindex 
 ```
 
 ### What's Good:
+
 - ✅ Title tag implementation
 - ✅ Meta description
 - ✅ Canonical URL (correct domain)
@@ -58,6 +61,7 @@ export function SEO({ title, description, path = "/", type = "website", noindex 
 - ✅ Robots meta control
 
 ### What's Missing:
+
 - ❌ **Open Graph image** (`og:image`) - Critical for social sharing
 - ❌ **Twitter Card tags** (`twitter:card`, `twitter:title`, etc.)
 - ❌ **og:site_name** property
@@ -68,11 +72,11 @@ export function SEO({ title, description, path = "/", type = "website", noindex 
 ### Recommended SEO Component Enhancement:
 
 ```typescript
-export function SEO({ 
-  title, 
-  description, 
-  path = "/", 
-  type = "website", 
+export function SEO({
+  title,
+  description,
+  path = "/",
+  type = "website",
   noindex = false,
   image = "/og-image.jpg", // NEW
   schema = null // NEW - JSON-LD object
@@ -88,7 +92,7 @@ export function SEO({
       <title>{fullTitle}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={fullUrl} />
-      
+
       {/* Open Graph (Facebook, LinkedIn) */}
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
@@ -98,21 +102,21 @@ export function SEO({
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
       <meta property="og:site_name" content="Royal Carriage Limousine" />
-      
+
       {/* Twitter Card */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={fullImage} />
-      
+
       {/* Local SEO */}
       <meta name="geo.region" content="US-IL" />
       <meta name="geo.placename" content="Chicago" />
       <meta name="geo.position" content="41.8781;-87.6298" />
-      
+
       {/* Robots */}
       <meta name="robots" content={noindex ? "noindex, nofollow" : "index, follow"} />
-      
+
       {/* JSON-LD Structured Data */}
       {schema && (
         <script type="application/ld+json">
@@ -129,6 +133,7 @@ export function SEO({
 ## Title Tags Analysis
 
 ### Current Implementation:
+
 ```typescript
 const fullTitle = `${title} | Chicago Airport Black Car`;
 ```
@@ -136,6 +141,7 @@ const fullTitle = `${title} | Chicago Airport Black Car`;
 **Format:** `[Page Title] | Chicago Airport Black Car`
 
 ### Issues:
+
 - ⚠️ **Generic brand suffix** - Same for every page
 - ⚠️ **No keyword variation** in suffix
 - ⚠️ **Missing location signals** (should include "Chicago" for all)
@@ -143,17 +149,18 @@ const fullTitle = `${title} | Chicago Airport Black Car`;
 
 ### Example Current Titles (Assumed):
 
-| Page | Title | Length | Issue |
-|------|-------|--------|-------|
-| Home | Chicago Airport Black Car Service – O'Hare & Midway \| Chicago Airport Black Car | ~80 chars | ❌ Too long (truncates) |
-| O'Hare | O'Hare Airport Limo Service \| Chicago Airport Black Car | 58 chars | ✅ Good |
-| Midway | Midway Airport Limo Service \| Chicago Airport Black Car | 58 chars | ✅ Good |
+| Page   | Title                                                                            | Length    | Issue                   |
+| ------ | -------------------------------------------------------------------------------- | --------- | ----------------------- |
+| Home   | Chicago Airport Black Car Service – O'Hare & Midway \| Chicago Airport Black Car | ~80 chars | ❌ Too long (truncates) |
+| O'Hare | O'Hare Airport Limo Service \| Chicago Airport Black Car                         | 58 chars  | ✅ Good                 |
+| Midway | Midway Airport Limo Service \| Chicago Airport Black Car                         | 58 chars  | ✅ Good                 |
 
 ### Recommended Title Formula:
 
 **Pattern:** `[Primary Keyword] [Location] | Royal Carriage [Service Type]`
 
 **Examples:**
+
 ```
 Home: "Airport Car Service Chicago – O'Hare & Midway | Royal Carriage"
 O'Hare: "O'Hare Airport Transportation | Royal Carriage Black Car"
@@ -162,6 +169,7 @@ Downtown: "Downtown Chicago Black Car | Airport Transfer Service"
 ```
 
 **Benefits:**
+
 - Primary keyword first (better for SEO)
 - Location included (local SEO signal)
 - Brand "Royal Carriage" instead of generic site name
@@ -172,18 +180,21 @@ Downtown: "Downtown Chicago Black Car | Airport Transfer Service"
 ## Meta Description Analysis
 
 ### Current Implementation:
+
 Passed as prop to `<SEO description="...">` component.
 
 ### Example (Home Page):
+
 ```
-"Premium black car service to Chicago O'Hare and Midway airports. 
-Professional chauffeurs, flight tracking, flat-rate pricing. 
+"Premium black car service to Chicago O'Hare and Midway airports.
+Professional chauffeurs, flight tracking, flat-rate pricing.
 Book your reliable airport transportation today. Call (224) 801-3090."
 ```
 
 **Length:** ~200 characters ⚠️ (Too long - Google truncates at 155-160)
 
 ### Quality Assessment:
+
 - ✅ Includes primary keywords (black car, O'Hare, Midway)
 - ✅ Includes location (Chicago)
 - ✅ Includes CTA (Call number)
@@ -196,8 +207,9 @@ Book your reliable airport transportation today. Call (224) 801-3090."
 **Formula:** [Service] in [Location] | [Key Benefit] | [Differentiator] | CTA
 
 **Examples:**
+
 ```
-Home: 
+Home:
 "Chicago airport car service to O'Hare & Midway. Scheduled pickup, no surge pricing, professional chauffeurs. Book online or call (224) 801-3090." (155 chars)
 
 O'Hare:
@@ -214,6 +226,7 @@ Midway:
 ## Canonical URLs
 
 ### Current Implementation:
+
 ```typescript
 <link rel="canonical" href={fullUrl} />
 ```
@@ -221,21 +234,24 @@ Midway:
 Where `fullUrl = ${BASE_URL}${path}` and `BASE_URL = "https://chicagoairportblackcar.com"`
 
 ### Assessment:
+
 - ✅ **Correct domain** (matches actual site URL)
 - ✅ **HTTPS protocol**
 - ✅ **No trailing slash** (consistent)
 - ✅ **Self-referencing** (each page points to itself)
 
 ### Potential Issues:
+
 - ⚠️ **SPA routing** - If client-side routing doesn't update canonical on route change, all pages might point to home
 - ⚠️ **Query parameters** - Should strip UTM params from canonical
 - ⚠️ **Trailing slash consistency** - Verify all routes don't have trailing slashes
 
 ### Recommended Enhancement:
+
 ```typescript
 // Strip query params and fragments from canonical
-const cleanPath = path.split('?')[0].split('#')[0];
-const fullUrl = `${BASE_URL}${cleanPath}`.replace(/\/$/, ''); // Remove trailing slash
+const cleanPath = path.split("?")[0].split("#")[0];
+const fullUrl = `${BASE_URL}${cleanPath}`.replace(/\/$/, ""); // Remove trailing slash
 ```
 
 ---
@@ -249,6 +265,7 @@ No JSON-LD structured data detected in code.
 ### Required Schema Types:
 
 #### 1. Organization Schema (All Pages)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -289,6 +306,7 @@ No JSON-LD structured data detected in code.
 ```
 
 #### 2. Service Schema (Service Pages)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -312,6 +330,7 @@ No JSON-LD structured data detected in code.
 ```
 
 #### 3. FAQ Schema (Pages with FAQs)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -331,6 +350,7 @@ No JSON-LD structured data detected in code.
 ```
 
 #### 4. Product Schema (Fleet Vehicles)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -352,6 +372,7 @@ No JSON-LD structured data detected in code.
 ```
 
 #### 5. Breadcrumb Schema (All Non-Home Pages)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -374,6 +395,7 @@ No JSON-LD structured data detected in code.
 ```
 
 ### Implementation Priority:
+
 1. **Organization** - Add to all pages (highest priority)
 2. **FAQ** - Add to Home + service pages (easy win)
 3. **Breadcrumb** - Add to all non-home pages
@@ -387,11 +409,13 @@ No JSON-LD structured data detected in code.
 ### Cannot Fully Audit Without Rendering, But:
 
 **Expected Issues:**
+
 - ⚠️ React components may render multiple H1 tags
 - ⚠️ Heading levels may skip (H1 → H3, missing H2)
 - ⚠️ Headings may not include target keywords
 
 ### Best Practices:
+
 ```html
 <!-- Each page should have ONE H1 -->
 <h1>O'Hare Airport Limo Service Chicago</h1>
@@ -407,6 +431,7 @@ No JSON-LD structured data detected in code.
 ```
 
 ### Verification Needed:
+
 ```typescript
 // In each page component, ensure:
 <Hero title="..." /> // Should render H1
@@ -414,6 +439,7 @@ No JSON-LD structured data detected in code.
 ```
 
 ### Common React Heading Mistakes:
+
 ```jsx
 // ❌ BAD - Multiple H1s
 <Hero><h1>Title</h1></Hero>
@@ -430,15 +456,15 @@ No JSON-LD structured data detected in code.
 
 ### Current Page Lengths (Estimated):
 
-| Page | Estimated Words | Status | Target |
-|------|----------------|--------|--------|
-| Home | ~800 words | ⚠️ Thin | 1,200+ |
-| O'Hare | ~500 words | ❌ Very Thin | 1,500+ |
-| Midway | ~500 words | ❌ Very Thin | 1,500+ |
-| Downtown | ~600 words | ⚠️ Thin | 1,200+ |
-| Suburbs | ~700 words | ⚠️ Thin | 1,200+ |
-| Fleet | ~400 words | ❌ Very Thin | 1,000+ |
-| Pricing | ~500 words | ❌ Very Thin | 1,000+ |
+| Page     | Estimated Words | Status       | Target |
+| -------- | --------------- | ------------ | ------ |
+| Home     | ~800 words      | ⚠️ Thin      | 1,200+ |
+| O'Hare   | ~500 words      | ❌ Very Thin | 1,500+ |
+| Midway   | ~500 words      | ❌ Very Thin | 1,500+ |
+| Downtown | ~600 words      | ⚠️ Thin      | 1,200+ |
+| Suburbs  | ~700 words      | ⚠️ Thin      | 1,200+ |
+| Fleet    | ~400 words      | ❌ Very Thin | 1,000+ |
+| Pricing  | ~500 words      | ❌ Very Thin | 1,000+ |
 
 **Problem:** All pages are below competitive thresholds.
 
@@ -447,6 +473,7 @@ No JSON-LD structured data detected in code.
 ### Content Gaps:
 
 **O'Hare Page Should Include:**
+
 - ✅ Basic service description (has)
 - ❌ Terminal-specific instructions (Terminal 1, 2, 3, 5)
 - ❌ Parking lot details (Cell Phone Lot, pickup procedures)
@@ -459,6 +486,7 @@ No JSON-LD structured data detected in code.
 - ❌ Peak season considerations (holidays, weather delays)
 
 **Recommended O'Hare Page Outline:**
+
 ```
 H1: O'Hare Airport Car Service Chicago
 
@@ -497,6 +525,7 @@ Total: ~1,750 words
 ### Current Status: ❌ **NO VISIBLE STRATEGY**
 
 ### Issues:
+
 - ❌ No topical hub structure
 - ❌ No contextual links between pages
 - ❌ Navigation only (header/footer)
@@ -506,6 +535,7 @@ Total: ~1,750 words
 ### Recommended Internal Linking Structure:
 
 #### Hub-and-Spoke Model:
+
 ```
 Home (Hub)
 ├── O'Hare Service (Spoke)
@@ -530,16 +560,19 @@ Home (Hub)
 #### Contextual Linking Examples:
 
 **In O'Hare page body:**
+
 ```html
 <p>
-  Our <a href="/fleet">luxury sedans and SUVs</a> provide comfortable 
-  transportation from O'Hare to <a href="/airport-limo-downtown-chicago">
-  downtown Chicago</a> and <a href="/airport-limo-suburbs">50+ suburbs</a>. 
-  Also serving <a href="/midway-airport-limo">Midway Airport</a>.
+  Our <a href="/fleet">luxury sedans and SUVs</a> provide comfortable
+  transportation from O'Hare to
+  <a href="/airport-limo-downtown-chicago"> downtown Chicago</a> and
+  <a href="/airport-limo-suburbs">50+ suburbs</a>. Also serving
+  <a href="/midway-airport-limo">Midway Airport</a>.
 </p>
 ```
 
 **Benefits:**
+
 - Distributes PageRank (link equity)
 - Reduces pogo-sticking (bounce back to Google)
 - Increases session duration (SEO signal)
@@ -548,11 +581,13 @@ Home (Hub)
 ### Anchor Text Strategy:
 
 **✅ DO:**
+
 - "luxury sedan service" (descriptive)
 - "O'Hare to downtown Chicago" (location-based)
 - "view our fleet" (action-based)
 
 **❌ DON'T:**
+
 - "click here" (generic)
 - "this page" (non-descriptive)
 - Exact-match keyword stuffing ("chicago airport limo" 20 times)
@@ -564,9 +599,11 @@ Home (Hub)
 ### Current Status: ❌ **DOES NOT EXIST**
 
 ### Problem:
+
 React SPAs don't auto-generate sitemaps. Google may not discover all pages.
 
 ### Solution:
+
 Generate sitemap.xml during build process.
 
 ### Recommended Implementation:
@@ -574,49 +611,56 @@ Generate sitemap.xml during build process.
 **File:** `script/generate-sitemap.mjs`
 
 ```javascript
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-const BASE_URL = 'https://chicagoairportblackcar.com';
+const BASE_URL = "https://chicagoairportblackcar.com";
 
 const pages = [
-  { url: '/', priority: 1.0, changefreq: 'weekly' },
-  { url: '/ohare-airport-limo', priority: 0.9, changefreq: 'weekly' },
-  { url: '/midway-airport-limo', priority: 0.9, changefreq: 'weekly' },
-  { url: '/airport-limo-downtown-chicago', priority: 0.8, changefreq: 'weekly' },
-  { url: '/airport-limo-suburbs', priority: 0.8, changefreq: 'weekly' },
-  { url: '/fleet', priority: 0.7, changefreq: 'monthly' },
-  { url: '/pricing', priority: 0.7, changefreq: 'monthly' },
-  { url: '/about', priority: 0.6, changefreq: 'monthly' },
-  { url: '/contact', priority: 0.6, changefreq: 'monthly' },
+  { url: "/", priority: 1.0, changefreq: "weekly" },
+  { url: "/ohare-airport-limo", priority: 0.9, changefreq: "weekly" },
+  { url: "/midway-airport-limo", priority: 0.9, changefreq: "weekly" },
+  {
+    url: "/airport-limo-downtown-chicago",
+    priority: 0.8,
+    changefreq: "weekly",
+  },
+  { url: "/airport-limo-suburbs", priority: 0.8, changefreq: "weekly" },
+  { url: "/fleet", priority: 0.7, changefreq: "monthly" },
+  { url: "/pricing", priority: 0.7, changefreq: "monthly" },
+  { url: "/about", priority: 0.6, changefreq: "monthly" },
+  { url: "/contact", priority: 0.6, changefreq: "monthly" },
 ];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${pages.map(page => `  <url>
+${pages
+  .map(
+    (page) => `  <url>
     <loc>${BASE_URL}${page.url}</loc>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
-    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-  </url>`).join('\n')}
+    <lastmod>${new Date().toISOString().split("T")[0]}</lastmod>
+  </url>`,
+  )
+  .join("\n")}
 </urlset>`;
 
-fs.writeFileSync(
-  path.join('dist', 'public', 'sitemap.xml'),
-  sitemap
-);
+fs.writeFileSync(path.join("dist", "public", "sitemap.xml"), sitemap);
 
-console.log('✅ Generated sitemap.xml with', pages.length, 'pages');
+console.log("✅ Generated sitemap.xml with", pages.length, "pages");
 ```
 
 **Add to build.ts:**
+
 ```typescript
 // After client build
-console.log('generating sitemap...');
-execSync('node script/generate-sitemap.mjs');
+console.log("generating sitemap...");
+execSync("node script/generate-sitemap.mjs");
 ```
 
 **Add to robots.txt:**
+
 ```
 User-agent: *
 Allow: /
@@ -629,9 +673,11 @@ Sitemap: https://chicagoairportblackcar.com/sitemap.xml
 ## Robots.txt
 
 ### Expected Location:
+
 `client/public/robots.txt` (copied to `dist/public/robots.txt` during build)
 
 ### Recommended Content:
+
 ```
 # Royal Carriage Limousine - Chicago Airport Black Car
 User-agent: *
@@ -657,6 +703,7 @@ Disallow: /
 ```
 
 ### Verification:
+
 ```bash
 ls -la client/public/robots.txt
 ```
@@ -670,6 +717,7 @@ If missing, create it.
 ### Estimated Lighthouse Scores (Based on Build):
 
 **Performance: 40-50** ⚠️
+
 - Main issue: 5+ MB of unoptimized images
 - LCP (Largest Contentful Paint): ~4-6 seconds ❌ (Target: <2.5s)
 - FID (First Input Delay): Likely good (React fast) ✅
@@ -678,12 +726,14 @@ If missing, create it.
 **Fix:** Optimize images to WebP, < 200 KB each.
 
 ### Render-Blocking Resources:
+
 - React bundle: 293 KB (gzipped: 72 KB) ✅ Acceptable
 - CSS: 7 KB ✅ Minimal
 
 **Issue:** Hero images not preloaded.
 
 **Fix:**
+
 ```html
 <link rel="preload" as="image" href="/assets/hero-ohare.webp" />
 ```
@@ -693,6 +743,7 @@ If missing, create it.
 ## Mobile SEO
 
 ### Mobile-Friendliness:
+
 - ✅ Responsive design (Tailwind CSS)
 - ✅ Touch-friendly CTAs (large buttons)
 - ⚠️ Large images slow mobile load
@@ -701,12 +752,16 @@ If missing, create it.
 ### Mobile-Specific Meta Tags:
 
 **Add to index.html:**
+
 ```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Royal Carriage">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta
+  name="apple-mobile-web-app-status-bar-style"
+  content="black-translucent"
+/>
+<meta name="apple-mobile-web-app-title" content="Royal Carriage" />
 ```
 
 ---
@@ -714,6 +769,7 @@ If missing, create it.
 ## JavaScript SEO (SPA Challenges)
 
 ### React SPA Concerns:
+
 1. **Server-Side Rendering (SSR):** ❌ Not implemented
    - Googlebot renders JS, but slower to index
    - Bing/others may not render at all
@@ -729,15 +785,18 @@ If missing, create it.
 ### Recommended Solution:
 
 **Option 1: Add Prerendering (Quick)**
+
 ```bash
 npm install prerender-spa-plugin --save-dev
 ```
 
 **Option 2: Migrate to Next.js or Astro (Better Long-Term)**
+
 - Next.js: SSR + SSG out of the box
 - Astro: Partial hydration (faster)
 
 **Option 3: Do Nothing (Risky)**
+
 - Modern Googlebot renders JS well
 - But slower indexing, risk of missed content
 
@@ -748,14 +807,15 @@ npm install prerender-spa-plugin --save-dev
 ### Current Status: ⚠️ **PARTIAL**
 
 ### What's Good:
+
 - ✅ Location in title tags (Chicago, O'Hare, Midway)
 - ✅ Location in content (mentions suburbs, cities)
 
 ### What's Missing:
+
 - ❌ **No Google Business Profile integration**
   - Should mention "Google reviews" on site
   - Link to Google Maps listing
-  
 - ❌ **No NAP (Name, Address, Phone) consistency**
   - Phone number in header/footer? (Check)
   - Business name consistent? ("Royal Carriage" vs "Chicago Airport Black Car")
@@ -770,6 +830,7 @@ npm install prerender-spa-plugin --save-dev
 ### Google Business Profile Optimization:
 
 **Actions Required:**
+
 1. Claim Google Business Profile for "Royal Carriage Limousine"
 2. Add:
    - Business hours (24/7 dispatch)
@@ -778,9 +839,7 @@ npm install prerender-spa-plugin --save-dev
    - Reviews (ask customers to review)
 3. Add GBP link to website footer:
    ```html
-   <a href="https://g.page/royal-carriage-limo">
-     ⭐ Read our Google Reviews
-   </a>
+   <a href="https://g.page/royal-carriage-limo"> ⭐ Read our Google Reviews </a>
    ```
 
 ---
@@ -813,12 +872,14 @@ npm install prerender-spa-plugin --save-dev
 ### Duplicate Detection Required:
 
 **Before Publishing Any Generated Page:**
+
 1. Check exact text match (plagiarism)
 2. Check semantic similarity (cosine similarity > 0.85 = duplicate)
 3. Check title/meta uniqueness (no two pages same title)
 4. Check H1 uniqueness
 
 **Tool Recommendation:**
+
 ```bash
 npm install natural  # NLP library
 # OR
@@ -830,9 +891,11 @@ npm install string-similarity
 ## 404 Pages & Redirects
 
 ### 404 Page:
+
 **File:** `client/src/pages/not-found.tsx`
 
 Exists ✅, but should include:
+
 - ✅ Friendly message
 - ✅ Link to home
 - ✅ Search box (if implemented)
@@ -840,20 +903,24 @@ Exists ✅, but should include:
 - ⚠️ **Still index as 404?** (Check robots meta)
 
 **Recommended 404 meta:**
+
 ```typescript
-<SEO 
-  title="Page Not Found" 
+<SEO
+  title="Page Not Found"
   description="The page you're looking for doesn't exist. Visit our home page to find Chicago airport transportation services."
   noindex={true}  // Prevent indexing 404 pages
 />
 ```
 
 ### Redirects:
+
 **None detected.** May need redirects if:
+
 - Old site existed (redirect old URLs)
 - URL structure changes (redirect old → new)
 
 **Implementation:**
+
 ```javascript
 // In firebase.json
 "redirects": [
@@ -874,10 +941,23 @@ Exists ✅, but should include:
 Site is English-only, serving U.S. market.
 
 **If Expanding to Spanish:**
+
 ```html
-<link rel="alternate" hreflang="en" href="https://chicagoairportblackcar.com/" />
-<link rel="alternate" hreflang="es" href="https://chicagoairportblackcar.com/es/" />
-<link rel="alternate" hreflang="x-default" href="https://chicagoairportblackcar.com/" />
+<link
+  rel="alternate"
+  hreflang="en"
+  href="https://chicagoairportblackcar.com/"
+/>
+<link
+  rel="alternate"
+  hreflang="es"
+  href="https://chicagoairportblackcar.com/es/"
+/>
+<link
+  rel="alternate"
+  hreflang="x-default"
+  href="https://chicagoairportblackcar.com/"
+/>
 ```
 
 ---
@@ -885,6 +965,7 @@ Site is English-only, serving U.S. market.
 ## Image SEO
 
 ### Current Issues:
+
 - ❌ **Large file sizes** (1.5-1.8 MB PNGs)
 - ⚠️ **Alt text unknown** (need to verify all images have alt)
 - ❌ **Filenames non-descriptive** (luxury_black_sedan_airport_terminal.png is OK, but could be better)
@@ -893,6 +974,7 @@ Site is English-only, serving U.S. market.
 ### Best Practices:
 
 **Alt Text:**
+
 ```jsx
 // ❌ BAD
 <img src="car.jpg" alt="car" />
@@ -905,6 +987,7 @@ Site is English-only, serving U.S. market.
 ```
 
 **Filenames:**
+
 ```
 ❌ img001.jpg
 ⚠️ luxury_black_sedan.jpg
@@ -912,6 +995,7 @@ Site is English-only, serving U.S. market.
 ```
 
 **Image Sitemap (Optional):**
+
 ```xml
 <url>
   <loc>https://chicagoairportblackcar.com/fleet</loc>
@@ -928,11 +1012,13 @@ Site is English-only, serving U.S. market.
 ## Security & HTTPS
 
 ### Current Status:
+
 - ✅ **HTTPS enforced** (Firebase Hosting auto-HTTPS)
 - ✅ **No mixed content** (all assets HTTPS)
 - ✅ **HSTS header** (Firebase default)
 
 **Verify in firebase.json:**
+
 ```json
 {
   "hosting": {
@@ -958,16 +1044,19 @@ Site is English-only, serving U.S. market.
 ### Cannot Verify Without Live Access, But:
 
 **Check via Google Search Console:**
+
 ```
 site:chicagoairportblackcar.com
 ```
 
 **Expected Issues:**
+
 - ⚠️ SPA may have indexation delays (JavaScript rendering)
 - ⚠️ Dynamic city pages may not be discovered (no internal links)
 - ⚠️ Admin pages should be noindexed (check /admin routes)
 
 **Recommended:**
+
 1. Submit sitemap.xml to GSC
 2. Request indexing for key pages
 3. Check "Coverage" report for errors
@@ -978,6 +1067,7 @@ site:chicagoairportblackcar.com
 ## Competitor Benchmark
 
 ### Top Competitors (Assumed):
+
 1. ExecuCar
 2. Blacklane
 3. GO Airport Express
@@ -985,21 +1075,22 @@ site:chicagoairportblackcar.com
 
 ### Competitive SEO Gaps:
 
-| Factor | Royal Carriage | Competitors | Action |
-|--------|----------------|-------------|--------|
-| JSON-LD Schema | ❌ None | ✅ Yes | Add schemas |
-| Content Depth | ⚠️ 500 words | ✅ 1,500+ words | Expand pages |
-| Internal Links | ❌ Nav only | ✅ Contextual | Add links |
-| Image Optimization | ❌ 5MB | ✅ <500KB | Optimize |
-| FAQ Schema | ❌ None | ✅ Yes | Add FAQ schema |
-| Reviews on Site | ❌ None | ✅ Displayed | Add reviews |
-| Blog/Content | ❌ None | ⚠️ Some have | Consider blog |
+| Factor             | Royal Carriage | Competitors     | Action         |
+| ------------------ | -------------- | --------------- | -------------- |
+| JSON-LD Schema     | ❌ None        | ✅ Yes          | Add schemas    |
+| Content Depth      | ⚠️ 500 words   | ✅ 1,500+ words | Expand pages   |
+| Internal Links     | ❌ Nav only    | ✅ Contextual   | Add links      |
+| Image Optimization | ❌ 5MB         | ✅ <500KB       | Optimize       |
+| FAQ Schema         | ❌ None        | ✅ Yes          | Add FAQ schema |
+| Reviews on Site    | ❌ None        | ✅ Displayed    | Add reviews    |
+| Blog/Content       | ❌ None        | ⚠️ Some have    | Consider blog  |
 
 ---
 
 ## Summary: Top 15 Technical SEO Issues
 
 ### Critical (Fix First):
+
 1. ❌ No JSON-LD structured data (Organization, FAQ, Service)
 2. ❌ No XML sitemap generation
 3. ❌ Images not optimized (5+ MB)
@@ -1007,6 +1098,7 @@ site:chicagoairportblackcar.com
 5. ❌ No internal linking strategy
 
 ### High Priority:
+
 6. ⚠️ SPA SEO challenges (no SSR/prerendering)
 7. ⚠️ Missing Open Graph images
 8. ⚠️ Title tags too long (truncate at 60 chars)
@@ -1014,6 +1106,7 @@ site:chicagoairportblackcar.com
 10. ⚠️ No breadcrumb navigation or schema
 
 ### Medium Priority:
+
 11. ⚠️ Heading hierarchy unknown (need to verify H1 uniqueness)
 12. ⚠️ No Twitter Card tags
 13. ⚠️ No local SEO optimization (NAP, GBP integration)

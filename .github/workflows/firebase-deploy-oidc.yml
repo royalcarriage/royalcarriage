@@ -1,0 +1,55 @@
+name: Deploy to Firebase (OIDC)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, ci/oidc-workflows ]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Authenticate to GCP using Workload Identity (OIDC)
+        if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER != '' }}
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account_email: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}
+
+      - name: Authenticate to GCP using service account key (fallback)
+        if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER == '' && secrets.GCP_SA_KEY != '' }}
+        uses: google-github-actions/auth@v1
+        with:
+          # Use explicit service-account JSON credentials supplied via repo secret GCP_SA_KEY
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools@13.16.0
+
+      - name: Deploy Hosting + Functions
+        env:
+          FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT_ID || 'royalcarriagelimoseo' }}
+        run: |
+          echo "Deploying to project: $FIREBASE_PROJECT"
+          firebase deploy --project "$FIREBASE_PROJECT" --only hosting:admin,hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus,functions --non-interactive
+
+      - name: Notify
+        run: echo "Firebase deploy complete"
+
+# Secrets required (repo):
+# - WORKLOAD_IDENTITY_PROVIDER: projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER
+# - WORKLOAD_IDENTITY_SERVICE_ACCOUNT: service account email to impersonate
+# - GCP_SA_KEY: (optional) base64 JSON service account key if not using OIDC
+# - FIREBASE_PROJECT_ID: royalcarriagelimoseo
