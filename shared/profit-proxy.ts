@@ -1,33 +1,33 @@
-import type { Booking, MarginConfig } from './admin-types';
+import type { Booking, MarginConfig } from "./admin-types";
 
 /**
  * Default margin configurations by service type
  */
 export const DEFAULT_MARGINS: Record<string, MarginConfig> = {
   airport: {
-    serviceType: 'airport',
+    serviceType: "airport",
     taxRate: 0.1025, // 10.25% Chicago tax
-    payoutRate: 0.40, // 40% to driver
+    payoutRate: 0.4, // 40% to driver
   },
   corporate: {
-    serviceType: 'corporate',
+    serviceType: "corporate",
     taxRate: 0.1025,
     payoutRate: 0.38,
   },
   wedding: {
-    serviceType: 'wedding',
+    serviceType: "wedding",
     taxRate: 0.1025,
     payoutRate: 0.35,
   },
   partybus: {
-    serviceType: 'partybus',
+    serviceType: "partybus",
     taxRate: 0.1025,
     payoutRate: 0.42,
   },
   default: {
-    serviceType: 'default',
+    serviceType: "default",
     taxRate: 0.1025,
-    payoutRate: 0.40,
+    payoutRate: 0.4,
   },
 };
 
@@ -51,10 +51,11 @@ export function getAttributedAdSpend(booking: Booking): number {
  */
 export function computeProfitProxy(
   booking: Booking,
-  config?: MarginConfig
+  config?: MarginConfig,
 ): number {
   // Get config for service type or use default
-  const marginConfig = config || DEFAULT_MARGINS[booking.serviceType] || DEFAULT_MARGINS.default;
+  const marginConfig =
+    config || DEFAULT_MARGINS[booking.serviceType] || DEFAULT_MARGINS.default;
 
   // Calculate components
   const revenue = booking.totalAmount;
@@ -73,7 +74,7 @@ export function computeProfitProxy(
  */
 export function computeBatchProfitProxy(
   bookings: Booking[],
-  config?: MarginConfig
+  config?: MarginConfig,
 ): {
   totalRevenue: number;
   totalTax: number;
@@ -83,10 +84,11 @@ export function computeBatchProfitProxy(
   bookingCount: number;
   avgProfit: number;
 } {
-  const results = bookings.map(b => ({
+  const results = bookings.map((b) => ({
     revenue: b.totalAmount,
     tax: b.totalAmount * (config?.taxRate || DEFAULT_MARGINS.default.taxRate),
-    payout: b.baseRate * (config?.payoutRate || DEFAULT_MARGINS.default.payoutRate),
+    payout:
+      b.baseRate * (config?.payoutRate || DEFAULT_MARGINS.default.payoutRate),
     adSpend: getAttributedAdSpend(b),
     profit: computeProfitProxy(b, config),
   }));
@@ -119,26 +121,31 @@ export function analyzeProfitByServiceType(bookings: Booking[]): {
   avgProfit: number;
   profitMargin: number; // percentage
 }[] {
-  const grouped = bookings.reduce((acc, booking) => {
-    const type = booking.serviceType || 'unknown';
-    if (!acc[type]) {
-      acc[type] = [];
-    }
-    acc[type].push(booking);
-    return acc;
-  }, {} as Record<string, Booking[]>);
+  const grouped = bookings.reduce(
+    (acc, booking) => {
+      const type = booking.serviceType || "unknown";
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(booking);
+      return acc;
+    },
+    {} as Record<string, Booking[]>,
+  );
 
-  return Object.entries(grouped).map(([serviceType, serviceBookings]) => {
-    const analysis = computeBatchProfitProxy(serviceBookings);
-    return {
-      serviceType,
-      bookingCount: analysis.bookingCount,
-      totalRevenue: analysis.totalRevenue,
-      totalProfit: analysis.totalProfit,
-      avgProfit: analysis.avgProfit,
-      profitMargin: (analysis.totalProfit / analysis.totalRevenue) * 100,
-    };
-  }).sort((a, b) => b.totalProfit - a.totalProfit); // Sort by profit descending
+  return Object.entries(grouped)
+    .map(([serviceType, serviceBookings]) => {
+      const analysis = computeBatchProfitProxy(serviceBookings);
+      return {
+        serviceType,
+        bookingCount: analysis.bookingCount,
+        totalRevenue: analysis.totalRevenue,
+        totalProfit: analysis.totalProfit,
+        avgProfit: analysis.avgProfit,
+        profitMargin: (analysis.totalProfit / analysis.totalRevenue) * 100,
+      };
+    })
+    .sort((a, b) => b.totalProfit - a.totalProfit); // Sort by profit descending
 }
 
 /**
@@ -151,29 +158,29 @@ export function identifyUpgradeOpportunities(booking: Booking): {
 } {
   // One-way airport with >30 min wait → suggest hourly
   if (
-    booking.serviceType === 'airport' &&
+    booking.serviceType === "airport" &&
     booking.totalAmount < 150 // Typical one-way price
   ) {
     return {
       hasOpportunity: true,
-      suggestion: 'Upgrade one-way airport to hourly service',
+      suggestion: "Upgrade one-way airport to hourly service",
       estimatedIncrease: 100, // Estimated additional revenue
     };
   }
 
   // Group size indicators (would need actual passenger count)
   // For now, check if vehicle type suggests group
-  if (booking.vehicleType?.toLowerCase().includes('suv')) {
+  if (booking.vehicleType?.toLowerCase().includes("suv")) {
     return {
       hasOpportunity: true,
-      suggestion: 'Suggest Sprinter upgrade for larger groups',
+      suggestion: "Suggest Sprinter upgrade for larger groups",
       estimatedIncrease: 150,
     };
   }
 
   return {
     hasOpportunity: false,
-    suggestion: '',
+    suggestion: "",
     estimatedIncrease: 0,
   };
 }

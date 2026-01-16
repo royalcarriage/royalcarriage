@@ -1,11 +1,31 @@
-import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { useSiteFilter } from '@/contexts/SiteFilterContext';
-import { analyzeProfitByServiceType } from '@shared/profit-proxy';
-import type { Booking } from '@shared/admin-types';
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  PieChart,
+  Pie,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+import { useSiteFilter } from "@/contexts/SiteFilterContext";
+import { analyzeProfitByServiceType } from "@shared/profit-proxy";
+import type { Booking } from "@shared/admin-types";
 
-const COLORS = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6'];
+const COLORS = ["#f59e0b", "#3b82f6", "#10b981", "#ef4444", "#8b5cf6"];
 
 export function ServiceMixDashboard() {
   const { selectedSite } = useSiteFilter();
@@ -18,40 +38,40 @@ export function ServiceMixDashboard() {
     // For now, using mock data
     const mockBookings: Booking[] = [
       {
-        id: '1',
-        orderNo: 'ORD001',
-        tripNo: 'TRIP001',
+        id: "1",
+        orderNo: "ORD001",
+        tripNo: "TRIP001",
         totalAmount: 150,
         baseRate: 120,
         taxAmount: 15,
         driverPayout: 48,
-        pickupDate: '2024-01-15',
-        serviceType: 'airport',
-        vehicleType: 'sedan',
+        pickupDate: "2024-01-15",
+        serviceType: "airport",
+        vehicleType: "sedan",
       },
       {
-        id: '2',
-        orderNo: 'ORD002',
-        tripNo: 'TRIP002',
+        id: "2",
+        orderNo: "ORD002",
+        tripNo: "TRIP002",
         totalAmount: 300,
         baseRate: 250,
         taxAmount: 30,
         driverPayout: 100,
-        pickupDate: '2024-01-16',
-        serviceType: 'corporate',
-        vehicleType: 'suv',
+        pickupDate: "2024-01-16",
+        serviceType: "corporate",
+        vehicleType: "suv",
       },
       {
-        id: '3',
-        orderNo: 'ORD003',
-        tripNo: 'TRIP003',
+        id: "3",
+        orderNo: "ORD003",
+        tripNo: "TRIP003",
         totalAmount: 500,
         baseRate: 420,
         taxAmount: 50,
         driverPayout: 168,
-        pickupDate: '2024-01-17',
-        serviceType: 'wedding',
-        vehicleType: 'limo',
+        pickupDate: "2024-01-17",
+        serviceType: "wedding",
+        vehicleType: "limo",
       },
     ];
 
@@ -81,16 +101,18 @@ export function ServiceMixDashboard() {
 
   // Mock trend data (would come from time-series data)
   const trendData = [
-    { month: 'Jan', airport: 45000, corporate: 32000, wedding: 18000 },
-    { month: 'Feb', airport: 52000, corporate: 35000, wedding: 22000 },
-    { month: 'Mar', airport: 48000, corporate: 38000, wedding: 25000 },
-    { month: 'Apr', airport: 61000, corporate: 42000, wedding: 30000 },
+    { month: "Jan", airport: 45000, corporate: 32000, wedding: 18000 },
+    { month: "Feb", airport: 52000, corporate: 35000, wedding: 22000 },
+    { month: "Mar", airport: 48000, corporate: 38000, wedding: 25000 },
+    { month: "Apr", airport: 61000, corporate: 42000, wedding: 30000 },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Service Mix Analysis</h1>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Service Mix Analysis
+        </h1>
         <p className="text-gray-600 mt-1">
           Revenue and profit breakdown by service type
         </p>
@@ -110,7 +132,10 @@ export function ServiceMixDashboard() {
           <CardHeader className="pb-2">
             <CardDescription>Total Revenue</CardDescription>
             <CardTitle className="text-3xl">
-              ${analysis.reduce((sum, a) => sum + a.totalRevenue, 0).toLocaleString()}
+              $
+              {analysis
+                .reduce((sum, a) => sum + a.totalRevenue, 0)
+                .toLocaleString()}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -118,7 +143,10 @@ export function ServiceMixDashboard() {
           <CardHeader className="pb-2">
             <CardDescription>Total Profit</CardDescription>
             <CardTitle className="text-3xl">
-              ${analysis.reduce((sum, a) => sum + a.totalProfit, 0).toLocaleString()}
+              $
+              {analysis
+                .reduce((sum, a) => sum + a.totalProfit, 0)
+                .toLocaleString()}
             </CardTitle>
           </CardHeader>
         </Card>
@@ -173,7 +201,9 @@ export function ServiceMixDashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Profit Margin by Service Type</CardTitle>
-            <CardDescription>Percentage of revenue retained as profit</CardDescription>
+            <CardDescription>
+              Percentage of revenue retained as profit
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -203,9 +233,24 @@ export function ServiceMixDashboard() {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Line type="monotone" dataKey="airport" stroke="#f59e0b" strokeWidth={2} />
-              <Line type="monotone" dataKey="corporate" stroke="#3b82f6" strokeWidth={2} />
-              <Line type="monotone" dataKey="wedding" stroke="#10b981" strokeWidth={2} />
+              <Line
+                type="monotone"
+                dataKey="airport"
+                stroke="#f59e0b"
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="corporate"
+                stroke="#3b82f6"
+                strokeWidth={2}
+              />
+              <Line
+                type="monotone"
+                dataKey="wedding"
+                stroke="#10b981"
+                strokeWidth={2}
+              />
             </LineChart>
           </ResponsiveContainer>
         </CardContent>
@@ -231,7 +276,9 @@ export function ServiceMixDashboard() {
             <tbody>
               {analysis.map((row) => (
                 <tr key={row.serviceType} className="border-b hover:bg-gray-50">
-                  <td className="py-2 px-4 font-medium capitalize">{row.serviceType}</td>
+                  <td className="py-2 px-4 font-medium capitalize">
+                    {row.serviceType}
+                  </td>
                   <td className="py-2 px-4 text-right">{row.bookingCount}</td>
                   <td className="py-2 px-4 text-right">
                     ${row.totalRevenue.toLocaleString()}
@@ -242,7 +289,9 @@ export function ServiceMixDashboard() {
                   <td className="py-2 px-4 text-right">
                     ${row.avgProfit.toLocaleString()}
                   </td>
-                  <td className="py-2 px-4 text-right">{row.profitMargin.toFixed(1)}%</td>
+                  <td className="py-2 px-4 text-right">
+                    {row.profitMargin.toFixed(1)}%
+                  </td>
                 </tr>
               ))}
             </tbody>

@@ -1,63 +1,79 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Badge } from '@/components/ui/badge';
-import { useSiteFilter } from '@/contexts/SiteFilterContext';
-import type { ImageMetadata } from '@shared/admin-types';
-import { Upload, Trash2, Edit, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useMemo } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
+import { useSiteFilter } from "@/contexts/SiteFilterContext";
+import type { ImageMetadata } from "@shared/admin-types";
+import { Upload, Trash2, Edit, Image as ImageIcon } from "lucide-react";
 
 const ENTITY_TYPES = [
-  { value: 'all', label: 'All Types' },
-  { value: 'vehicle', label: 'Vehicle' },
-  { value: 'service', label: 'Service' },
-  { value: 'city', label: 'City' },
-  { value: 'blog', label: 'Blog' },
-  { value: 'general', label: 'General' },
+  { value: "all", label: "All Types" },
+  { value: "vehicle", label: "Vehicle" },
+  { value: "service", label: "Service" },
+  { value: "city", label: "City" },
+  { value: "blog", label: "Blog" },
+  { value: "general", label: "General" },
 ];
 
 const SOURCE_TYPES = [
-  { value: 'all', label: 'All Sources' },
-  { value: 'owned', label: 'Owned' },
-  { value: 'licensed', label: 'Licensed' },
-  { value: 'ai', label: 'AI Generated' },
+  { value: "all", label: "All Sources" },
+  { value: "owned", label: "Owned" },
+  { value: "licensed", label: "Licensed" },
+  { value: "ai", label: "AI Generated" },
 ];
 
 // Mock data for demonstration
 const MOCK_IMAGES: ImageMetadata[] = [
   {
-    id: '1',
-    path: '/images/vehicles/suv-1.jpg',
-    url: 'https://example.com/images/vehicles/suv-1.jpg',
-    alt: 'Luxury black SUV exterior view',
-    entityType: 'vehicle',
-    entitySlug: 'executive-suv',
-    siteSlug: 'corporate',
-    source: 'owned',
+    id: "1",
+    path: "/images/vehicles/suv-1.jpg",
+    url: "https://example.com/images/vehicles/suv-1.jpg",
+    alt: "Luxury black SUV exterior view",
+    entityType: "vehicle",
+    entitySlug: "executive-suv",
+    siteSlug: "corporate",
+    source: "owned",
     width: 1920,
     height: 1080,
     size: 245000,
-    format: 'jpeg',
-    uploadedBy: 'admin@example.com',
-    uploadedAt: '2024-01-15T10:00:00Z',
-    tags: ['suv', 'executive', 'luxury'],
+    format: "jpeg",
+    uploadedBy: "admin@example.com",
+    uploadedAt: "2024-01-15T10:00:00Z",
+    tags: ["suv", "executive", "luxury"],
   },
 ];
 
 export default function ImageLibrary() {
   const { selectedSite } = useSiteFilter();
-  const [entityTypeFilter, setEntityTypeFilter] = useState<string>('all');
-  const [sourceFilter, setSourceFilter] = useState<string>('all');
+  const [entityTypeFilter, setEntityTypeFilter] = useState<string>("all");
+  const [sourceFilter, setSourceFilter] = useState<string>("all");
   const [images, setImages] = useState<ImageMetadata[]>(MOCK_IMAGES);
-  const [selectedImage, setSelectedImage] = useState<ImageMetadata | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageMetadata | null>(
+    null,
+  );
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
 
   const filteredImages = useMemo(() => {
-    return images.filter(image => {
-      const siteMatch = selectedSite === 'all' || image.siteSlug === selectedSite;
-      const entityMatch = entityTypeFilter === 'all' || image.entityType === entityTypeFilter;
-      const sourceMatch = sourceFilter === 'all' || image.source === sourceFilter;
+    return images.filter((image) => {
+      const siteMatch =
+        selectedSite === "all" || image.siteSlug === selectedSite;
+      const entityMatch =
+        entityTypeFilter === "all" || image.entityType === entityTypeFilter;
+      const sourceMatch =
+        sourceFilter === "all" || image.source === sourceFilter;
       return siteMatch && entityMatch && sourceMatch;
     });
   }, [images, selectedSite, entityTypeFilter, sourceFilter]);
@@ -69,17 +85,17 @@ export default function ImageLibrary() {
 
   const handleUpload = () => {
     // TODO: Navigate to upload page or open upload modal
-    console.log('Navigate to upload');
+    console.log("Navigate to upload");
   };
 
   const handleDelete = (imageId: string) => {
     // TODO: Implement delete with confirmation
-    console.log('Delete image:', imageId);
+    console.log("Delete image:", imageId);
   };
 
   const handleEdit = (imageId: string) => {
     // TODO: Navigate to edit page or open edit modal
-    console.log('Edit image:', imageId);
+    console.log("Edit image:", imageId);
   };
 
   const formatFileSize = (bytes: number) => {
@@ -106,13 +122,18 @@ export default function ImageLibrary() {
         <CardContent className="pt-6">
           <div className="flex gap-4">
             <div className="flex-1">
-              <label className="text-sm font-medium mb-2 block">Entity Type</label>
-              <Select value={entityTypeFilter} onValueChange={setEntityTypeFilter}>
+              <label className="text-sm font-medium mb-2 block">
+                Entity Type
+              </label>
+              <Select
+                value={entityTypeFilter}
+                onValueChange={setEntityTypeFilter}
+              >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {ENTITY_TYPES.map(type => (
+                  {ENTITY_TYPES.map((type) => (
                     <SelectItem key={type.value} value={type.value}>
                       {type.label}
                     </SelectItem>
@@ -127,7 +148,7 @@ export default function ImageLibrary() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SOURCE_TYPES.map(source => (
+                  {SOURCE_TYPES.map((source) => (
                     <SelectItem key={source.value} value={source.value}>
                       {source.label}
                     </SelectItem>
@@ -143,12 +164,13 @@ export default function ImageLibrary() {
       <Card>
         <CardHeader>
           <CardTitle>
-            {filteredImages.length} {filteredImages.length === 1 ? 'Image' : 'Images'}
+            {filteredImages.length}{" "}
+            {filteredImages.length === 1 ? "Image" : "Images"}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {filteredImages.map(image => (
+            {filteredImages.map((image) => (
               <div
                 key={image.id}
                 className="group relative border rounded-lg overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
@@ -200,7 +222,9 @@ export default function ImageLibrary() {
           {filteredImages.length === 0 && (
             <div className="text-center py-12">
               <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-600">No images found matching the filters</p>
+              <p className="text-gray-600">
+                No images found matching the filters
+              </p>
             </div>
           )}
         </CardContent>
@@ -220,46 +244,64 @@ export default function ImageLibrary() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Alt Text</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Alt Text
+                  </label>
                   <p className="mt-1">{selectedImage.alt}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Entity</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Entity
+                  </label>
                   <p className="mt-1">
                     {selectedImage.entityType} / {selectedImage.entitySlug}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Source</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Source
+                  </label>
                   <p className="mt-1 capitalize">{selectedImage.source}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Dimensions</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Dimensions
+                  </label>
                   <p className="mt-1">
                     {selectedImage.width}x{selectedImage.height}
                   </p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Size</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Size
+                  </label>
                   <p className="mt-1">{formatFileSize(selectedImage.size)}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Format</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Format
+                  </label>
                   <p className="mt-1 uppercase">{selectedImage.format}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Uploaded By</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Uploaded By
+                  </label>
                   <p className="mt-1">{selectedImage.uploadedBy}</p>
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-gray-500">Uploaded At</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Uploaded At
+                  </label>
                   <p className="mt-1">
                     {new Date(selectedImage.uploadedAt).toLocaleDateString()}
                   </p>
                 </div>
                 {selectedImage.proofUrl && (
                   <div className="col-span-2">
-                    <label className="text-sm font-medium text-gray-500">Proof URL</label>
+                    <label className="text-sm font-medium text-gray-500">
+                      Proof URL
+                    </label>
                     <p className="mt-1">
                       <a
                         href={selectedImage.proofUrl}
@@ -273,9 +315,11 @@ export default function ImageLibrary() {
                   </div>
                 )}
                 <div className="col-span-2">
-                  <label className="text-sm font-medium text-gray-500">Tags</label>
+                  <label className="text-sm font-medium text-gray-500">
+                    Tags
+                  </label>
                   <div className="flex flex-wrap gap-2 mt-1">
-                    {selectedImage.tags.map(tag => (
+                    {selectedImage.tags.map((tag) => (
                       <Badge key={tag} variant="outline">
                         {tag}
                       </Badge>

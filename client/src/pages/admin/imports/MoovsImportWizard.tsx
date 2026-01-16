@@ -1,25 +1,38 @@
 import { useState, useCallback } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Upload, 
-  CheckCircle, 
-  XCircle, 
-  AlertTriangle, 
-  FileText, 
-  ArrowRight, 
+import {
+  Upload,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
+  FileText,
+  ArrowRight,
   ArrowLeft,
-  Download
+  Download,
 } from "lucide-react";
 import type { ImportLog, ImportError } from "@shared/admin-types";
 
-type WizardStep = 'upload' | 'detect' | 'preview' | 'validate' | 'submit';
+type WizardStep = "upload" | "detect" | "preview" | "validate" | "submit";
 
 interface ParsedData {
   headers: string[];
@@ -41,23 +54,41 @@ interface ValidationResult {
 }
 
 export default function MoovsImportWizard() {
-  const [currentStep, setCurrentStep] = useState<WizardStep>('upload');
+  const [currentStep, setCurrentStep] = useState<WizardStep>("upload");
   const [file, setFile] = useState<File | null>(null);
   const [parsedData, setParsedData] = useState<ParsedData | null>(null);
-  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null);
+  const [validationResult, setValidationResult] =
+    useState<ValidationResult | null>(null);
   const [importResult, setImportResult] = useState<ImportLog | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const steps: { key: WizardStep; label: string; description: string }[] = [
-    { key: 'upload', label: 'Upload CSV', description: 'Select and upload your Moovs data file' },
-    { key: 'detect', label: 'Detect Schema', description: 'Verify column structure' },
-    { key: 'preview', label: 'Preview Data', description: 'Review first 50 rows' },
-    { key: 'validate', label: 'Validate', description: 'Check for errors and warnings' },
-    { key: 'submit', label: 'Submit', description: 'Import data to Firebase' },
+    {
+      key: "upload",
+      label: "Upload CSV",
+      description: "Select and upload your Moovs data file",
+    },
+    {
+      key: "detect",
+      label: "Detect Schema",
+      description: "Verify column structure",
+    },
+    {
+      key: "preview",
+      label: "Preview Data",
+      description: "Review first 50 rows",
+    },
+    {
+      key: "validate",
+      label: "Validate",
+      description: "Check for errors and warnings",
+    },
+    { key: "submit", label: "Submit", description: "Import data to Firebase" },
   ];
 
-  const getCurrentStepIndex = () => steps.findIndex(s => s.key === currentStep);
+  const getCurrentStepIndex = () =>
+    steps.findIndex((s) => s.key === currentStep);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -72,9 +103,9 @@ export default function MoovsImportWizard() {
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type === 'text/csv') {
+    if (droppedFile && droppedFile.type === "text/csv") {
       setFile(droppedFile);
     }
   }, []);
@@ -92,15 +123,18 @@ export default function MoovsImportWizard() {
       const reader = new FileReader();
       reader.onload = (e) => {
         const text = e.target?.result as string;
-        const lines = text.split('\n').filter(line => line.trim());
-        const headers = lines[0].split(',').map(h => h.trim());
-        
-        const rows = lines.slice(1, 51).map(line => {
-          const values = line.split(',').map(v => v.trim());
-          return headers.reduce((obj, header, index) => {
-            obj[header] = values[index] || '';
-            return obj;
-          }, {} as Record<string, string>);
+        const lines = text.split("\n").filter((line) => line.trim());
+        const headers = lines[0].split(",").map((h) => h.trim());
+
+        const rows = lines.slice(1, 51).map((line) => {
+          const values = line.split(",").map((v) => v.trim());
+          return headers.reduce(
+            (obj, header, index) => {
+              obj[header] = values[index] || "";
+              return obj;
+            },
+            {} as Record<string, string>,
+          );
         });
 
         resolve({ headers, rows });
@@ -111,14 +145,14 @@ export default function MoovsImportWizard() {
 
   const detectSchema = async () => {
     if (!file) return;
-    
+
     setIsProcessing(true);
     try {
       const data = await parseCSV(file);
       setParsedData(data);
-      setCurrentStep('detect');
+      setCurrentStep("detect");
     } catch (error) {
-      console.error('Failed to parse CSV:', error);
+      console.error("Failed to parse CSV:", error);
     } finally {
       setIsProcessing(false);
     }
@@ -127,10 +161,10 @@ export default function MoovsImportWizard() {
   const validateData = () => {
     if (!parsedData) return;
 
-    const requiredColumns = ['Trip ID', 'Total Amount', 'Pickup Date'];
+    const requiredColumns = ["Trip ID", "Total Amount", "Pickup Date"];
     const errors: ImportError[] = [];
     const warnings: string[] = [];
-    
+
     const stats = {
       totalRows: parsedData.rows.length,
       validRows: 0,
@@ -141,9 +175,11 @@ export default function MoovsImportWizard() {
     };
 
     // Check for required columns
-    const missingColumns = requiredColumns.filter(col => !parsedData.headers.includes(col));
+    const missingColumns = requiredColumns.filter(
+      (col) => !parsedData.headers.includes(col),
+    );
     if (missingColumns.length > 0) {
-      warnings.push(`Missing required columns: ${missingColumns.join(', ')}`);
+      warnings.push(`Missing required columns: ${missingColumns.join(", ")}`);
     }
 
     // Validate each row (mock validation)
@@ -151,46 +187,46 @@ export default function MoovsImportWizard() {
       const rowNum = index + 2; // +2 for header and 0-index
       let isValid = true;
 
-      if (!row['Trip ID']) {
+      if (!row["Trip ID"]) {
         errors.push({
           row: rowNum,
-          column: 'Trip ID',
-          value: row['Trip ID'] || '',
-          error: 'missing',
-          message: 'Trip ID is required',
+          column: "Trip ID",
+          value: row["Trip ID"] || "",
+          error: "missing",
+          message: "Trip ID is required",
         });
         stats.missingTripId++;
         isValid = false;
       }
 
-      if (!row['Total Amount']) {
+      if (!row["Total Amount"]) {
         errors.push({
           row: rowNum,
-          column: 'Total Amount',
-          value: row['Total Amount'] || '',
-          error: 'missing',
-          message: 'Total Amount is required',
+          column: "Total Amount",
+          value: row["Total Amount"] || "",
+          error: "missing",
+          message: "Total Amount is required",
         });
         stats.missingAmount++;
         isValid = false;
-      } else if (isNaN(parseFloat(row['Total Amount']))) {
+      } else if (isNaN(parseFloat(row["Total Amount"]))) {
         errors.push({
           row: rowNum,
-          column: 'Total Amount',
-          value: row['Total Amount'],
-          error: 'invalid_format',
-          message: 'Must be a valid number',
+          column: "Total Amount",
+          value: row["Total Amount"],
+          error: "invalid_format",
+          message: "Must be a valid number",
         });
         isValid = false;
       }
 
-      if (!row['Pickup Date']) {
+      if (!row["Pickup Date"]) {
         errors.push({
           row: rowNum,
-          column: 'Pickup Date',
-          value: row['Pickup Date'] || '',
-          error: 'missing',
-          message: 'Pickup Date is required',
+          column: "Pickup Date",
+          value: row["Pickup Date"] || "",
+          error: "missing",
+          message: "Pickup Date is required",
         });
         stats.missingDate++;
         isValid = false;
@@ -207,39 +243,42 @@ export default function MoovsImportWizard() {
       warnings,
       stats,
     });
-    setCurrentStep('validate');
+    setCurrentStep("validate");
   };
 
   const submitImport = async () => {
     setIsProcessing(true);
-    
+
     // Mock Firebase import
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     const mockResult: ImportLog = {
       id: `import_${Date.now()}`,
-      type: 'moovs',
-      fileName: file?.name || 'unknown.csv',
-      fileHash: 'mock_hash_' + Date.now(),
-      filePath: '/imports/moovs/' + file?.name,
+      type: "moovs",
+      fileName: file?.name || "unknown.csv",
+      fileHash: "mock_hash_" + Date.now(),
+      filePath: "/imports/moovs/" + file?.name,
       rowCount: parsedData?.rows.length || 0,
       importedCount: validationResult?.stats.validRows || 0,
       skippedCount: 0,
       errorCount: validationResult?.errors.length || 0,
       errors: validationResult?.errors || [],
       warnings: validationResult?.warnings || [],
-      completenessScore: validationResult ? 
-        (validationResult.stats.validRows / validationResult.stats.totalRows) * 100 : 0,
+      completenessScore: validationResult
+        ? (validationResult.stats.validRows /
+            validationResult.stats.totalRows) *
+          100
+        : 0,
       dedupeCount: 0,
-      status: validationResult?.isValid ? 'success' : 'partial',
-      userId: 'mock_user_id',
-      userEmail: 'admin@example.com',
+      status: validationResult?.isValid ? "success" : "partial",
+      userId: "mock_user_id",
+      userEmail: "admin@example.com",
       createdAt: new Date().toISOString(),
       completedAt: new Date().toISOString(),
     };
 
     setImportResult(mockResult);
-    setCurrentStep('submit');
+    setCurrentStep("submit");
     setIsProcessing(false);
   };
 
@@ -247,15 +286,21 @@ export default function MoovsImportWizard() {
     if (!validationResult) return;
 
     const csvContent = [
-      ['Row', 'Column', 'Value', 'Error Type', 'Message'].join(','),
-      ...validationResult.errors.map(error => 
-        [error.row, error.column, `"${error.value}"`, error.error, `"${error.message}"`].join(',')
-      )
-    ].join('\n');
+      ["Row", "Column", "Value", "Error Type", "Message"].join(","),
+      ...validationResult.errors.map((error) =>
+        [
+          error.row,
+          error.column,
+          `"${error.value}"`,
+          error.error,
+          `"${error.message}"`,
+        ].join(","),
+      ),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const blob = new Blob([csvContent], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `import-errors-${Date.now()}.csv`;
     a.click();
@@ -263,7 +308,7 @@ export default function MoovsImportWizard() {
   };
 
   const resetWizard = () => {
-    setCurrentStep('upload');
+    setCurrentStep("upload");
     setFile(null);
     setParsedData(null);
     setValidationResult(null);
@@ -280,7 +325,7 @@ export default function MoovsImportWizard() {
             Import trip data from Moovs CSV export
           </p>
         </div>
-        {currentStep !== 'upload' && (
+        {currentStep !== "upload" && (
           <Button variant="outline" onClick={resetWizard}>
             Start New Import
           </Button>
@@ -297,8 +342,8 @@ export default function MoovsImportWizard() {
                   <div
                     className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
                       index <= getCurrentStepIndex()
-                        ? 'border-primary bg-primary text-primary-foreground'
-                        : 'border-muted bg-background text-muted-foreground'
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-muted bg-background text-muted-foreground"
                     }`}
                   >
                     {index < getCurrentStepIndex() ? (
@@ -309,13 +354,15 @@ export default function MoovsImportWizard() {
                   </div>
                   <div className="text-center mt-2">
                     <div className="text-sm font-medium">{step.label}</div>
-                    <div className="text-xs text-muted-foreground">{step.description}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {step.description}
+                    </div>
                   </div>
                 </div>
                 {index < steps.length - 1 && (
                   <div
                     className={`h-0.5 flex-1 ${
-                      index < getCurrentStepIndex() ? 'bg-primary' : 'bg-muted'
+                      index < getCurrentStepIndex() ? "bg-primary" : "bg-muted"
                     }`}
                   />
                 )}
@@ -326,12 +373,13 @@ export default function MoovsImportWizard() {
       </Card>
 
       {/* Step Content */}
-      {currentStep === 'upload' && (
+      {currentStep === "upload" && (
         <Card>
           <CardHeader>
             <CardTitle>Upload CSV File</CardTitle>
             <CardDescription>
-              Select a CSV file exported from Moovs. Required columns: Trip ID, Total Amount, Pickup Date
+              Select a CSV file exported from Moovs. Required columns: Trip ID,
+              Total Amount, Pickup Date
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -341,14 +389,14 @@ export default function MoovsImportWizard() {
               onDrop={handleDrop}
               className={`border-2 border-dashed rounded-lg p-12 text-center transition-colors ${
                 isDragging
-                  ? 'border-primary bg-primary/5'
-                  : 'border-muted hover:border-primary/50'
+                  ? "border-primary bg-primary/5"
+                  : "border-muted hover:border-primary/50"
               }`}
             >
               <Upload className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
               <div className="space-y-2">
                 <p className="text-lg font-medium">
-                  {file ? file.name : 'Drag & drop your CSV file here'}
+                  {file ? file.name : "Drag & drop your CSV file here"}
                 </p>
                 <p className="text-sm text-muted-foreground">or</p>
                 <label>
@@ -367,17 +415,16 @@ export default function MoovsImportWizard() {
                 <div className="mt-4 flex items-center justify-center gap-2 text-sm">
                   <FileText className="w-4 h-4" />
                   <span>{file.name}</span>
-                  <Badge variant="secondary">{(file.size / 1024).toFixed(2)} KB</Badge>
+                  <Badge variant="secondary">
+                    {(file.size / 1024).toFixed(2)} KB
+                  </Badge>
                 </div>
               )}
             </div>
 
             <div className="flex justify-end">
-              <Button
-                onClick={detectSchema}
-                disabled={!file || isProcessing}
-              >
-                {isProcessing ? 'Processing...' : 'Next: Detect Schema'}
+              <Button onClick={detectSchema} disabled={!file || isProcessing}>
+                {isProcessing ? "Processing..." : "Next: Detect Schema"}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -385,7 +432,7 @@ export default function MoovsImportWizard() {
         </Card>
       )}
 
-      {currentStep === 'detect' && parsedData && (
+      {currentStep === "detect" && parsedData && (
         <Card>
           <CardHeader>
             <CardTitle>Schema Detection</CardTitle>
@@ -409,19 +456,20 @@ export default function MoovsImportWizard() {
             <Alert>
               <AlertTriangle className="w-4 h-4" />
               <AlertDescription>
-                Ensure your CSV contains these required columns: Trip ID, Total Amount, Pickup Date
+                Ensure your CSV contains these required columns: Trip ID, Total
+                Amount, Pickup Date
               </AlertDescription>
             </Alert>
 
             <div className="flex justify-between">
               <Button
                 variant="outline"
-                onClick={() => setCurrentStep('upload')}
+                onClick={() => setCurrentStep("upload")}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
               </Button>
-              <Button onClick={() => setCurrentStep('preview')}>
+              <Button onClick={() => setCurrentStep("preview")}>
                 Next: Preview Data
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
@@ -430,12 +478,13 @@ export default function MoovsImportWizard() {
         </Card>
       )}
 
-      {currentStep === 'preview' && parsedData && (
+      {currentStep === "preview" && parsedData && (
         <Card>
           <CardHeader>
             <CardTitle>Data Preview</CardTitle>
             <CardDescription>
-              Showing first {Math.min(50, parsedData.rows.length)} of {parsedData.rows.length} rows
+              Showing first {Math.min(50, parsedData.rows.length)} of{" "}
+              {parsedData.rows.length} rows
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -452,7 +501,9 @@ export default function MoovsImportWizard() {
                 <TableBody>
                   {parsedData.rows.map((row, rowIndex) => (
                     <TableRow key={rowIndex}>
-                      <TableCell className="font-medium">{rowIndex + 1}</TableCell>
+                      <TableCell className="font-medium">
+                        {rowIndex + 1}
+                      </TableCell>
                       {parsedData.headers.map((header, colIndex) => (
                         <TableCell key={colIndex}>{row[header]}</TableCell>
                       ))}
@@ -465,7 +516,7 @@ export default function MoovsImportWizard() {
             <div className="flex justify-between">
               <Button
                 variant="outline"
-                onClick={() => setCurrentStep('detect')}
+                onClick={() => setCurrentStep("detect")}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
@@ -479,13 +530,13 @@ export default function MoovsImportWizard() {
         </Card>
       )}
 
-      {currentStep === 'validate' && validationResult && (
+      {currentStep === "validate" && validationResult && (
         <Card>
           <CardHeader>
             <CardTitle>Validation Results</CardTitle>
             <CardDescription>
               {validationResult.isValid
-                ? 'All records passed validation'
+                ? "All records passed validation"
                 : `Found ${validationResult.errors.length} errors`}
             </CardDescription>
           </CardHeader>
@@ -493,7 +544,9 @@ export default function MoovsImportWizard() {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 border rounded-lg">
-                <div className="text-2xl font-bold">{validationResult.stats.totalRows}</div>
+                <div className="text-2xl font-bold">
+                  {validationResult.stats.totalRows}
+                </div>
                 <div className="text-sm text-muted-foreground">Total Rows</div>
               </div>
               <div className="p-4 border rounded-lg">
@@ -553,19 +606,23 @@ export default function MoovsImportWizard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {validationResult.errors.slice(0, 100).map((error, index) => (
-                        <TableRow key={index}>
-                          <TableCell>{error.row}</TableCell>
-                          <TableCell className="font-medium">{error.column}</TableCell>
-                          <TableCell className="max-w-[200px] truncate">
-                            {error.value || '(empty)'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="destructive">{error.error}</Badge>
-                          </TableCell>
-                          <TableCell>{error.message}</TableCell>
-                        </TableRow>
-                      ))}
+                      {validationResult.errors
+                        .slice(0, 100)
+                        .map((error, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{error.row}</TableCell>
+                            <TableCell className="font-medium">
+                              {error.column}
+                            </TableCell>
+                            <TableCell className="max-w-[200px] truncate">
+                              {error.value || "(empty)"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="destructive">{error.error}</Badge>
+                            </TableCell>
+                            <TableCell>{error.message}</TableCell>
+                          </TableRow>
+                        ))}
                     </TableBody>
                   </Table>
                 </ScrollArea>
@@ -580,7 +637,7 @@ export default function MoovsImportWizard() {
             <div className="flex justify-between">
               <Button
                 variant="outline"
-                onClick={() => setCurrentStep('preview')}
+                onClick={() => setCurrentStep("preview")}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
@@ -588,10 +645,13 @@ export default function MoovsImportWizard() {
               <Button
                 onClick={submitImport}
                 disabled={isProcessing}
-                variant={validationResult.isValid ? 'default' : 'destructive'}
+                variant={validationResult.isValid ? "default" : "destructive"}
               >
-                {isProcessing ? 'Importing...' : 
-                  validationResult.isValid ? 'Submit Import' : 'Import Valid Rows Only'}
+                {isProcessing
+                  ? "Importing..."
+                  : validationResult.isValid
+                    ? "Submit Import"
+                    : "Import Valid Rows Only"}
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </div>
@@ -599,26 +659,29 @@ export default function MoovsImportWizard() {
         </Card>
       )}
 
-      {currentStep === 'submit' && importResult && (
+      {currentStep === "submit" && importResult && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              {importResult.status === 'success' ? (
+              {importResult.status === "success" ? (
                 <CheckCircle className="w-6 h-6 text-green-500" />
               ) : (
                 <AlertTriangle className="w-6 h-6 text-yellow-500" />
               )}
-              Import {importResult.status === 'success' ? 'Completed' : 'Completed with Errors'}
+              Import{" "}
+              {importResult.status === "success"
+                ? "Completed"
+                : "Completed with Errors"}
             </CardTitle>
-            <CardDescription>
-              Import ID: {importResult.id}
-            </CardDescription>
+            <CardDescription>Import ID: {importResult.id}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Summary Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="p-4 border rounded-lg">
-                <div className="text-2xl font-bold">{importResult.rowCount}</div>
+                <div className="text-2xl font-bold">
+                  {importResult.rowCount}
+                </div>
                 <div className="text-sm text-muted-foreground">Total Rows</div>
               </div>
               <div className="p-4 border rounded-lg">
@@ -645,7 +708,9 @@ export default function MoovsImportWizard() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium">Completeness Score</span>
-                <span className="text-sm font-bold">{importResult.completenessScore.toFixed(1)}%</span>
+                <span className="text-sm font-bold">
+                  {importResult.completenessScore.toFixed(1)}%
+                </span>
               </div>
               <Progress value={importResult.completenessScore} />
             </div>
@@ -656,7 +721,9 @@ export default function MoovsImportWizard() {
                 <div className="text-muted-foreground">File Name:</div>
                 <div className="font-medium">{importResult.fileName}</div>
                 <div className="text-muted-foreground">Type:</div>
-                <div className="font-medium capitalize">{importResult.type}</div>
+                <div className="font-medium capitalize">
+                  {importResult.type}
+                </div>
                 <div className="text-muted-foreground">Imported By:</div>
                 <div className="font-medium">{importResult.userEmail}</div>
                 <div className="text-muted-foreground">Started:</div>
@@ -667,17 +734,18 @@ export default function MoovsImportWizard() {
                 <div className="font-medium">
                   {importResult.completedAt
                     ? new Date(importResult.completedAt).toLocaleString()
-                    : 'N/A'}
+                    : "N/A"}
                 </div>
               </div>
             </div>
 
             {/* Actions */}
             <div className="flex gap-2">
-              <Button onClick={resetWizard}>
-                Start New Import
-              </Button>
-              <Button variant="outline" onClick={() => window.location.href = '/admin/imports'}>
+              <Button onClick={resetWizard}>Start New Import</Button>
+              <Button
+                variant="outline"
+                onClick={() => (window.location.href = "/admin/imports")}
+              >
                 View Import History
               </Button>
             </div>

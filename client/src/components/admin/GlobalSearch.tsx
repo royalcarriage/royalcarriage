@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { Search } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { useState } from "react";
+import { Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { useHotkeys } from 'react-hotkeys-hook';
+} from "@/components/ui/dialog";
+import { useHotkeys } from "react-hotkeys-hook";
 
 interface SearchResult {
-  type: 'city' | 'service' | 'vehicle' | 'blog' | 'import';
+  type: "city" | "service" | "vehicle" | "blog" | "import";
   title: string;
   href: string;
   description?: string;
@@ -18,22 +18,26 @@ interface SearchResult {
 
 export function GlobalSearch() {
   const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
   // Keyboard shortcut: '/' to focus search
-  useHotkeys('/', (e) => {
-    e.preventDefault();
-    setOpen(true);
-  }, { enableOnFormTags: false });
+  useHotkeys(
+    "/",
+    (e) => {
+      e.preventDefault();
+      setOpen(true);
+    },
+    { enableOnFormTags: false },
+  );
 
-  useHotkeys('escape', () => {
+  useHotkeys("escape", () => {
     setOpen(false);
   });
 
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery);
-    
+
     if (!searchQuery.trim()) {
       setResults([]);
       return;
@@ -43,31 +47,32 @@ export function GlobalSearch() {
     // For now, mock results
     const mockResults: SearchResult[] = [
       {
-        type: 'city',
-        title: 'Chicago Airport Transportation',
-        href: '/admin/seo/city/chicago',
-        description: 'City page for Chicago airport services',
+        type: "city",
+        title: "Chicago Airport Transportation",
+        href: "/admin/seo/city/chicago",
+        description: "City page for Chicago airport services",
       },
       {
-        type: 'service',
-        title: 'Corporate Transportation',
-        href: '/admin/seo/service/corporate',
-        description: 'Service page for corporate travel',
+        type: "service",
+        title: "Corporate Transportation",
+        href: "/admin/seo/service/corporate",
+        description: "Service page for corporate travel",
       },
-    ].filter(r => 
-      r.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    ].filter((r) => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
     setResults(mockResults);
   };
 
-  const groupedResults = results.reduce((acc, result) => {
-    if (!acc[result.type]) {
-      acc[result.type] = [];
-    }
-    acc[result.type].push(result);
-    return acc;
-  }, {} as Record<string, SearchResult[]>);
+  const groupedResults = results.reduce(
+    (acc, result) => {
+      if (!acc[result.type]) {
+        acc[result.type] = [];
+      }
+      acc[result.type].push(result);
+      return acc;
+    },
+    {} as Record<string, SearchResult[]>,
+  );
 
   return (
     <>

@@ -9,49 +9,48 @@ import { devBanner } from "@replit/vite-plugin-dev-banner";
 import { cartographer } from "@replit/vite-plugin-cartographer";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 export default defineConfig(({ mode }) => {
-  const isDev = mode === 'development';
-  
+  const isDev = mode === "development";
+
   return {
-  plugins: [
-    react(),
-    ...(mode === 'development' ? [runtimeErrorModal(), devBanner(), cartographer()] : []),
-  ],
-  css: {
-    postcss: {
-      plugins: [
-        tailwindcss,
-        autoprefixer,
-      ],
-    },
-  },
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "client", "src"),
-      "@shared": path.resolve(__dirname, "shared"),
-      "@assets": path.resolve(__dirname, "client", "public", "assets"),
-    },
-  },
-  root: path.resolve(__dirname, "client"),
-  build: {
-    outDir: path.resolve(__dirname, "dist", "public"),
-    emptyOutDir: true,
-    rollupOptions: {
-      input: path.resolve(__dirname, "client", "index.html"),
-      output: {
-        manualChunks: {
-          // Split React and related libraries into a separate chunk
-          'react-vendor': ['react', 'react-dom', 'wouter'],
-          // Split React Query into its own chunk
-          'query-vendor': ['@tanstack/react-query'],
-          // Split UI libraries
-          'ui-vendor': ['lucide-react'],
-        },
+    plugins: [
+      react(),
+      ...(mode === "development"
+        ? [runtimeErrorModal(), devBanner(), cartographer()]
+        : []),
+    ],
+    css: {
+      postcss: {
+        plugins: [tailwindcss, autoprefixer],
       },
     },
-    chunkSizeWarningLimit: 600,
-  },
-}});
-
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "client", "src"),
+        "@shared": path.resolve(__dirname, "shared"),
+        "@assets": path.resolve(__dirname, "client", "public", "assets"),
+      },
+    },
+    root: path.resolve(__dirname, "client"),
+    build: {
+      outDir: path.resolve(__dirname, "dist", "public"),
+      emptyOutDir: true,
+      rollupOptions: {
+        input: path.resolve(__dirname, "client", "index.html"),
+        output: {
+          manualChunks: {
+            // Split React and related libraries into a separate chunk
+            "react-vendor": ["react", "react-dom", "wouter"],
+            // Split React Query into its own chunk
+            "query-vendor": ["@tanstack/react-query"],
+            // Split UI libraries
+            "ui-vendor": ["lucide-react"],
+          },
+        },
+      },
+      chunkSizeWarningLimit: 600,
+    },
+  };
+});

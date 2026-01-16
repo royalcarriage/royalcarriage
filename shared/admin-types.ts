@@ -4,7 +4,7 @@
 export interface ImportTemplate {
   id: string;
   name: string;
-  type: 'moovs' | 'ads';
+  type: "moovs" | "ads";
   columnMappings: Record<string, string>; // source column → canonical name
   createdBy: string;
   createdAt: string;
@@ -14,13 +14,13 @@ export interface ImportError {
   row: number;
   column: string;
   value: string;
-  error: 'missing' | 'invalid_format' | 'duplicate' | 'parse_error';
+  error: "missing" | "invalid_format" | "duplicate" | "parse_error";
   message: string;
 }
 
 export interface ImportLog {
   id: string;
-  type: 'moovs' | 'ads';
+  type: "moovs" | "ads";
   fileName: string;
   fileHash: string;
   filePath: string; // Firebase Storage path
@@ -32,7 +32,7 @@ export interface ImportLog {
   warnings: string[];
   completenessScore: number; // 0-100
   dedupeCount: number;
-  status: 'pending' | 'processing' | 'success' | 'partial' | 'failed';
+  status: "pending" | "processing" | "success" | "partial" | "failed";
   userId: string;
   userEmail: string;
   createdAt: string;
@@ -42,7 +42,7 @@ export interface ImportLog {
 // Audit trail
 export interface AuditLog {
   id: string;
-  action: 'import' | 'publish' | 'deploy' | 'settings_change' | 'user_action';
+  action: "import" | "publish" | "deploy" | "settings_change" | "user_action";
   userId: string;
   userEmail: string;
   timestamp: string;
@@ -87,7 +87,7 @@ export interface KeywordAction {
   roas: number;
   cpa: number;
   recommendedPage: string;
-  action: 'SCALE' | 'FIX' | 'PAUSE' | 'ADD_NEGATIVES' | 'BUILD_PAGE';
+  action: "SCALE" | "FIX" | "PAUSE" | "ADD_NEGATIVES" | "BUILD_PAGE";
   reason: string;
 }
 
@@ -96,9 +96,9 @@ export interface SEOTopic {
   id: string;
   title: string;
   slug: string;
-  pageType: 'city' | 'service' | 'fleet' | 'blog';
+  pageType: "city" | "service" | "fleet" | "blog";
   siteSlug: string;
-  status: 'proposed' | 'draft' | 'ready' | 'published' | 'blocked';
+  status: "proposed" | "draft" | "ready" | "published" | "blocked";
   primaryKeyword: string;
   secondaryKeywords: string[];
   targetUrl: string;
@@ -118,7 +118,7 @@ export interface SEODraft {
   internalLinks: string[];
   images: string[];
   wordCount: number;
-  gateStatus: 'pending' | 'passed' | 'warned' | 'failed';
+  gateStatus: "pending" | "passed" | "warned" | "failed";
   gateResults?: GateResult;
   createdAt: string;
   updatedAt: string;
@@ -137,7 +137,7 @@ export interface GateResult {
     keywordMatch: { passed: boolean; details: string };
   };
   suggestions: string[];
-  overallStatus: 'passed' | 'warned' | 'failed';
+  overallStatus: "passed" | "warned" | "failed";
   timestamp: string;
 }
 
@@ -147,10 +147,10 @@ export interface ImageMetadata {
   path: string; // Firebase Storage path
   url: string;
   alt: string;
-  entityType: 'vehicle' | 'service' | 'city' | 'blog' | 'general';
+  entityType: "vehicle" | "service" | "city" | "blog" | "general";
   entitySlug: string;
   siteSlug: string;
-  source: 'owned' | 'licensed' | 'ai';
+  source: "owned" | "licensed" | "ai";
   proofUrl?: string; // Required if licensed
   width: number;
   height: number;
@@ -164,7 +164,7 @@ export interface ImageMetadata {
 export interface ImageSyncLog {
   id: string;
   timestamp: string;
-  action: 'upload' | 'delete' | 'update' | 'sync';
+  action: "upload" | "delete" | "update" | "sync";
   imageCount: number;
   entitiesUpdated: string[];
   missing: string[];
@@ -176,7 +176,7 @@ export interface ImageSyncLog {
 export interface ChangelogEntry {
   id: string;
   date: string;
-  type: 'publish' | 'update' | 'delete' | 'import';
+  type: "publish" | "update" | "delete" | "import";
   pages: string[];
   keywords: string[];
   images: string[];
@@ -189,13 +189,13 @@ export interface ChangelogEntry {
 export interface PublishCadence {
   minDaysBetweenPublish: number;
   maxPagesPerCycle: number;
-  defaultCycle: 'weekly' | 'biweekly' | 'monthly';
+  defaultCycle: "weekly" | "biweekly" | "monthly";
   lastPublishDate?: string;
   nextAllowedDate?: string;
 }
 
 export interface SeasonalContent {
-  season: 'winter' | 'spring' | 'summer' | 'fall';
+  season: "winter" | "spring" | "summer" | "fall";
   active: boolean;
   heroImages: Record<string, string>; // siteSlug → image path
   promoSections: Record<string, string>; // siteSlug → promo HTML
@@ -224,7 +224,7 @@ export interface VehicleProfit {
   rank: number;
 }
 
-export type UserRole = 'Viewer' | 'Editor' | 'Admin' | 'SuperAdmin';
+export type UserRole = "Viewer" | "Editor" | "Admin" | "SuperAdmin";
 
 export interface User {
   uid: string;

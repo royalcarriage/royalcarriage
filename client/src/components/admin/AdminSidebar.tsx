@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { 
-  LayoutDashboard, 
-  FileText, 
-  Bot, 
-  Image, 
-  BarChart3, 
-  Rocket, 
+import {
+  LayoutDashboard,
+  FileText,
+  Bot,
+  Image,
+  BarChart3,
+  Rocket,
   Settings,
   ChevronDown,
-  ChevronRight
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export type AdminSection = 
+export type AdminSection =
   | "overview"
   | "content"
   | "seo-bot"
@@ -94,15 +94,18 @@ const SECTIONS: SidebarSection[] = [
   },
 ];
 
-export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarProps) {
+export function AdminSidebar({
+  activeSection,
+  onSectionChange,
+}: AdminSidebarProps) {
   const [expandedSection, setExpandedSection] = useState<AdminSection | null>(
-    SECTIONS.find(s => s.id === activeSection && s.subsections)?.id || null
+    SECTIONS.find((s) => s.id === activeSection && s.subsections)?.id || null,
   );
 
   const handleSectionClick = (section: SidebarSection) => {
     if (section.subsections) {
       // Toggle accordion
-      setExpandedSection(prev => prev === section.id ? null : section.id);
+      setExpandedSection((prev) => (prev === section.id ? null : section.id));
       // If expanding, set as active
       if (expandedSection !== section.id) {
         onSectionChange(section.id);
@@ -126,7 +129,8 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
           const Icon = section.icon;
           const isActive = activeSection === section.id;
           const isExpanded = expandedSection === section.id;
-          const hasSubsections = section.subsections && section.subsections.length > 0;
+          const hasSubsections =
+            section.subsections && section.subsections.length > 0;
 
           return (
             <div key={section.id}>
@@ -137,21 +141,22 @@ export function AdminSidebar({ activeSection, onSectionChange }: AdminSidebarPro
                   "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                   isActive
                     ? "bg-blue-50 text-blue-700 shadow-sm"
-                    : "text-gray-700 hover:bg-gray-50"
+                    : "text-gray-700 hover:bg-gray-50",
                 )}
               >
-                <Icon className={cn(
-                  "h-5 w-5",
-                  isActive ? "text-blue-600" : "text-gray-500"
-                )} />
+                <Icon
+                  className={cn(
+                    "h-5 w-5",
+                    isActive ? "text-blue-600" : "text-gray-500",
+                  )}
+                />
                 <span className="flex-1 text-left">{section.label}</span>
-                {hasSubsections && (
-                  isExpanded ? (
+                {hasSubsections &&
+                  (isExpanded ? (
                     <ChevronDown className="h-4 w-4 text-gray-400" />
                   ) : (
                     <ChevronRight className="h-4 w-4 text-gray-400" />
-                  )
-                )}
+                  ))}
               </button>
 
               {/* Subsections (Accordion Content) */}

@@ -1,18 +1,21 @@
-import { useSiteFilter, SITES } from '@/contexts/SiteFilterContext';
+import { useSiteFilter, SITES } from "@/contexts/SiteFilterContext";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 export function TopBarSiteSelector() {
   const { selectedSite, setSelectedSite } = useSiteFilter();
 
   return (
     <div className="flex items-center gap-2">
-      <label htmlFor="site-selector" className="text-sm font-medium text-gray-700">
+      <label
+        htmlFor="site-selector"
+        className="text-sm font-medium text-gray-700"
+      >
         Site:
       </label>
       <Select value={selectedSite} onValueChange={setSelectedSite}>

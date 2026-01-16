@@ -1,19 +1,25 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  Brain, 
-  FileText, 
-  Image, 
-  BarChart3, 
-  Settings, 
+import {
+  Brain,
+  FileText,
+  Image,
+  BarChart3,
+  Settings,
   Upload,
   CheckCircle,
   AlertCircle,
   Clock,
-  Zap
+  Zap,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -34,7 +40,8 @@ export default function AdminDashboard() {
               AI Website Management Dashboard
             </h1>
             <p className="text-lg text-gray-600">
-              Automated SEO optimization, content generation, and website analytics
+              Automated SEO optimization, content generation, and website
+              analytics
             </p>
           </div>
 
@@ -49,7 +56,9 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
-                <p className="text-xs text-gray-500 mt-1">No pages analyzed yet</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  No pages analyzed yet
+                </p>
               </CardContent>
             </Card>
 
@@ -75,7 +84,9 @@ export default function AdminDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">0</div>
-                <p className="text-xs text-gray-500 mt-1">AI-generated images</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  AI-generated images
+                </p>
               </CardContent>
             </Card>
 
@@ -120,25 +131,37 @@ export default function AdminDashboard() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <Link href="/admin/analyze">
-                      <Button className="w-full justify-start" variant="outline">
+                      <Button
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
                         <Brain className="mr-2 h-4 w-4" />
                         Analyze All Pages
                       </Button>
                     </Link>
                     <Link href="/admin/generate-content">
-                      <Button className="w-full justify-start" variant="outline">
+                      <Button
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
                         <FileText className="mr-2 h-4 w-4" />
                         Generate Content
                       </Button>
                     </Link>
                     <Link href="/admin/generate-images">
-                      <Button className="w-full justify-start" variant="outline">
+                      <Button
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
                         <Image className="mr-2 h-4 w-4" />
                         Generate Images
                       </Button>
                     </Link>
                     <Link href="/admin/review-changes">
-                      <Button className="w-full justify-start" variant="outline">
+                      <Button
+                        className="w-full justify-start"
+                        variant="outline"
+                      >
                         <CheckCircle className="mr-2 h-4 w-4" />
                         Review & Approve
                       </Button>
@@ -171,9 +194,7 @@ export default function AdminDashboard() {
                       <Settings className="h-5 w-5 text-gray-500" />
                       System Status
                     </CardTitle>
-                    <CardDescription>
-                      AI services health check
-                    </CardDescription>
+                    <CardDescription>AI services health check</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between">
@@ -210,11 +231,15 @@ export default function AdminDashboard() {
                     <div className="space-y-3 text-sm">
                       <div>
                         <div className="font-medium">Daily Page Analysis</div>
-                        <div className="text-gray-500">Runs daily at 2:00 AM</div>
+                        <div className="text-gray-500">
+                          Runs daily at 2:00 AM
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Weekly SEO Report</div>
-                        <div className="text-gray-500">Runs every Monday at 9:00 AM</div>
+                        <div className="text-gray-500">
+                          Runs every Monday at 9:00 AM
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium">Content Optimization</div>

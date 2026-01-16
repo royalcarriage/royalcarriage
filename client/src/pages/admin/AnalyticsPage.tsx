@@ -1,7 +1,13 @@
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatsCard, StatsGrid } from "@/components/admin/StatsCard";
 import { SEO } from "@/components/SEO";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -158,19 +164,38 @@ export default function AnalyticsPage() {
               <Card className="lg:col-span-2">
                 <CardHeader>
                   <CardTitle>Revenue Trends</CardTitle>
-                  <CardDescription>Monthly revenue over the past year</CardDescription>
+                  <CardDescription>
+                    Monthly revenue over the past year
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[350px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={revenueData}>
                         <defs>
-                          <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0} />
+                          <linearGradient
+                            id="colorRevenue"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="hsl(var(--chart-1))"
+                              stopOpacity={0.3}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="hsl(var(--chart-1))"
+                              stopOpacity={0}
+                            />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          className="stroke-muted"
+                        />
                         <XAxis dataKey="name" className="text-xs" />
                         <YAxis className="text-xs" />
                         <Tooltip
@@ -179,7 +204,10 @@ export default function AnalyticsPage() {
                             border: "1px solid hsl(var(--border))",
                             borderRadius: "8px",
                           }}
-                          formatter={(value: number) => [`$${value.toLocaleString()}`, "Revenue"]}
+                          formatter={(value: number) => [
+                            `$${value.toLocaleString()}`,
+                            "Revenue",
+                          ]}
                         />
                         <Area
                           type="monotone"
@@ -197,7 +225,9 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Revenue by Location</CardTitle>
-                  <CardDescription>Distribution of revenue sources</CardDescription>
+                  <CardDescription>
+                    Distribution of revenue sources
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[200px]">
@@ -222,7 +252,10 @@ export default function AnalyticsPage() {
                   </div>
                   <div className="space-y-2 mt-4">
                     {tripsByLocation.map((location) => (
-                      <div key={location.name} className="flex items-center justify-between">
+                      <div
+                        key={location.name}
+                        className="flex items-center justify-between"
+                      >
                         <div className="flex items-center gap-2">
                           <div
                             className="h-3 w-3 rounded-full"
@@ -230,7 +263,9 @@ export default function AnalyticsPage() {
                           />
                           <span className="text-sm">{location.name}</span>
                         </div>
-                        <span className="text-sm font-medium">{location.value}%</span>
+                        <span className="text-sm font-medium">
+                          {location.value}%
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -241,16 +276,25 @@ export default function AnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Revenue by Vehicle Type</CardTitle>
-                <CardDescription>Comparison of trips and revenue across vehicle categories</CardDescription>
+                <CardDescription>
+                  Comparison of trips and revenue across vehicle categories
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={tripsByVehicle}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="stroke-muted"
+                      />
                       <XAxis dataKey="name" className="text-xs" />
                       <YAxis yAxisId="left" className="text-xs" />
-                      <YAxis yAxisId="right" orientation="right" className="text-xs" />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        className="text-xs"
+                      />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: "hsl(var(--popover))",
@@ -258,8 +302,18 @@ export default function AnalyticsPage() {
                           borderRadius: "8px",
                         }}
                       />
-                      <Bar yAxisId="left" dataKey="trips" fill="hsl(var(--chart-1))" name="Trips" />
-                      <Bar yAxisId="right" dataKey="revenue" fill="hsl(var(--chart-2))" name="Revenue ($)" />
+                      <Bar
+                        yAxisId="left"
+                        dataKey="trips"
+                        fill="hsl(var(--chart-1))"
+                        name="Trips"
+                      />
+                      <Bar
+                        yAxisId="right"
+                        dataKey="revenue"
+                        fill="hsl(var(--chart-2))"
+                        name="Revenue ($)"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -273,13 +327,18 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Trip Volume</CardTitle>
-                  <CardDescription>Monthly trip counts over the past year</CardDescription>
+                  <CardDescription>
+                    Monthly trip counts over the past year
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={revenueData}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          className="stroke-muted"
+                        />
                         <XAxis dataKey="name" className="text-xs" />
                         <YAxis className="text-xs" />
                         <Tooltip
@@ -305,15 +364,25 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Trips by Location</CardTitle>
-                  <CardDescription>Distribution of trip pickup locations</CardDescription>
+                  <CardDescription>
+                    Distribution of trip pickup locations
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={tripsByLocation} layout="vertical">
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          className="stroke-muted"
+                        />
                         <XAxis type="number" className="text-xs" />
-                        <YAxis dataKey="name" type="category" className="text-xs" width={100} />
+                        <YAxis
+                          dataKey="name"
+                          type="category"
+                          className="text-xs"
+                          width={100}
+                        />
                         <Tooltip />
                         <Bar dataKey="value" fill="hsl(var(--chart-1))" />
                       </BarChart>
@@ -337,12 +406,29 @@ export default function AnalyticsPage() {
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart data={revenueData}>
                         <defs>
-                          <linearGradient id="colorDrivers" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="hsl(var(--chart-2))" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="hsl(var(--chart-2))" stopOpacity={0} />
+                          <linearGradient
+                            id="colorDrivers"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="5%"
+                              stopColor="hsl(var(--chart-2))"
+                              stopOpacity={0.3}
+                            />
+                            <stop
+                              offset="95%"
+                              stopColor="hsl(var(--chart-2))"
+                              stopOpacity={0}
+                            />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          className="stroke-muted"
+                        />
                         <XAxis dataKey="name" className="text-xs" />
                         <YAxis className="text-xs" />
                         <Tooltip />
@@ -362,16 +448,30 @@ export default function AnalyticsPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Driver Performance</CardTitle>
-                  <CardDescription>Weekly average ratings and completion rates</CardDescription>
+                  <CardDescription>
+                    Weekly average ratings and completion rates
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={driverPerformance}>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          className="stroke-muted"
+                        />
                         <XAxis dataKey="name" className="text-xs" />
-                        <YAxis yAxisId="left" className="text-xs" domain={[4, 5]} />
-                        <YAxis yAxisId="right" orientation="right" className="text-xs" domain={[90, 100]} />
+                        <YAxis
+                          yAxisId="left"
+                          className="text-xs"
+                          domain={[4, 5]}
+                        />
+                        <YAxis
+                          yAxisId="right"
+                          orientation="right"
+                          className="text-xs"
+                          domain={[90, 100]}
+                        />
                         <Tooltip />
                         <Line
                           yAxisId="left"
@@ -402,13 +502,18 @@ export default function AnalyticsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Vehicle Utilization</CardTitle>
-                <CardDescription>Trips and revenue by vehicle type</CardDescription>
+                <CardDescription>
+                  Trips and revenue by vehicle type
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="h-[350px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={tripsByVehicle}>
-                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        className="stroke-muted"
+                      />
                       <XAxis dataKey="name" className="text-xs" />
                       <YAxis className="text-xs" />
                       <Tooltip
@@ -418,7 +523,11 @@ export default function AnalyticsPage() {
                           borderRadius: "8px",
                         }}
                       />
-                      <Bar dataKey="trips" fill="hsl(var(--chart-1))" name="Trips" />
+                      <Bar
+                        dataKey="trips"
+                        fill="hsl(var(--chart-1))"
+                        name="Trips"
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>

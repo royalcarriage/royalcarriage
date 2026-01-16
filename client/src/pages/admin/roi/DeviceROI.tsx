@@ -1,6 +1,12 @@
-import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
   BarChart,
   Bar,
@@ -13,11 +19,11 @@ import {
   Legend,
   ResponsiveContainer,
   Cell,
-} from 'recharts';
-import { Smartphone, Monitor, TrendingUp, TrendingDown } from 'lucide-react';
+} from "recharts";
+import { Smartphone, Monitor, TrendingUp, TrendingDown } from "lucide-react";
 
 interface DeviceMetrics {
-  device: 'mobile' | 'desktop';
+  device: "mobile" | "desktop";
   spend: number;
   revenue: number;
   conversions: number;
@@ -40,7 +46,7 @@ interface TrendData {
 const generateMockMetrics = (): DeviceMetrics[] => {
   return [
     {
-      device: 'mobile',
+      device: "mobile",
       spend: 8500,
       revenue: 32000,
       conversions: 45,
@@ -51,7 +57,7 @@ const generateMockMetrics = (): DeviceMetrics[] => {
       sessions: 3200,
     },
     {
-      device: 'desktop',
+      device: "desktop",
       spend: 12000,
       revenue: 58000,
       conversions: 78,
@@ -70,7 +76,10 @@ const generateMockTrends = (): TrendData[] => {
     const date = new Date();
     date.setDate(date.getDate() - (29 - i));
     return {
-      date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+      date: date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
       mobileRevenue: Math.floor(Math.random() * 2000) + 800,
       desktopRevenue: Math.floor(Math.random() * 3000) + 1500,
       mobileConversions: Math.floor(Math.random() * 3) + 1,
@@ -80,65 +89,70 @@ const generateMockTrends = (): TrendData[] => {
 };
 
 interface Recommendation {
-  type: 'warning' | 'success' | 'info';
+  type: "warning" | "success" | "info";
   title: string;
   description: string;
-  impact: 'high' | 'medium' | 'low';
+  impact: "high" | "medium" | "low";
 }
 
-const generateRecommendations = (metrics: DeviceMetrics[]): Recommendation[] => {
+const generateRecommendations = (
+  metrics: DeviceMetrics[],
+): Recommendation[] => {
   const recommendations: Recommendation[] = [];
-  const mobile = metrics.find(m => m.device === 'mobile')!;
-  const desktop = metrics.find(m => m.device === 'desktop')!;
+  const mobile = metrics.find((m) => m.device === "mobile")!;
+  const desktop = metrics.find((m) => m.device === "desktop")!;
 
   // ROAS comparison
   const roasDiff = Math.abs(desktop.roas - mobile.roas);
   if (roasDiff > 1) {
     recommendations.push({
-      type: desktop.roas > mobile.roas ? 'warning' : 'success',
-      title: `${desktop.roas > mobile.roas ? 'Desktop' : 'Mobile'} significantly outperforms`,
-      description: `${desktop.roas > mobile.roas ? 'Desktop' : 'Mobile'} has ${roasDiff.toFixed(2)}x higher ROAS. Consider ${desktop.roas > mobile.roas ? 'reducing mobile spend' : 'increasing mobile spend'}.`,
-      impact: 'high',
+      type: desktop.roas > mobile.roas ? "warning" : "success",
+      title: `${desktop.roas > mobile.roas ? "Desktop" : "Mobile"} significantly outperforms`,
+      description: `${desktop.roas > mobile.roas ? "Desktop" : "Mobile"} has ${roasDiff.toFixed(2)}x higher ROAS. Consider ${desktop.roas > mobile.roas ? "reducing mobile spend" : "increasing mobile spend"}.`,
+      impact: "high",
     });
   }
 
   // Bounce rate issues
   if (mobile.bounceRate > 60) {
     recommendations.push({
-      type: 'warning',
-      title: 'High mobile bounce rate',
+      type: "warning",
+      title: "High mobile bounce rate",
       description: `Mobile bounce rate is ${mobile.bounceRate.toFixed(1)}%. Optimize mobile UX, page speed, and CTA visibility.`,
-      impact: 'high',
+      impact: "high",
     });
   }
 
   // Time on page
   if (desktop.avgTimeOnPage > mobile.avgTimeOnPage * 1.5) {
     recommendations.push({
-      type: 'info',
-      title: 'Mobile engagement lower than desktop',
+      type: "info",
+      title: "Mobile engagement lower than desktop",
       description: `Desktop users spend ${Math.round((desktop.avgTimeOnPage - mobile.avgTimeOnPage) / 60)} more minutes on page. Review mobile content layout.`,
-      impact: 'medium',
+      impact: "medium",
     });
   }
 
   // CPA comparison
   if (mobile.cpa > desktop.cpa) {
     recommendations.push({
-      type: 'warning',
-      title: 'Mobile CPA is higher',
+      type: "warning",
+      title: "Mobile CPA is higher",
       description: `Mobile CPA ($${mobile.cpa.toFixed(2)}) is ${(((mobile.cpa - desktop.cpa) / desktop.cpa) * 100).toFixed(0)}% higher than desktop. Review mobile landing pages and bid adjustments.`,
-      impact: 'high',
+      impact: "high",
     });
   }
 
   // Sessions vs conversions
-  if (mobile.sessions > desktop.sessions && mobile.conversions < desktop.conversions) {
+  if (
+    mobile.sessions > desktop.sessions &&
+    mobile.conversions < desktop.conversions
+  ) {
     recommendations.push({
-      type: 'warning',
-      title: 'Mobile traffic not converting',
+      type: "warning",
+      title: "Mobile traffic not converting",
       description: `Mobile has ${mobile.sessions - desktop.sessions} more sessions but ${desktop.conversions - mobile.conversions} fewer conversions. Focus on mobile conversion optimization.`,
-      impact: 'high',
+      impact: "high",
     });
   }
 
@@ -150,23 +164,35 @@ export function DeviceROI() {
   const [trends] = useState<TrendData[]>(generateMockTrends());
   const recommendations = generateRecommendations(metrics);
 
-  const mobile = metrics.find(m => m.device === 'mobile')!;
-  const desktop = metrics.find(m => m.device === 'desktop')!;
+  const mobile = metrics.find((m) => m.device === "mobile")!;
+  const desktop = metrics.find((m) => m.device === "desktop")!;
 
   const comparisonData = [
-    { metric: 'Spend', mobile: mobile.spend, desktop: desktop.spend },
-    { metric: 'Revenue', mobile: mobile.revenue, desktop: desktop.revenue },
-    { metric: 'Conversions', mobile: mobile.conversions, desktop: desktop.conversions },
+    { metric: "Spend", mobile: mobile.spend, desktop: desktop.spend },
+    { metric: "Revenue", mobile: mobile.revenue, desktop: desktop.revenue },
+    {
+      metric: "Conversions",
+      mobile: mobile.conversions,
+      desktop: desktop.conversions,
+    },
   ];
 
   const engagementData = [
-    { metric: 'Bounce Rate', mobile: mobile.bounceRate, desktop: desktop.bounceRate },
-    { metric: 'Avg Time (sec)', mobile: mobile.avgTimeOnPage, desktop: desktop.avgTimeOnPage },
+    {
+      metric: "Bounce Rate",
+      mobile: mobile.bounceRate,
+      desktop: desktop.bounceRate,
+    },
+    {
+      metric: "Avg Time (sec)",
+      mobile: mobile.avgTimeOnPage,
+      desktop: desktop.avgTimeOnPage,
+    },
   ];
 
   const COLORS = {
-    mobile: '#f59e0b',
-    desktop: '#3b82f6',
+    mobile: "#f59e0b",
+    desktop: "#3b82f6",
   };
 
   return (
@@ -195,11 +221,15 @@ export function DeviceROI() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Spend</span>
-                    <span className="font-semibold">${mobile.spend.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${mobile.spend.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Revenue</span>
-                    <span className="font-semibold">${mobile.revenue.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${mobile.revenue.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Conversions</span>
@@ -207,19 +237,28 @@ export function DeviceROI() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">ROAS</span>
-                    <span className="font-semibold">{mobile.roas.toFixed(2)}x</span>
+                    <span className="font-semibold">
+                      {mobile.roas.toFixed(2)}x
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">CPA</span>
-                    <span className="font-semibold">${mobile.cpa.toFixed(2)}</span>
+                    <span className="font-semibold">
+                      ${mobile.cpa.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t pt-2">
                     <span className="text-gray-600">Bounce Rate</span>
-                    <span className="font-semibold">{mobile.bounceRate.toFixed(1)}%</span>
+                    <span className="font-semibold">
+                      {mobile.bounceRate.toFixed(1)}%
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Avg Time on Page</span>
-                    <span className="font-semibold">{Math.floor(mobile.avgTimeOnPage / 60)}m {mobile.avgTimeOnPage % 60}s</span>
+                    <span className="font-semibold">
+                      {Math.floor(mobile.avgTimeOnPage / 60)}m{" "}
+                      {mobile.avgTimeOnPage % 60}s
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -240,11 +279,15 @@ export function DeviceROI() {
                 <div className="space-y-3">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Spend</span>
-                    <span className="font-semibold">${desktop.spend.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${desktop.spend.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Revenue</span>
-                    <span className="font-semibold">${desktop.revenue.toLocaleString()}</span>
+                    <span className="font-semibold">
+                      ${desktop.revenue.toLocaleString()}
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Conversions</span>
@@ -252,19 +295,28 @@ export function DeviceROI() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">ROAS</span>
-                    <span className="font-semibold">{desktop.roas.toFixed(2)}x</span>
+                    <span className="font-semibold">
+                      {desktop.roas.toFixed(2)}x
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">CPA</span>
-                    <span className="font-semibold">${desktop.cpa.toFixed(2)}</span>
+                    <span className="font-semibold">
+                      ${desktop.cpa.toFixed(2)}
+                    </span>
                   </div>
                   <div className="flex justify-between border-t pt-2">
                     <span className="text-gray-600">Bounce Rate</span>
-                    <span className="font-semibold">{desktop.bounceRate.toFixed(1)}%</span>
+                    <span className="font-semibold">
+                      {desktop.bounceRate.toFixed(1)}%
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Avg Time on Page</span>
-                    <span className="font-semibold">{Math.floor(desktop.avgTimeOnPage / 60)}m {desktop.avgTimeOnPage % 60}s</span>
+                    <span className="font-semibold">
+                      {Math.floor(desktop.avgTimeOnPage / 60)}m{" "}
+                      {desktop.avgTimeOnPage % 60}s
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -286,7 +338,11 @@ export function DeviceROI() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="mobile" fill={COLORS.mobile} name="Mobile" />
-                    <Bar dataKey="desktop" fill={COLORS.desktop} name="Desktop" />
+                    <Bar
+                      dataKey="desktop"
+                      fill={COLORS.desktop}
+                      name="Desktop"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -305,7 +361,11 @@ export function DeviceROI() {
                     <Tooltip />
                     <Legend />
                     <Bar dataKey="mobile" fill={COLORS.mobile} name="Mobile" />
-                    <Bar dataKey="desktop" fill={COLORS.desktop} name="Desktop" />
+                    <Bar
+                      dataKey="desktop"
+                      fill={COLORS.desktop}
+                      name="Desktop"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </CardContent>
@@ -316,7 +376,9 @@ export function DeviceROI() {
           <Card>
             <CardHeader>
               <CardTitle>30-Day Revenue Trend</CardTitle>
-              <CardDescription>Daily revenue comparison by device</CardDescription>
+              <CardDescription>
+                Daily revenue comparison by device
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
@@ -361,18 +423,18 @@ export function DeviceROI() {
               <div
                 key={idx}
                 className={`p-4 rounded-lg border-l-4 ${
-                  rec.type === 'warning'
-                    ? 'border-yellow-500 bg-yellow-50'
-                    : rec.type === 'success'
-                    ? 'border-green-500 bg-green-50'
-                    : 'border-blue-500 bg-blue-50'
+                  rec.type === "warning"
+                    ? "border-yellow-500 bg-yellow-50"
+                    : rec.type === "success"
+                      ? "border-green-500 bg-green-50"
+                      : "border-blue-500 bg-blue-50"
                 }`}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h4 className="font-semibold">{rec.title}</h4>
-                      {rec.type === 'warning' ? (
+                      {rec.type === "warning" ? (
                         <TrendingDown className="w-4 h-4 text-yellow-600" />
                       ) : (
                         <TrendingUp className="w-4 h-4 text-green-600" />
@@ -383,11 +445,11 @@ export function DeviceROI() {
                   <Badge
                     variant="outline"
                     className={
-                      rec.impact === 'high'
-                        ? 'border-red-500 text-red-700'
-                        : rec.impact === 'medium'
-                        ? 'border-yellow-500 text-yellow-700'
-                        : 'border-blue-500 text-blue-700'
+                      rec.impact === "high"
+                        ? "border-red-500 text-red-700"
+                        : rec.impact === "medium"
+                          ? "border-yellow-500 text-yellow-700"
+                          : "border-blue-500 text-blue-700"
                     }
                   >
                     {rec.impact} impact

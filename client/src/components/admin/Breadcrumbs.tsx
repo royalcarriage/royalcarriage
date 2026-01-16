@@ -1,5 +1,5 @@
-import { ChevronRight, Home } from 'lucide-react';
-import { Link, useLocation } from 'wouter';
+import { ChevronRight, Home } from "lucide-react";
+import { Link, useLocation } from "wouter";
 
 interface BreadcrumbItem {
   label: string;
@@ -7,19 +7,19 @@ interface BreadcrumbItem {
 }
 
 function generateBreadcrumbs(pathname: string): BreadcrumbItem[] {
-  const parts = pathname.split('/').filter(Boolean);
-  const breadcrumbs: BreadcrumbItem[] = [{ label: 'Admin', href: '/admin' }];
+  const parts = pathname.split("/").filter(Boolean);
+  const breadcrumbs: BreadcrumbItem[] = [{ label: "Admin", href: "/admin" }];
 
-  let currentPath = '/admin';
+  let currentPath = "/admin";
   for (let i = 1; i < parts.length; i++) {
     const part = parts[i];
     currentPath += `/${part}`;
-    
+
     // Format the label
     const label = part
-      .split('-')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
 
     // Last item should not have href
     breadcrumbs.push({

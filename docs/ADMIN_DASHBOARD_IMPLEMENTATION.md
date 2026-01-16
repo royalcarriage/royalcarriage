@@ -7,11 +7,11 @@ This document tracks the implementation status of all 65 requirements for the co
 ### COMPLETED (16 items)
 
 #### A) GLOBAL ADMIN UX + NAVIGATION (6/10 complete)
+
 - ✅ **1. Accordion Sidebar Behavior** - `SidebarAccordion.tsx`
   - Only one primary section open at a time
   - Persists state to localStorage per user (`admin_sidebar_state_${uid}`)
   - Role-based menu filtering
-  
 - ✅ **2. Top Bar Site Selector** - `TopBarSiteSelector.tsx`
   - Dropdown with 5 site options
   - Integrated with SiteFilterContext
@@ -21,7 +21,6 @@ This document tracks the implementation status of all 65 requirements for the co
   - Search across pages (placeholder for Firestore integration)
   - Keyboard shortcut '/' to focus
   - Grouped results by type
-  
 - ✅ **4. Notification Center** - `NotificationCenter.tsx`
   - Bell icon with unread count badge
   - Shows last 20 notifications
@@ -36,7 +35,6 @@ This document tracks the implementation status of all 65 requirements for the co
 - ✅ **6. Breadcrumbs** - `Breadcrumbs.tsx`
   - Auto-generated from route
   - Clickable navigation
-  
 - ✅ **7. Consistent Button System** - `buttons/` directory
   - PrimaryButton.tsx (gold/brand with loading state)
   - SecondaryButton.tsx (outline style)
@@ -62,11 +60,13 @@ This document tracks the implementation status of all 65 requirements for the co
   - Need to update AdminLayout.tsx with full permission system
 
 #### Shared Infrastructure (3 items)
+
 - ✅ **SiteFilterContext.tsx** - Site selection state management
 - ✅ **DensityContext.tsx** - UI density preference
 - ✅ **NotificationContext.tsx** - Notification state and actions
 
 #### Type Definitions (2 items)
+
 - ✅ **admin-types.ts** - Complete TypeScript interfaces for:
   - Import templates, logs, errors
   - Audit logs
@@ -85,6 +85,7 @@ This document tracks the implementation status of all 65 requirements for the co
 ### TO BE IMPLEMENTED (49 items)
 
 #### B) DATA IMPORTS & VALIDATION (0/10 implemented)
+
 - ❌ 11. Moovs Import Wizard
 - ❌ 12. Ads Import Wizard
 - ❌ 13. Immutable Raw Storage
@@ -97,6 +98,7 @@ This document tracks the implementation status of all 65 requirements for the co
 - ❌ 20. Audit Trail (types defined, need Firestore setup)
 
 #### C) ROI & PROFIT ANALYTICS (1/10 implemented)
+
 - ✅ 21. Profit Proxy Engine (shared/profit-proxy.ts)
 - ❌ 22. Service Mix Dashboard
 - ❌ 23. Landing Page Profit Attribution
@@ -109,6 +111,7 @@ This document tracks the implementation status of all 65 requirements for the co
 - ❌ 30. Export & Share
 
 #### D) SEO BOT & PUBLISHING SYSTEM (0/10 implemented)
+
 - ❌ 31. Topic Queue Board
 - ❌ 32. Quality Gate Results Viewer
 - ❌ 33. Staged Publishing Control
@@ -121,6 +124,7 @@ This document tracks the implementation status of all 65 requirements for the co
 - ❌ 40. Safe Cadence Enforcement
 
 #### E) IMAGE & FLEET MANAGEMENT (0/10 implemented)
+
 - ❌ 41. Image Library
 - ❌ 42. Missing Image Detector
 - ❌ 43. Image Tagging Rules
@@ -133,6 +137,7 @@ This document tracks the implementation status of all 65 requirements for the co
 - ❌ 50. Image Sync Log
 
 #### F) ADDITIONAL REQUIREMENTS (0/15 implemented)
+
 - ❌ 51. Deploy Button Guardrails
 - ❌ 52. Environment Config Viewer
 - ❌ 53. Error Monitoring Panel
@@ -152,6 +157,7 @@ This document tracks the implementation status of all 65 requirements for the co
 ## Architecture Overview
 
 ### Frontend Structure
+
 ```
 client/src/
 ├── components/admin/
@@ -181,6 +187,7 @@ client/src/
 ```
 
 ### Backend Structure
+
 ```
 shared/
 ├── admin-types.ts       ✅ Complete type definitions
@@ -197,6 +204,7 @@ scripts/
 ```
 
 ### Firestore Collections (to be created)
+
 - `import_templates` - Saved column mappings
 - `import_logs` - Import history and results
 - `audit_logs` - Complete audit trail
@@ -212,6 +220,7 @@ scripts/
 ## Next Steps for Full Implementation
 
 ### Phase 1: Data Import System (Items 11-20)
+
 1. Create MoovsImportWizard.tsx with 5-step flow
 2. Create AdsImportWizard.tsx with dataset type selection
 3. Update functions/src/parsers/moovs.ts for immutable storage
@@ -219,6 +228,7 @@ scripts/
 5. Add error reporting and validation
 
 ### Phase 2: ROI Analytics (Items 22-30)
+
 1. Create dashboard pages using profit-proxy.ts
 2. Implement service mix charts
 3. Build keyword analysis panels
@@ -226,6 +236,7 @@ scripts/
 5. Create weekly report generator script
 
 ### Phase 3: SEO Bot System (Items 31-40)
+
 1. Create Kanban board for topic queue
 2. Build quality gate checker
 3. Implement publishing controls with cadence
@@ -233,6 +244,7 @@ scripts/
 5. Create GSC import interface
 
 ### Phase 4: Image Management (Items 41-50)
+
 1. Build image library with filtering
 2. Create missing image detector
 3. Add upload with validation
@@ -240,6 +252,7 @@ scripts/
 5. Create fleet page generator
 
 ### Phase 5: System Tools (Items 51-65)
+
 1. Add deploy guardrails and health checks
 2. Create monitoring panels
 3. Implement backup scripts
@@ -264,18 +277,21 @@ scripts/
 ## Integration Points
 
 ### Firebase Integration Required:
+
 - Firestore: All data collections
 - Storage: Raw import files, image assets
 - Functions: Import processing, scheduled tasks
 - Authentication: User roles and permissions
 
 ### External Data Sources:
+
 - Moovs: Booking/trip data CSV exports
 - Google Ads: Campaign/keyword performance CSV exports
 - GA4: Landing page and conversion data
 - Google Search Console: Page performance CSV exports
 
 ## Documentation References
+
 - Main requirements: See problem_statement (65 items)
 - Type definitions: shared/admin-types.ts
 - ROI engine: shared/profit-proxy.ts

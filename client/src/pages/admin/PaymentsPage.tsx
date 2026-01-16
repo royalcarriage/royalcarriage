@@ -4,8 +4,20 @@ import { StatsCard, StatsGrid } from "@/components/admin/StatsCard";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Eye, RefreshCw, CreditCard, DollarSign, CheckCircle, Clock, AlertTriangle, Plus } from "lucide-react";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Eye,
+  RefreshCw,
+  CreditCard,
+  DollarSign,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Plus,
+} from "lucide-react";
 
 interface Payment {
   id: string;
@@ -85,8 +97,10 @@ const payments: Payment[] = [
 ];
 
 const statusColors: Record<Payment["status"], string> = {
-  completed: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
-  pending: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  completed:
+    "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
+  pending:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
   failed: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
   refunded: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
 };
@@ -135,7 +149,9 @@ const columns: Column<Payment>[] = [
     accessorKey: "amount",
     sortable: true,
     cell: (row) => (
-      <span className={`font-medium ${row.status === "refunded" ? "text-red-600" : ""}`}>
+      <span
+        className={`font-medium ${row.status === "refunded" ? "text-red-600" : ""}`}
+      >
         {row.status === "refunded" ? "-" : ""}${row.amount.toLocaleString()}
       </span>
     ),
@@ -187,11 +203,11 @@ export default function PaymentsPage() {
   const totalReceived = payments
     .filter((p) => p.status === "completed")
     .reduce((sum, p) => sum + p.amount, 0);
-  
+
   const totalPending = payments
     .filter((p) => p.status === "pending")
     .reduce((sum, p) => sum + p.amount, 0);
-  
+
   const failedCount = payments.filter((p) => p.status === "failed").length;
 
   return (
@@ -296,7 +312,8 @@ export default function PaymentsPage() {
           )}
           emptyState={{
             title: "No payments found",
-            description: "Payments will appear here once transactions are processed.",
+            description:
+              "Payments will appear here once transactions are processed.",
           }}
         />
       </AdminLayout>

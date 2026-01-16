@@ -1,4 +1,5 @@
 # Admin Dashboard Redesign & Integration Plan
+
 **Created:** January 15, 2026  
 **Status:** Phase 1 Complete, Admin Dashboard Redesign in Progress  
 **Purpose:** Integrate ROI intelligence layer with existing AI system and create unified control center
@@ -8,12 +9,14 @@
 ## Executive Summary
 
 The admin dashboard needs to be redesigned to integrate:
+
 1. **Existing AI System** (page analyzer, content generator, image generator)
 2. **New ROI Intelligence Layer** (metrics import, keyword clustering, profit model)
 3. **Phase 1 Improvements** (GA4, trust signals, pricing anchors)
 4. **Future Multi-Site Management** (4 domains)
 
 **Current State:**
+
 - ✅ Basic admin dashboard exists with AI tools
 - ✅ Page analyzer working (SEO scoring)
 - ✅ Content generator (Vertex AI Gemini)
@@ -30,64 +33,61 @@ The admin dashboard needs to be redesigned to integrate:
 ## Other Agents' Work Review
 
 ### 1. AI System Agent (Previous)
+
 **What They Built:**
+
 - `server/ai/page-analyzer.ts` - SEO scoring (0-100)
   - Analyzes H1/H2/H3 structure
   - Keyword density calculation
   - Readability scoring (Flesch)
   - Location-specific optimization
   - Content length validation
-  
 - `server/ai/content-generator.ts` - Vertex AI integration
   - Gemini Pro for content generation
   - Template fallback system
   - Location & vehicle-specific content
   - Meta tag optimization
-  
 - `server/ai/image-generator.ts` - Imagen integration
   - Hero images, service cards, fleet showcases
   - Prompt engineering templates
   - Placeholder support
-  
 - `server/ai/routes.ts` - 9 API endpoints
   - Single & batch page analysis
   - Content generation & improvement
   - Image generation & variations
   - Location & vehicle-specific APIs
-  
 - `functions/src/index.ts` - Firebase Functions
   - `dailyPageAnalysis` (2:00 AM daily)
   - `weeklySeoReport` (9:00 AM Mondays)
   - Firestore integration
-  
 - `client/src/pages/admin/` - Admin UI
   - AdminDashboard.tsx (6 tabs: Overview, Pages, AI Tools, Images, Analytics, Settings)
   - PageAnalyzer.tsx (batch analysis with scoring)
 
 **Database Schema (Drizzle ORM):**
+
 - users, page_analysis, content_suggestions, ai_images
 - audit_logs, scheduled_jobs, ai_settings
 - RBAC (user, admin, super_admin)
 
 ### 2. ROI Intelligence Agent (Current - Me)
+
 **What I Built:**
+
 - Comprehensive audits (64 KB findings)
   - repo-audit.md, site-ux-audit.md, tech-seo-audit.md
   - Identified conversion blockers and technical SEO gaps
-  
 - Data pipeline infrastructure
   - `scripts/metrics-import.mjs` - Resilient CSV importer
   - `/data/{google-ads, moovs, keyword-research}/` with READMEs
   - `/packages/content/profit_model.json` - Editable margins
   - Keyword clustering by intent
   - ROAS & profit proxy calculations
-  
 - Master Roadmap (41 KB)
   - 9-phase implementation plan
   - Conversion blockers prioritized
   - Google compliance checklist
   - Multi-site expansion strategy
-  
 - Phase 1 implementations
   - GA4 tracking (G-CC67CH86JR)
   - Trust signals component (⭐ 4.8/5, 15+ vehicles)
@@ -151,6 +151,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 ### Sidebar Accordion Behavior
+
 - Opening one section auto-closes others
 - Compact, modern design (bubble/pill buttons)
 - Icon + text for each section
@@ -165,6 +166,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** Quick snapshot of system health & key metrics
 
 **Layout:**
+
 ```
 ┌─ Site Status ──────────────┬─ SEO Performance ─────┬─ Revenue Impact ─────┐
 │ ✅ Airport (Live)          │ Avg SEO Score: 78/100 │ Last 30 Days:        │
@@ -193,6 +195,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Data Sources:**
+
 - Firebase Functions execution logs
 - `/packages/content/metrics/roi_summary.json`
 - Firestore: page_analysis collection
@@ -207,6 +210,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Sub-Tabs:** Pages | Drafts | City Manager
 
 #### 2.1 Pages Tab
+
 ```
 ┌─ Website Pages ────────────────────────────────────────────────────────────┐
 │ Search: [_________] Filter: [All] [Published] [Draft] [Needs Review]     │
@@ -223,12 +227,14 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Features:**
+
 - Click page → view full analysis (redirects to Page Analyzer with pre-filled URL)
 - Profit column calculated from keyword_clusters.json
 - SEO Score from AI page analyzer
 - Quick filters
 
 #### 2.2 Drafts Tab
+
 ```
 ┌─ Content Drafts ───────────────────────────────────────────────────────────┐
 │ Status: [All] [DRAFT] [READY] [PUBLISHED] [REJECTED]                      │
@@ -242,6 +248,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Workflow:**
+
 1. AI generates DRAFT
 2. Quality gate checks → READY or REJECTED
 3. Human reviews READY → approves → PUBLISHED
@@ -250,6 +257,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Data Source:** `/packages/content/seo-bot/drafts/*.json`
 
 #### 2.3 City Manager Tab
+
 ```
 ┌─ City Pages ───────────────────────────────────────────────────────────────┐
 │ [Add New City] [Batch Import] [Export]                                    │
@@ -264,6 +272,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Features:**
+
 - Add city with name, geo coords, suburbs
 - Generate page button → creates draft
 - Disable city → removes from sitemap (doesn't delete)
@@ -277,6 +286,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** AI-powered content generation with quality gates
 
 **Layout:**
+
 ```
 ┌─ SEO Autobot Control Panel ────────────────────────────────────────────────┐
 │                                                                             │
@@ -324,11 +334,13 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Data Sources:**
+
 - `/packages/content/seo-bot/queue/topics.json`
 - `/packages/content/seo-bot/drafts/*.json`
 - `/reports/seo-gate-report.md` & `.json`
 
 **Scripts Invoked:**
+
 - `npm run seo:propose` (button 1)
 - `npm run seo:draft` (button 2)
 - `npm run seo:gate` (button 3)
@@ -342,6 +354,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** Manage images, manifests, and AI generation
 
 **Layout:**
+
 ```
 ┌─ Image Management ─────────────────────────────────────────────────────────┐
 │                                                                             │
@@ -379,10 +392,12 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Data Sources:**
+
 - `/packages/content/images/{site}-images.json` (manifests)
 - `/packages/content/images/prompt_requests.json`
 
 **Scripts Invoked:**
+
 - `npm run images:inventory` (inventory report)
 - `npm run images:generate-prompts` (AI prompt generation)
 - Server API: `/api/ai/generate-image`
@@ -394,6 +409,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** Import data, view metrics, track performance
 
 **Layout:**
+
 ```
 ┌─ Analytics & ROI Dashboard ────────────────────────────────────────────────┐
 │                                                                             │
@@ -442,6 +458,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Data Sources:**
+
 - `/packages/content/metrics/roi_summary.json`
 - `/reports/roi-report.md`
 - `/reports/keyword-top100.md`
@@ -449,6 +466,7 @@ The admin dashboard needs to be redesigned to integrate:
 - `/packages/content/metrics/moovs_service_mix.json`
 
 **Backend APIs (NEW - to be built):**
+
 - `POST /api/admin/upload-csv` (handles CSV uploads)
 - `POST /api/admin/run-metrics-import` (triggers `npm run metrics:import`)
 - `GET /api/admin/reports/{type}` (serves report files)
@@ -460,6 +478,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** Safe deployment controls per site
 
 **Layout:**
+
 ```
 ┌─ Deployment Control Center ────────────────────────────────────────────────┐
 │                                                                             │
@@ -508,11 +527,13 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Backend APIs:**
+
 - `POST /api/admin/deploy` (triggers Firebase deploy)
 - `GET /api/admin/deploy-status` (check deployment status)
 - `GET /api/admin/deploy-history` (list past deploys)
 
 **Firebase Integration:**
+
 - Uses Firebase Admin SDK
 - Checks pre-deploy conditions
 - Triggers `firebase deploy --only hosting:{target}`
@@ -525,6 +546,7 @@ The admin dashboard needs to be redesigned to integrate:
 **Purpose:** Configure system-wide settings
 
 **Layout:**
+
 ```
 ┌─ System Settings ──────────────────────────────────────────────────────────┐
 │                                                                             │
@@ -579,6 +601,7 @@ The admin dashboard needs to be redesigned to integrate:
 ```
 
 **Data Sources:**
+
 - `/packages/content/profit_model.json`
 - Firebase Firestore: settings collection
 - Environment variables (read-only display)
@@ -588,6 +611,7 @@ The admin dashboard needs to be redesigned to integrate:
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure (Week 1)
+
 - [x] GA4 tracking ✅
 - [x] Trust signals ✅
 - [x] Pricing anchors ✅
@@ -597,6 +621,7 @@ The admin dashboard needs to be redesigned to integrate:
 - [ ] Redesign Overview dashboard
 
 ### Phase 2: Analytics Integration (Week 2)
+
 - [ ] CSV upload API endpoints
 - [ ] Metrics import trigger endpoint
 - [ ] Report viewer components
@@ -605,6 +630,7 @@ The admin dashboard needs to be redesigned to integrate:
 - [ ] Service mix pie chart
 
 ### Phase 3: SEO Bot UI (Week 3)
+
 - [ ] Topic queue display
 - [ ] Draft management interface
 - [ ] Quality gate report viewer
@@ -612,6 +638,7 @@ The admin dashboard needs to be redesigned to integrate:
 - [ ] Settings configuration UI
 
 ### Phase 4: Image Management (Week 4)
+
 - [ ] Image upload with manifest update
 - [ ] Inventory display
 - [ ] Missing images report
@@ -619,6 +646,7 @@ The admin dashboard needs to be redesigned to integrate:
 - [ ] Imagen integration UI
 
 ### Phase 5: Deploy & Multi-Site (Week 5)
+
 - [ ] Deploy control panel
 - [ ] Pre-deploy checklist automation
 - [ ] Deployment history log
@@ -626,6 +654,7 @@ The admin dashboard needs to be redesigned to integrate:
 - [ ] Site switcher implementation
 
 ### Phase 6: Polish & Test (Week 6)
+
 - [ ] Accordion behavior refinement
 - [ ] Mobile responsive design
 - [ ] Error handling & loading states
@@ -724,18 +753,21 @@ table deployments {
 ## Success Metrics
 
 ### Admin Dashboard Performance
+
 - Load time <2 seconds
 - All API calls <500ms
 - No console errors
 - Mobile responsive (tablet+)
 
 ### User Experience
+
 - Single-click access to all functions
 - Accordion sidebar reduces navigation time 50%
 - CSV upload → report view in <30 seconds
 - Deploy process clear with progress indicators
 
 ### Integration Success
+
 - AI page analyzer considers profit proxy ✅
 - Content generator uses keyword clusters ✅
 - Metrics import results visible in dashboard ✅

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { cn } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   FileText,
@@ -13,18 +13,18 @@ import {
   ChevronRight,
   FileUp,
   Users,
-} from 'lucide-react';
+} from "lucide-react";
 
 export type AdminSection =
-  | 'overview'
-  | 'imports'
-  | 'roi'
-  | 'seo_queue'
-  | 'seo_publish'
-  | 'images'
-  | 'deploy'
-  | 'users'
-  | 'settings';
+  | "overview"
+  | "imports"
+  | "roi"
+  | "seo_queue"
+  | "seo_publish"
+  | "images"
+  | "deploy"
+  | "users"
+  | "settings";
 
 interface SidebarAccordionProps {
   activeSection: AdminSection;
@@ -41,97 +41,157 @@ interface SidebarSection {
 
 const SECTIONS: SidebarSection[] = [
   {
-    id: 'overview',
-    label: 'Overview',
+    id: "overview",
+    label: "Overview",
     icon: LayoutDashboard,
-    permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'],
+    permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
   },
   {
-    id: 'imports',
-    label: 'Data Imports',
+    id: "imports",
+    label: "Data Imports",
     icon: FileUp,
-    permissions: ['Editor', 'Admin', 'SuperAdmin'],
+    permissions: ["Editor", "Admin", "SuperAdmin"],
     subsections: [
-      { id: 'moovs', label: 'Moovs Import', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'ads', label: 'Ads Import', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'history', label: 'Import History', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
+      {
+        id: "moovs",
+        label: "Moovs Import",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "ads",
+        label: "Ads Import",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "history",
+        label: "Import History",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
     ],
   },
   {
-    id: 'roi',
-    label: 'ROI Analytics',
+    id: "roi",
+    label: "ROI Analytics",
     icon: BarChart3,
-    permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'],
+    permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
     subsections: [
-      { id: 'dashboard', label: 'Dashboard', permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'service-mix', label: 'Service Mix', permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'keywords', label: 'Keyword Analysis', permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'landing-pages', label: 'Landing Pages', permissions: ['Viewer', 'Editor', 'Admin', 'SuperAdmin'] },
+      {
+        id: "dashboard",
+        label: "Dashboard",
+        permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "service-mix",
+        label: "Service Mix",
+        permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "keywords",
+        label: "Keyword Analysis",
+        permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "landing-pages",
+        label: "Landing Pages",
+        permissions: ["Viewer", "Editor", "Admin", "SuperAdmin"],
+      },
     ],
   },
   {
-    id: 'seo_queue',
-    label: 'SEO Queue',
+    id: "seo_queue",
+    label: "SEO Queue",
     icon: Bot,
-    permissions: ['Editor', 'Admin', 'SuperAdmin'],
+    permissions: ["Editor", "Admin", "SuperAdmin"],
     subsections: [
-      { id: 'queue', label: 'Topic Queue', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'drafts', label: 'Drafts', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'gates', label: 'Quality Gates', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
+      {
+        id: "queue",
+        label: "Topic Queue",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "drafts",
+        label: "Drafts",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "gates",
+        label: "Quality Gates",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
     ],
   },
   {
-    id: 'seo_publish',
-    label: 'SEO Publish',
+    id: "seo_publish",
+    label: "SEO Publish",
     icon: Rocket,
-    permissions: ['SuperAdmin'], // Only SuperAdmin can publish
+    permissions: ["SuperAdmin"], // Only SuperAdmin can publish
   },
   {
-    id: 'images',
-    label: 'Images',
+    id: "images",
+    label: "Images",
     icon: Image,
-    permissions: ['Editor', 'Admin', 'SuperAdmin'],
+    permissions: ["Editor", "Admin", "SuperAdmin"],
     subsections: [
-      { id: 'library', label: 'Library', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'missing', label: 'Missing Images', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
-      { id: 'upload', label: 'Upload', permissions: ['Editor', 'Admin', 'SuperAdmin'] },
+      {
+        id: "library",
+        label: "Library",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "missing",
+        label: "Missing Images",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
+      {
+        id: "upload",
+        label: "Upload",
+        permissions: ["Editor", "Admin", "SuperAdmin"],
+      },
     ],
   },
   {
-    id: 'deploy',
-    label: 'Deploy',
+    id: "deploy",
+    label: "Deploy",
     icon: Rocket,
-    permissions: ['Admin', 'SuperAdmin'],
+    permissions: ["Admin", "SuperAdmin"],
   },
   {
-    id: 'users',
-    label: 'Users',
+    id: "users",
+    label: "Users",
     icon: Users,
-    permissions: ['SuperAdmin'],
+    permissions: ["SuperAdmin"],
   },
   {
-    id: 'settings',
-    label: 'Settings',
+    id: "settings",
+    label: "Settings",
     icon: Settings,
-    permissions: ['Admin', 'SuperAdmin'],
+    permissions: ["Admin", "SuperAdmin"],
   },
 ];
 
-export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAccordionProps) {
+export function SidebarAccordion({
+  activeSection,
+  onSectionChange,
+}: SidebarAccordionProps) {
   const { user } = useAuth();
-  const userRole = user?.role || 'Viewer';
-  
+  const userRole = user?.role || "Viewer";
+
   // Load persisted state from localStorage
-  const [expandedSection, setExpandedSection] = useState<AdminSection | null>(() => {
-    const stored = localStorage.getItem(`admin_sidebar_state_${user?.uid}`);
-    return stored as AdminSection | null;
-  });
+  const [expandedSection, setExpandedSection] = useState<AdminSection | null>(
+    () => {
+      const stored = localStorage.getItem(`admin_sidebar_state_${user?.uid}`);
+      return stored as AdminSection | null;
+    },
+  );
 
   // Persist expanded section to localStorage
   useEffect(() => {
     if (user?.uid) {
       if (expandedSection) {
-        localStorage.setItem(`admin_sidebar_state_${user.uid}`, expandedSection);
+        localStorage.setItem(
+          `admin_sidebar_state_${user.uid}`,
+          expandedSection,
+        );
       } else {
         localStorage.removeItem(`admin_sidebar_state_${user.uid}`);
       }
@@ -141,7 +201,7 @@ export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAcco
   const handleSectionClick = (section: SidebarSection) => {
     if (section.subsections) {
       // Toggle accordion - only one primary section open at a time
-      setExpandedSection(prev => prev === section.id ? null : section.id);
+      setExpandedSection((prev) => (prev === section.id ? null : section.id));
       // If expanding, set as active
       if (expandedSection !== section.id) {
         onSectionChange(section.id);
@@ -154,8 +214,8 @@ export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAcco
   };
 
   // Filter sections based on user permissions
-  const visibleSections = SECTIONS.filter(section => 
-    section.permissions.includes(userRole)
+  const visibleSections = SECTIONS.filter((section) =>
+    section.permissions.includes(userRole),
   );
 
   return (
@@ -170,7 +230,8 @@ export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAcco
           const Icon = section.icon;
           const isActive = activeSection === section.id;
           const isExpanded = expandedSection === section.id;
-          const hasSubsections = section.subsections && section.subsections.length > 0;
+          const hasSubsections =
+            section.subsections && section.subsections.length > 0;
 
           return (
             <div key={section.id}>
@@ -178,31 +239,34 @@ export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAcco
               <button
                 onClick={() => handleSectionClick(section)}
                 className={cn(
-                  'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                  "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                   isActive
-                    ? 'bg-amber-50 text-amber-700 shadow-sm'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? "bg-amber-50 text-amber-700 shadow-sm"
+                    : "text-gray-700 hover:bg-gray-50",
                 )}
               >
-                <Icon className={cn(
-                  'h-5 w-5',
-                  isActive ? 'text-amber-600' : 'text-gray-500'
-                )} />
+                <Icon
+                  className={cn(
+                    "h-5 w-5",
+                    isActive ? "text-amber-600" : "text-gray-500",
+                  )}
+                />
                 <span className="flex-1 text-left">{section.label}</span>
-                {hasSubsections && (
-                  isExpanded ? (
+                {hasSubsections &&
+                  (isExpanded ? (
                     <ChevronDown className="h-4 w-4 text-gray-400" />
                   ) : (
                     <ChevronRight className="h-4 w-4 text-gray-400" />
-                  )
-                )}
+                  ))}
               </button>
 
               {/* Subsections (Accordion Content) */}
               {hasSubsections && isExpanded && (
                 <div className="ml-11 mt-1 space-y-1">
-                  {section.subsections!
-                    .filter(sub => sub.permissions.includes(userRole))
+                  {section
+                    .subsections!.filter((sub) =>
+                      sub.permissions.includes(userRole),
+                    )
                     .map((subsection) => (
                       <button
                         key={subsection.id}
@@ -228,7 +292,8 @@ export function SidebarAccordion({ activeSection, onSectionChange }: SidebarAcco
               <span>All systems operational</span>
             </div>
             <div className="mt-2 text-xs text-gray-400">
-              Role: <span className="font-medium text-gray-600">{userRole}</span>
+              Role:{" "}
+              <span className="font-medium text-gray-600">{userRole}</span>
             </div>
           </div>
         </div>

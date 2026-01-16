@@ -5,9 +5,11 @@ This directory contains admin components for managing images across the Royal Ca
 ## Components
 
 ### ImageLibrary.tsx
+
 **Grid view of all images in the library**
 
 Features:
+
 - Thumbnail grid display with metadata overlay
 - Filters: Site (useSiteFilter), Entity Type, Source
 - Click image to view detailed metadata modal
@@ -15,9 +17,11 @@ Features:
 - Displays: dimensions, file size, tags, source info
 
 ### MissingImages.tsx
+
 **Report of entities that don't meet image requirements**
 
 Features:
+
 - Table view of entities with missing images
 - Columns: Entity Type, Title, Slug, Required, Current, Missing, Rules, Actions
 - Summary cards showing totals and critical issues
@@ -28,9 +32,11 @@ Features:
   - Service/City pages require hero images
 
 ### ImageUpload.tsx
+
 **Form for uploading new images**
 
 Features:
+
 - File upload with image preview
 - Required fields:
   - Image file

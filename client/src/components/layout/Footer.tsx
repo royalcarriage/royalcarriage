@@ -44,12 +44,17 @@ export function Footer() {
                 <span className="text-foreground font-bold text-lg">CB</span>
               </div>
               <div>
-                <span className="font-semibold text-background text-sm">Chicago Airport</span>
-                <span className="block text-xs text-background/70">Black Car Service</span>
+                <span className="font-semibold text-background text-sm">
+                  Chicago Airport
+                </span>
+                <span className="block text-xs text-background/70">
+                  Black Car Service
+                </span>
               </div>
             </div>
             <p className="text-background/70 text-sm mb-4 leading-relaxed">
-              Premium airport transportation serving Chicago O'Hare, Midway, and surrounding suburbs with professional chauffeur service.
+              Premium airport transportation serving Chicago O'Hare, Midway, and
+              surrounding suburbs with professional chauffeur service.
             </p>
             <a
               href={PHONE_TEL}
@@ -122,13 +127,20 @@ export function Footer() {
 
         <div className="border-t border-background/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-background/60 text-sm">
-            © {new Date().getFullYear()} Chicago Airport Black Car. All rights reserved.
+            © {new Date().getFullYear()} Chicago Airport Black Car. All rights
+            reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-background/60 hover:text-background text-sm transition-colors">
+            <a
+              href="#"
+              className="text-background/60 hover:text-background text-sm transition-colors"
+            >
               Terms of Service
             </a>
-            <a href="#" className="text-background/60 hover:text-background text-sm transition-colors">
+            <a
+              href="#"
+              className="text-background/60 hover:text-background text-sm transition-colors"
+            >
               Privacy Policy
             </a>
           </div>

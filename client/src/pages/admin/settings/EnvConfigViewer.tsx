@@ -1,14 +1,20 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { PrimaryButton, DangerButton } from '@/components/admin/buttons';
-import { useAuth } from '@/contexts/AuthContext';
-import { UserRole } from '@/lib/firebase';
-import { Copy, Edit, Save, X, CheckCircle2, Settings } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PrimaryButton, DangerButton } from "@/components/admin/buttons";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/lib/firebase";
+import { Copy, Edit, Save, X, CheckCircle2, Settings } from "lucide-react";
 
 interface EnvConfig {
   bookingUrlBase: string;
@@ -25,22 +31,24 @@ export default function EnvConfigViewer() {
   const { userData } = useAuth();
   const [isEditMode, setIsEditMode] = useState(false);
   const [copySuccess, setCopySuccess] = useState<string | null>(null);
-  
+
   // Mock data - replace with actual API call
   const [config, setConfig] = useState<EnvConfig>({
-    bookingUrlBase: 'https://royalcarriagelimo.com/book',
-    phoneNumber: '+1 (555) 123-4567',
-    ga4Id: 'G-XXXXXXXXXX',
+    bookingUrlBase: "https://royalcarriagelimo.com/book",
+    phoneNumber: "+1 (555) 123-4567",
+    ga4Id: "G-XXXXXXXXXX",
     utmRules: {
-      source: 'direct',
-      medium: 'organic',
-      campaign: 'default'
-    }
+      source: "direct",
+      medium: "organic",
+      campaign: "default",
+    },
   });
 
   const [editedConfig, setEditedConfig] = useState<EnvConfig>(config);
 
-  const isAdminPlus = userData?.role === UserRole.SUPER_ADMIN || userData?.role === UserRole.ADMIN;
+  const isAdminPlus =
+    userData?.role === UserRole.SUPER_ADMIN ||
+    userData?.role === UserRole.ADMIN;
 
   const handleCopy = (value: string, label: string) => {
     navigator.clipboard.writeText(value);
@@ -94,7 +102,8 @@ export default function EnvConfigViewer() {
       {!isAdminPlus && (
         <Alert>
           <AlertDescription>
-            You have read-only access. Admin+ roles required to edit configuration.
+            You have read-only access. Admin+ roles required to edit
+            configuration.
           </AlertDescription>
         </Alert>
       )}
@@ -124,10 +133,12 @@ export default function EnvConfigViewer() {
                 <Input
                   id="bookingUrl"
                   value={editedConfig.bookingUrlBase}
-                  onChange={(e) => setEditedConfig({
-                    ...editedConfig,
-                    bookingUrlBase: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditedConfig({
+                      ...editedConfig,
+                      bookingUrlBase: e.target.value,
+                    })
+                  }
                 />
               </div>
             ) : (
@@ -138,7 +149,9 @@ export default function EnvConfigViewer() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleCopy(config.bookingUrlBase, 'Booking URL')}
+                  onClick={() =>
+                    handleCopy(config.bookingUrlBase, "Booking URL")
+                  }
                 >
                   <Copy className="h-4 w-4" />
                   Copy
@@ -163,10 +176,12 @@ export default function EnvConfigViewer() {
                 <Input
                   id="phoneNumber"
                   value={editedConfig.phoneNumber}
-                  onChange={(e) => setEditedConfig({
-                    ...editedConfig,
-                    phoneNumber: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditedConfig({
+                      ...editedConfig,
+                      phoneNumber: e.target.value,
+                    })
+                  }
                 />
               </div>
             ) : (
@@ -177,7 +192,7 @@ export default function EnvConfigViewer() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleCopy(config.phoneNumber, 'Phone Number')}
+                  onClick={() => handleCopy(config.phoneNumber, "Phone Number")}
                 >
                   <Copy className="h-4 w-4" />
                   Copy
@@ -202,10 +217,12 @@ export default function EnvConfigViewer() {
                 <Input
                   id="ga4Id"
                   value={editedConfig.ga4Id}
-                  onChange={(e) => setEditedConfig({
-                    ...editedConfig,
-                    ga4Id: e.target.value
-                  })}
+                  onChange={(e) =>
+                    setEditedConfig({
+                      ...editedConfig,
+                      ga4Id: e.target.value,
+                    })
+                  }
                 />
               </div>
             ) : (
@@ -216,7 +233,7 @@ export default function EnvConfigViewer() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => handleCopy(config.ga4Id, 'GA4 ID')}
+                  onClick={() => handleCopy(config.ga4Id, "GA4 ID")}
                 >
                   <Copy className="h-4 w-4" />
                   Copy
@@ -242,10 +259,15 @@ export default function EnvConfigViewer() {
                   <Input
                     id="utmSource"
                     value={editedConfig.utmRules.source}
-                    onChange={(e) => setEditedConfig({
-                      ...editedConfig,
-                      utmRules: { ...editedConfig.utmRules, source: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setEditedConfig({
+                        ...editedConfig,
+                        utmRules: {
+                          ...editedConfig.utmRules,
+                          source: e.target.value,
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -253,10 +275,15 @@ export default function EnvConfigViewer() {
                   <Input
                     id="utmMedium"
                     value={editedConfig.utmRules.medium}
-                    onChange={(e) => setEditedConfig({
-                      ...editedConfig,
-                      utmRules: { ...editedConfig.utmRules, medium: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setEditedConfig({
+                        ...editedConfig,
+                        utmRules: {
+                          ...editedConfig.utmRules,
+                          medium: e.target.value,
+                        },
+                      })
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -264,10 +291,15 @@ export default function EnvConfigViewer() {
                   <Input
                     id="utmCampaign"
                     value={editedConfig.utmRules.campaign}
-                    onChange={(e) => setEditedConfig({
-                      ...editedConfig,
-                      utmRules: { ...editedConfig.utmRules, campaign: e.target.value }
-                    })}
+                    onChange={(e) =>
+                      setEditedConfig({
+                        ...editedConfig,
+                        utmRules: {
+                          ...editedConfig.utmRules,
+                          campaign: e.target.value,
+                        },
+                      })
+                    }
                   />
                 </div>
               </>
@@ -283,7 +315,9 @@ export default function EnvConfigViewer() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleCopy(config.utmRules.source, 'UTM Source')}
+                    onClick={() =>
+                      handleCopy(config.utmRules.source, "UTM Source")
+                    }
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -298,7 +332,9 @@ export default function EnvConfigViewer() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleCopy(config.utmRules.medium, 'UTM Medium')}
+                    onClick={() =>
+                      handleCopy(config.utmRules.medium, "UTM Medium")
+                    }
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
@@ -313,7 +349,9 @@ export default function EnvConfigViewer() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleCopy(config.utmRules.campaign, 'UTM Campaign')}
+                    onClick={() =>
+                      handleCopy(config.utmRules.campaign, "UTM Campaign")
+                    }
                   >
                     <Copy className="h-4 w-4" />
                   </Button>

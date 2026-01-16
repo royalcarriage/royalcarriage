@@ -4,8 +4,22 @@ import { StatsCard, StatsGrid } from "@/components/admin/StatsCard";
 import { SEO } from "@/components/SEO";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Eye, Edit, Send, Download, DollarSign, Clock, CheckCircle, AlertTriangle, Plus, FileText } from "lucide-react";
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import {
+  Eye,
+  Edit,
+  Send,
+  Download,
+  DollarSign,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  Plus,
+  FileText,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Invoice {
@@ -175,11 +189,11 @@ export default function InvoicesPage() {
   const totalOutstanding = invoices
     .filter((i) => i.status === "sent" || i.status === "overdue")
     .reduce((sum, i) => sum + i.amount, 0);
-  
+
   const totalPaid = invoices
     .filter((i) => i.status === "paid")
     .reduce((sum, i) => sum + i.amount, 0);
-  
+
   const overdueCount = invoices.filter((i) => i.status === "overdue").length;
 
   const handleCreateInvoice = () => {

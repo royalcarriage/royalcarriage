@@ -1,9 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { collection, getDocs, updateDoc, doc, deleteDoc } from 'firebase/firestore';
-import { db, UserRole } from '@/lib/firebase';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import React, { useEffect, useState } from "react";
+import {
+  collection,
+  getDocs,
+  updateDoc,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+import { db, UserRole } from "@/lib/firebase";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -11,16 +23,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
+} from "@/components/ui/select";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 
 interface UserRecord {
   uid: string;
@@ -40,17 +52,17 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const usersRef = collection(db, 'users');
+      const usersRef = collection(db, "users");
       const snapshot = await getDocs(usersRef);
-      const usersList = snapshot.docs.map(doc => ({
+      const usersList = snapshot.docs.map((doc) => ({
         uid: doc.id,
-        ...doc.data()
+        ...doc.data(),
       })) as UserRecord[];
       setUsers(usersList);
       setError(null);
     } catch (err: any) {
-      console.error('Error fetching users:', err);
-      setError('Failed to load users. Please try again.');
+      console.error("Error fetching users:", err);
+      setError("Failed to load users. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -62,35 +74,35 @@ export default function UsersPage() {
 
   const handleRoleChange = async (userId: string, newRole: UserRole) => {
     try {
-      const userRef = doc(db, 'users', userId);
+      const userRef = doc(db, "users", userId);
       await updateDoc(userRef, {
         role: newRole,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
       });
-      
+
       setSuccess(`Role updated successfully for user ${userId}`);
       setTimeout(() => setSuccess(null), 3000);
-      
+
       // Refresh users list
       await fetchUsers();
     } catch (err: any) {
-      console.error('Error updating role:', err);
-      setError('Failed to update role. Please try again.');
+      console.error("Error updating role:", err);
+      setError("Failed to update role. Please try again.");
     }
   };
 
   const getRoleBadgeColor = (role: UserRole): string => {
     switch (role) {
       case UserRole.SUPER_ADMIN:
-        return 'bg-purple-600 text-white';
+        return "bg-purple-600 text-white";
       case UserRole.ADMIN:
-        return 'bg-blue-600 text-white';
+        return "bg-blue-600 text-white";
       case UserRole.EDITOR:
-        return 'bg-green-600 text-white';
+        return "bg-green-600 text-white";
       case UserRole.VIEWER:
-        return 'bg-gray-600 text-white';
+        return "bg-gray-600 text-white";
       default:
-        return 'bg-gray-400 text-white';
+        return "bg-gray-400 text-white";
     }
   };
 
@@ -132,7 +144,9 @@ export default function UsersPage() {
 
           {success && (
             <Alert className="mb-4 bg-green-50 border-green-200">
-              <AlertDescription className="text-green-800">{success}</AlertDescription>
+              <AlertDescription className="text-green-800">
+                {success}
+              </AlertDescription>
             </Alert>
           )}
 
@@ -150,15 +164,20 @@ export default function UsersPage() {
               <TableBody>
                 {users.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={5} className="text-center text-gray-500">
+                    <TableCell
+                      colSpan={5}
+                      className="text-center text-gray-500"
+                    >
                       No users found
                     </TableCell>
                   </TableRow>
                 ) : (
                   users.map((user) => (
                     <TableRow key={user.uid}>
-                      <TableCell className="font-medium">{user.email}</TableCell>
-                      <TableCell>{user.displayName || '-'}</TableCell>
+                      <TableCell className="font-medium">
+                        {user.email}
+                      </TableCell>
+                      <TableCell>{user.displayName || "-"}</TableCell>
                       <TableCell>
                         <Badge className={getRoleBadgeColor(user.role)}>
                           {user.role}
@@ -167,28 +186,40 @@ export default function UsersPage() {
                       <TableCell>
                         {user.lastLogin
                           ? new Date(user.lastLogin).toLocaleString()
-                          : '-'}
+                          : "-"}
                       </TableCell>
                       <TableCell>
                         {canEditUser(user) ? (
                           <Select
                             value={user.role}
-                            onValueChange={(value) => handleRoleChange(user.uid, value as UserRole)}
+                            onValueChange={(value) =>
+                              handleRoleChange(user.uid, value as UserRole)
+                            }
                           >
                             <SelectTrigger className="w-[140px]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
                               {userData?.role === UserRole.SUPER_ADMIN && (
-                                <SelectItem value={UserRole.SUPER_ADMIN}>SuperAdmin</SelectItem>
+                                <SelectItem value={UserRole.SUPER_ADMIN}>
+                                  SuperAdmin
+                                </SelectItem>
                               )}
-                              <SelectItem value={UserRole.ADMIN}>Admin</SelectItem>
-                              <SelectItem value={UserRole.EDITOR}>Editor</SelectItem>
-                              <SelectItem value={UserRole.VIEWER}>Viewer</SelectItem>
+                              <SelectItem value={UserRole.ADMIN}>
+                                Admin
+                              </SelectItem>
+                              <SelectItem value={UserRole.EDITOR}>
+                                Editor
+                              </SelectItem>
+                              <SelectItem value={UserRole.VIEWER}>
+                                Viewer
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                         ) : (
-                          <span className="text-sm text-gray-500">No permission</span>
+                          <span className="text-sm text-gray-500">
+                            No permission
+                          </span>
                         )}
                       </TableCell>
                     </TableRow>
@@ -201,10 +232,22 @@ export default function UsersPage() {
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <h3 className="font-semibold mb-2">Role Permissions</h3>
             <ul className="text-sm space-y-1">
-              <li><Badge className="bg-purple-600">SuperAdmin</Badge>: Full access to all features including user management</li>
-              <li><Badge className="bg-blue-600">Admin</Badge>: Can manage content, CSV imports, and view analytics</li>
-              <li><Badge className="bg-green-600">Editor</Badge>: Can edit content and view reports</li>
-              <li><Badge className="bg-gray-600">Viewer</Badge>: Read-only access to dashboards</li>
+              <li>
+                <Badge className="bg-purple-600">SuperAdmin</Badge>: Full access
+                to all features including user management
+              </li>
+              <li>
+                <Badge className="bg-blue-600">Admin</Badge>: Can manage
+                content, CSV imports, and view analytics
+              </li>
+              <li>
+                <Badge className="bg-green-600">Editor</Badge>: Can edit content
+                and view reports
+              </li>
+              <li>
+                <Badge className="bg-gray-600">Viewer</Badge>: Read-only access
+                to dashboards
+              </li>
             </ul>
           </div>
         </CardContent>

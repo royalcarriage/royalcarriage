@@ -1,6 +1,6 @@
-import { ButtonHTMLAttributes, forwardRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Loader2 } from 'lucide-react';
+import { ButtonHTMLAttributes, forwardRef } from "react";
+import { cn } from "@/lib/utils";
+import { Loader2 } from "lucide-react";
 
 export interface PrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
@@ -13,15 +13,15 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>(
         ref={ref}
         disabled={disabled || loading}
         className={cn(
-          'inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg',
-          'text-sm font-semibold text-white',
-          'bg-gradient-to-r from-amber-500 to-amber-600',
-          'hover:from-amber-600 hover:to-amber-700',
-          'focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
-          'transition-all duration-200',
-          'shadow-sm hover:shadow-md',
-          className
+          "inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg",
+          "text-sm font-semibold text-white",
+          "bg-gradient-to-r from-amber-500 to-amber-600",
+          "hover:from-amber-600 hover:to-amber-700",
+          "focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2",
+          "disabled:opacity-50 disabled:cursor-not-allowed",
+          "transition-all duration-200",
+          "shadow-sm hover:shadow-md",
+          className,
         )}
         {...props}
       >
@@ -29,7 +29,7 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
-PrimaryButton.displayName = 'PrimaryButton';
+PrimaryButton.displayName = "PrimaryButton";

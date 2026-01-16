@@ -1,9 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { PrimaryButton } from '@/components/admin/buttons';
+import React, { useState, useMemo } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { PrimaryButton } from "@/components/admin/buttons";
 import {
   Table,
   TableBody,
@@ -11,53 +17,82 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Globe, CheckCircle2, XCircle, AlertTriangle, RefreshCw, ExternalLink } from 'lucide-react';
+} from "@/components/ui/table";
+import {
+  Globe,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  RefreshCw,
+  ExternalLink,
+} from "lucide-react";
 
 interface DomainCheck {
   domain: string;
   customDomain: string;
-  redirectStatus: 'passing' | 'failing' | 'pending';
-  canonicalStatus: 'passing' | 'failing' | 'pending';
-  dnsStatus: 'active' | 'inactive' | 'pending';
+  redirectStatus: "passing" | "failing" | "pending";
+  canonicalStatus: "passing" | "failing" | "pending";
+  dnsStatus: "active" | "inactive" | "pending";
   lastChecked: string;
 }
 
 // Mock data - replace with actual API call
 const MOCK_DOMAINS: DomainCheck[] = [
   {
-    domain: 'royalcarriagelimoseo.web.app',
-    customDomain: 'royalcarriagelimo.com',
-    redirectStatus: 'passing',
-    canonicalStatus: 'passing',
-    dnsStatus: 'active',
-    lastChecked: '2024-01-17T14:30:00Z',
+    domain: "royalcarriagelimoseo.web.app",
+    customDomain: "royalcarriagelimo.com",
+    redirectStatus: "passing",
+    canonicalStatus: "passing",
+    dnsStatus: "active",
+    lastChecked: "2024-01-17T14:30:00Z",
   },
   {
-    domain: 'royalcarriagelimoseo-airport.web.app',
-    customDomain: 'airport.royalcarriagelimo.com',
-    redirectStatus: 'passing',
-    canonicalStatus: 'failing',
-    dnsStatus: 'active',
-    lastChecked: '2024-01-17T14:25:00Z',
+    domain: "royalcarriagelimoseo-airport.web.app",
+    customDomain: "airport.royalcarriagelimo.com",
+    redirectStatus: "passing",
+    canonicalStatus: "failing",
+    dnsStatus: "active",
+    lastChecked: "2024-01-17T14:25:00Z",
   },
   {
-    domain: 'royalcarriagelimoseo-corporate.web.app',
-    customDomain: 'corporate.royalcarriagelimo.com',
-    redirectStatus: 'failing',
-    canonicalStatus: 'passing',
-    dnsStatus: 'active',
-    lastChecked: '2024-01-17T14:20:00Z',
+    domain: "royalcarriagelimoseo-corporate.web.app",
+    customDomain: "corporate.royalcarriagelimo.com",
+    redirectStatus: "failing",
+    canonicalStatus: "passing",
+    dnsStatus: "active",
+    lastChecked: "2024-01-17T14:20:00Z",
   },
 ];
 
-const StatusBadge: React.FC<{ status: 'passing' | 'failing' | 'pending' | 'active' | 'inactive' }> = ({ status }) => {
+const StatusBadge: React.FC<{
+  status: "passing" | "failing" | "pending" | "active" | "inactive";
+}> = ({ status }) => {
   const variants = {
-    passing: { variant: 'default' as const, color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle2 },
-    active: { variant: 'default' as const, color: 'bg-green-100 text-green-800 border-green-300', icon: CheckCircle2 },
-    failing: { variant: 'destructive' as const, color: 'bg-red-100 text-red-800 border-red-300', icon: XCircle },
-    inactive: { variant: 'destructive' as const, color: 'bg-red-100 text-red-800 border-red-300', icon: XCircle },
-    pending: { variant: 'secondary' as const, color: 'bg-yellow-100 text-yellow-800 border-yellow-300', icon: AlertTriangle },
+    passing: {
+      variant: "default" as const,
+      color: "bg-green-100 text-green-800 border-green-300",
+      icon: CheckCircle2,
+    },
+    active: {
+      variant: "default" as const,
+      color: "bg-green-100 text-green-800 border-green-300",
+      icon: CheckCircle2,
+    },
+    failing: {
+      variant: "destructive" as const,
+      color: "bg-red-100 text-red-800 border-red-300",
+      icon: XCircle,
+    },
+    inactive: {
+      variant: "destructive" as const,
+      color: "bg-red-100 text-red-800 border-red-300",
+      icon: XCircle,
+    },
+    pending: {
+      variant: "secondary" as const,
+      color: "bg-yellow-100 text-yellow-800 border-yellow-300",
+      icon: AlertTriangle,
+    },
   };
 
   const config = variants[status];
@@ -81,43 +116,51 @@ export default function DomainHealth() {
     setTimeout(() => {
       setTesting(null);
       // Mock update
-      setDomains(domains.map(d =>
-        d.domain === domain
-          ? { ...d, lastChecked: new Date().toISOString() }
-          : d
-      ));
+      setDomains(
+        domains.map((d) =>
+          d.domain === domain
+            ? { ...d, lastChecked: new Date().toISOString() }
+            : d,
+        ),
+      );
     }, 2000);
   };
 
   const handleTestAll = async () => {
-    setTesting('all');
+    setTesting("all");
     // TODO: Implement test all logic
     setTimeout(() => {
       setTesting(null);
-      setDomains(domains.map(d => ({
-        ...d,
-        lastChecked: new Date().toISOString()
-      })));
+      setDomains(
+        domains.map((d) => ({
+          ...d,
+          lastChecked: new Date().toISOString(),
+        })),
+      );
     }, 3000);
   };
 
   const healthScore = useMemo(() => {
     const total = domains.length * 3; // 3 checks per domain
     const passing = domains.reduce((count, domain) => {
-      return count +
-        (domain.redirectStatus === 'passing' ? 1 : 0) +
-        (domain.canonicalStatus === 'passing' ? 1 : 0) +
-        (domain.dnsStatus === 'active' ? 1 : 0);
+      return (
+        count +
+        (domain.redirectStatus === "passing" ? 1 : 0) +
+        (domain.canonicalStatus === "passing" ? 1 : 0) +
+        (domain.dnsStatus === "active" ? 1 : 0)
+      );
     }, 0);
     return Math.round((passing / total) * 100);
   }, [domains]);
 
   const failingChecks = useMemo(() => {
     return domains.reduce((count, domain) => {
-      return count +
-        (domain.redirectStatus === 'failing' ? 1 : 0) +
-        (domain.canonicalStatus === 'failing' ? 1 : 0) +
-        (domain.dnsStatus === 'inactive' ? 1 : 0);
+      return (
+        count +
+        (domain.redirectStatus === "failing" ? 1 : 0) +
+        (domain.canonicalStatus === "failing" ? 1 : 0) +
+        (domain.dnsStatus === "inactive" ? 1 : 0)
+      );
     }, 0);
   }, [domains]);
 
@@ -133,7 +176,7 @@ export default function DomainHealth() {
             Monitor domain redirects, canonical tags, and DNS status
           </p>
         </div>
-        <PrimaryButton onClick={handleTestAll} loading={testing === 'all'}>
+        <PrimaryButton onClick={handleTestAll} loading={testing === "all"}>
           <RefreshCw className="h-4 w-4" />
           Test All Domains
         </PrimaryButton>
@@ -156,27 +199,27 @@ export default function DomainHealth() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Domains</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Domains
+            </CardTitle>
             <CheckCircle2 className="h-4 w-4 text-green-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{domains.length}</div>
-            <p className="text-xs text-muted-foreground">
-              Configured domains
-            </p>
+            <p className="text-xs text-muted-foreground">Configured domains</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Failing Checks</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Failing Checks
+            </CardTitle>
             <XCircle className="h-4 w-4 text-red-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{failingChecks}</div>
-            <p className="text-xs text-muted-foreground">
-              Requires attention
-            </p>
+            <p className="text-xs text-muted-foreground">Requires attention</p>
           </CardContent>
         </Card>
       </div>
@@ -185,7 +228,8 @@ export default function DomainHealth() {
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            {failingChecks} domain check{failingChecks > 1 ? 's' : ''} failing. Please review and fix issues below.
+            {failingChecks} domain check{failingChecks > 1 ? "s" : ""} failing.
+            Please review and fix issues below.
           </AlertDescription>
         </Alert>
       )}
@@ -279,13 +323,15 @@ export default function DomainHealth() {
           <div>
             <h4 className="font-semibold mb-1">Redirect Status</h4>
             <p className="text-sm text-muted-foreground">
-              Verifies that .web.app domains correctly redirect to custom domains
+              Verifies that .web.app domains correctly redirect to custom
+              domains
             </p>
           </div>
           <div>
             <h4 className="font-semibold mb-1">Canonical Tags</h4>
             <p className="text-sm text-muted-foreground">
-              Ensures canonical meta tags point to the correct custom domain URLs
+              Ensures canonical meta tags point to the correct custom domain
+              URLs
             </p>
           </div>
           <div>

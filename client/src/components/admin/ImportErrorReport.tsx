@@ -1,10 +1,29 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Download, Filter, Search, AlertCircle } from "lucide-react";
 import type { ImportError } from "@shared/admin-types";
@@ -15,15 +34,20 @@ interface ImportErrorReportProps {
   importId?: string;
 }
 
-type ErrorTypeFilter = 'all' | 'missing' | 'invalid_format' | 'duplicate' | 'parse_error';
+type ErrorTypeFilter =
+  | "all"
+  | "missing"
+  | "invalid_format"
+  | "duplicate"
+  | "parse_error";
 
-export default function ImportErrorReport({ 
-  errors, 
-  fileName = 'import-data.csv',
-  importId = 'unknown'
+export default function ImportErrorReport({
+  errors,
+  fileName = "import-data.csv",
+  importId = "unknown",
 }: ImportErrorReportProps) {
-  const [filterType, setFilterType] = useState<ErrorTypeFilter>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState<ErrorTypeFilter>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
 
@@ -32,18 +56,19 @@ export default function ImportErrorReport({
     let result = errors;
 
     // Filter by error type
-    if (filterType !== 'all') {
-      result = result.filter(error => error.error === filterType);
+    if (filterType !== "all") {
+      result = result.filter((error) => error.error === filterType);
     }
 
     // Search across all fields
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(error => 
-        error.row.toString().includes(query) ||
-        error.column.toLowerCase().includes(query) ||
-        error.value.toLowerCase().includes(query) ||
-        error.message.toLowerCase().includes(query)
+      result = result.filter(
+        (error) =>
+          error.row.toString().includes(query) ||
+          error.column.toLowerCase().includes(query) ||
+          error.value.toLowerCase().includes(query) ||
+          error.message.toLowerCase().includes(query),
       );
     }
 
@@ -54,7 +79,7 @@ export default function ImportErrorReport({
   const totalPages = Math.ceil(filteredErrors.length / pageSize);
   const paginatedErrors = filteredErrors.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   // Calculate error type statistics
@@ -66,7 +91,7 @@ export default function ImportErrorReport({
       parse_error: 0,
     };
 
-    errors.forEach(error => {
+    errors.forEach((error) => {
       stats[error.error]++;
     });
 
@@ -76,12 +101,16 @@ export default function ImportErrorReport({
   // Export errors to CSV
   const exportToCSV = () => {
     const csvContent = [
-      ['Row', 'Column', 'Value', 'Error Type', 'Message'].join(','),
-      ...filteredErrors.map(error => {
+      ["Row", "Column", "Value", "Error Type", "Message"].join(","),
+      ...filteredErrors.map((error) => {
         // Escape values that contain commas or quotes
         const escapeCSV = (str: string | number) => {
           const value = String(str);
-          if (value.includes(',') || value.includes('"') || value.includes('\n')) {
+          if (
+            value.includes(",") ||
+            value.includes('"') ||
+            value.includes("\n")
+          ) {
             return `"${value.replace(/"/g, '""')}"`;
           }
           return value;
@@ -92,14 +121,14 @@ export default function ImportErrorReport({
           escapeCSV(error.column),
           escapeCSV(error.value),
           error.error,
-          escapeCSV(error.message)
-        ].join(',');
-      })
-    ].join('\n');
+          escapeCSV(error.message),
+        ].join(",");
+      }),
+    ].join("\n");
 
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = url;
     link.download = `import-errors-${importId}-${Date.now()}.csv`;
     link.click();
@@ -107,26 +136,27 @@ export default function ImportErrorReport({
   };
 
   // Get badge variant for error type
-  const getErrorBadgeVariant = (errorType: ImportError['error']) => {
+  const getErrorBadgeVariant = (errorType: ImportError["error"]) => {
     switch (errorType) {
-      case 'missing':
-        return 'destructive';
-      case 'invalid_format':
-        return 'destructive';
-      case 'duplicate':
-        return 'secondary';
-      case 'parse_error':
-        return 'destructive';
+      case "missing":
+        return "destructive";
+      case "invalid_format":
+        return "destructive";
+      case "duplicate":
+        return "secondary";
+      case "parse_error":
+        return "destructive";
       default:
-        return 'default';
+        return "default";
     }
   };
 
   // Format error type for display
-  const formatErrorType = (errorType: ImportError['error']) => {
-    return errorType.split('_').map(word => 
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ');
+  const formatErrorType = (errorType: ImportError["error"]) => {
+    return errorType
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   if (errors.length === 0) {
@@ -190,13 +220,17 @@ export default function ImportErrorReport({
               <div className="text-2xl font-bold text-red-600">
                 {errorStats.missing}
               </div>
-              <div className="text-sm text-muted-foreground">Missing Values</div>
+              <div className="text-sm text-muted-foreground">
+                Missing Values
+              </div>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="text-2xl font-bold text-orange-600">
                 {errorStats.invalid_format}
               </div>
-              <div className="text-sm text-muted-foreground">Invalid Format</div>
+              <div className="text-sm text-muted-foreground">
+                Invalid Format
+              </div>
             </div>
             <div className="p-4 border rounded-lg">
               <div className="text-2xl font-bold text-yellow-600">
@@ -241,7 +275,9 @@ export default function ImportErrorReport({
                   <SelectValue placeholder="Filter by type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Errors ({errors.length})</SelectItem>
+                  <SelectItem value="all">
+                    All Errors ({errors.length})
+                  </SelectItem>
                   <SelectItem value="missing">
                     Missing ({errorStats.missing})
                   </SelectItem>
@@ -262,10 +298,14 @@ export default function ImportErrorReport({
           {/* Results Count */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground">
-              Showing {paginatedErrors.length > 0 ? (currentPage - 1) * pageSize + 1 : 0} to{' '}
-              {Math.min(currentPage * pageSize, filteredErrors.length)} of{' '}
+              Showing{" "}
+              {paginatedErrors.length > 0
+                ? (currentPage - 1) * pageSize + 1
+                : 0}{" "}
+              to {Math.min(currentPage * pageSize, filteredErrors.length)} of{" "}
               {filteredErrors.length} errors
-              {(filterType !== 'all' || searchQuery) && ` (filtered from ${errors.length} total)`}
+              {(filterType !== "all" || searchQuery) &&
+                ` (filtered from ${errors.length} total)`}
             </p>
           </div>
 
@@ -286,10 +326,16 @@ export default function ImportErrorReport({
                   paginatedErrors.map((error, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-mono">{error.row}</TableCell>
-                      <TableCell className="font-medium">{error.column}</TableCell>
+                      <TableCell className="font-medium">
+                        {error.column}
+                      </TableCell>
                       <TableCell className="max-w-[200px]">
                         <div className="truncate" title={error.value}>
-                          {error.value || <span className="text-muted-foreground italic">(empty)</span>}
+                          {error.value || (
+                            <span className="text-muted-foreground italic">
+                              (empty)
+                            </span>
+                          )}
                         </div>
                       </TableCell>
                       <TableCell>
@@ -319,7 +365,7 @@ export default function ImportErrorReport({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -332,7 +378,9 @@ export default function ImportErrorReport({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+                }
                 disabled={currentPage === totalPages}
               >
                 Next
@@ -350,36 +398,46 @@ export default function ImportErrorReport({
         <CardContent>
           <div className="space-y-4">
             <div className="flex gap-3">
-              <Badge variant="destructive" className="h-6">Missing</Badge>
+              <Badge variant="destructive" className="h-6">
+                Missing
+              </Badge>
               <div className="flex-1">
                 <p className="text-sm">
-                  These rows are missing required values. Fill in the missing data and re-import.
+                  These rows are missing required values. Fill in the missing
+                  data and re-import.
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Badge variant="destructive" className="h-6">Invalid Format</Badge>
+              <Badge variant="destructive" className="h-6">
+                Invalid Format
+              </Badge>
               <div className="flex-1">
                 <p className="text-sm">
-                  The data format doesn't match expectations (e.g., text in a number field). 
-                  Correct the format in your source file.
+                  The data format doesn't match expectations (e.g., text in a
+                  number field). Correct the format in your source file.
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Badge variant="secondary" className="h-6">Duplicate</Badge>
+              <Badge variant="secondary" className="h-6">
+                Duplicate
+              </Badge>
               <div className="flex-1">
                 <p className="text-sm">
-                  These rows contain duplicate identifiers. Remove duplicates or merge records before importing.
+                  These rows contain duplicate identifiers. Remove duplicates or
+                  merge records before importing.
                 </p>
               </div>
             </div>
             <div className="flex gap-3">
-              <Badge variant="destructive" className="h-6">Parse Error</Badge>
+              <Badge variant="destructive" className="h-6">
+                Parse Error
+              </Badge>
               <div className="flex-1">
                 <p className="text-sm">
-                  The CSV structure is malformed (e.g., mismatched quotes, wrong delimiter). 
-                  Check your CSV export settings.
+                  The CSV structure is malformed (e.g., mismatched quotes, wrong
+                  delimiter). Check your CSV export settings.
                 </p>
               </div>
             </div>

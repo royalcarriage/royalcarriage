@@ -3,7 +3,7 @@
  * Generates Schema.org markup for improved SEO and rich snippets
  */
 
-import React from 'react';
+import React from "react";
 
 interface LocalBusinessSchemaProps {
   name?: string;
@@ -38,18 +38,19 @@ interface FAQSchemaProps {
 }
 
 const BUSINESS_DEFAULTS = {
-  name: 'Royal Carriage Limousine',
-  telephone: '+12248013090',
-  url: 'https://chicagoairportblackcar.com',
-  description: 'Premium black car and limousine service in Chicago. Airport transfers, corporate transportation, and special events.',
+  name: "Royal Carriage Limousine",
+  telephone: "+12248013090",
+  url: "https://chicagoairportblackcar.com",
+  description:
+    "Premium black car and limousine service in Chicago. Airport transfers, corporate transportation, and special events.",
   address: {
-    street: '',
-    city: 'Chicago',
-    state: 'IL',
-    postalCode: '60601',
-    country: 'US',
+    street: "",
+    city: "Chicago",
+    state: "IL",
+    postalCode: "60601",
+    country: "US",
   },
-  priceRange: '$$',
+  priceRange: "$$",
 };
 
 export function LocalBusinessSchema({
@@ -62,61 +63,61 @@ export function LocalBusinessSchema({
   image,
 }: LocalBusinessSchemaProps) {
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': url,
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": url,
     name,
     description,
     url,
     telephone,
     priceRange,
     address: {
-      '@type': 'PostalAddress',
+      "@type": "PostalAddress",
       streetAddress: address.street,
       addressLocality: address.city,
       addressRegion: address.state,
       postalCode: address.postalCode,
-      addressCountry: address.country || 'US',
+      addressCountry: address.country || "US",
     },
     geo: {
-      '@type': 'GeoCoordinates',
+      "@type": "GeoCoordinates",
       latitude: 41.8781,
       longitude: -87.6298,
     },
     aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue: '4.8',
-      reviewCount: '200',
-      bestRating: '5',
-      worstRating: '1',
+      "@type": "AggregateRating",
+      ratingValue: "4.8",
+      reviewCount: "200",
+      bestRating: "5",
+      worstRating: "1",
     },
     openingHoursSpecification: {
-      '@type': 'OpeningHoursSpecification',
+      "@type": "OpeningHoursSpecification",
       dayOfWeek: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday',
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
       ],
-      opens: '00:00',
-      closes: '23:59',
+      opens: "00:00",
+      closes: "23:59",
     },
     ...(image && { image }),
     sameAs: [
-      'https://www.facebook.com/royalcarriagelimo',
-      'https://www.instagram.com/royalcarriagelimo',
+      "https://www.facebook.com/royalcarriagelimo",
+      "https://www.instagram.com/royalcarriagelimo",
     ],
     areaServed: {
-      '@type': 'GeoCircle',
+      "@type": "GeoCircle",
       geoMidpoint: {
-        '@type': 'GeoCoordinates',
+        "@type": "GeoCoordinates",
         latitude: 41.8781,
         longitude: -87.6298,
       },
-      geoRadius: '80000', // 50 miles in meters
+      geoRadius: "80000", // 50 miles in meters
     },
   };
 
@@ -137,24 +138,24 @@ export function ServiceSchema({
   url,
 }: ServiceSchemaProps) {
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+    "@context": "https://schema.org",
+    "@type": "Service",
     name,
     description,
     provider: {
-      '@type': 'LocalBusiness',
+      "@type": "LocalBusiness",
       name: provider,
     },
     serviceType,
     areaServed: areaServed.map((area) => ({
-      '@type': 'City',
+      "@type": "City",
       name: area,
     })),
     ...(url && { url }),
     offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceCurrency: 'USD',
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceCurrency: "USD",
     },
   };
 
@@ -168,13 +169,13 @@ export function ServiceSchema({
 
 export function FAQSchema({ questions }: FAQSchemaProps) {
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
     mainEntity: questions.map((faq) => ({
-      '@type': 'Question',
+      "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
-        '@type': 'Answer',
+        "@type": "Answer",
         text: faq.answer,
       },
     })),
@@ -194,10 +195,10 @@ export function BreadcrumbSchema({
   items: Array<{ name: string; url: string }>;
 }) {
   const schema = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: index + 1,
       name: item.name,
       item: item.url,

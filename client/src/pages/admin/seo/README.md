@@ -5,9 +5,11 @@ This directory contains the frontend components for the SEO Bot system.
 ## Components
 
 ### 1. TopicQueueBoard.tsx
+
 Kanban-style board for managing SEO topic workflow.
 
 **Features:**
+
 - 5 columns: Proposed | Draft | Ready | Published | Blocked
 - Drag-and-drop support for moving topics between columns
 - Filter by site (using SiteFilterContext) and page type
@@ -17,16 +19,19 @@ Kanban-style board for managing SEO topic workflow.
 **Mock Data:** Currently uses placeholder data. Replace with Firebase queries when ready.
 
 **Usage:**
-```tsx
-import TopicQueueBoard from '@/pages/admin/seo/TopicQueueBoard';
 
-<TopicQueueBoard />
+```tsx
+import TopicQueueBoard from "@/pages/admin/seo/TopicQueueBoard";
+
+<TopicQueueBoard />;
 ```
 
 ### 2. GateResultsViewer.tsx
+
 Displays quality gate check results for SEO drafts.
 
 **Features:**
+
 - Pass/fail status for 8 quality checks:
   - Duplicate title check
   - Duplicate meta description
@@ -41,6 +46,7 @@ Displays quality gate check results for SEO drafts.
 - Re-run gate button
 
 **Props:**
+
 ```tsx
 interface GateResultsViewerProps {
   draftId: string;
@@ -49,16 +55,19 @@ interface GateResultsViewerProps {
 ```
 
 **Usage:**
-```tsx
-import GateResultsViewer from '@/pages/admin/seo/GateResultsViewer';
 
-<GateResultsViewer draftId="draft-123" gateResults={gateResult} />
+```tsx
+import GateResultsViewer from "@/pages/admin/seo/GateResultsViewer";
+
+<GateResultsViewer draftId="draft-123" gateResults={gateResult} />;
 ```
 
 ### 3. PublishControl.tsx
+
 SuperAdmin-only control panel for publishing approved drafts.
 
 **Features:**
+
 - SuperAdmin role check (shows access denied for other users)
 - List of approved drafts ready to publish
 - Checkbox selection with configurable limit (default: 5 per cycle)
@@ -69,15 +78,17 @@ SuperAdmin-only control panel for publishing approved drafts.
 **Mock Data:** Currently uses placeholder data. Replace with Firebase queries when ready.
 
 **Usage:**
-```tsx
-import PublishControl from '@/pages/admin/seo/PublishControl';
 
-<PublishControl />
+```tsx
+import PublishControl from "@/pages/admin/seo/PublishControl";
+
+<PublishControl />;
 ```
 
 ## Dependencies
 
 All components use:
+
 - Shared types from `@shared/admin-types.ts`
 - UI components from `@/components/ui/*`
 - `SiteFilterContext` for site filtering

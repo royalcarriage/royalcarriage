@@ -1,10 +1,16 @@
-import React, { useState, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import React, { useState, useCallback } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Table,
   TableBody,
@@ -12,22 +18,29 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { PrimaryButton } from '@/components/admin/buttons';
-import { useAuth } from '@/contexts/AuthContext';
-import { UserRole } from '@/lib/firebase';
-import { 
-  Upload, 
-  FileText, 
-  CheckCircle2, 
+} from "@/components/ui/table";
+import { PrimaryButton } from "@/components/admin/buttons";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole } from "@/lib/firebase";
+import {
+  Upload,
+  FileText,
+  CheckCircle2,
   AlertCircle,
   TrendingUp,
   TrendingDown,
   Search,
-  Calendar
-} from 'lucide-react';
-import { db } from '@/lib/firebase';
-import { collection, addDoc, query, orderBy, limit, getDocs } from 'firebase/firestore';
+  Calendar,
+} from "lucide-react";
+import { db } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  limit,
+  getDocs,
+} from "firebase/firestore";
 
 interface GSCRow {
   page: string;
@@ -46,8 +59,12 @@ interface GSCImportResult {
 
 interface IndexingIssue {
   page: string;
-  issue: 'low-ctr' | 'poor-position' | 'declining-clicks' | 'high-impressions-low-clicks';
-  severity: 'high' | 'medium' | 'low';
+  issue:
+    | "low-ctr"
+    | "poor-position"
+    | "declining-clicks"
+    | "high-impressions-low-clicks";
+  severity: "high" | "medium" | "low";
   description: string;
 }
 
@@ -55,15 +72,21 @@ export default function GSCImport() {
   const { userData } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
-  const [importResult, setImportResult] = useState<GSCImportResult | null>(null);
+  const [importResult, setImportResult] = useState<GSCImportResult | null>(
+    null,
+  );
   const [gscData, setGscData] = useState<GSCRow[]>([]);
   const [indexingIssues, setIndexingIssues] = useState<IndexingIssue[]>([]);
   const [dateRange, setDateRange] = useState({
-    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    end: new Date().toISOString().split('T')[0]
+    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
+    end: new Date().toISOString().split("T")[0],
   });
 
-  const isAdminPlus = userData?.role === UserRole.SUPER_ADMIN || userData?.role === UserRole.ADMIN;
+  const isAdminPlus =
+    userData?.role === UserRole.SUPER_ADMIN ||
+    userData?.role === UserRole.ADMIN;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -73,96 +96,102 @@ export default function GSCImport() {
   };
 
   const parseCSV = (text: string): GSCRow[] => {
-    const lines = text.trim().split('\n');
-    const headers = lines[0].toLowerCase().split(',').map(h => h.trim());
-    
-    const pageIdx = headers.indexOf('page') >= 0 ? headers.indexOf('page') : headers.indexOf('url');
-    const clicksIdx = headers.indexOf('clicks');
-    const impressionsIdx = headers.indexOf('impressions');
-    const ctrIdx = headers.indexOf('ctr');
-    const positionIdx = headers.indexOf('position');
-    
+    const lines = text.trim().split("\n");
+    const headers = lines[0]
+      .toLowerCase()
+      .split(",")
+      .map((h) => h.trim());
+
+    const pageIdx =
+      headers.indexOf("page") >= 0
+        ? headers.indexOf("page")
+        : headers.indexOf("url");
+    const clicksIdx = headers.indexOf("clicks");
+    const impressionsIdx = headers.indexOf("impressions");
+    const ctrIdx = headers.indexOf("ctr");
+    const positionIdx = headers.indexOf("position");
+
     const rows: GSCRow[] = [];
-    
+
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(',').map(v => v.trim());
-      
+      const values = lines[i].split(",").map((v) => v.trim());
+
       if (values.length < 4) continue;
-      
+
       try {
         rows.push({
           page: values[pageIdx],
           clicks: parseInt(values[clicksIdx]) || 0,
           impressions: parseInt(values[impressionsIdx]) || 0,
           ctr: parseFloat(values[ctrIdx]) || 0,
-          position: parseFloat(values[positionIdx]) || 0
+          position: parseFloat(values[positionIdx]) || 0,
         });
       } catch (error) {
-        console.error('Error parsing row:', values, error);
+        console.error("Error parsing row:", values, error);
       }
     }
-    
+
     return rows;
   };
 
   const analyzeIndexingIssues = (data: GSCRow[]): IndexingIssue[] => {
     const issues: IndexingIssue[] = [];
-    
-    data.forEach(row => {
+
+    data.forEach((row) => {
       // Low CTR issue
       if (row.ctr < 0.02 && row.impressions > 100) {
         issues.push({
           page: row.page,
-          issue: 'low-ctr',
-          severity: 'high',
-          description: `CTR is ${(row.ctr * 100).toFixed(2)}% (below 2%)`
+          issue: "low-ctr",
+          severity: "high",
+          description: `CTR is ${(row.ctr * 100).toFixed(2)}% (below 2%)`,
         });
       }
-      
+
       // Poor position issue
       if (row.position > 20 && row.impressions > 50) {
         issues.push({
           page: row.page,
-          issue: 'poor-position',
-          severity: 'medium',
-          description: `Average position is ${row.position.toFixed(1)} (page 2+)`
+          issue: "poor-position",
+          severity: "medium",
+          description: `Average position is ${row.position.toFixed(1)} (page 2+)`,
         });
       }
-      
+
       // High impressions but low clicks
       if (row.impressions > 1000 && row.clicks < 20) {
         issues.push({
           page: row.page,
-          issue: 'high-impressions-low-clicks',
-          severity: 'high',
-          description: `${row.impressions} impressions but only ${row.clicks} clicks`
+          issue: "high-impressions-low-clicks",
+          severity: "high",
+          description: `${row.impressions} impressions but only ${row.clicks} clicks`,
         });
       }
     });
-    
+
     return issues;
   };
 
   const handleUpload = async () => {
     if (!file || !isAdminPlus) return;
-    
+
     try {
       setUploading(true);
-      
+
       // Read and parse CSV
       const text = await file.text();
       const parsedData = parseCSV(text);
-      
+
       setGscData(parsedData);
-      
+
       // Analyze for issues
       const issues = analyzeIndexingIssues(parsedData);
       setIndexingIssues(issues);
-      
+
       // TODO: Store in Firestore
       // const gscRef = collection(db, 'gsc_pages');
       // const batch = writeBatch(db);
-      // 
+      //
       // for (const row of parsedData) {
       //   const docRef = doc(gscRef);
       //   batch.set(docRef, {
@@ -174,25 +203,24 @@ export default function GSCImport() {
       //     }
       //   });
       // }
-      // 
+      //
       // await batch.commit();
-      
-      console.log('Would store in Firestore:', parsedData.length, 'rows');
-      
+
+      console.log("Would store in Firestore:", parsedData.length, "rows");
+
       setImportResult({
         totalRows: parsedData.length,
         successCount: parsedData.length,
         errorCount: 0,
-        errors: []
+        errors: [],
       });
-      
     } catch (error) {
-      console.error('Error uploading GSC data:', error);
+      console.error("Error uploading GSC data:", error);
       setImportResult({
         totalRows: 0,
         successCount: 0,
         errorCount: 1,
-        errors: [error instanceof Error ? error.message : 'Unknown error']
+        errors: [error instanceof Error ? error.message : "Unknown error"],
       });
     } finally {
       setUploading(false);
@@ -201,14 +229,14 @@ export default function GSCImport() {
 
   const getSeverityColor = (severity: string) => {
     switch (severity) {
-      case 'high':
-        return 'bg-red-100 text-red-800 border-red-300';
-      case 'medium':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'low':
-        return 'bg-blue-100 text-blue-800 border-blue-300';
+      case "high":
+        return "bg-red-100 text-red-800 border-red-300";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "low":
+        return "bg-blue-100 text-blue-800 border-blue-300";
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-300';
+        return "bg-gray-100 text-gray-800 border-gray-300";
     }
   };
 
@@ -242,7 +270,9 @@ export default function GSCImport() {
             <Calendar className="h-5 w-5" />
             Date Range
           </CardTitle>
-          <CardDescription>Select the date range for the GSC export</CardDescription>
+          <CardDescription>
+            Select the date range for the GSC export
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -252,7 +282,9 @@ export default function GSCImport() {
                 id="start-date"
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, start: e.target.value })
+                }
                 disabled={!isAdminPlus}
               />
             </div>
@@ -262,7 +294,9 @@ export default function GSCImport() {
                 id="end-date"
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, end: e.target.value })
+                }
                 disabled={!isAdminPlus}
               />
             </div>
@@ -278,7 +312,8 @@ export default function GSCImport() {
             Upload GSC Export
           </CardTitle>
           <CardDescription>
-            Export CSV from Google Search Console with columns: page, clicks, impressions, CTR, position
+            Export CSV from Google Search Console with columns: page, clicks,
+            impressions, CTR, position
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -292,36 +327,49 @@ export default function GSCImport() {
               disabled={!isAdminPlus || uploading}
             />
           </div>
-          
+
           {file && (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <FileText className="h-4 w-4" />
-              <span>{file.name} ({(file.size / 1024).toFixed(2)} KB)</span>
+              <span>
+                {file.name} ({(file.size / 1024).toFixed(2)} KB)
+              </span>
             </div>
           )}
-          
+
           <PrimaryButton
             onClick={handleUpload}
             disabled={!file || !isAdminPlus || uploading}
           >
             <Upload className="h-4 w-4 mr-2" />
-            {uploading ? 'Uploading...' : 'Upload and Analyze'}
+            {uploading ? "Uploading..." : "Upload and Analyze"}
           </PrimaryButton>
         </CardContent>
       </Card>
 
       {/* Import Result */}
       {importResult && (
-        <Alert className={importResult.errorCount > 0 ? 'border-red-300 bg-red-50' : 'border-green-300 bg-green-50'}>
+        <Alert
+          className={
+            importResult.errorCount > 0
+              ? "border-red-300 bg-red-50"
+              : "border-green-300 bg-green-50"
+          }
+        >
           {importResult.errorCount > 0 ? (
             <AlertCircle className="h-4 w-4 text-red-600" />
           ) : (
             <CheckCircle2 className="h-4 w-4 text-green-600" />
           )}
-          <AlertDescription className={importResult.errorCount > 0 ? 'text-red-800' : 'text-green-800'}>
+          <AlertDescription
+            className={
+              importResult.errorCount > 0 ? "text-red-800" : "text-green-800"
+            }
+          >
             {importResult.errorCount > 0 ? (
               <>
-                Import completed with errors: {importResult.successCount} succeeded, {importResult.errorCount} failed
+                Import completed with errors: {importResult.successCount}{" "}
+                succeeded, {importResult.errorCount} failed
                 {importResult.errors.length > 0 && (
                   <ul className="mt-2 list-disc list-inside">
                     {importResult.errors.slice(0, 3).map((error, i) => (
@@ -331,7 +379,9 @@ export default function GSCImport() {
                 )}
               </>
             ) : (
-              <>Successfully imported {importResult.successCount} pages from GSC</>
+              <>
+                Successfully imported {importResult.successCount} pages from GSC
+              </>
             )}
           </AlertDescription>
         </Alert>
@@ -350,13 +400,18 @@ export default function GSCImport() {
           <CardContent>
             <div className="space-y-3">
               {indexingIssues.slice(0, 10).map((issue, index) => (
-                <div key={index} className="flex items-start gap-3 p-3 border rounded-lg">
+                <div
+                  key={index}
+                  className="flex items-start gap-3 p-3 border rounded-lg"
+                >
                   <Badge className={getSeverityColor(issue.severity)}>
                     {issue.severity.toUpperCase()}
                   </Badge>
                   <div className="flex-1">
                     <p className="font-medium">{issue.page}</p>
-                    <p className="text-sm text-muted-foreground">{issue.description}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {issue.description}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -395,10 +450,18 @@ export default function GSCImport() {
                   .map((row, index) => (
                     <TableRow key={index}>
                       <TableCell className="font-medium">{row.page}</TableCell>
-                      <TableCell className="text-right">{row.clicks.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">{row.impressions.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">{(row.ctr * 100).toFixed(2)}%</TableCell>
-                      <TableCell className="text-right">{row.position.toFixed(1)}</TableCell>
+                      <TableCell className="text-right">
+                        {row.clicks.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {row.impressions.toLocaleString()}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {(row.ctr * 100).toFixed(2)}%
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {row.position.toFixed(1)}
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>

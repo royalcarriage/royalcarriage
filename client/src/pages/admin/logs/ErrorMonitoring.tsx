@@ -1,9 +1,15 @@
-import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useMemo } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -11,15 +17,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
+} from "@/components/ui/table";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { AlertTriangle, TrendingUp, Filter, Calendar } from 'lucide-react';
+} from "@/components/ui/select";
+import { AlertTriangle, TrendingUp, Filter, Calendar } from "lucide-react";
 
 interface ErrorLog {
   id: string;
@@ -34,69 +40,82 @@ interface ErrorLog {
 // Mock data - replace with actual API call
 const MOCK_ERRORS: ErrorLog[] = [
   {
-    id: '1',
-    page: '/booking',
+    id: "1",
+    page: "/booking",
     errorMessage: 'Cannot read property "price" of undefined',
-    errorType: 'TypeError',
-    timestamp: '2024-01-17T14:30:00Z',
+    errorType: "TypeError",
+    timestamp: "2024-01-17T14:30:00Z",
     count: 12,
   },
   {
-    id: '2',
-    page: '/fleet/executive-sedan',
-    errorMessage: 'Network request failed',
-    errorType: 'NetworkError',
-    timestamp: '2024-01-17T13:15:00Z',
+    id: "2",
+    page: "/fleet/executive-sedan",
+    errorMessage: "Network request failed",
+    errorType: "NetworkError",
+    timestamp: "2024-01-17T13:15:00Z",
     count: 5,
   },
   {
-    id: '3',
-    page: '/contact',
-    errorMessage: 'Form validation error: invalid email',
-    errorType: 'ValidationError',
-    timestamp: '2024-01-17T12:00:00Z',
+    id: "3",
+    page: "/contact",
+    errorMessage: "Form validation error: invalid email",
+    errorType: "ValidationError",
+    timestamp: "2024-01-17T12:00:00Z",
     count: 8,
   },
 ];
 
-const ERROR_TYPES = ['All', 'TypeError', 'NetworkError', 'ValidationError', 'ReferenceError'];
+const ERROR_TYPES = [
+  "All",
+  "TypeError",
+  "NetworkError",
+  "ValidationError",
+  "ReferenceError",
+];
 
 export default function ErrorMonitoring() {
   const [dateRange, setDateRange] = useState({
-    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-    end: new Date().toISOString().split('T')[0],
+    start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
+    end: new Date().toISOString().split("T")[0],
   });
-  const [selectedErrorType, setSelectedErrorType] = useState('All');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedErrorType, setSelectedErrorType] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Mock chart data - replace with actual data
   const chartData = [
-    { date: '2024-01-11', errors: 15 },
-    { date: '2024-01-12', errors: 12 },
-    { date: '2024-01-13', errors: 18 },
-    { date: '2024-01-14', errors: 8 },
-    { date: '2024-01-15', errors: 22 },
-    { date: '2024-01-16', errors: 14 },
-    { date: '2024-01-17', errors: 25 },
+    { date: "2024-01-11", errors: 15 },
+    { date: "2024-01-12", errors: 12 },
+    { date: "2024-01-13", errors: 18 },
+    { date: "2024-01-14", errors: 8 },
+    { date: "2024-01-15", errors: 22 },
+    { date: "2024-01-16", errors: 14 },
+    { date: "2024-01-17", errors: 25 },
   ];
 
   const filteredErrors = useMemo(() => {
     return MOCK_ERRORS.filter((error) => {
-      const matchesType = selectedErrorType === 'All' || error.errorType === selectedErrorType;
-      const matchesSearch = error.page.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           error.errorMessage.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesType =
+        selectedErrorType === "All" || error.errorType === selectedErrorType;
+      const matchesSearch =
+        error.page.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        error.errorMessage.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesType && matchesSearch;
     });
   }, [selectedErrorType, searchQuery]);
 
   const groupedByPage = useMemo(() => {
-    const grouped = filteredErrors.reduce((acc, error) => {
-      if (!acc[error.page]) {
-        acc[error.page] = [];
-      }
-      acc[error.page].push(error);
-      return acc;
-    }, {} as Record<string, ErrorLog[]>);
+    const grouped = filteredErrors.reduce(
+      (acc, error) => {
+        if (!acc[error.page]) {
+          acc[error.page] = [];
+        }
+        acc[error.page].push(error);
+        return acc;
+      },
+      {} as Record<string, ErrorLog[]>,
+    );
     return grouped;
   }, [filteredErrors]);
 
@@ -125,9 +144,7 @@ export default function ErrorMonitoring() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{totalErrors}</div>
-            <p className="text-xs text-muted-foreground">
-              Last 7 days
-            </p>
+            <p className="text-xs text-muted-foreground">Last 7 days</p>
           </CardContent>
         </Card>
 
@@ -146,14 +163,16 @@ export default function ErrorMonitoring() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Affected Pages</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Affected Pages
+            </CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Object.keys(groupedByPage).length}</div>
-            <p className="text-xs text-muted-foreground">
-              Pages with errors
-            </p>
+            <div className="text-2xl font-bold">
+              {Object.keys(groupedByPage).length}
+            </div>
+            <p className="text-xs text-muted-foreground">Pages with errors</p>
           </CardContent>
         </Card>
       </div>
@@ -162,14 +181,15 @@ export default function ErrorMonitoring() {
       <Card>
         <CardHeader>
           <CardTitle>Error Trend (Last 7 Days)</CardTitle>
-          <CardDescription>
-            Track error frequency over time
-          </CardDescription>
+          <CardDescription>Track error frequency over time</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-64 flex items-end justify-between gap-2">
             {chartData.map((data) => (
-              <div key={data.date} className="flex-1 flex flex-col items-center gap-2">
+              <div
+                key={data.date}
+                className="flex-1 flex flex-col items-center gap-2"
+              >
                 <div
                   className="w-full bg-red-500 rounded-t"
                   style={{ height: `${(data.errors / 25) * 100}%` }}
@@ -196,7 +216,9 @@ export default function ErrorMonitoring() {
                 id="startDate"
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, start: e.target.value })
+                }
               />
             </div>
             <div className="space-y-2">
@@ -205,12 +227,17 @@ export default function ErrorMonitoring() {
                 id="endDate"
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                onChange={(e) =>
+                  setDateRange({ ...dateRange, end: e.target.value })
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="errorType">Error Type</Label>
-              <Select value={selectedErrorType} onValueChange={setSelectedErrorType}>
+              <Select
+                value={selectedErrorType}
+                onValueChange={setSelectedErrorType}
+              >
                 <SelectTrigger id="errorType">
                   <SelectValue placeholder="Select error type" />
                 </SelectTrigger>
@@ -240,13 +267,13 @@ export default function ErrorMonitoring() {
       <Card>
         <CardHeader>
           <CardTitle>Errors by Page</CardTitle>
-          <CardDescription>
-            Grouped by page location
-          </CardDescription>
+          <CardDescription>Grouped by page location</CardDescription>
         </CardHeader>
         <CardContent>
           {Object.keys(groupedByPage).length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">No errors found</p>
+            <p className="text-center text-muted-foreground py-8">
+              No errors found
+            </p>
           ) : (
             <Table>
               <TableHeader>
