@@ -5,13 +5,18 @@ import { getStorage } from 'firebase/storage';
 
 // Firebase configuration for royalcarriagelimoseo project
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDxqI5j3YzJ8kXZ9QzX5j5YzJ8kXZ9QzX5",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: "royalcarriagelimoseo.firebaseapp.com",
   projectId: "royalcarriagelimoseo",
   storageBucket: "royalcarriagelimoseo.appspot.com",
   messagingSenderId: "910418192896",
   appId: "1:910418192896:web:43a0aa8f8bf2a2cb2ac6e5"
 };
+
+// Validate required configuration
+if (!firebaseConfig.apiKey) {
+  throw new Error('VITE_FIREBASE_API_KEY environment variable is required. Please add it to your .env file.');
+}
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);

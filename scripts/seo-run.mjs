@@ -310,7 +310,8 @@ Logs:
       autoPublish: args.includes('--auto-publish'),
       noPr: args.includes('--no-pr'),
       continueOnError: args.includes('--continue-on-error'),
-      proposeTopics: [] // Could be extended to accept topics from config file
+      // Note: Topic proposal is a manual step. Use `npm run seo:propose` to add topics.
+      proposeTopics: [] // Pipeline starts with already-queued topics
     };
     
     await runPipeline(options);
