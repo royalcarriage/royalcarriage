@@ -35,3 +35,5 @@ All AI systems (Copilot Chat, Codex, any agent mode) now follow unified rules:
 - Firebase rules require least-privilege, auth, role checks, tenant isolation.
 
 Next: Run `npm run gates` to verify all gates pass, then proceed with Firebase deployment if needed.
+
+Notes: Added `docs/FIREBASE_DEPLOY.md` with environment variables and deploy steps. I can create a GitHub Actions snippet to automate deploys if you want.
