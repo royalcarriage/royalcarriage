@@ -34,8 +34,13 @@ export const createTrip = functions.https.onRequest(async (req, res) => {
       createdBy: req.body.auth?.uid || null,
     };
 
-    const writeResult = await admin.firestore().collection("trips").add(trip);
-    res.status(201).json({ id: writeResult.id, ...trip });
+    // Signal completion for accounting (e.g., by updating a status or writing to a related collection)
+      await admin.firestore().collection('trip_completions').add({
+        tripId: writeResult.id,
+        completedAt: admin.firestore.FieldValue.serverTimestamp(),
+        // Potentially other data relevant for accounting posting rules
+      });
+      res.status(201).json({ id: writeResult.id, ...trip });
 
   } catch (error) {
     functions.logger.error("Error creating trip:", error);

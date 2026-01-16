@@ -2,6 +2,7 @@
 
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
+import type { Change, EventContext } from "firebase-functions/v1/firestore";
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -97,3 +98,42 @@ export const getReconciliations = functions.https.onRequest((req, res) => {
 export const getProfitAndLoss = functions.https.onRequest((req, res) => {
   res.status(501).send("Not Implemented: Get Profit and Loss Report");
 });
+
+// --- Trip Completion Listener for Accounting ---
+
+export const onTripComplete = functions.firestore
+  .document('trip_completions/{tripCompletionId}')
+  .onCreate(async (snap: Change<admin.firestore.DocumentSnapshot>, context: EventContext) => {
+    const tripCompletionData = snap.data();
+
+    if (!tripCompletionData) {
+      functions.logger.error("Trip completion data is undefined.");
+      return null;
+    }
+
+    const tripId = tripCompletionData.tripId;
+    functions.logger.info(`Processing trip completion for Trip ID: ${tripId}`);
+
+    try {
+      // Fetch trip details if necessary (e.g., to get fare, driver, etc.)
+      // For now, assume basic posting logic based on completion signal
+      const ledgerEntry = {
+        amount: tripCompletionData.amount || 100, // Placeholder amount
+        date: tripCompletionData.completedAt || admin.firestore.FieldValue.serverTimestamp(),
+        description: `Trip completed: ${tripId}`,
+        category: "Service Income", // Example category
+        accountId: "revenue-account-id", // Example account ID
+        transactionType: "credit",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        createdBy: tripCompletionData.userId || "system", // Assuming userId is available
+      };
+
+      await admin.firestore().collection("ledger").add(ledgerEntry);
+      functions.logger.info(`Ledger entry created for Trip ID: ${tripId}`);
+
+    } catch (error) {
+      functions.logger.error(`Error processing trip completion for ${tripId}:`, error);
+    }
+
+    return null;
+  });
