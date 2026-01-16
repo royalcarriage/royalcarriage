@@ -20,9 +20,9 @@ export const users = pgTable("users", {
   createdAt: timestamp("created_at").notNull().default(sql`now()`),
 });
 
-export const insertUserSchema = createInsertSchema(users).pick({
-  username: true,
-  password: true,
+export const insertUserSchema = z.object({
+  username: z.string().min(3),
+  password: z.string().min(8),
 });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;

@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { aiRoutes } from "./ai/routes";
 import authRoutes from "./routes/auth";
 import usersRoutes from "./routes/users";
+import importsRoutes from "./routes/imports";
 
 export async function registerRoutes(app: Express) {
   // put application routes here
@@ -15,4 +16,7 @@ export async function registerRoutes(app: Express) {
 
   // AI routes
   app.use("/api/ai", aiRoutes);
+
+  // Import routes (CSV imports for Moovs and Ads)
+  app.use("/api/imports", importsRoutes);
 }

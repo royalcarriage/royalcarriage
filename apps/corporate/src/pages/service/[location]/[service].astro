@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { db } from '../../../lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+
+export async function getStaticPaths() {
+  // Fetch all approved content for corporate website
+  const contentQuery = query(
+    collection(db, 'service_content'),
+    where('websiteId', '==', 'corporate'),
+    where('approvalStatus', '==', 'approved')
+  );
+
+  const snapshot = await getDocs(contentQuery);
+
+  return snapshot.docs.map((doc) => {
+    const data = doc.data();
+    return {
+      params: {
+        location: data.locationId,
+        service: data.serviceId,
+      },
+      props: {
+        content: data,
+        contentId: doc.id,
+      },
+    };
+  });
+}
+
+interface Props {
+  content: {
+    title: string;
+    metaDescription: string;
+    content: string;
+    keywords: string[];
+    aiQualityScore?: number;
+    internalLinks?: Array<{
+      title: string;
+      url: string;
+      context: string;
+    }>;
+    schema?: Record<string, any>;
+    ogImage?: string;
+    breadcrumbs?: Array<{
+      name: string;
+      url: string;
+    }>;
+  };
+  contentId: string;
+}
+
+const { content, contentId } = Astro.props;
+const { location, service } = Astro.params;
+
+// Sanitize HTML content
+const sanitizeHtml = (html: string) => {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+};
+
+const metaTags = {
+  title: content.title,
+  description: content.metaDescription,
+  ogImage: content.ogImage,
+  canonical: `https://chicagoexecutivecarservice.com/service/${service}/${location}`,
+  schema: content.schema,
+};
+---
+
+<BaseLayout {metaTags}>
+  <div class="min-h-screen bg-white">
+    <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      {/* Breadcrumb Navigation */}
+      {content.breadcrumbs && content.breadcrumbs.length > 0 && (
+        <nav class="mb-6 flex items-center space-x-2 text-sm">
+          {content.breadcrumbs.map((crumb, index) => (
+            <>
+              <a href={crumb.url} class="text-blue-600 hover:underline">
+                {crumb.name}
+              </a>
+              {index < content.breadcrumbs.length - 1 && (
+                <span class="text-gray-400">/</span>
+              )}
+            </>
+          ))}
+        </nav>
+      )}
+
+      {/* Quality Score Badge */}
+      {content.aiQualityScore && (
+        <div class="mb-4 inline-block">
+          <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800">
+            Quality: {(content.aiQualityScore * 100).toFixed(0)}%
+          </span>
+        </div>
+      )}
+
+      {/* Main Content */}
+      <article class="prose prose-lg max-w-none">
+        <h1 class="mb-4 text-4xl font-bold leading-tight text-gray-900">
+          {content.title}
+        </h1>
+
+        <p class="lead mb-6 text-xl text-gray-600">
+          {content.metaDescription}
+        </p>
+
+        <div
+          class="prose-p:text-gray-700 mb-8 text-gray-800"
+          set:html={sanitizeHtml(content.content)}
+        />
+
+        {/* Keywords Section */}
+        {content.keywords && content.keywords.length > 0 && (
+          <div class="my-8 rounded-lg bg-gray-50 p-6">
+            <h3 class="mb-3 text-lg font-semibold text-gray-900">Related Keywords</h3>
+            <div class="flex flex-wrap gap-2">
+              {content.keywords.slice(0, 15).map((keyword) => (
+                <span class="inline-block rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
+                  {keyword}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Call-to-Action */}
+        <div class="my-8 rounded-lg border-2 border-blue-600 bg-blue-50 p-6 text-center">
+          <h3 class="mb-2 text-2xl font-bold text-blue-900">Schedule Your Executive Transportation</h3>
+          <p class="mb-4 text-blue-800">Premium corporate travel for Chicago professionals</p>
+          <a
+            href="/booking"
+            class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
+          >
+            Book Now
+          </a>
+        </div>
+
+        {/* Internal Links Section */}
+        {content.internalLinks && content.internalLinks.length > 0 && (
+          <div class="my-8 rounded-lg bg-gray-100 p-6">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Related Services</h3>
+            <div class="grid gap-4 md:grid-cols-2">
+              {content.internalLinks.slice(0, 6).map((link) => (
+                <a
+                  href={link.url}
+                  class="block rounded-lg bg-white p-4 hover:shadow-lg transition"
+                >
+                  <h4 class="font-semibold text-blue-600 hover:underline">{link.title}</h4>
+                  <p class="mt-1 text-sm text-gray-600">{link.context}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </article>
+
+      {/* JSON-LD Schema Markup */}
+      {content.schema && (
+        <script type="application/ld+json" set:html={JSON.stringify(content.schema)} />
+      )}
+    </div>
+  </div>
+</BaseLayout>

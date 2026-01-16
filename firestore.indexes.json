@@ -55,6 +55,46 @@
         { "fieldPath": "type", "order": "ASCENDING" },
         { "fieldPath": "createdAt", "order": "DESCENDING" }
       ]
+    },
+    {
+      "collectionGroup": "content_quality_scores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "overallScore", "order": "ASCENDING" },
+        { "fieldPath": "websiteId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "content_quality_scores",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "overallScore", "order": "ASCENDING" },
+        { "fieldPath": "locationId", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "regeneration_queue",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "status", "order": "ASCENDING" },
+        { "fieldPath": "priority", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "service_content",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "websiteId", "order": "ASCENDING" },
+        { "fieldPath": "approvalStatus", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "service_content",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "locationId", "order": "ASCENDING" },
+        { "fieldPath": "approvalStatus", "order": "ASCENDING" }
+      ]
     }
   ],
   "fieldOverrides": []
