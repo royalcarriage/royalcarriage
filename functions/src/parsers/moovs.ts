@@ -186,7 +186,8 @@ export class MoovsParser {
 
         data.push(row);
       } catch (error) {
-        errors.push(`Row ${i + 1}: Parse error - ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        errors.push(`Row ${i + 1}: Parse error - ${errorMessage}`);
       }
     }
 
@@ -237,9 +238,10 @@ export class MoovsParser {
       };
     } catch (error) {
       console.error("Parse error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
       return {
         success: false,
-        errors: [error.message],
+        errors: [errorMessage],
         rowCount: 0,
         fileHash: "",
         storagePath: "",

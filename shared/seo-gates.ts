@@ -31,19 +31,17 @@ export function checkInterlinking(
   const allRequired = [...new Set([...defaultRequired, ...requiredLinks])];
 
   // Extract all links from content (both href and markdown links)
-  const hrefRegex = /href=["']([^"']+)["']/gi;
-  const markdownRegex = /\[([^\]]+)\]\(([^)]+)\)/gi;
-
   const foundLinks = new Set<string>();
 
   // Find href links
-  let match;
-  while ((match = hrefRegex.exec(content)) !== null) {
+  const hrefMatches = content.matchAll(/href=["']([^"']+)["']/gi);
+  for (const match of hrefMatches) {
     foundLinks.add(match[1]);
   }
 
   // Find markdown links
-  while ((match = markdownRegex.exec(content)) !== null) {
+  const markdownMatches = content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/gi);
+  for (const match of markdownMatches) {
     foundLinks.add(match[2]);
   }
 
@@ -364,22 +362,21 @@ export function checkBrokenLinks(
   content: string,
   existingPaths: string[],
 ): GateCheckResult {
-  const hrefRegex = /href=["']([^"']+)["']/gi;
-  const markdownRegex = /\[([^\]]+)\]\(([^)]+)\)/gi;
-
   const internalLinks = new Set<string>();
   const brokenLinks: string[] = [];
 
-  // Find all internal links
-  let match;
-  while ((match = hrefRegex.exec(content)) !== null) {
+  // Find all internal links from href attributes
+  const hrefMatches = content.matchAll(/href=["']([^"']+)["']/gi);
+  for (const match of hrefMatches) {
     const url = match[1];
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
     }
   }
 
-  while ((match = markdownRegex.exec(content)) !== null) {
+  // Find all internal links from markdown
+  const markdownMatches = content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/gi);
+  for (const match of markdownMatches) {
     const url = match[2];
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
@@ -451,6 +448,9 @@ export function runAllGateChecks(
   draft: SEODraft,
   existingData: ExistingData,
 ): CompleteGateResult {
+  // Store interlinking result to avoid redundant processing
+  const interlinkingResult = checkInterlinking(draft.content, draft.requiredLinks || []);
+  
   const checks = {
     duplicateTitle: checkDuplicateTitle(draft.metaTitle, existingData.titles),
     duplicateMeta: checkDuplicateDescription(
@@ -463,10 +463,9 @@ export function runAllGateChecks(
       : { passed: false, details: "No schema provided", severity: "warning" as const },
     brokenLinks: checkBrokenLinks(draft.content, existingData.paths),
     interlinks: {
-      passed: checkInterlinking(draft.content, draft.requiredLinks || []).passed,
-      details: checkInterlinking(draft.content, draft.requiredLinks || [])
-        .missingLinks.length
-        ? `Missing required links: ${checkInterlinking(draft.content, draft.requiredLinks || []).missingLinks.join(", ")}`
+      passed: interlinkingResult.passed,
+      details: interlinkingResult.missingLinks.length
+        ? `Missing required links: ${interlinkingResult.missingLinks.join(", ")}`
         : "All required links present",
     },
     keywordMatch: checkKeywordMatch(
