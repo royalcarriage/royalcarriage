@@ -11,7 +11,7 @@
         "airport": [
           "chicagoairportblackcar"
         ],
-        "executive": [
+        "corporate": [
           "chicagoexecutivecarservice"
         ],
         "wedding": [
@@ -19,10 +19,6 @@
         ],
         "partybus": [
           "chicago-partybus"
-        ]
-        ,
-        "packages-firebase": [
-          "YOUR_HOSTING_SITE_ID"
         ]
       }
     }
