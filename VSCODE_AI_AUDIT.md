@@ -1,58 +1,32 @@
-# VS Code / Firebase Studio — AI Audit & Build Guide (YOLO)
+# VSCODE AI Audit
 
-## What this repo must guarantee
-- admin.royalcarriagelimo.com serves the Admin Dashboard entrypoint
-- Firebase deploy is clean (Hosting/Functions/Rules)
-- GitHub -> Firebase rollout is consistent
+This document outlines how to audit and extend the system.
 
-## Where to look first (order)
-1) firebase.json
-2) .firebaserc (project + targets)
-3) package.json scripts (build, deploy, lint, test)
-4) apps/* or src/* structure (admin app)
-5) apphosting.yaml (if Firebase App Hosting is used)
+## Auditing the System
 
-## Admin domain wiring
-- Identify hosting target for admin domain in Firebase console:
-  - Hosting -> custom domains
-  - confirm which “site” the domain points to
-- Ensure firebase.json has that site/target configured:
-  - hosting.site or hosting.target
-  - hosting.public or hosting.frameworks output
-- Ensure the admin entrypoint exists at the deployed root:
-  - SPA: index.html + assets
-  - Next.js/Astro/etc: correct framework adapter + output dir
+1.  **Firebase:**
+    *   Review Firestore rules for security vulnerabilities.
+    *   Review Storage rules for security vulnerabilities.
+    *   Check Firebase Hosting configuration for correctness.
 
-## Standard YOLO audit commands
-- git status; git pull
-- npm ci (or pnpm i / yarn --frozen-lockfile)
-- npm run lint || true
-- npm run typecheck || true
-- npm test || true
-- npm run build
-- firebase use --add (only if needed)
-- firebase deploy --only hosting,functions,firestore:rules,storage
+2.  **GitHub Actions:**
+    *   Verify that the deployment workflow is reproducible.
 
-## “If admin is blank”
-- Check build output directory matches firebase.json hosting.public
-- Ensure rewrite rules exist for SPA:
-  - rewrites: [{ "source": "**", "destination": "/index.html" }]
-- Ensure assets paths are correct (base href / publicPath)
+3.  **Application Code:**
+    *   Run `npm run lint` to check for code quality issues.
+    *   Run `npm test` to ensure all tests pass.
+    *   Run `npm run build` to confirm the application builds successfully.
 
-## Required docs to keep updated
-- OPS_DEPLOY_CHECKLIST.md
-- GEMINI.md
+## Extending the System
 
-**Session Summary (YOLO Mode):**
+1.  **Adding a New Feature:**
+    *   Create a new branch for the feature.
+    *   Implement the feature, following existing code patterns.
+    *   Add tests for the new feature.
+    *   Update documentation as needed.
+    *   Open a pull request for review.
 
-*   **Repository Reset:** Switched to `https://github.com/royalcarriage/royalcarriage.git` and reset local state to match the `main` branch, discarding previous local work (including the new admin Astro app).
-*   **Dependencies:** Installed all project dependencies using `pnpm`.
-*   **Linting:** Fixed all autofixable linting errors.
-*   **Build:** Corrected the `build` script in `package.json` and successfully built the project.
-*   **Firebase Configuration:** Refactored `firebase.json` to deploy the admin dashboard from `dist/public` to the default `royalcarriagelimoseo.web.app` hosting site. Simplified `package.json` deploy scripts accordingly.
-*   **Deployment:** Successfully deployed the admin dashboard to `https://royalcarriagelimoseo.web.app`.
-*   **Security Rules:** Audited and successfully deployed Firestore and Storage security rules, updating `firestore.indexes.json` to prevent deployment issues.
-*   **Functions:** Audited Firebase Functions, resolved TypeScript errors, and deployed them successfully. (Note: `functions.config()` deprecation warning is present and requires future migration to environment variables).
-
-**Current Status:**
-The admin dashboard is now deployed to `https://royalcarriagelimoseo.web.app`. The previous marketing sites (airport, corporate, wedding, partybus) are no longer deployed by this configuration. The GitHub Actions workflow is set up for automated deployment of this single hosting site.
+2.  **Updating Dependencies:**
+    *   Use `npm update` to update dependencies.
+    *   Run all tests to ensure no regressions were introduced.
+    *   Deploy to a staging environment for further testing.
