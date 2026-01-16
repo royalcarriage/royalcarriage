@@ -9,7 +9,7 @@ import type { Request, Response } from "firebase-functions/v1";
 import type { DocumentSnapshot } from "firebase-functions/v1/firestore";
 
 // ImagePurpose type definition (inline to avoid import issues)
-type ImagePurpose = 
+type ImagePurpose =
   | "hero"
   | "vehicle"
   | "location"
