@@ -1,1 +1,1 @@
-    "audit:images:content": "node ./scripts/audit-images-content.mjs",
+"audit:images:content": "node ./scripts/audit-images-content.mjs",
