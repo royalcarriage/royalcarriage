@@ -1,0 +1,164 @@
+{
+  "pageType": "cityService",
+  "description": "Template for city-specific service pages with airport routes and local context",
+  "sections": [
+    {
+      "id": "intro",
+      "heading": "Professional [Service] in [City]",
+      "required": true,
+      "unique": true,
+      "minWords": 150,
+      "description": "Introduction highlighting service quality and local expertise"
+    },
+    {
+      "id": "airport-routes",
+      "heading": "Airport Routes from [City]",
+      "required": true,
+      "description": "MONEY SECTION - Links to airport pages with varied anchor text",
+      "links": [
+        {
+          "text": "[City] to O'Hare Airport (ORD)",
+          "url": "/ohare-airport-limo",
+          "note": "Use varied anchors across pages"
+        },
+        {
+          "text": "[City] to Midway Airport (MDW)",
+          "url": "/midway-airport-limo",
+          "note": "Use varied anchors across pages"
+        }
+      ],
+      "minWords": 100,
+      "guidelines": [
+        "Vary anchor text across different city pages",
+        "Include travel time estimates",
+        "Mention traffic considerations",
+        "No spammy keyword stuffing"
+      ]
+    },
+    {
+      "id": "vehicles",
+      "heading": "Recommended Vehicles",
+      "required": true,
+      "minWords": 150,
+      "links": [
+        {
+          "text": "SUV",
+          "context": "luggage & families",
+          "url": "/fleet/suv"
+        },
+        {
+          "text": "Executive Sprinter",
+          "context": "groups/hourly",
+          "url": "/fleet/sprinter"
+        },
+        {
+          "text": "Party Bus",
+          "context": "events",
+          "url": "/fleet/party-bus"
+        }
+      ],
+      "description": "Contextual vehicle recommendations based on use cases"
+    },
+    {
+      "id": "local-context",
+      "heading": "About [City]",
+      "required": true,
+      "unique": true,
+      "minWords": 200,
+      "minEntities": 6,
+      "entityTypes": [
+        "hotels",
+        "venues",
+        "business parks",
+        "event destinations",
+        "landmarks",
+        "shopping centers"
+      ],
+      "description": "City-specific information with named local entities",
+      "guidelines": [
+        "Name at least 6 specific local entities",
+        "Include mix of business and leisure destinations",
+        "Mention unique characteristics of the city",
+        "Keep content genuinely helpful, not just SEO filler"
+      ]
+    },
+    {
+      "id": "internal-links",
+      "heading": "Related Services",
+      "required": true,
+      "minWords": 100,
+      "links": [
+        "/hourly-chauffeur-service",
+        "/airport-transportation",
+        "/corporate-transportation"
+      ],
+      "nearbyCities": 3,
+      "description": "Contextual internal links (NOT footer spam lists)",
+      "guidelines": [
+        "Links must be contextual, not lists",
+        "Include 3 nearby city pages with context",
+        "Natural integration into paragraphs",
+        "No massive city lists"
+      ]
+    },
+    {
+      "id": "faq",
+      "heading": "Frequently Asked Questions",
+      "required": true,
+      "minQuestions": 8,
+      "maxQuestions": 12,
+      "minWords": 400,
+      "topics": [
+        "Travel time to ORD/MDW",
+        "Best vehicle for groups",
+        "Hourly vs one-way pricing",
+        "Luggage policies",
+        "Airport pickup procedures",
+        "Gratuity and fees",
+        "Booking process",
+        "Cancellation policy"
+      ],
+      "description": "Comprehensive FAQ section with Schema markup",
+      "schemaRequired": true
+    }
+  ],
+  "metadata": {
+    "titleTemplate": "[Service] in [City] | Royal Carriage",
+    "titleLengthMin": 50,
+    "titleLengthMax": 65,
+    "metaDescriptionTemplate": "Professional [service] in [City]. Airport transfers, hourly service, and more. Book your luxury transportation today.",
+    "metaDescriptionLengthMin": 140,
+    "metaDescriptionLengthMax": 165,
+    "slugPattern": "[city-name]-[service-type]"
+  },
+  "schema": {
+    "required": true,
+    "types": [
+      "Service",
+      "FAQPage"
+    ]
+  },
+  "images": {
+    "hero": {
+      "required": true,
+      "altTextRequired": true
+    },
+    "minImages": 4,
+    "altTextMinLength": 10
+  },
+  "qualityGates": {
+    "minWords": 1200,
+    "minLocalEntities": 6,
+    "maxKeywordDensity": 0.03,
+    "requiredH1Count": 1,
+    "semanticSimilarityMax": 0.80
+  },
+  "interlinkingRules": {
+    "contextualOnly": true,
+    "variedAnchors": true,
+    "noFooterSpam": true,
+    "noMassiveCityLists": true,
+    "minNearbyCities": 3,
+    "maxNearbyCities": 5
+  }
+}

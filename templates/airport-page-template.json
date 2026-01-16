@@ -1,0 +1,138 @@
+{
+  "pageType": "airport",
+  "description": "Template for airport service pages with reverse linking to cities",
+  "mainContent": {
+    "sections": [
+      {
+        "id": "intro",
+        "heading": "[Airport Name] Transportation Service",
+        "required": true,
+        "minWords": 200,
+        "description": "Introduction to airport service with unique value propositions"
+      },
+      {
+        "id": "services",
+        "heading": "Our Airport Services",
+        "required": true,
+        "minWords": 150,
+        "topics": [
+          "Meet and greet",
+          "Flight tracking",
+          "Luggage assistance",
+          "Multiple pickup locations"
+        ]
+      },
+      {
+        "id": "vehicles",
+        "heading": "Airport Transportation Fleet",
+        "required": true,
+        "minWords": 150,
+        "description": "Vehicle options optimized for airport travel"
+      }
+    ]
+  },
+  "reverseLinks": {
+    "heading": "Airport Transportation Service Areas",
+    "text": "We serve airport transportation to and from:",
+    "required": true,
+    "maxCities": 15,
+    "presentationStyle": "contextual-paragraphs",
+    "cities": [
+      "Naperville",
+      "Schaumburg",
+      "Oak Brook",
+      "Evanston",
+      "Wilmette",
+      "Hinsdale",
+      "Geneva",
+      "Barrington",
+      "Wheaton",
+      "Downers Grove",
+      "Arlington Heights",
+      "Palatine",
+      "Elmhurst",
+      "Lombard",
+      "Glen Ellyn"
+    ],
+    "description": "Reverse links from airport page back to city pages",
+    "guidelines": [
+      "Maximum 15 cities to avoid spam appearance",
+      "Present in natural prose, not bare lists",
+      "Group by geographic area when possible",
+      "Include brief context for each area"
+    ]
+  },
+  "interlinkingRules": {
+    "contextualOnly": true,
+    "variedAnchors": true,
+    "noFooterSpam": true,
+    "noMassiveCityLists": true,
+    "anchorTextVariations": [
+      "[City] to [Airport] transportation",
+      "[City] airport shuttle",
+      "Airport service from [City]",
+      "[City] to [Airport] limo",
+      "Transportation from [City] to [Airport]"
+    ],
+    "guidelines": [
+      "Rotate anchor text patterns across links",
+      "Never use same anchor text twice on one page",
+      "Keep anchors natural and descriptive",
+      "Avoid over-optimization"
+    ]
+  },
+  "metadata": {
+    "titleTemplate": "[Airport Name] Transportation | Royal Carriage",
+    "titleLengthMin": 50,
+    "titleLengthMax": 65,
+    "metaDescriptionTemplate": "Professional [airport name] transportation service. Serving [city count]+ cities in the Chicago area. Flight tracking, meet & greet, and luxury vehicles.",
+    "metaDescriptionLengthMin": 140,
+    "metaDescriptionLengthMax": 165,
+    "slugPattern": "[airport-code]-airport-[service-type]"
+  },
+  "schema": {
+    "required": true,
+    "types": [
+      "Service",
+      "FAQPage"
+    ]
+  },
+  "images": {
+    "hero": {
+      "required": true,
+      "altTextRequired": true,
+      "suggestedContent": "Airport terminal or luxury vehicle at airport"
+    },
+    "minImages": 4,
+    "altTextMinLength": 10
+  },
+  "faq": {
+    "required": true,
+    "minQuestions": 8,
+    "maxQuestions": 12,
+    "topics": [
+      "Meet and greet locations",
+      "Flight delay handling",
+      "Pickup timing recommendations",
+      "Terminal-specific instructions",
+      "Luggage capacity",
+      "Group transportation options",
+      "Parking and waiting fees",
+      "Booking lead time"
+    ]
+  },
+  "qualityGates": {
+    "minWords": 1200,
+    "maxCityLinks": 15,
+    "maxKeywordDensity": 0.03,
+    "requiredH1Count": 1,
+    "semanticSimilarityMax": 0.80
+  },
+  "antiSpamRules": {
+    "noBareListsOfCities": true,
+    "requireContextForLinks": true,
+    "maxLinksPerParagraph": 3,
+    "noRepeatedAnchorText": true,
+    "naturalLanguageRequired": true
+  }
+}
