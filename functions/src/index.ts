@@ -147,6 +147,24 @@ import {
   getAnalyticsTrends,
 } from './advancedAnalyticsFunctions';
 
+// Import CSV import functions - P1.3
+import {
+  importMoovsCSV,
+  importAdsCSV,
+  getImportHistory,
+  rollbackImport,
+  getImportErrorReport,
+} from './csvImportFunctions';
+
+// Import fleet initialization functions - PHASE 1
+import {
+  initializeFleetVehicles,
+  getFleetVehicle,
+  getAllFleetVehicles,
+  updateFleetVehicle,
+  deleteFleetVehicle,
+} from './fleetInitializationFunction';
+
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -683,4 +701,46 @@ export {
   getCompetitorBenchmark,
   generateCustomReport,
   getAnalyticsTrends,
+};
+
+// --- PHASE 1: FLEET INITIALIZATION FUNCTIONS ---
+
+// Export fleet initialization functions
+export {
+  initializeFleetVehicles,
+  getFleetVehicle,
+  getAllFleetVehicles,
+  updateFleetVehicle,
+  deleteFleetVehicle,
+};
+
+// --- CONTENT GENERATION PIPELINE - ENTERPRISE SCALE ---
+
+// Import content generation pipeline functions
+import {
+  generateLocationServiceContent,
+  batchGenerateContent,
+  approveAndPublishContent as pipelineApproveAndPublishContent,
+  generatePageMetadata as pipelineGeneratePageMetadata,
+  buildStaticPages as pipelineBuildStaticPages,
+} from './contentGenerationPipeline';
+
+// Export content generation pipeline functions
+export {
+  generateLocationServiceContent,
+  batchGenerateContent,
+  pipelineApproveAndPublishContent,
+  pipelineGeneratePageMetadata,
+  pipelineBuildStaticPages,
+};
+
+// --- P1.3: CSV DATA IMPORT FUNCTIONS ---
+
+// Export CSV import functions
+export {
+  importMoovsCSV,
+  importAdsCSV,
+  getImportHistory,
+  rollbackImport,
+  getImportErrorReport,
 };
