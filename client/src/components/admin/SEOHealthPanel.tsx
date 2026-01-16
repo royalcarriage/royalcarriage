@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileSearch, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
-import { SEO_THRESHOLDS } from "@/../../shared/kpi-thresholds";
+import { SEO_THRESHOLDS } from "@/lib/kpi-thresholds";
 
 interface SEOHealthPanelProps {
   indexedPages?: number;

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Clock, CheckCircle, AlertCircle } from "lucide-react";
-import { PIPELINE_THRESHOLDS, getPagesPublishedStatus } from "@/../../shared/kpi-thresholds";
+import { PIPELINE_THRESHOLDS, getPagesPublishedStatus } from "@/lib/kpi-thresholds";
 
 interface PipelineStatusPanelProps {
   draftsAwaitingReview?: number;

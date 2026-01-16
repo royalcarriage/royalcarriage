@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, CheckCircle, Clock } from "lucide-react";
-import { DATA_FRESHNESS_THRESHOLDS, getDataFreshnessStatus } from "@/../../shared/kpi-thresholds";
+import { DATA_FRESHNESS_THRESHOLDS, getDataFreshnessStatus } from "@/lib/kpi-thresholds";
 
 interface DataSource {
   name: string;

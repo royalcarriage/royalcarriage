@@ -5,7 +5,7 @@ import { ConversionHealthPanel } from "@/components/admin/ConversionHealthPanel"
 import { SEOHealthPanel } from "@/components/admin/SEOHealthPanel";
 import { PipelineStatusPanel } from "@/components/admin/PipelineStatusPanel";
 import { PublishingFrozenBanner } from "@/components/admin/PublishingFrozenBanner";
-import { shouldFreezePublishing } from "@/../../shared/kpi-thresholds";
+import { shouldFreezePublishing } from "@/lib/kpi-thresholds";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { RefreshCw, Download, Calendar } from "lucide-react";

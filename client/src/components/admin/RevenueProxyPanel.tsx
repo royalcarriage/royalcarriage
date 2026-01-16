@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingDown, TrendingUp, Minus, DollarSign } from "lucide-react";
-import { REVENUE_THRESHOLDS, getRevenueWoWStatus } from "@/../../shared/kpi-thresholds";
+import { REVENUE_THRESHOLDS, getRevenueWoWStatus } from "@/lib/kpi-thresholds";
 
 interface RevenueProxyPanelProps {
   currentRevenue?: number;

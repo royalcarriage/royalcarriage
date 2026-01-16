@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Phone, MousePointer, ScrollText, Activity } from "lucide-react";
-import { CONVERSION_THRESHOLDS, getConversionStatus, getScroll75Status, getBounceRateStatus } from "@/../../shared/kpi-thresholds";
+import { CONVERSION_THRESHOLDS, getConversionStatus, getScroll75Status, getBounceRateStatus } from "@/lib/kpi-thresholds";
 
 interface PageMetrics {
   pagePath: string;
