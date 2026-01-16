@@ -11,22 +11,22 @@ import {
 
 export default function Chrysler300Page() {
   const vehicle = {
-    "slug": "chrysler-300",
-    "name": "Chrysler 300",
-    "category": "sedan",
-    "capacity": 3,
-    "luggage": 2,
-    "image": "/images/fleet/chrysler-300.jpg",
-    "description": "Modern luxury sedan with bold styling and comfortable ride.",
-    "features": [
-        "Panoramic sunroof",
-        "Premium sound",
-        "Heated seats",
-        "Navigation system"
+    slug: "chrysler-300",
+    name: "Chrysler 300",
+    category: "sedan",
+    capacity: 3,
+    luggage: 2,
+    image: "/images/fleet/chrysler-300.jpg",
+    description: "Modern luxury sedan with bold styling and comfortable ride.",
+    features: [
+      "Panoramic sunroof",
+      "Premium sound",
+      "Heated seats",
+      "Navigation system",
     ],
-    "hourlyRate": 90,
-    "airportRate": 100
-};
+    hourlyRate: 90,
+    airportRate: 100,
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -45,7 +45,8 @@ export default function Chrysler300Page() {
             alt={vehicle.name}
             className="w-full h-96 object-cover rounded-lg shadow-lg"
             onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/800x600?text=" + vehicle.name;
+              e.currentTarget.src =
+                "https://placehold.co/800x600?text=" + vehicle.name;
             }}
           />
         </div>
@@ -107,8 +108,8 @@ export default function Chrysler300Page() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 pt-2 border-t">
-                  Prices may vary based on distance, duration, and time of day. Contact
-                  us for a detailed quote.
+                  Prices may vary based on distance, duration, and time of day.
+                  Contact us for a detailed quote.
                 </p>
               </div>
             </CardContent>
@@ -148,7 +149,8 @@ export default function Chrysler300Page() {
           The {vehicle.name} is an exceptional choice for discerning clients who
           demand comfort, style, and reliability. With seating for up to{" "}
           {vehicle.capacity} passengers and room for {vehicle.luggage} pieces of
-          luggage, this vehicle is perfect for a wide range of transportation needs.
+          luggage, this vehicle is perfect for a wide range of transportation
+          needs.
         </p>
         <h3>Ideal For:</h3>
         <ul>

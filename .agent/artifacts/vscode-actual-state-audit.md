@@ -10,6 +10,7 @@
 ## What Actually Exists
 
 ### ✅ Configuration Files (Updated)
+
 These files show workspace/multi-site configuration:
 
 1. **package.json** - Shows workspaces config, 90+ scripts
@@ -21,6 +22,7 @@ These files show workspace/multi-site configuration:
 7. **.gitignore** - Updated with rc-admin-sa.json
 
 ### ❌ Implementation Files (Missing)
+
 These scripts are referenced but DON'T exist:
 
 1. **scripts/build-all.mjs** - Referenced by `npm run build:all` - MISSING
@@ -35,6 +37,7 @@ These scripts are referenced but DON'T exist:
 10. **scripts/health-monitor.mjs** - Referenced by `npm run health:monitor` - MISSING
 
 ### ✅ Workspace Structure (Exists)
+
 Directory structure is present:
 
 ```
@@ -56,6 +59,7 @@ packages/
 ### ⚠️ Scripts That DO Exist
 
 Working SEO automation scripts:
+
 - scripts/seo-propose.mjs ✅
 - scripts/seo-draft.mjs ✅
 - scripts/seo-gate.mjs ✅
@@ -72,6 +76,7 @@ Working SEO automation scripts:
 ## Build System Status
 
 ### What SHOULD Work (per package.json)
+
 ```bash
 npm run build:all          # Calls build-all.mjs (MISSING)
 npm run build:airport      # Calls npm -w @royal/airport run build
@@ -81,6 +86,7 @@ npm run build:partybus     # Calls npm -w @royal/partybus run build
 ```
 
 ### What ACTUALLY Works
+
 ```bash
 npm run dev                # Works (calls dev:admin)
 npm run dev:admin          # Works (npm --prefix apps/admin run dev)
@@ -95,12 +101,14 @@ npm run build:api          # Works (tsx script/build.ts)
 ### The Consolidation Was INCOMPLETE
 
 **What Happened:**
+
 1. Someone merged config files from `merge/consolidation-2026-01-15` into this branch
 2. package.json, firebase.json, .firebaserc, vite.config.ts were updated
-3. But the actual implementation scripts (build-all.mjs, verify-*.mjs, audit-*.mjs) were NOT added
+3. But the actual implementation scripts (build-all.mjs, verify-_.mjs, audit-_.mjs) were NOT added
 4. This created a **configuration-implementation gap**
 
 **Result:**
+
 - Config says "multi-site workspace with 90+ scripts"
 - Reality: "Multi-site workspace with 10 working scripts, 40+ broken script references"
 
@@ -109,9 +117,11 @@ npm run build:api          # Works (tsx script/build.ts)
 ## Critical Missing Scripts
 
 ### Priority 1: Build System
+
 **build-all.mjs** - Orchestrator for building all 5 apps
 
 Expected functionality:
+
 ```javascript
 // Should build:
 // 1. apps/admin (React/Vite → dist/public)
@@ -122,18 +132,21 @@ Expected functionality:
 ```
 
 ### Priority 2: Verification System
+
 - **verify-seo.mjs** - SEO validation
 - **verify-links.mjs** - Link checking
 - **verify-admin-links.mjs** - Admin dashboard link checking
 - **verify-db.mjs** - Database schema validation
 
 ### Priority 3: Audit System
+
 - **audit-workspace.mjs** - Workspace health check
 - **audit-firebase-mfa.mjs** - Firebase MFA audit
 - **audit-system.mjs** - System-wide audit
 - **audit-scheduler.mjs** - Schedule validation
 
 ### Priority 4: Health Monitoring
+
 - **health-monitor.mjs** - System health checks
 
 ---
@@ -141,7 +154,9 @@ Expected functionality:
 ## Workspace Apps Configuration
 
 ### apps/admin/package.json
+
 Need to verify if it has:
+
 ```json
 {
   "name": "@royal/admin",
@@ -152,8 +167,10 @@ Need to verify if it has:
 }
 ```
 
-### apps/*/package.json (Astro sites)
+### apps/\*/package.json (Astro sites)
+
 Need to verify if they have:
+
 ```json
 {
   "name": "@royal/airport", // or corporate, wedding, partybus
@@ -171,15 +188,17 @@ Need to verify if they have:
 ### ❌ NOT READY FOR DEPLOYMENT
 
 **Blocking Issues:**
+
 1. **Can't build all apps** - build-all.mjs missing
-2. **Can't verify builds** - verify-*.mjs missing
-3. **Can't run quality gates** - audit-*.mjs missing
-4. **Unknown workspace package.json state** - haven't checked apps/*/package.json
+2. **Can't verify builds** - verify-\*.mjs missing
+3. **Can't run quality gates** - audit-\*.mjs missing
+4. **Unknown workspace package.json state** - haven't checked apps/\*/package.json
 
 **Current Deployment Would:**
+
 - ❌ Fail npm run build (calls build:all which calls missing build-all.mjs)
 - ❌ Deploy only admin (dist/public exists from old builds)
-- ❌ Leave 4 microsite targets empty (apps/*/dist don't exist)
+- ❌ Leave 4 microsite targets empty (apps/\*/dist don't exist)
 
 ---
 
@@ -194,6 +213,7 @@ Write the 10+ missing scripts to match package.json configuration.
 Remove references to missing scripts, use manual build commands.
 
 **Option C: Get Scripts from Consolidated Branch**
+
 ```bash
 git show merge/consolidation-2026-01-15:scripts/build-all.mjs > scripts/build-all.mjs
 git show merge/consolidation-2026-01-15:scripts/verify-seo.mjs > scripts/verify-seo.mjs
@@ -203,6 +223,7 @@ git show merge/consolidation-2026-01-15:scripts/verify-seo.mjs > scripts/verify-
 ### VERIFICATION (Next 30 minutes)
 
 1. **Check workspace package.json files:**
+
 ```bash
 cat apps/admin/package.json
 cat apps/airport/package.json
@@ -212,6 +233,7 @@ cat apps/partybus/package.json
 ```
 
 2. **Test individual builds:**
+
 ```bash
 npm -w @royal/admin run build
 npm -w @royal/airport run build
@@ -221,6 +243,7 @@ npm -w @royal/partybus run build
 ```
 
 3. **Verify dist directories:**
+
 ```bash
 ls -la dist/public/          # Admin build output
 ls -la apps/airport/dist/    # Airport build output
@@ -235,19 +258,19 @@ ls -la apps/partybus/dist/   # Partybus build output
 
 ```javascript
 #!/usr/bin/env node
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
-const apps = ['admin', 'airport', 'corporate', 'wedding', 'partybus'];
+const apps = ["admin", "airport", "corporate", "wedding", "partybus"];
 
-console.log('Building all apps...\n');
+console.log("Building all apps...\n");
 
 for (const app of apps) {
   console.log(`Building @royal/${app}...`);
   try {
-    if (app === 'admin') {
-      execSync('npm --prefix apps/admin run build', { stdio: 'inherit' });
+    if (app === "admin") {
+      execSync("npm --prefix apps/admin run build", { stdio: "inherit" });
     } else {
-      execSync(`npm -w @royal/${app} run build`, { stdio: 'inherit' });
+      execSync(`npm -w @royal/${app} run build`, { stdio: "inherit" });
     }
     console.log(`✓ ${app} built successfully\n`);
   } catch (error) {
@@ -256,7 +279,7 @@ for (const app of apps) {
   }
 }
 
-console.log('✓ All apps built successfully');
+console.log("✓ All apps built successfully");
 ```
 
 ---
@@ -264,6 +287,7 @@ console.log('✓ All apps built successfully');
 ## Summary
 
 **Current State:**
+
 - ✅ Workspace structure exists
 - ✅ Config files updated
 - ✅ 10 SEO scripts working
@@ -276,6 +300,7 @@ console.log('✓ All apps built successfully');
 Get missing scripts from `merge/consolidation-2026-01-15` branch OR create them from scratch.
 
 **Timeline to Deployment:**
+
 - Get scripts: 30 min
 - Verify builds: 30 min
 - Test deploy: 15 min

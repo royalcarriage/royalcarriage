@@ -293,6 +293,7 @@ Added links to:
    - Implement admin creation process
 
 3. **Test with Emulators**
+
    ```bash
    firebase emulators:start
    ```

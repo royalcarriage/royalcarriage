@@ -258,7 +258,7 @@ Repeat for all team members who should receive alerts.
 2. Chart type: Stacked bar
 3. Resource type: "Cloud Function"
 4. Metric: "Execution count"
-5. Filter: function_name=~"._Image._"
+5. Filter: function*name=~".\_Image.*"
 6. Group by: function_name
 7. Chart title: "Image-Related Function Calls"
 8. Click "SAVE"
@@ -269,7 +269,7 @@ Repeat for all team members who should receive alerts.
 2. Chart type: Line
 3. Resource type: "Cloud Function"
 4. Metric: "Execution error count"
-5. Filter: function_name=~"._Image._"
+5. Filter: function*name=~".\_Image.*"
 6. Chart title: "Function Error Count"
 7. Click "SAVE"
 

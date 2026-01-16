@@ -11,23 +11,24 @@ import {
 
 export default function PartyBus20Page() {
   const vehicle = {
-    "slug": "party-bus-20",
-    "name": "20 Passenger Party Bus",
-    "category": "party-bus",
-    "capacity": 20,
-    "luggage": 5,
-    "image": "/images/fleet/party-bus-20.jpg",
-    "description": "Party bus with entertainment system, perfect for celebrations and group events.",
-    "features": [
-        "LED lighting",
-        "Dance floor",
-        "Premium sound system",
-        "Bar area",
-        "Leather seating"
+    slug: "party-bus-20",
+    name: "20 Passenger Party Bus",
+    category: "party-bus",
+    capacity: 20,
+    luggage: 5,
+    image: "/images/fleet/party-bus-20.jpg",
+    description:
+      "Party bus with entertainment system, perfect for celebrations and group events.",
+    features: [
+      "LED lighting",
+      "Dance floor",
+      "Premium sound system",
+      "Bar area",
+      "Leather seating",
     ],
-    "hourlyRate": 220,
-    "airportRate": null
-};
+    hourlyRate: 220,
+    airportRate: null,
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -46,7 +47,8 @@ export default function PartyBus20Page() {
             alt={vehicle.name}
             className="w-full h-96 object-cover rounded-lg shadow-lg"
             onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/800x600?text=" + vehicle.name;
+              e.currentTarget.src =
+                "https://placehold.co/800x600?text=" + vehicle.name;
             }}
           />
         </div>
@@ -101,10 +103,10 @@ export default function PartyBus20Page() {
                     ${vehicle.hourlyRate}/hour
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-gray-500 pt-2 border-t">
-                  Prices may vary based on distance, duration, and time of day. Contact
-                  us for a detailed quote.
+                  Prices may vary based on distance, duration, and time of day.
+                  Contact us for a detailed quote.
                 </p>
               </div>
             </CardContent>
@@ -144,7 +146,8 @@ export default function PartyBus20Page() {
           The {vehicle.name} is an exceptional choice for discerning clients who
           demand comfort, style, and reliability. With seating for up to{" "}
           {vehicle.capacity} passengers and room for {vehicle.luggage} pieces of
-          luggage, this vehicle is perfect for a wide range of transportation needs.
+          luggage, this vehicle is perfect for a wide range of transportation
+          needs.
         </p>
         <h3>Ideal For:</h3>
         <ul>

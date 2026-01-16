@@ -174,7 +174,8 @@ export default function ImportSchedule() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [filterType, setFilterType] = useState<string>("all");
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  const [scheduleToDelete, setScheduleToDelete] = useState<ImportSchedule | null>(null);
+  const [scheduleToDelete, setScheduleToDelete] =
+    useState<ImportSchedule | null>(null);
 
   const activeReminders = reminders.filter((r) => !r.dismissed);
 
@@ -195,7 +196,7 @@ export default function ImportSchedule() {
   const handleDeleteSchedule = (scheduleId: string) => {
     const schedule = schedules.find((s) => s.id === scheduleId);
     if (!schedule) return;
-    
+
     setScheduleToDelete(schedule);
     setDeleteConfirmOpen(true);
   };
@@ -206,7 +207,7 @@ export default function ImportSchedule() {
     setSchedules((prev) => prev.filter((s) => s.id !== scheduleToDelete.id));
     setDeleteConfirmOpen(false);
     setScheduleToDelete(null);
-    
+
     // TODO: Firebase delete
     console.log("Deleted schedule:", scheduleToDelete.id);
   };
@@ -278,7 +279,8 @@ export default function ImportSchedule() {
           <CardContent>
             <div className="space-y-3">
               {activeReminders.map((reminder) => {
-                const timeUntil = new Date(reminder.dueAt).getTime() - Date.now();
+                const timeUntil =
+                  new Date(reminder.dueAt).getTime() - Date.now();
                 const minutes = Math.floor(timeUntil / (1000 * 60));
 
                 return (
@@ -401,7 +403,9 @@ export default function ImportSchedule() {
                   <TableCell className="font-medium">{schedule.name}</TableCell>
                   <TableCell>
                     <Badge
-                      variant={schedule.type === "moovs" ? "default" : "secondary"}
+                      variant={
+                        schedule.type === "moovs" ? "default" : "secondary"
+                      }
                     >
                       {schedule.type}
                     </Badge>
@@ -438,7 +442,9 @@ export default function ImportSchedule() {
                     <div className="flex items-center gap-2">
                       <Switch
                         checked={schedule.enabled}
-                        onCheckedChange={() => handleToggleSchedule(schedule.id)}
+                        onCheckedChange={() =>
+                          handleToggleSchedule(schedule.id)
+                        }
                       />
                       <span className="text-sm">
                         {schedule.enabled ? "Active" : "Paused"}
@@ -473,7 +479,10 @@ export default function ImportSchedule() {
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="schedule-name">Schedule Name</Label>
-              <Input id="schedule-name" placeholder="e.g., Weekly Moovs Import" />
+              <Input
+                id="schedule-name"
+                placeholder="e.g., Weekly Moovs Import"
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -509,7 +518,9 @@ export default function ImportSchedule() {
                 <Input id="schedule-time" type="time" defaultValue="09:00" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reminder-minutes">Reminder (minutes before)</Label>
+                <Label htmlFor="reminder-minutes">
+                  Reminder (minutes before)
+                </Label>
                 <Input
                   id="reminder-minutes"
                   type="number"
@@ -521,11 +532,16 @@ export default function ImportSchedule() {
             </div>
             <div className="flex items-center space-x-2">
               <Switch id="reminder-enabled" defaultChecked />
-              <Label htmlFor="reminder-enabled">Enable reminder notifications</Label>
+              <Label htmlFor="reminder-enabled">
+                Enable reminder notifications
+              </Label>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsCreateDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button
@@ -553,7 +569,9 @@ export default function ImportSchedule() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={confirmDelete}>Delete</AlertDialogAction>
+            <AlertDialogAction onClick={confirmDelete}>
+              Delete
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -564,7 +582,9 @@ export default function ImportSchedule() {
         <ul className="list-disc list-inside mt-2 ml-4">
           <li>Store schedules in Firestore collection: import_schedules</li>
           <li>Use Cloud Scheduler to trigger imports at scheduled times</li>
-          <li>Create Cloud Function to check reminders and send notifications</li>
+          <li>
+            Create Cloud Function to check reminders and send notifications
+          </li>
           <li>Track reminder dismissals per user in Firestore</li>
           <li>Add email/push notifications for reminders</li>
         </ul>

@@ -1,4 +1,5 @@
 # VS Code Systems Audit & Deployment - FINAL SUMMARY
+
 **Date:** 2026-01-15 21:50 PST
 **Status:** ✅ COMPLETE - Deployed from main branch
 
@@ -9,6 +10,7 @@
 **Successfully deployed to production from `main` branch after fixing critical build errors.**
 
 ### Live Deployment
+
 - **URL:** https://royalcarriagelimoseo.web.app
 - **Status:** HTTP 200 ✅
 - **Files Deployed:** 23 files from dist/public
@@ -19,17 +21,20 @@
 ## JOURNEY SUMMARY
 
 ### 1. Initial Request: "audit vscode systems"
+
 Started audit while on `copilot/implement-admin-dashboard` branch.
 
 ### 2. Critical Discoveries
 
 **Branch State Issues:**
+
 - `copilot/implement-admin-dashboard` had workspace configuration but incomplete implementation
 - No package.json files in workspace apps (apps/admin, airport, corporate, wedding, partybus)
-- 40+ referenced scripts missing (build-all.mjs, verify-*.mjs, audit-*.mjs)
+- 40+ referenced scripts missing (build-all.mjs, verify-_.mjs, audit-_.mjs)
 - apps/admin had Next.js config conflicting with Vite expectations
 
 **Security Issue:**
+
 - ✅ FIXED: `rc-admin-sa.json` service account exposed in root
 - Moved to `~/.secrets/`, added to `.gitignore`
 - Committed security fix: `a8fe0c6bd`
@@ -41,10 +46,12 @@ Switched from broken `copilot/implement-admin-dashboard` to `main` branch.
 ### 4. Main Branch Issues Found
 
 **Same workspace configuration problems:**
+
 - Workspace structure exists but no package.json in apps
 - `npm run build` fails (calls build-all.mjs which fails on workspace apps)
 
 **BUT had additional critical error:**
+
 - **server/ai/routes.ts** had duplicated content after first export statement
 - Previous merge left malformed file with TWO export statements (lines 262 and 309)
 - This caused esbuild syntax errors, blocking all builds
@@ -52,6 +59,7 @@ Switched from broken `copilot/implement-admin-dashboard` to `main` branch.
 ### 5. Fixes Applied
 
 **routes.ts Fix:**
+
 ```bash
 # Removed lines 263-309 (duplicated/orphaned routes + second export)
 head -262 server/ai/routes.ts > server/ai/routes.ts.fixed
@@ -59,6 +67,7 @@ mv server/ai/routes.ts.fixed server/ai/routes.ts
 ```
 
 **Result:**
+
 - ✅ `npm run build:api` now works
 - ✅ TypeScript check passes (`npm run check`)
 - ✅ Existing dist/public build is valid
@@ -74,6 +83,7 @@ git push origin main
 ```
 
 **Deployment Stats:**
+
 - 23 files deployed to https://royalcarriagelimoseo.web.app
 - HTTP 200 response verified
 - Production is LIVE
@@ -84,23 +94,23 @@ git push origin main
 
 ### Working on Main Branch ✅
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| **Admin Build** | ✅ WORKING | dist/public/ builds successfully |
-| **TypeScript** | ✅ PASSING | No errors |
-| **Tests** | ✅ PASSING | No test files but suite runs |
-| **Firebase Deploy** | ✅ WORKING | Admin site deployed |
-| **Service Account** | ✅ SECURED | Moved to ~/.secrets/ |
-| **routes.ts** | ✅ FIXED | Duplicated content removed |
+| Component           | Status     | Notes                            |
+| ------------------- | ---------- | -------------------------------- |
+| **Admin Build**     | ✅ WORKING | dist/public/ builds successfully |
+| **TypeScript**      | ✅ PASSING | No errors                        |
+| **Tests**           | ✅ PASSING | No test files but suite runs     |
+| **Firebase Deploy** | ✅ WORKING | Admin site deployed              |
+| **Service Account** | ✅ SECURED | Moved to ~/.secrets/             |
+| **routes.ts**       | ✅ FIXED   | Duplicated content removed       |
 
 ### Known Issues (Non-Blocking) ⚠️
 
-| Component | Status | Impact |
-|-----------|--------|--------|
-| **Workspace Apps** | ❌ NO PACKAGE.JSON | Microsite builds fail (airport, corporate, wedding, partybus) |
-| **build-all.mjs** | ⚠️ PARTIALLY WORKING | Admin builds, 4 microsites fail |
-| **npm run build** | ⚠️ FAILS ON MICROSITES | But `npm run build:api` works |
-| **40+ Scripts** | ❌ MISSING | verify-*.mjs, audit-*.mjs referenced but don't exist |
+| Component          | Status                 | Impact                                                        |
+| ------------------ | ---------------------- | ------------------------------------------------------------- |
+| **Workspace Apps** | ❌ NO PACKAGE.JSON     | Microsite builds fail (airport, corporate, wedding, partybus) |
+| **build-all.mjs**  | ⚠️ PARTIALLY WORKING   | Admin builds, 4 microsites fail                               |
+| **npm run build**  | ⚠️ FAILS ON MICROSITES | But `npm run build:api` works                                 |
+| **40+ Scripts**    | ❌ MISSING             | verify-_.mjs, audit-_.mjs referenced but don't exist          |
 
 **Impact:** Single-site (admin) deployment works. Multi-site (4 microsites) blocked until workspace apps are properly configured.
 
@@ -109,18 +119,21 @@ git push origin main
 ## BRANCHES STATUS
 
 ### main (CURRENT - DEPLOYED) ✅
+
 - Clean, working admin build
 - routes.ts fixed
 - Production deployment successful
 - Ahead of origin/main by 4 commits (now pushed)
 
 ### copilot/implement-admin-dashboard (STASHED)
+
 - Has admin dashboard component work (10 commits)
 - Same workspace configuration issues as main
 - Service account security fix applied
 - Work stashed before switching to main
 
 ### merge/consolidation-2026-01-15 (UNTESTED)
+
 - Contains consolidation work
 - Not tested during this audit
 - May or may not have working configuration
@@ -162,6 +175,7 @@ git push origin main
 The workspace configuration in package.json exists on BOTH branches but is **incomplete**:
 
 ### What Exists:
+
 ```json
 {
   "workspaces": ["apps/*", "packages/*"],
@@ -176,6 +190,7 @@ The workspace configuration in package.json exists on BOTH branches but is **inc
 ```
 
 ### What's Missing:
+
 - `apps/admin/package.json` - NO FILE
 - `apps/airport/package.json` - NO FILE
 - `apps/corporate/package.json` - NO FILE
@@ -188,7 +203,9 @@ The workspace configuration in package.json exists on BOTH branches but is **inc
 - ... and 36+ other referenced scripts
 
 ### Firebase Multi-Site Config:
+
 **.firebaserc** and **firebase.json** define 5 hosting targets:
+
 - ✅ `admin` → dist/public (WORKS - deployed)
 - ❌ `airport` → apps/airport/dist (NO BUILD - no package.json)
 - ❌ `corporate` → apps/corporate/dist (NO BUILD - no package.json)
@@ -202,11 +219,13 @@ The workspace configuration in package.json exists on BOTH branches but is **inc
 ### Short-Term (Continue Single-Site) ✅ CURRENT STATE
 
 **What Works Now:**
+
 - Admin app builds and deploys
 - `npm run build:api` works
 - `firebase deploy --only hosting:admin` works
 
 **How to Deploy:**
+
 ```bash
 git checkout main
 npm run build:api
@@ -214,8 +233,9 @@ firebase deploy --only hosting:admin
 ```
 
 **Ignore These Errors:**
+
 - "No workspaces found" errors for airport/corporate/wedding/partybus
-- Missing script errors (verify-*, audit-*)
+- Missing script errors (verify-_, audit-_)
 - These are non-blocking for admin deployment
 
 ### Medium-Term (Complete Workspace Setup)
@@ -223,6 +243,7 @@ firebase deploy --only hosting:admin
 If you want multi-site deployment:
 
 1. **Create package.json for each app:**
+
 ```bash
 # For each app: admin, airport, corporate, wedding, partybus
 cat > apps/airport/package.json <<EOF
@@ -242,6 +263,7 @@ EOF
 ```
 
 2. **Set up Astro config for microsites:**
+
 ```bash
 cat > apps/airport/astro.config.mjs <<EOF
 import { defineConfig } from 'astro/config';
@@ -252,6 +274,7 @@ EOF
 ```
 
 3. **Create missing scripts:**
+
 - `scripts/verify-seo.mjs`
 - `scripts/verify-links.mjs`
 - `scripts/verify-admin-links.mjs`
@@ -263,12 +286,14 @@ EOF
 ### Long-Term (Simplify or Complete)
 
 **Option A: Remove Workspace Config**
+
 - Strip workspace configuration from package.json
 - Keep single admin app
 - Remove 4 empty microsite directories
 - Clean up firebase.json to single target
 
 **Option B: Complete Workspace Setup**
+
 - Follow medium-term steps
 - Fully implement 4 microsites
 - Create all 40+ missing scripts
@@ -373,6 +398,7 @@ d3d2ff90b fix(ai): remove duplicated content after first export in routes.ts
 ## NEXT STEPS
 
 ### Immediate (Done) ✅
+
 - [x] Switch to main branch
 - [x] Fix routes.ts syntax errors
 - [x] Deploy to production
@@ -380,6 +406,7 @@ d3d2ff90b fix(ai): remove duplicated content after first export in routes.ts
 - [x] Document system state
 
 ### Optional Future Work
+
 - [ ] Decide: Keep workspace config or remove it?
 - [ ] If keeping: Create package.json for 4 microsite apps
 - [ ] If keeping: Set up Astro configuration

@@ -15,7 +15,11 @@ export const PrimaryButton = forwardRef<HTMLButtonElement, PrimaryButtonProps>(
         disabled={disabled || loading}
         className={cn(
           "inline-flex items-center justify-center gap-2 rounded-lg",
-          size === "sm" ? "px-3 py-1.5 text-sm" : size === "lg" ? "px-6 py-3 text-base" : "px-4 py-2 text-sm",
+          size === "sm"
+            ? "px-3 py-1.5 text-sm"
+            : size === "lg"
+              ? "px-6 py-3 text-base"
+              : "px-4 py-2 text-sm",
           "font-semibold text-white",
           "bg-gradient-to-r from-amber-500 to-amber-600",
           "hover:from-amber-600 hover:to-amber-700",

@@ -306,7 +306,12 @@ export function CallConversionInsight() {
               <ResponsiveContainer width="100%" height={400}>
                 <BarChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="page" angle={-45} textAnchor="end" height={100} />
+                  <XAxis
+                    dataKey="page"
+                    angle={-45}
+                    textAnchor="end"
+                    height={100}
+                  />
                   <YAxis />
                   <Tooltip />
                   <Legend />
@@ -460,10 +465,10 @@ export function CallConversionInsight() {
               Recommended Actions:
             </h4>
             <ul className="list-disc list-inside space-y-1 text-sm text-blue-800">
+              <li>Test mobile click-to-call functionality on high-gap pages</li>
               <li>
-                Test mobile click-to-call functionality on high-gap pages
+                Add trust signals (reviews, guarantees) near phone numbers
               </li>
-              <li>Add trust signals (reviews, guarantees) near phone numbers</li>
               <li>Implement call tracking to identify abandonment reasons</li>
               <li>A/B test booking form placement after call clicks</li>
               <li>Review phone answering scripts and response times</li>
@@ -473,7 +478,8 @@ export function CallConversionInsight() {
           {/* TODO: Firebase Integration */}
           <div className="mt-4 p-3 bg-gray-50 rounded border border-gray-200 text-sm text-gray-600">
             <strong>TODO:</strong> Connect to Firebase Analytics events for
-            call_click and booking_completed. Track by page_path and device_category.
+            call_click and booking_completed. Track by page_path and
+            device_category.
           </div>
         </CardContent>
       </Card>

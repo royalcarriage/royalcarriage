@@ -11,6 +11,7 @@ The repository has undergone **significant architectural changes** that are not 
 ## Branch Analysis
 
 ### Current Working Branch
+
 - **Branch:** `copilot/implement-admin-dashboard`
 - **Last Commit:** `907572541 - Fix missing useState declarations in ImportSchedule`
 - **Focus:** Admin dashboard component implementation
@@ -28,9 +29,10 @@ The repository has undergone **significant architectural changes** that are not 
   - `rc-admin-sa.json` (⚠️ Service account file - should be gitignored)
 
 ### Actual System State (from reminders)
+
 - **Branch:** `merge/consolidation-2026-01-15`
 - **Major Changes:**
-  - Workspace architecture (apps/* and packages/* structure)
+  - Workspace architecture (apps/_ and packages/_ structure)
   - Multi-site Firebase hosting (5 targets: admin, airport, partybus, corporate, wedding)
   - Build system overhaul
   - CHANGELOG rewritten with audit cycle
@@ -41,6 +43,7 @@ The repository has undergone **significant architectural changes** that are not 
 ## Architecture Changes (Not on Current Branch)
 
 ### 1. Workspace Structure
+
 **Status:** ✅ Present in filesystem, ❌ Not committed on current branch
 
 ```
@@ -60,9 +63,11 @@ packages/
 ```
 
 ### 2. Firebase Multi-Site Hosting
+
 **Status:** ✅ Configured (see system reminders)
 
 Five hosting targets defined in `.firebaserc`:
+
 - `admin` → royalcarriagelimoseo
 - `airport` → airport-royalcarriage
 - `partybus` → partybus-royalcarriage
@@ -70,15 +75,18 @@ Five hosting targets defined in `.firebaserc`:
 - `wedding` → wedding-royalcarriage
 
 ### 3. Build System Evolution
+
 **Status:** ✅ Scripts added to package.json
 
 New build scripts:
+
 - `build:airport`, `build:corporate`, `build:wedding`, `build:partybus`
 - `build:all` - Orchestrator script
 - `deploy:airport`, `deploy:corporate`, etc.
 - `deploy:all` / `deploy:microsites`
 
 ### 4. Vite Config Changes
+
 **Status:** ⚠️ Modified (shadow isDev definition)
 
 ```typescript
@@ -102,9 +110,11 @@ export default defineConfig(({ mode }) => {
 ```
 
 ### 5. Package.json Transformations
+
 **Status:** ✅ Workspace-enabled
 
 Major changes:
+
 - `"private": true` added
 - `"workspaces": ["apps/*", "packages/*"]` added
 - 50+ new npm scripts for SEO automation, audits, verifications
@@ -153,6 +163,7 @@ Major changes:
 ## System Capabilities Analysis
 
 ### ✅ Working (on consolidated branch)
+
 - Multi-site workspace architecture
 - Firebase multi-target hosting
 - SEO automation pipeline (50+ scripts)
@@ -163,12 +174,14 @@ Major changes:
 - Functions deployment with TypeScript
 
 ### ❌ Broken (on current branch)
+
 - vite.config.ts (isDev undefined)
 - Firebase hosting config (points to wrong paths)
 - Build system (expects single app)
 - Workspace dependencies (not installed)
 
 ### ⚠️ Uncertain
+
 - Whether admin components on current branch are better than consolidated
 - Migration path for current branch work
 - Whether both branches can be merged without conflicts
@@ -178,11 +191,13 @@ Major changes:
 ## Dependencies Audit
 
 ### Package Manager Confusion
+
 - **System reminder:** Uses `npm` (package-lock.json mentioned)
 - **Current branch:** Modified `pnpm-lock.yaml`
 - **Recommendation:** Standardize on npm (per package.json scripts)
 
 ### New Dependencies (from system reminder)
+
 - `@astrojs/sitemap` - For microsite SEO
 - `@astrojs/tailwind` - Astro integration
 - `@firebase/rules-unit-testing` - Security rules testing
@@ -191,6 +206,7 @@ Major changes:
 - `vitest` (v4.0.17) - Test runner
 
 ### Workspace Structure
+
 - Root package.json manages all dependencies
 - Apps/packages reference root via workspace protocol
 - Hoisted node_modules at root
@@ -200,6 +216,7 @@ Major changes:
 ## Build & Deploy Verification
 
 ### Current Branch Build Test
+
 ```bash
 # This will likely FAIL on current branch
 npm run build
@@ -208,6 +225,7 @@ npm run build
 ```
 
 ### Correct Build Process (consolidated branch)
+
 ```bash
 npm run build:all
 # Builds all 5 apps:
@@ -219,6 +237,7 @@ npm run build:all
 ```
 
 ### Deploy Targets
+
 ```bash
 # Individual deploys:
 npm run deploy:airport
@@ -237,6 +256,7 @@ npm run deploy:microsites
 ### IMMEDIATE (Next 10 minutes)
 
 1. **Secure Service Account**
+
    ```bash
    # Add to .gitignore
    echo "rc-admin-sa.json" >> .gitignore
@@ -247,6 +267,7 @@ npm run deploy:microsites
    ```
 
 2. **Identify Correct Branch**
+
    ```bash
    git branch -a | grep -E "(consolidation|main|master)"
    git log --all --oneline --graph -20
@@ -285,6 +306,7 @@ npm run deploy:microsites
    - Test with preview channels
 
 8. **Run Full Audit**
+
    ```bash
    npm run audit:all
    npm run verify:all
@@ -301,6 +323,7 @@ npm run deploy:microsites
 ## Git Strategy Proposal
 
 ### Option 1: Hard Reset to Consolidated (DESTRUCTIVE)
+
 ```bash
 git fetch origin
 git reset --hard origin/merge/consolidation-2026-01-15
@@ -308,6 +331,7 @@ git reset --hard origin/merge/consolidation-2026-01-15
 ```
 
 ### Option 2: Merge Consolidated into Current (RECOMMENDED)
+
 ```bash
 git fetch origin
 git checkout copilot/implement-admin-dashboard
@@ -316,6 +340,7 @@ git merge origin/merge/consolidation-2026-01-15
 ```
 
 ### Option 3: Cherry-Pick Admin Components (SURGICAL)
+
 ```bash
 git checkout origin/merge/consolidation-2026-01-15
 git cherry-pick 7dc6eafff..907572541
@@ -327,12 +352,14 @@ git cherry-pick 7dc6eafff..907572541
 ## Quality Gates Status
 
 ### On Current Branch
+
 - ❌ `npm run build` - Will fail (path mismatch)
 - ❓ `npm run check` - May work (TypeScript)
 - ❓ `npm test` - May work (smoke tests)
 - ❌ `npm run gates` - Will fail (build fails)
 
 ### On Consolidated Branch (expected)
+
 - ✅ `npm run build:all` - Multi-app build
 - ✅ `npm run check` - TypeScript passes
 - ✅ `npm test` - Unit tests pass
@@ -350,6 +377,7 @@ git cherry-pick 7dc6eafff..907572541
 - **Production config:** Multi-site (on different branch)
 
 **Next Steps:**
+
 1. Secure service account file
 2. Switch to or merge with `merge/consolidation-2026-01-15` branch
 3. Verify workspace build system

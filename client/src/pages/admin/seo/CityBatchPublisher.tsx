@@ -195,7 +195,8 @@ export default function CityBatchPublisher() {
   const filteredCities = cities.filter((city) => {
     const matchesPriority =
       priorityFilter === "all" || city.priority === priorityFilter;
-    const matchesStatus = statusFilter === "all" || city.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || city.status === statusFilter;
     return matchesPriority && matchesStatus;
   });
 
@@ -306,13 +307,15 @@ export default function CityBatchPublisher() {
         <div>
           <h1 className="text-3xl font-bold">City Batch Publisher</h1>
           <p className="text-gray-600 mt-1">
-            Batch publish city pages with priority queue for top 25 Chicago metro
-            cities
+            Batch publish city pages with priority queue for top 25 Chicago
+            metro cities
           </p>
         </div>
         <Button
           onClick={handlePublish}
-          disabled={selectedCities.size === 0 || publishJob?.status === "running"}
+          disabled={
+            selectedCities.size === 0 || publishJob?.status === "running"
+          }
           size="lg"
         >
           {publishJob?.status === "running" ? (
@@ -323,7 +326,8 @@ export default function CityBatchPublisher() {
           ) : (
             <>
               <Play className="w-4 h-4 mr-2" />
-              Publish {selectedCities.size > 0 ? `(${selectedCities.size})` : ""}
+              Publish{" "}
+              {selectedCities.size > 0 ? `(${selectedCities.size})` : ""}
             </>
           )}
         </Button>
@@ -393,7 +397,8 @@ export default function CityBatchPublisher() {
               <Progress value={publishJob.progress} className="h-3" />
               <div className="flex justify-between text-sm">
                 <span>
-                  Published: {publishJob.publishedCount} / {publishJob.totalCities}
+                  Published: {publishJob.publishedCount} /{" "}
+                  {publishJob.totalCities}
                 </span>
                 <span>{publishJob.progress.toFixed(0)}%</span>
               </div>
@@ -408,8 +413,7 @@ export default function CityBatchPublisher() {
           <CheckCircle className="h-4 w-4" />
           <AlertDescription>
             Successfully published {publishJob.publishedCount} city pages!
-            {publishJob.failedCount > 0 &&
-              ` ${publishJob.failedCount} failed.`}
+            {publishJob.failedCount > 0 && ` ${publishJob.failedCount} failed.`}
           </AlertDescription>
         </Alert>
       )}
@@ -559,11 +563,16 @@ export default function CityBatchPublisher() {
       <div className="p-4 bg-gray-50 rounded border border-gray-200 text-sm text-gray-600">
         <strong>TODO:</strong> Firebase integration:
         <ul className="list-disc list-inside mt-2 ml-4">
-          <li>Load cities from Firestore collection: seo_topics (pageType: city)</li>
+          <li>
+            Load cities from Firestore collection: seo_topics (pageType: city)
+          </li>
           <li>
             Filter to top 25 by search volume from GSC data or keyword research
           </li>
-          <li>Batch publish by creating pages in Firestore with publishedAt timestamp</li>
+          <li>
+            Batch publish by creating pages in Firestore with publishedAt
+            timestamp
+          </li>
           <li>
             Trigger deploy webhook or Cloud Build after batch publish completes
           </li>

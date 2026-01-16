@@ -35,7 +35,7 @@ export const DEFAULT_MARGINS: Record<string, MarginConfig> = {
  * Get attributed ad spend for a booking based on UTM params or gclid
  * This would query the ads imports to find matching spend
  */
-export function getAttributedAdSpend(booking: Booking): number {
+export function getAttributedAdSpend(_booking: Booking): number {
   // TODO: Implement actual ad spend attribution logic
   // For now, return 0 as placeholder
   // This should:

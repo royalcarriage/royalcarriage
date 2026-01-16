@@ -236,7 +236,9 @@ export function BudgetGuardrails() {
               <CheckCircle className="w-5 h-5 text-green-500" />
               <div>
                 <p className="text-sm text-gray-600">Acknowledged</p>
-                <p className="text-2xl font-bold">{acknowledgedAlerts.length}</p>
+                <p className="text-2xl font-bold">
+                  {acknowledgedAlerts.length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -261,7 +263,11 @@ export function BudgetGuardrails() {
               <div>
                 <p className="text-sm text-gray-600">Critical Issues</p>
                 <p className="text-2xl font-bold">
-                  {alerts.filter((a) => a.severity === "critical" && !a.acknowledged).length}
+                  {
+                    alerts.filter(
+                      (a) => a.severity === "critical" && !a.acknowledged,
+                    ).length
+                  }
                 </p>
               </div>
             </div>
@@ -428,7 +434,9 @@ export function BudgetGuardrails() {
       <Card>
         <CardHeader>
           <CardTitle>Acknowledged Alerts</CardTitle>
-          <CardDescription>Recent alerts that have been reviewed</CardDescription>
+          <CardDescription>
+            Recent alerts that have been reviewed
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {acknowledgedAlerts.length === 0 ? (
@@ -450,7 +458,9 @@ export function BudgetGuardrails() {
                 {acknowledgedAlerts.map((alert) => (
                   <TableRow key={alert.id}>
                     <TableCell>{formatTimestamp(alert.triggeredAt)}</TableCell>
-                    <TableCell className="font-medium">{alert.metric}</TableCell>
+                    <TableCell className="font-medium">
+                      {alert.metric}
+                    </TableCell>
                     <TableCell>{alert.campaign}</TableCell>
                     <TableCell>
                       <Badge

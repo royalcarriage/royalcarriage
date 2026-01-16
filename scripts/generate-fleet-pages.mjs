@@ -76,8 +76,7 @@ const VEHICLES = [
     capacity: 3,
     luggage: 2,
     image: "/images/fleet/chrysler-300.jpg",
-    description:
-      "Modern luxury sedan with bold styling and comfortable ride.",
+    description: "Modern luxury sedan with bold styling and comfortable ride.",
     features: [
       "Panoramic sunroof",
       "Premium sound",
@@ -127,11 +126,31 @@ const VEHICLES = [
 ];
 
 const CATEGORIES = [
-  { slug: "sedan", name: "Luxury Sedans", description: "Executive sedans for 1-3 passengers" },
-  { slug: "suv", name: "SUVs", description: "Spacious SUVs for families and groups" },
-  { slug: "van", name: "Vans & Shuttles", description: "Group transportation for 10+ passengers" },
-  { slug: "limo", name: "Limousines", description: "Stretch limos for special occasions" },
-  { slug: "party-bus", name: "Party Buses", description: "Large party buses with entertainment" },
+  {
+    slug: "sedan",
+    name: "Luxury Sedans",
+    description: "Executive sedans for 1-3 passengers",
+  },
+  {
+    slug: "suv",
+    name: "SUVs",
+    description: "Spacious SUVs for families and groups",
+  },
+  {
+    slug: "van",
+    name: "Vans & Shuttles",
+    description: "Group transportation for 10+ passengers",
+  },
+  {
+    slug: "limo",
+    name: "Limousines",
+    description: "Stretch limos for special occasions",
+  },
+  {
+    slug: "party-bus",
+    name: "Party Buses",
+    description: "Large party buses with entertainment",
+  },
 ];
 
 // Generate fleet index page

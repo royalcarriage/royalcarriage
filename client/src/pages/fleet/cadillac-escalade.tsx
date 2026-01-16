@@ -11,22 +11,23 @@ import {
 
 export default function CadillacEscaladePage() {
   const vehicle = {
-    "slug": "cadillac-escalade",
-    "name": "Cadillac Escalade",
-    "category": "suv",
-    "capacity": 6,
-    "luggage": 6,
-    "image": "/images/fleet/cadillac-escalade.jpg",
-    "description": "Spacious luxury SUV ideal for group travel and extra luggage requirements.",
-    "features": [
-        "Premium leather seats",
-        "Entertainment system",
-        "WiFi available",
-        "Extra luggage space"
+    slug: "cadillac-escalade",
+    name: "Cadillac Escalade",
+    category: "suv",
+    capacity: 6,
+    luggage: 6,
+    image: "/images/fleet/cadillac-escalade.jpg",
+    description:
+      "Spacious luxury SUV ideal for group travel and extra luggage requirements.",
+    features: [
+      "Premium leather seats",
+      "Entertainment system",
+      "WiFi available",
+      "Extra luggage space",
     ],
-    "hourlyRate": 125,
-    "airportRate": 140
-};
+    hourlyRate: 125,
+    airportRate: 140,
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -45,7 +46,8 @@ export default function CadillacEscaladePage() {
             alt={vehicle.name}
             className="w-full h-96 object-cover rounded-lg shadow-lg"
             onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/800x600?text=" + vehicle.name;
+              e.currentTarget.src =
+                "https://placehold.co/800x600?text=" + vehicle.name;
             }}
           />
         </div>
@@ -107,8 +109,8 @@ export default function CadillacEscaladePage() {
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 pt-2 border-t">
-                  Prices may vary based on distance, duration, and time of day. Contact
-                  us for a detailed quote.
+                  Prices may vary based on distance, duration, and time of day.
+                  Contact us for a detailed quote.
                 </p>
               </div>
             </CardContent>
@@ -148,7 +150,8 @@ export default function CadillacEscaladePage() {
           The {vehicle.name} is an exceptional choice for discerning clients who
           demand comfort, style, and reliability. With seating for up to{" "}
           {vehicle.capacity} passengers and room for {vehicle.luggage} pieces of
-          luggage, this vehicle is perfect for a wide range of transportation needs.
+          luggage, this vehicle is perfect for a wide range of transportation
+          needs.
         </p>
         <h3>Ideal For:</h3>
         <ul>

@@ -12,7 +12,7 @@ import DeployDashboard from "@/components/admin/DeployDashboard";
 import SettingsDashboard from "@/components/admin/SettingsDashboard";
 import { Bell, User, Rocket } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import DraftsPage from './Drafts';
+import DraftsPage from "./Drafts";
 
 export default function AdminDashboardV2() {
   const [activeSection, setActiveSection] = useState<AdminSection>("overview");

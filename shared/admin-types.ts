@@ -51,6 +51,7 @@ export interface AuditLog {
     fileHash?: string;
     recordCount?: number;
     warnings?: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     changes?: Record<string, { old: any; new: any }>;
     pageIds?: string[];
     siteSlug?: string;

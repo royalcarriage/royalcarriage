@@ -44,7 +44,8 @@ export class MoovsParser {
 
   constructor() {
     this.storage = new Storage();
-    this.bucket = process.env.FIREBASE_STORAGE_BUCKET || "royalcarriage-imports";
+    this.bucket =
+      process.env.FIREBASE_STORAGE_BUCKET || "royalcarriage-imports";
   }
 
   /**
@@ -186,7 +187,8 @@ export class MoovsParser {
 
         data.push(row);
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+        const errorMessage =
+          error instanceof Error ? error.message : String(error);
         errors.push(`Row ${i + 1}: Parse error - ${errorMessage}`);
       }
     }
@@ -208,7 +210,9 @@ export class MoovsParser {
       if (isDuplicate) {
         return {
           success: false,
-          errors: ["This file has already been imported (duplicate hash detected)"],
+          errors: [
+            "This file has already been imported (duplicate hash detected)",
+          ],
           rowCount: 0,
           fileHash,
           storagePath: "",
@@ -238,7 +242,8 @@ export class MoovsParser {
       };
     } catch (error) {
       console.error("Parse error:", error);
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
       return {
         success: false,
         errors: [errorMessage],

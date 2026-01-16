@@ -11,17 +11,19 @@ Your repository has **configuration files from a workspace setup** but **incompl
 ## THE PROBLEM
 
 ### What package.json Says Should Exist:
+
 - 5 workspace apps: admin, airport, corporate, wedding, partybus
 - Multi-site Firebase hosting with 5 targets
 - 90+ npm scripts for building, deploying, auditing
-- Workspace structure with apps/* and packages/*
+- Workspace structure with apps/_ and packages/_
 
 ### What Actually Exists:
-- ✅ Workspace directory structure (apps/*, packages/*)
+
+- ✅ Workspace directory structure (apps/_, packages/_)
 - ❌ **NO package.json files in any workspace apps**
 - ❌ apps/admin has Next.js config (but root expects Vite/React)
 - ❌ apps/airport, corporate, wedding, partybus are **EMPTY** (no Astro config)
-- ❌ 40+ referenced scripts missing (build-all.mjs, verify-*.mjs, audit-*.mjs)
+- ❌ 40+ referenced scripts missing (build-all.mjs, verify-_.mjs, audit-_.mjs)
 - ✅ 10 SEO automation scripts working
 - ✅ Service account secured
 
@@ -38,13 +40,15 @@ Your repository has **configuration files from a workspace setup** but **incompl
 ## ROOT CAUSE ANALYSIS
 
 Someone performed a **partial merge** of configuration files:
+
 1. ✅ Updated: package.json, firebase.json, .firebaserc, vite.config.ts, CHANGELOG, README
 2. ❌ Missing: Workspace app package.json files, build scripts, verification scripts
 3. ❌ Mismatch: apps/admin has Next.js but config expects Vite
 
 **This created an IMPOSSIBLE STATE:**
+
 - Can't run `npm run build:all` (calls missing build-all.mjs)
-- Can't build workspace apps (no package.json files in apps/*)
+- Can't build workspace apps (no package.json files in apps/\*)
 - Can't deploy multi-site (no build outputs)
 - Admin app architecture mismatch (Next.js vs Vite)
 
@@ -53,6 +57,7 @@ Someone performed a **partial merge** of configuration files:
 ## DEPLOYMENT IMPACT
 
 ### If You Deploy Now:
+
 - ❌ `npm run build` will FAIL (calls build:all which doesn't work)
 - ❌ Firebase deploy will only deploy old admin build (dist/public from previous builds)
 - ❌ 4 microsite targets (airport, corporate, wedding, partybus) will be EMPTY or broken
@@ -80,6 +85,7 @@ git checkout main
 ### Option 2: COMPLETE THE WORKSPACE SETUP
 
 Would require:
+
 1. Creating package.json for all 5 apps
 2. Setting up Astro config for 4 microsites
 3. Deciding on admin app architecture (Next.js or Vite?)
@@ -116,14 +122,18 @@ Remove workspace configuration and go back to single-app:
 **STOP DEPLOYMENT ATTEMPTS** until you decide:
 
 ### Quick Path (2 hours):
+
 **Reset to single-app architecture**
+
 - Revert package.json to remove workspaces
 - Use existing client/ and server/ structure
 - Deploy admin-only to Firebase
 - Keep SEO scripts that work
 
 ### Long Path (8-12 hours):
+
 **Complete workspace setup**
+
 - Create package.json for all apps
 - Set up Astro for microsites
 - Write missing scripts
@@ -137,7 +147,7 @@ Remove workspace configuration and go back to single-app:
 1. **package.json** - Has workspace config but apps don't have package.json
 2. **firebase.json** - Has 5 targets but only admin can build
 3. **apps/admin/next.config.js** - Next.js config contradicts Vite expectations
-4. **.agent/artifacts/*.md** - All audit reports
+4. **.agent/artifacts/\*.md** - All audit reports
 
 ---
 

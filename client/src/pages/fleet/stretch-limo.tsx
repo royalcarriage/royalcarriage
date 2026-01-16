@@ -11,22 +11,23 @@ import {
 
 export default function StretchLimoPage() {
   const vehicle = {
-    "slug": "stretch-limo",
-    "name": "Lincoln Stretch Limousine",
-    "category": "limo",
-    "capacity": 8,
-    "luggage": 3,
-    "image": "/images/fleet/stretch-limo.jpg",
-    "description": "Classic stretch limousine for weddings, proms, and special occasions.",
-    "features": [
-        "Bar area",
-        "Fiber optic lighting",
-        "Premium sound system",
-        "Privacy partition"
+    slug: "stretch-limo",
+    name: "Lincoln Stretch Limousine",
+    category: "limo",
+    capacity: 8,
+    luggage: 3,
+    image: "/images/fleet/stretch-limo.jpg",
+    description:
+      "Classic stretch limousine for weddings, proms, and special occasions.",
+    features: [
+      "Bar area",
+      "Fiber optic lighting",
+      "Premium sound system",
+      "Privacy partition",
     ],
-    "hourlyRate": 150,
-    "airportRate": null
-};
+    hourlyRate: 150,
+    airportRate: null,
+  };
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -45,7 +46,8 @@ export default function StretchLimoPage() {
             alt={vehicle.name}
             className="w-full h-96 object-cover rounded-lg shadow-lg"
             onError={(e) => {
-              e.currentTarget.src = "https://placehold.co/800x600?text=" + vehicle.name;
+              e.currentTarget.src =
+                "https://placehold.co/800x600?text=" + vehicle.name;
             }}
           />
         </div>
@@ -100,10 +102,10 @@ export default function StretchLimoPage() {
                     ${vehicle.hourlyRate}/hour
                   </span>
                 </div>
-                
+
                 <p className="text-sm text-gray-500 pt-2 border-t">
-                  Prices may vary based on distance, duration, and time of day. Contact
-                  us for a detailed quote.
+                  Prices may vary based on distance, duration, and time of day.
+                  Contact us for a detailed quote.
                 </p>
               </div>
             </CardContent>
@@ -143,7 +145,8 @@ export default function StretchLimoPage() {
           The {vehicle.name} is an exceptional choice for discerning clients who
           demand comfort, style, and reliability. With seating for up to{" "}
           {vehicle.capacity} passengers and room for {vehicle.luggage} pieces of
-          luggage, this vehicle is perfect for a wide range of transportation needs.
+          luggage, this vehicle is perfect for a wide range of transportation
+          needs.
         </p>
         <h3>Ideal For:</h3>
         <ul>

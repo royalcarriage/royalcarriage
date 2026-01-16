@@ -289,9 +289,9 @@ Instead of manual steps, you can use the automated script:
 
 ### Sign-off
 
-- **Configured by:** ************\_\_\_************
-- **Date:** ************\_\_\_************
-- **Verified by:** ************\_\_\_************
+- **Configured by:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
+- **Date:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
+- **Verified by:** ****\*\*\*\*****\_\_\_****\*\*\*\*****
 - **Production ready:** ☐ Yes ☐ No
 
 ### Notes

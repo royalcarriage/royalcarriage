@@ -19,7 +19,10 @@ export interface InterlinkingCheck {
 // Helper to collect regex group matches without using matchAll (compat)
 const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
   const results: string[] = [];
-  const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+  const r = new RegExp(
+    regex.source,
+    regex.flags.includes("g") ? regex.flags : regex.flags + "g",
+  );
   let m: RegExpExecArray | null;
   while ((m = r.exec(text)) !== null) {
     if (m[group]) results.push(m[group]);
@@ -39,14 +42,19 @@ export function checkInterlinking(
 ): InterlinkingCheck {
   // Default required links for all pages
   const defaultRequired = ["/contact", "/pricing"];
-  const allRequired = Array.from(new Set([...defaultRequired, ...requiredLinks]));
+  const allRequired = Array.from(
+    new Set([...defaultRequired, ...requiredLinks]),
+  );
 
   // Extract all links from content (both href and markdown links)
   const foundLinks = new Set<string>();
   // Helper to collect regex group matches without using matchAll (compat)
   const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
     const results: string[] = [];
-    const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+    const r = new RegExp(
+      regex.source,
+      regex.flags.includes("g") ? regex.flags : regex.flags + "g",
+    );
     let m: RegExpExecArray | null;
     while ((m = r.exec(text)) !== null) {
       if (m[group]) results.push(m[group]);
@@ -55,12 +63,20 @@ export function checkInterlinking(
   };
 
   // Find href links
-  for (const link of collectGroupMatches(/href=["']([^"']+)["']/gi, content, 1)) {
+  for (const link of collectGroupMatches(
+    /href=["']([^"']+)["']/gi,
+    content,
+    1,
+  )) {
     foundLinks.add(link);
   }
 
   // Find markdown links
-  for (const link of collectGroupMatches(/\[([^\]]+)\]\(([^)]+)\)/gi, content, 2)) {
+  for (const link of collectGroupMatches(
+    /\[([^\]]+)\]\(([^)]+)\)/gi,
+    content,
+    2,
+  )) {
     foundLinks.add(link);
   }
 
@@ -259,7 +275,10 @@ export function validateSchema(schemaJson: string): GateCheckResult {
   } catch (error) {
     return {
       passed: false,
-      details: error instanceof Error ? `Invalid JSON: ${error.message}` : "Invalid JSON format",
+      details:
+        error instanceof Error
+          ? `Invalid JSON: ${error.message}`
+          : "Invalid JSON format",
       severity: "error",
     };
   }
@@ -327,13 +346,12 @@ export function checkDuplicateDescription(
  * @param content2 - Second content string
  * @returns Similarity score (0-1)
  */
-export function calculateSimilarity(content1: string, content2: string): number {
-  const words1 = new Set(
-    content1.toLowerCase().match(/\b\w+\b/g) || [],
-  );
-  const words2 = new Set(
-    content2.toLowerCase().match(/\b\w+\b/g) || [],
-  );
+export function calculateSimilarity(
+  content1: string,
+  content2: string,
+): number {
+  const words1 = new Set(content1.toLowerCase().match(/\b\w+\b/g) || []);
+  const words2 = new Set(content2.toLowerCase().match(/\b\w+\b/g) || []);
 
   const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
   const union = new Set(Array.from(words1).concat(Array.from(words2)));
@@ -355,7 +373,7 @@ export function checkContentSimilarity(
 ): GateCheckResult {
   for (let i = 0; i < existingContents.length; i++) {
     const similarity = calculateSimilarity(content, existingContents[i]);
-    
+
     if (similarity >= threshold) {
       return {
         passed: false,
@@ -385,13 +403,21 @@ export function checkBrokenLinks(
   const brokenLinks: string[] = [];
 
   // Find all internal links from href attributes
-  for (const url of collectGroupMatches(/href=["']([^"']+)["']/gi, content, 1)) {
+  for (const url of collectGroupMatches(
+    /href=["']([^"']+)["']/gi,
+    content,
+    1,
+  )) {
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
     }
   }
 
-  for (const url of collectGroupMatches(/\[([^\]]+)\]\(([^)]+)\)/gi, content, 2)) {
+  for (const url of collectGroupMatches(
+    /\[([^\]]+)\]\(([^)]+)\)/gi,
+    content,
+    2,
+  )) {
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
     }
@@ -401,7 +427,7 @@ export function checkBrokenLinks(
   for (const link of Array.from(internalLinks)) {
     // Remove query params and anchors for comparison
     const cleanPath = link.split("?")[0].split("#")[0];
-    
+
     if (!existingPaths.includes(cleanPath)) {
       brokenLinks.push(link);
     }
@@ -463,18 +489,28 @@ export function runAllGateChecks(
   existingData: ExistingData,
 ): CompleteGateResult {
   // Store interlinking result to avoid redundant processing
-  const interlinkingResult = checkInterlinking(draft.content, draft.requiredLinks || []);
-  
+  const interlinkingResult = checkInterlinking(
+    draft.content,
+    draft.requiredLinks || [],
+  );
+
   const checks = {
     duplicateTitle: checkDuplicateTitle(draft.metaTitle, existingData.titles),
     duplicateMeta: checkDuplicateDescription(
       draft.metaDescription,
       existingData.descriptions,
     ),
-    similarityScore: checkContentSimilarity(draft.content, existingData.contents),
+    similarityScore: checkContentSimilarity(
+      draft.content,
+      existingData.contents,
+    ),
     schemaValid: draft.schema
       ? validateSchema(draft.schema)
-      : { passed: false, details: "No schema provided", severity: "warning" as const },
+      : {
+          passed: false,
+          details: "No schema provided",
+          severity: "warning" as const,
+        },
     brokenLinks: checkBrokenLinks(draft.content, existingData.paths),
     interlinks: {
       passed: interlinkingResult.passed,

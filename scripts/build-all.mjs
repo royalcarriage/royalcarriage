@@ -2,17 +2,17 @@
 /**
  * Build all workspace apps (admin + 4 microsites)
  */
-import { execSync } from 'child_process';
+import { execSync } from "child_process";
 
 const apps = [
-  { name: 'admin', workspace: false, dir: 'apps/admin' },
-  { name: 'airport', workspace: true, pkg: '@royal/airport' },
-  { name: 'corporate', workspace: true, pkg: '@royal/corporate' },
-  { name: 'wedding', workspace: true, pkg: '@royal/wedding' },
-  { name: 'partybus', workspace: true, pkg: '@royal/partybus' },
+  { name: "admin", workspace: false, dir: "apps/admin" },
+  { name: "airport", workspace: true, pkg: "@royal/airport" },
+  { name: "corporate", workspace: true, pkg: "@royal/corporate" },
+  { name: "wedding", workspace: true, pkg: "@royal/wedding" },
+  { name: "partybus", workspace: true, pkg: "@royal/partybus" },
 ];
 
-console.log('🔨 Building all apps...\n');
+console.log("🔨 Building all apps...\n");
 
 let failed = 0;
 
@@ -20,9 +20,9 @@ for (const app of apps) {
   console.log(`📦 Building ${app.name}...`);
   try {
     if (app.workspace) {
-      execSync(`npm -w ${app.pkg} run build`, { stdio: 'inherit' });
+      execSync(`npm -w ${app.pkg} run build`, { stdio: "inherit" });
     } else {
-      execSync(`npm --prefix ${app.dir} run build`, { stdio: 'inherit' });
+      execSync(`npm --prefix ${app.dir} run build`, { stdio: "inherit" });
     }
     console.log(`✅ ${app.name} built successfully\n`);
   } catch (error) {
@@ -36,4 +36,4 @@ if (failed > 0) {
   process.exit(1);
 }
 
-console.log('\n✅ All apps built successfully!');
+console.log("\n✅ All apps built successfully!");

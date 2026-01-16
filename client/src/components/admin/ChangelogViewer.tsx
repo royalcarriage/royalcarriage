@@ -131,11 +131,16 @@ const generateMockChangelog = (): ChangelogEntry[] => {
         "/city/schaumburg-limo",
         "/city/evanston-transportation",
       ],
-      keywords: ["naperville limo", "schaumburg car service", "evanston transportation"],
+      keywords: [
+        "naperville limo",
+        "schaumburg car service",
+        "evanston transportation",
+      ],
       images: [],
       author: "SEO Bot",
       authorEmail: "seobot@royalcarriage.com",
-      description: "Published 3 new suburb city pages targeting Chicago metro area.",
+      description:
+        "Published 3 new suburb city pages targeting Chicago metro area.",
     },
   ];
 };
@@ -151,8 +156,12 @@ export function ChangelogViewer() {
     const matchesSearch =
       searchTerm === "" ||
       entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      entry.pages.some((p) => p.toLowerCase().includes(searchTerm.toLowerCase())) ||
-      entry.keywords.some((k) => k.toLowerCase().includes(searchTerm.toLowerCase()));
+      entry.pages.some((p) =>
+        p.toLowerCase().includes(searchTerm.toLowerCase()),
+      ) ||
+      entry.keywords.some((k) =>
+        k.toLowerCase().includes(searchTerm.toLowerCase()),
+      );
     const matchesAuthor =
       authorFilter === "all" || entry.author === authorFilter;
 
@@ -221,7 +230,9 @@ export function ChangelogViewer() {
           <CardContent className="pt-6">
             <div>
               <p className="text-sm text-gray-600">Publishes</p>
-              <p className="text-2xl font-bold text-green-600">{stats.publishes}</p>
+              <p className="text-2xl font-bold text-green-600">
+                {stats.publishes}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -229,7 +240,9 @@ export function ChangelogViewer() {
           <CardContent className="pt-6">
             <div>
               <p className="text-sm text-gray-600">Updates</p>
-              <p className="text-2xl font-bold text-blue-600">{stats.updates}</p>
+              <p className="text-2xl font-bold text-blue-600">
+                {stats.updates}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -245,7 +258,9 @@ export function ChangelogViewer() {
           <CardContent className="pt-6">
             <div>
               <p className="text-sm text-gray-600">Imports</p>
-              <p className="text-2xl font-bold text-purple-600">{stats.imports}</p>
+              <p className="text-2xl font-bold text-purple-600">
+                {stats.imports}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -358,7 +373,11 @@ export function ChangelogViewer() {
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {entry.pages.map((page, idx) => (
-                      <Badge key={idx} variant="outline" className="font-mono text-xs">
+                      <Badge
+                        key={idx}
+                        variant="outline"
+                        className="font-mono text-xs"
+                      >
                         {page}
                       </Badge>
                     ))}
@@ -416,7 +435,8 @@ export function ChangelogViewer() {
 
       {/* TODO: Firebase Integration */}
       <div className="p-4 bg-gray-50 rounded border border-gray-200 text-sm text-gray-600">
-        <strong>TODO:</strong> Connect to Firestore collection: changelog_entries
+        <strong>TODO:</strong> Connect to Firestore collection:
+        changelog_entries
         <ul className="list-disc list-inside mt-2 ml-4">
           <li>Auto-create entries on SEO publishes</li>
           <li>Track imports with file hashes</li>

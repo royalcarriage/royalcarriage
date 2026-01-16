@@ -127,7 +127,10 @@ export class PageAnalyzer {
 
     const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
       const results: string[] = [];
-      const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+      const r = new RegExp(
+        regex.source,
+        regex.flags.includes("g") ? regex.flags : regex.flags + "g",
+      );
       let m: RegExpExecArray | null;
       while ((m = r.exec(text)) !== null) {
         if (m[group]) results.push(m[group]);

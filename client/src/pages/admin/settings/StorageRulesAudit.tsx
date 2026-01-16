@@ -102,66 +102,78 @@ const parseStorageRules = (): StorageRule[] => {
     {
       path: "/images/**",
       read: "if true",
-      write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       description: "Public images - anyone can read, only admins can write",
       expected: {
         read: "if true",
-        write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       },
       isCorrect: true,
     },
     {
       path: "/vehicles/{vehicleId}/**",
       read: "if true",
-      write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       description: "Vehicle images - public read, admin write",
       expected: {
         read: "if true",
-        write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       },
       isCorrect: true,
     },
     {
       path: "/cities/{cityId}/**",
       read: "if true",
-      write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       description: "City images - public read, admin write",
       expected: {
         read: "if true",
-        write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       },
       isCorrect: true,
     },
     {
       path: "/services/{serviceId}/**",
       read: "if true",
-      write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       description: "Service images - public read, admin write",
       expected: {
         read: "if true",
-        write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       },
       isCorrect: true,
     },
     {
       path: "/imports/{importType}/{fileName}",
       read: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
-      write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       description: "Import files - admin only read and write",
       expected: {
         read: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
-        write: "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['Admin', 'SuperAdmin']",
       },
       isCorrect: true,
     },
     {
       path: "/backups/**",
       read: "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
-      write: "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
+      write:
+        "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
       description: "Backups - super admin only",
       expected: {
         read: "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
-        write: "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
+        write:
+          "if request.auth != null && request.auth.token.role in ['SuperAdmin']",
       },
       isCorrect: true,
     },
@@ -179,7 +191,8 @@ const generateAuditResult = (rules: StorageRule[]): AuditResult => {
     passed,
     failed,
     warnings: 0,
-    issues: failed > 0 ? ["Some rules do not match expected configuration"] : [],
+    issues:
+      failed > 0 ? ["Some rules do not match expected configuration"] : [],
   };
 };
 
@@ -207,7 +220,7 @@ export default function StorageRulesAudit() {
     setIsLoading(true);
     // TODO: Fetch actual storage.rules from Firebase and validate
     console.log("Running storage rules audit...");
-    
+
     setTimeout(() => {
       const parsedRules = parseStorageRules();
       setRules(parsedRules);
@@ -240,7 +253,9 @@ export default function StorageRulesAudit() {
           </p>
         </div>
         <Button onClick={runAudit} disabled={isLoading}>
-          <RefreshCw className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`w-4 h-4 mr-2 ${isLoading ? "animate-spin" : ""}`}
+          />
           Run Audit
         </Button>
       </div>
@@ -416,8 +431,8 @@ export default function StorageRulesAudit() {
               <div>
                 <p className="font-semibold">Public Read for Public Assets</p>
                 <p className="text-sm text-gray-600">
-                  Images, vehicles, cities, and services are publicly readable for
-                  website visitors
+                  Images, vehicles, cities, and services are publicly readable
+                  for website visitors
                 </p>
               </div>
             </div>
@@ -435,8 +450,8 @@ export default function StorageRulesAudit() {
               <div>
                 <p className="font-semibold">Role-Based Access Control</p>
                 <p className="text-sm text-gray-600">
-                  Permissions are tied to user roles (Admin, SuperAdmin) in Firebase Auth
-                  custom claims
+                  Permissions are tied to user roles (Admin, SuperAdmin) in
+                  Firebase Auth custom claims
                 </p>
               </div>
             </div>

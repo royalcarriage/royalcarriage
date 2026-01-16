@@ -1,10 +1,12 @@
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { execSync } = require("child_process");
 
 // Get build info
 function getBuildSHA() {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return execSync("git rev-parse --short HEAD", { encoding: "utf-8" }).trim();
-  } catch (e) {
+  } catch (_e) {
     return "unknown";
   }
 }
