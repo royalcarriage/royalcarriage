@@ -23,7 +23,7 @@ interface PageAnalysis {
   error?: string;
 }
 
-export * from "./accountingFunctions";
+export * from "./payrollFunctions";
 admin.initializeApp();
 
 // Helper function to get backend API URL
