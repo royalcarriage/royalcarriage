@@ -13,7 +13,6 @@ export default defineConfig({
     resolve: {
       alias: {
         '@royal-carriage/ui': path.resolve(__dirname, '../../packages/ui'),
-        '@royal-carriage/firebase': path.resolve(__dirname, '../../packages/firebase'),
         '@royal-carriage/seo': path.resolve(__dirname, '../../packages/seo'),
       },
     },
