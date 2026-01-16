@@ -1,6 +1,6 @@
 # Phase 4: Production Data Initialization - End-to-End Test Report
 
-**Generated:** 2026-01-16T22:26:26.166Z
+**Generated:** 2026-01-16T22:44:44.190Z
 **Project:** royalcarriagelimoseo
 **Environment:** Production
 
@@ -13,8 +13,8 @@ Phase 4 Production Data Initialization has been completed successfully. The syst
 ### Key Metrics
 | Metric | Value | Status |
 |--------|-------|--------|
-| Locations Loaded | 25 | ✅ Pass |
-| Services Loaded | 20 | ✅ Pass |
+| Locations Loaded | 173 | ✅ Pass |
+| Services Loaded | 91 | ✅ Pass |
 | Content Generated | 27 | ✅ Pass |
 | Quality Scores | 27 | ✅ Pass |
 | Avg Quality Score | 91/100 | ✅ Excellent |
@@ -26,7 +26,7 @@ Phase 4 Production Data Initialization has been completed successfully. The syst
 
 ## 1. Master Data Initialization
 
-### Locations (25 total)
+### Locations (173 total)
 Chicago metropolitan area locations have been loaded:
 - Downtown neighborhoods: Loop, River North, Gold Coast, Lincoln Park, Lake View, Pilsen
 - Western suburbs: Naperville, Wheaton, Oak Park, Schaumburg, Oak Brook, Downers Grove, Hinsdale, Brookfield, Elmhurst
@@ -35,16 +35,19 @@ Chicago metropolitan area locations have been loaded:
 - South side: Hyde Park, Kenwood, Wicker Park, Bucktown
 
 **Sample Records:**
-- Blue Island (3 applicable services)
-- Brookfield (4 applicable services)
-- Bucktown (4 applicable services)
+- Addison (18 applicable services)
+- Albany Park (18 applicable services)
+- Alsip (18 applicable services)
 
-### Services (20 total)
+### Services (91 total)
 Services loaded by website:
-- **airport:** 5 services
-- **corporate:** 5 services
-- **partyBus:** 5 services
-- **wedding:** 5 services
+- **chicagoairportblackcar:** 20 services
+- **airport:** 4 services
+- **corporate:** 3 services
+- **chicagoexecutivecarservice:** 20 services
+- **chicago-partybus:** 20 services
+- **chicagoweddingtransportation:** 20 services
+- **wedding:** 4 services
 
 ---
 
@@ -119,8 +122,8 @@ Keyword targeting opportunities ranked by search volume and difficulty.
 
 | Collection | Documents | Status |
 |------------|-----------|--------|
-| locations | 25 | ✅ Populated |
-| services | 20 | ✅ Populated |
+| locations | 173 | ✅ Populated |
+| services | 91 | ✅ Populated |
 | service_content | 27 | ✅ Generated |
 | content_quality_scores | 27 | ✅ Scored |
 | regeneration_queue | 33 | ✅ Active |
@@ -168,7 +171,7 @@ Keyword targeting opportunities ranked by search volume and difficulty.
 
 | Test | Result | Details |
 |------|--------|---------|
-| Data Initialization | ✅ PASS | 25 locations, 20 services |
+| Data Initialization | ✅ PASS | 173 locations, 91 services |
 | Content Generation | ✅ PASS | 27 pages generated via Gemini AI |
 | Quality Scoring | ✅ PASS | Average score: 91/100 |
 | Competitor Analysis | ✅ PASS | 3 competitors analyzed |
@@ -192,8 +195,8 @@ Keyword targeting opportunities ranked by search volume and difficulty.
 
 Phase 4 Production Data Initialization has been completed successfully. The Royal Carriage Limousine SEO system is now fully operational with:
 
-- **25** Chicago area locations
-- **20** services across 4 websites
+- **173** Chicago area locations
+- **91** services across 4 websites
 - **27** AI-generated SEO-optimized content pages
 - **91/100** average quality score
 - **Full automation** for content regeneration and quality monitoring

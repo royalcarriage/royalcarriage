@@ -65,6 +65,16 @@ import {
   getKeywordOpportunities,
 } from './competitorAnalysisFunctions';
 
+// Import performance monitoring functions - PHASE 3
+import {
+  getPerformanceMetrics,
+  getTrafficAnalytics,
+  getKeywordRankings,
+  getPerformanceTrends,
+  syncPerformanceMetrics,
+  generatePerformanceReport,
+} from './performanceMonitoringFunctions';
+
 // Import data initialization function - PHASE 4
 import { initializeProductionData } from './dataInitializationFunction';
 
@@ -95,6 +105,47 @@ import {
   exportDashboardData,
   getDateRangeSummary,
 } from './roiDashboard';
+
+// Import sentiment pipeline functions - P2.2
+import {
+  notifyOnNegativeFeedback,
+  generateResponseSuggestion,
+  submitFeedbackResponse,
+  getFeedbackAlertsDashboard,
+  escalateFeedbackAlert,
+} from './sentimentPipeline';
+
+// Import content approval workflow functions - P2.3
+import {
+  getPendingContentApprovals,
+  approveContent,
+  rejectContent,
+  batchApproveContent,
+  publishApprovedContent,
+  getApprovalStatistics,
+  requestContentRevision,
+} from './contentApprovalWorkflow';
+
+// Import schedule management functions - PHASE 3
+import {
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+  getSchedules,
+  executeScheduledGeneration,
+  getScheduleHistory,
+  processScheduledGenerations,
+  toggleSchedule,
+} from './scheduleManagementFunctions';
+
+// Import advanced analytics functions - PHASE 3
+import {
+  getContentAnalytics,
+  getROIAnalysis,
+  getCompetitorBenchmark,
+  generateCustomReport,
+  getAnalyticsTrends,
+} from './advancedAnalyticsFunctions';
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -534,6 +585,18 @@ export {
   getKeywordOpportunities,
 };
 
+// --- PERFORMANCE MONITORING FUNCTIONS - PHASE 3 ---
+
+// Export performance monitoring functions
+export {
+  getPerformanceMetrics,
+  getTrafficAnalytics,
+  getKeywordRankings,
+  getPerformanceTrends,
+  syncPerformanceMetrics,
+  generatePerformanceReport,
+};
+
 // --- PHASE 4: PRODUCTION DATA INITIALIZATION ---
 
 // Export data initialization function
@@ -571,4 +634,53 @@ export {
   generateForecast,
   exportDashboardData,
   getDateRangeSummary,
+};
+
+// --- P2.2: SENTIMENT ANALYSIS PIPELINE ---
+
+// Export sentiment pipeline functions
+export {
+  notifyOnNegativeFeedback,
+  generateResponseSuggestion,
+  submitFeedbackResponse,
+  getFeedbackAlertsDashboard,
+  escalateFeedbackAlert,
+};
+
+// --- P2.3: CONTENT APPROVAL WORKFLOW ---
+
+// Export content approval workflow functions
+export {
+  getPendingContentApprovals,
+  approveContent,
+  rejectContent,
+  batchApproveContent,
+  publishApprovedContent,
+  getApprovalStatistics,
+  requestContentRevision,
+};
+
+// --- PHASE 3: SCHEDULE MANAGEMENT FUNCTIONS ---
+
+// Export schedule management functions
+export {
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+  getSchedules,
+  executeScheduledGeneration,
+  getScheduleHistory,
+  processScheduledGenerations,
+  toggleSchedule,
+};
+
+// --- PHASE 3: ADVANCED ANALYTICS FUNCTIONS ---
+
+// Export advanced analytics functions
+export {
+  getContentAnalytics,
+  getROIAnalysis,
+  getCompetitorBenchmark,
+  generateCustomReport,
+  getAnalyticsTrends,
 };
