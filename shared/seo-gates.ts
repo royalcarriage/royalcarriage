@@ -16,6 +16,17 @@ export interface InterlinkingCheck {
   passed: boolean;
 }
 
+// Helper to collect regex group matches without using matchAll (compat)
+const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
+  const results: string[] = [];
+  const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+  let m: RegExpExecArray | null;
+  while ((m = r.exec(text)) !== null) {
+    if (m[group]) results.push(m[group]);
+  }
+  return results;
+};
+
 /**
  * Check if required internal links are present in content
  * @param content - HTML or Markdown content
@@ -28,21 +39,29 @@ export function checkInterlinking(
 ): InterlinkingCheck {
   // Default required links for all pages
   const defaultRequired = ["/contact", "/pricing"];
-  const allRequired = [...new Set([...defaultRequired, ...requiredLinks])];
+  const allRequired = Array.from(new Set([...defaultRequired, ...requiredLinks]));
 
   // Extract all links from content (both href and markdown links)
   const foundLinks = new Set<string>();
+  // Helper to collect regex group matches without using matchAll (compat)
+  const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
+    const results: string[] = [];
+    const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+    let m: RegExpExecArray | null;
+    while ((m = r.exec(text)) !== null) {
+      if (m[group]) results.push(m[group]);
+    }
+    return results;
+  };
 
   // Find href links
-  const hrefMatches = content.matchAll(/href=["']([^"']+)["']/gi);
-  for (const match of hrefMatches) {
-    foundLinks.add(match[1]);
+  for (const link of collectGroupMatches(/href=["']([^"']+)["']/gi, content, 1)) {
+    foundLinks.add(link);
   }
 
   // Find markdown links
-  const markdownMatches = content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/gi);
-  for (const match of markdownMatches) {
-    foundLinks.add(match[2]);
+  for (const link of collectGroupMatches(/\[([^\]]+)\]\(([^)]+)\)/gi, content, 2)) {
+    foundLinks.add(link);
   }
 
   // Check which required links are present
@@ -51,7 +70,7 @@ export function checkInterlinking(
 
   for (const required of allRequired) {
     let isFound = false;
-    for (const link of foundLinks) {
+    for (const link of Array.from(foundLinks)) {
       if (link.includes(required)) {
         isFound = true;
         found.push(required);
@@ -316,8 +335,8 @@ export function calculateSimilarity(content1: string, content2: string): number 
     content2.toLowerCase().match(/\b\w+\b/g) || [],
   );
 
-  const intersection = new Set([...words1].filter((x) => words2.has(x)));
-  const union = new Set([...words1, ...words2]);
+  const intersection = new Set(Array.from(words1).filter((x) => words2.has(x)));
+  const union = new Set(Array.from(words1).concat(Array.from(words2)));
 
   return union.size > 0 ? intersection.size / union.size : 0;
 }
@@ -366,25 +385,20 @@ export function checkBrokenLinks(
   const brokenLinks: string[] = [];
 
   // Find all internal links from href attributes
-  const hrefMatches = content.matchAll(/href=["']([^"']+)["']/gi);
-  for (const match of hrefMatches) {
-    const url = match[1];
+  for (const url of collectGroupMatches(/href=["']([^"']+)["']/gi, content, 1)) {
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
     }
   }
 
-  // Find all internal links from markdown
-  const markdownMatches = content.matchAll(/\[([^\]]+)\]\(([^)]+)\)/gi);
-  for (const match of markdownMatches) {
-    const url = match[2];
+  for (const url of collectGroupMatches(/\[([^\]]+)\]\(([^)]+)\)/gi, content, 2)) {
     if (url.startsWith("/") && !url.startsWith("//")) {
       internalLinks.add(url);
     }
   }
 
   // Check each internal link
-  for (const link of internalLinks) {
+  for (const link of Array.from(internalLinks)) {
     // Remove query params and anchors for comparison
     const cleanPath = link.split("?")[0].split("#")[0];
     

@@ -13,6 +13,7 @@ interface Vehicle {
   luggage: number;
   image: string;
   description: string;
+  features?: string[];
   hourlyRate: number;
   airportRate: number | null;
 }

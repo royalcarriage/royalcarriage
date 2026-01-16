@@ -125,14 +125,24 @@ export class PageAnalyzer {
     const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi;
     const h3Regex = /<h3[^>]*>(.*?)<\/h3>/gi;
 
-    const h1s = Array.from(content.matchAll(h1Regex)).map((m) =>
-      sanitizeHtml(m[1]),
+    const collectGroupMatches = (regex: RegExp, text: string, group = 1) => {
+      const results: string[] = [];
+      const r = new RegExp(regex.source, regex.flags.includes("g") ? regex.flags : regex.flags + "g");
+      let m: RegExpExecArray | null;
+      while ((m = r.exec(text)) !== null) {
+        if (m[group]) results.push(m[group]);
+      }
+      return results;
+    };
+
+    const h1s = collectGroupMatches(h1Regex, content, 1).map((s) =>
+      sanitizeHtml(s),
     );
-    const h2s = Array.from(content.matchAll(h2Regex)).map((m) =>
-      sanitizeHtml(m[1]),
+    const h2s = collectGroupMatches(h2Regex, content, 1).map((s) =>
+      sanitizeHtml(s),
     );
-    const h3s = Array.from(content.matchAll(h3Regex)).map((m) =>
-      sanitizeHtml(m[1]),
+    const h3s = collectGroupMatches(h3Regex, content, 1).map((s) =>
+      sanitizeHtml(s),
     );
 
     // Remove HTML tags for text analysis

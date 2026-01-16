@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useHotkeys } from "react-hotkeys-hook";
+// lightweight keyboard shortcuts without extra dependency
 
 interface SearchResult {
   type: "city" | "service" | "vehicle" | "blog" | "import";
@@ -21,19 +21,20 @@ export function GlobalSearch() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
 
-  // Keyboard shortcut: '/' to focus search
-  useHotkeys(
-    "/",
-    (e: KeyboardEvent) => {
-      e.preventDefault();
-      setOpen(true);
-    },
-    { enableOnFormTags: false },
-  );
+  // Keyboard shortcuts: '/' to open, Escape to close
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "/") {
+        e.preventDefault();
+        setOpen(true);
+      } else if (e.key === "Escape") {
+        setOpen(false);
+      }
+    };
 
-  useHotkeys("escape", () => {
-    setOpen(false);
-  });
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery);
@@ -45,7 +46,7 @@ export function GlobalSearch() {
 
     // TODO: Implement actual search across Firestore collections
     // For now, mock results
-    const mockResults: SearchResult[] = [
+    const mockResults = [
       {
         type: "city",
         title: "Chicago Airport Transportation",
@@ -60,7 +61,7 @@ export function GlobalSearch() {
       },
     ].filter((r) => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    setResults(mockResults);
+    setResults(mockResults as SearchResult[]);
   };
 
   const groupedResults = results.reduce(
