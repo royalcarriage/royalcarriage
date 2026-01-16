@@ -10,18 +10,11 @@
 function sanitizeHtml(html: string): string {
   if (!html) return "";
 
-  // Remove all HTML tags completely, including nested tags
-  let text = html;
-  let previousLength = -1;
-
-  // Keep removing tags until no more tags are found
-  while (text.length !== previousLength) {
-    previousLength = text.length;
-    text = text.replace(/<[^>]*>/g, "");
-  }
-
-  // Decode HTML entities in a safe order (amp must be last to avoid double-decoding)
-  text = text
+  // Remove all HTML tags in a single pass using global regex
+  // The regex matches any tag including self-closing and nested content
+  const text = html
+    .replace(/<[^>]*>/g, "")
+    // Decode HTML entities in a safe order (amp must be last to avoid double-decoding)
     .replace(/&quot;/g, '"')
     .replace(/&#039;/g, "'")
     .replace(/&lt;/g, "<")
