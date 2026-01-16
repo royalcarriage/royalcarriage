@@ -29,6 +29,7 @@ import {
   updateUserRole,
   usingMockStore,
   runSelfAudit,
+  getConfiguredAuth,
 } from "../lib/dataStore";
 import { useAuth } from "../state/AuthProvider";
 import type {
@@ -596,6 +597,66 @@ function MissingPage({ title }: { title: string }) {
   );
 }
 
+function ContentGrid({
+  pageKey,
+  queue,
+  drafts,
+  onQueue,
+  onDraft,
+  canQueue,
+  canDraft,
+}: {
+  pageKey: string;
+  queue: SeoQueueItem[];
+  drafts: SeoDraft[];
+  onQueue: () => void;
+  onDraft: () => void;
+  canQueue: boolean;
+  canDraft: boolean;
+}) {
+  const pageLabel = pageKey.replace("-", " ");
+  // Basic filtering: show queue items and drafts that mention the pageKey or all if none
+  const filteredQueue = queue.filter((q) => q.page?.includes(pageKey) || q.site === "all" || q.page?.includes(pageLabel));
+  const filteredDrafts = drafts.filter((d) => (d.topic || "").toLowerCase().includes(pageKey) || d.site === "all");
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-900">Content — {pageLabel}</h3>
+          <p className="text-sm text-slate-600">Content items are sourced from the queue and drafts datasets.</p>
+        </div>
+        <div className="flex gap-2">
+          <PillButton onClick={onQueue} disabled={!canQueue}>Propose to Queue</PillButton>
+          <PillButton variant="secondary" onClick={onDraft} disabled={!canDraft}>Create Draft</PillButton>
+        </div>
+      </div>
+
+      <Table
+        columns={[
+          { key: "page", label: "Page" },
+          { key: "intent", label: "Intent" },
+          { key: "status", label: "Status" },
+          { key: "createdAt", label: "Created", render: (r) => new Date(r.createdAt).toLocaleString() },
+        ]}
+        data={filteredQueue}
+        empty="No queued content"
+      />
+
+      <Table
+        columns={[
+          { key: "topic", label: "Draft" },
+          { key: "status", label: "Status" },
+          { key: "site", label: "Site" },
+          { key: "updatedAt", label: "Updated", render: (r) => new Date(r.updatedAt).toLocaleString() },
+        ]}
+        data={filteredDrafts}
+        empty="No drafts yet"
+      />
+    </div>
+  );
+}
+
 function EmailAuthForm({
   onSignIn,
   onRegister,
@@ -747,11 +808,14 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
 
       // Call Cloud Functions API
       const endpoint = type === "moovs" ? "/api/imports/moovs" : "/api/imports/ads";
+      const authClient = getConfiguredAuth();
+      const idToken = authClient?.currentUser ? await authClient.currentUser.getIdToken() : undefined;
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}${endpoint}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${await user?.getIdToken()}`,
+          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
         },
         body: JSON.stringify({
           csvData,
@@ -776,13 +840,13 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
           ...(result.duplicates.length > 0 ? [`${result.duplicates.length} duplicates skipped`] : []),
           ...(rows < 2 ? ["Low row count"] : []),
         ],
-        status: result.errors.length === 0 ? "completed" : "completed_with_errors",
+        status: "completed",
         site,
       });
 
       // Show success message
       const successMsg = `${type === "moovs" ? "Moovs" : "Ads"} import completed: ${result.imported} imported, ${result.skipped} skipped`;
-      push(successMsg, result.errors.length === 0 ? "success" : "warning");
+      push(successMsg, result.errors.length === 0 ? "success" : "error");
 
       // Update state
       if (type === "moovs") setMoovsImports((prev) => [record, ...prev]);
@@ -1030,7 +1094,15 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         {activePage === "roi" && <ROIPage metrics={metrics} />}
         {activePage === "site-health" && <SiteHealthPage sites={siteHealth} />}
         {["money-pages", "fleet", "cities", "blog"].includes(activePage) && (
-          <MissingPage title="Content grid coming soon" />
+          <ContentGrid
+            pageKey={activePage}
+            queue={queue}
+            drafts={drafts}
+            onQueue={handleQueue}
+            onDraft={handleDraft}
+            canQueue={canEditor}
+            canDraft={canEditor}
+          />
         )}
         {["seo-queue", "seo-drafts", "seo-gate-reports", "seo-publish"].includes(activePage) && (
           <SeoPage
