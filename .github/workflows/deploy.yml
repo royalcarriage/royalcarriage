@@ -29,14 +29,39 @@ jobs:
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
+      - name: Setup SSH key (optional)
+        if: ${{ secrets.SSH_PRIVATE_KEY != '' }}
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy to Firebase
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT }}
         run: |
-          if [ -z "$FIREBASE_TOKEN" ]; then echo "FIREBASE_TOKEN not provided; skipping deploy"; exit 0; fi
-          if [ -z "$FIREBASE_PROJECT" ]; then echo "FIREBASE_PROJECT not provided; running default deploy"; fi
-          firebase deploy --token "$FIREBASE_TOKEN" ${FIREBASE_PROJECT:+--project "$FIREBASE_PROJECT"}
+          if [ -z "$FIREBASE_TOKEN" ]; then echo "FIREBASE_TOKEN not provided; skipping firebase deploy"; else
+            if [ -z "$FIREBASE_PROJECT" ]; then echo "FIREBASE_PROJECT not provided; running default deploy"; fi
+            firebase deploy --token "$FIREBASE_TOKEN" ${FIREBASE_PROJECT:+--project "$FIREBASE_PROJECT"}
+          fi
+
+      - name: SSH deploy via rsync (optional)
+        if: ${{ secrets.SSH_PRIVATE_KEY != '' && secrets.SSH_HOST != '' }}
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_PORT: ${{ secrets.SSH_PORT }}
+          SSH_REMOTE_DIR: ${{ secrets.SSH_REMOTE_DIR }}
+        run: |
+          : "Ensure build output directory exists (adjust path if different)"
+          BUILD_DIR=./build
+          if [ ! -d "$BUILD_DIR" ]; then echo "Build directory $BUILD_DIR not found; failing"; exit 1; fi
+          RSYNC_OPTS="-az --delete"
+          SSH_TARGET="${SSH_USER}@${SSH_HOST}"
+          if [ -n "$SSH_PORT" ]; then SSH_TARGET="-e 'ssh -p ${SSH_PORT}' ${SSH_TARGET}"; fi
+          # Use rsync over ssh
+          if [ -z "$SSH_REMOTE_DIR" ]; then echo "SSH_REMOTE_DIR not set; failing"; exit 1; fi
+          rsync $RSYNC_OPTS -e "ssh ${SSH_PORT:+-p $SSH_PORT}" "$BUILD_DIR/" "${SSH_USER}@${SSH_HOST}:$SSH_REMOTE_DIR"
 name: Deploy to Firebase Hosting
 
 on:
