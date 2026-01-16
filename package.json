@@ -81,6 +81,12 @@
     "seo:images": "npm run admin:dashboard-setup && npm run images:pipeline",
     "metrics:import": "node ./scripts/metrics-import.mjs",
     "sitemap:generate": "node ./scripts/generate-sitemap.mjs",
+    "seo:propose": "node ./scripts/seo-propose.mjs",
+    "seo:draft": "node ./scripts/seo-draft.mjs",
+    "seo:generate": "node ./scripts/seo-draft.mjs",
+    "seo:gate": "node ./scripts/seo-gate.mjs",
+    "seo:publish": "node ./scripts/seo-publish.mjs",
+    "seo:run": "node ./scripts/seo-run.mjs",
     "start": "NODE_ENV=production node dist/index.cjs",
     "check": "tsc"
   },
