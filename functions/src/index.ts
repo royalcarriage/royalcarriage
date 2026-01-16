@@ -78,6 +78,9 @@ import {
 // Import data initialization function - PHASE 4
 import { initializeProductionData } from './dataInitializationFunction';
 
+// Import location expansion function - LOCATION EXPANSION
+import { initializeExpandedLocations } from './scripts/expandLocationsFunction';
+
 // Import content enhancement functions - P2 RC-201
 import {
   generateLocationFAQ,
@@ -620,6 +623,11 @@ export {
 // Export data initialization function
 export { initializeProductionData };
 
+// --- LOCATION EXPANSION: 173+ CHICAGO LOCATIONS ---
+
+// Export location expansion function
+export { initializeExpandedLocations };
+
 // --- P2 RC-201: CONTENT GENERATION ENHANCEMENTS ---
 
 // Export content enhancement functions
@@ -701,6 +709,26 @@ export {
   getCompetitorBenchmark,
   generateCustomReport,
   getAnalyticsTrends,
+};
+
+// --- SERVICE EXPANSION: 80 SERVICES (20 PER WEBSITE) ---
+
+// Import expanded services functions
+import {
+  initializeExpandedServices,
+  getServiceStatistics,
+  validateServices,
+  getServiceById,
+  listServicesByWebsite,
+} from './expandedServicesFunction';
+
+// Export expanded services functions
+export {
+  initializeExpandedServices,
+  getServiceStatistics,
+  validateServices,
+  getServiceById,
+  listServicesByWebsite,
 };
 
 // --- PHASE 1: FLEET INITIALIZATION FUNCTIONS ---
