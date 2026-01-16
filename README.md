@@ -95,6 +95,32 @@ royalcarriage/
 | `npm test` | Run smoke tests |
 | `npm run db:push` | Push database schema (Drizzle ORM) |
 
+## SEO Automation Scripts
+
+The project includes a comprehensive SEO content automation pipeline:
+
+```bash
+# Propose new content topics
+node scripts/seo-propose.mjs --keyword "topic" --profit 90 --traffic 500 --difficulty 40
+
+# Generate AI-powered content drafts
+node scripts/seo-draft.mjs --all
+
+# Run quality validation gates
+node scripts/seo-gate.mjs --all
+
+# Publish content via PR workflow
+node scripts/seo-publish.mjs --draft topic-001-keyword.json
+
+# Run full pipeline
+node scripts/seo-run.mjs --run --auto-publish
+```
+
+For detailed documentation, see **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** or run:
+```bash
+node scripts/seo-example-workflow.mjs
+```
+
 ## Documentation
 
 - **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Complete setup, build, deployment, and troubleshooting guide
@@ -103,6 +129,7 @@ royalcarriage/
 - **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
 - **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
 - **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
+- **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** - Content automation pipeline documentation
 - **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
 - **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
 
