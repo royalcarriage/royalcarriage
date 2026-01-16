@@ -1,5 +1,4 @@
 import { defineConfig } from 'astro/config';
-import tailwind from '@astrojs/tailwind';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
@@ -8,7 +7,7 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   site: 'https://admin.royalcarriagelimo.com',
-  integrations: [tailwind()],
+  integrations: [],
   output: 'static',
   vite: {
     resolve: {
