@@ -81,6 +81,14 @@ export function AOVBoosterReport() {
   );
 
   const exportToCSV = () => {
+    const escapeCSV = (value: any): string => {
+      const str = String(value);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
     const headers = [
       'Booking ID',
       'Order No',
@@ -103,7 +111,7 @@ export function AOVBoosterReport() {
       o.potentialRevenue.toFixed(2),
       o.opportunityType,
     ]);
-    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

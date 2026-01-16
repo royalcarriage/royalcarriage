@@ -75,11 +75,19 @@ export function KeywordScaleFix() {
     });
 
   const exportToCSV = () => {
+    const escapeCSV = (value: any): string => {
+      const str = String(value);
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return `"${str.replace(/"/g, '""')}"`;
+      }
+      return str;
+    };
+
     const headers = ['Keyword', 'Spend', 'Conversions', 'Revenue', 'ROAS', 'CPA', 'Recommended Page', 'Action', 'Reason'];
     const rows = filteredKeywords.map(k => [
       k.keyword, k.spend, k.conversions, k.revenue, k.roas, k.cpa, k.recommendedPage, k.action, k.reason
     ]);
-    const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
+    const csv = [headers, ...rows].map(row => row.map(escapeCSV).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
