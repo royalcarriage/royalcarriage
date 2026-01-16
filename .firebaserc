@@ -6,20 +6,19 @@
     "royalcarriagelimoseo": {
       "hosting": {
         "admin": [
-          "royalcarriagelimoseo",
-          "royalcarriageseo-admin"
+          "royalcarriagelimoseo"
         ],
         "airport": [
-          "chicagoairportblackcar"
+          "royalcarriagelimoseo"
         ],
-        "partybus": [
-          "chicago-partybus"
-        ],
-        "executive": [
-          "chicagoexecutivecarservice"
+        "corporate": [
+          "royalcarriagelimoseo"
         ],
         "wedding": [
-          "chicagoweddingtransportation"
+          "royalcarriagelimoseo"
+        ],
+        "partybus": [
+          "royalcarriagelimoseo"
         ]
       }
     }
