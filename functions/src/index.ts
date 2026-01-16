@@ -23,7 +23,7 @@ interface PageAnalysis {
   error?: string;
 }
 
-// Initialize Firebase Admin
+export * from "./accountingFunctions";
 admin.initializeApp();
 
 // Helper function to get backend API URL
