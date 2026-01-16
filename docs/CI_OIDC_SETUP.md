@@ -54,10 +54,6 @@ Note: replace `PROJECT_NUMBER`, `POOL`, and `royalcarriage/royalcarriage` with y
 
 5. Add GitHub repository secrets (in repo settings → Secrets → Actions):
 - `WORKLOAD_IDENTITY_PROVIDER` — the full provider resource path: `projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER`
-- `SERVICE_ACCOUNT_EMAIL` — the service account email (e.g., `gha-deployer@PROJECT_ID.iam.gserviceaccount.com`)
-- `FIREBASE_PROJECT_ID` — your Firebase project id
-5. Add GitHub repository secrets (in repo settings → Secrets → Actions):
-- `WORKLOAD_IDENTITY_PROVIDER` — the full provider resource path: `projects/PROJECT_NUMBER/locations/global/workloadIdentityPools/POOL/providers/PROVIDER`
 - `WORKLOAD_IDENTITY_SERVICE_ACCOUNT` — the service account email to impersonate (e.g., `gha-deployer@PROJECT_ID.iam.gserviceaccount.com`)
 - `GCP_SA_KEY` — optional: base64 or JSON service account key if you prefer key-based auth instead of OIDC
 - `FIREBASE_SERVICE_ACCOUNT` — optional: older workflows may expect this; include if used by your actions
