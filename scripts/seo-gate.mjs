@@ -13,6 +13,11 @@ const TOPICS_FILE = path.join(__dirname, '../packages/content/seo-bot/queue/topi
 // Quality thresholds
 const HIGH_SIMILARITY_THRESHOLD = 0.7;  // 70%+ = critical issue
 const MODERATE_SIMILARITY_THRESHOLD = 0.5;  // 50%+ = warning
+const MIN_WORD_COUNT = 1500;  // Updated from 1000
+const RECOMMENDED_WORD_COUNT = 2000;
+const MIN_SECTIONS = 5;  // Updated from 4
+const LOCAL_KEYWORDS = ['chicago', 'illinois', 'o\'hare', 'midway', 'loop', 'suburb'];
+const PHONE_PATTERN = /\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}/;
 
 // Helper function to count words accurately
 function countWords(text) {
@@ -91,15 +96,27 @@ function checkThinContent(draft) {
     return sum + countWords(section.content);
   }, 0);
   
-  if (totalWords < 1000) {
-    issues.push(`Content too short: ${totalWords} words (minimum 1000)`);
-  } else if (totalWords < 1200) {
-    warnings.push(`Content is short: ${totalWords} words (recommended 1200+)`);
+  if (totalWords < MIN_WORD_COUNT) {
+    issues.push(`Content too short: ${totalWords} words (minimum ${MIN_WORD_COUNT})`);
+  } else if (totalWords < RECOMMENDED_WORD_COUNT) {
+    warnings.push(`Content is short: ${totalWords} words (recommended ${RECOMMENDED_WORD_COUNT}+)`);
   }
   
   // Check section distribution
-  if (content.sections.length < 4) {
-    warnings.push(`Few sections: ${content.sections.length} (recommended 4+)`);
+  if (content.sections.length < MIN_SECTIONS) {
+    issues.push(`Too few sections: ${content.sections.length} (minimum ${MIN_SECTIONS})`);
+  }
+  
+  // Check for FAQ section
+  const hasFAQ = content.sections.some(s => 
+    s.heading.toLowerCase().includes('faq') || 
+    s.heading.toLowerCase().includes('question')
+  ) || content.faqSection?.length > 0;
+  
+  if (!hasFAQ) {
+    issues.push('Missing FAQ section (required)');
+  } else if (content.faqSection && content.faqSection.length < 5) {
+    warnings.push(`FAQ section has only ${content.faqSection.length} questions (recommended 5+)`);
   }
   
   // Check for thin sections
@@ -138,6 +155,72 @@ function checkSchemaMarkup(draft) {
       warnings.push(`Schema missing recommended field: ${field}`);
     }
   });
+  
+  return { issues, warnings };
+}
+
+/**
+ * Check for local value (Chicago-specific content)
+ */
+function checkLocalValue(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const contentText = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ')
+    .toLowerCase();
+  
+  const localMentions = LOCAL_KEYWORDS.filter(keyword => 
+    contentText.includes(keyword)
+  );
+  
+  if (localMentions.length === 0) {
+    issues.push('No Chicago/local area mentions found (required for local SEO)');
+  } else if (localMentions.length < 2) {
+    warnings.push(`Limited local value: only mentions "${localMentions[0]}" (recommend 2+ local keywords)`);
+  }
+  
+  return { issues, warnings, localScore: localMentions.length };
+}
+
+/**
+ * Check for CTA presence
+ */
+function checkCTA(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const ctas = draft.data.content.ctas || [];
+  
+  if (ctas.length === 0) {
+    issues.push('No CTAs found (call-to-action required)');
+  } else if (ctas.length < 2) {
+    warnings.push('Only one CTA found (recommend 2+ for better conversion)');
+  }
+  
+  return { issues, warnings };
+}
+
+/**
+ * Check for phone number presence
+ */
+function checkPhoneNumber(draft) {
+  const issues = [];
+  const warnings = [];
+  
+  const contentText = draft.data.content.sections
+    .map(s => s.content)
+    .join(' ');
+  
+  const hasPhone = PHONE_PATTERN.test(contentText) || 
+    (draft.data.content.ctas && draft.data.content.ctas.some(cta => 
+      cta.url?.startsWith('tel:') || PHONE_PATTERN.test(cta.text)
+    ));
+  
+  if (!hasPhone) {
+    warnings.push('No phone number found in content or CTAs');
+  }
   
   return { issues, warnings };
 }
@@ -183,18 +266,26 @@ function checkImages(draft) {
   const images = draft.data.content.images || [];
   
   if (images.length === 0) {
-    issues.push('No images specified');
+    issues.push('No images specified (minimum 3 required)');
     return { issues, warnings };
   }
   
-  if (images.length < 2) {
-    warnings.push(`Few images: ${images.length} (recommended 2+)`);
+  if (images.length < 3) {
+    issues.push(`Only ${images.length} image(s) specified (minimum 3 required)`);
   }
   
   images.forEach((img, idx) => {
     if (!img.alt || img.alt.length < 10) {
       issues.push(`Image ${idx + 1}: Alt text missing or too short`);
     }
+    
+    // Check if alt text includes relevant keywords
+    const altLower = img.alt?.toLowerCase() || '';
+    const hasLocalKeyword = LOCAL_KEYWORDS.some(k => altLower.includes(k));
+    if (!hasLocalKeyword) {
+      warnings.push(`Image ${idx + 1}: Alt text doesn't include local keywords`);
+    }
+    
     if (!img.placement) {
       warnings.push(`Image ${idx + 1}: No placement guidance`);
     }
@@ -243,6 +334,9 @@ async function runGate(filename) {
   const checks = {
     metadata: checkMetadata(draft),
     thinContent: checkThinContent(draft),
+    localValue: checkLocalValue(draft),
+    cta: checkCTA(draft),
+    phoneNumber: checkPhoneNumber(draft),
     schema: checkSchemaMarkup(draft),
     links: checkLinks(draft),
     images: checkImages(draft),
@@ -272,6 +366,10 @@ async function runGate(filename) {
     
     if (checkName === 'thinContent' && result.wordCount) {
       console.log(`   Word count: ${result.wordCount}`);
+    }
+    
+    if (checkName === 'localValue' && result.localScore !== undefined) {
+      console.log(`   Local keywords: ${result.localScore}`);
     }
     
     console.log('');

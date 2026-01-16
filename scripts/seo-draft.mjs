@@ -62,13 +62,33 @@ async function generateDraft(topic) {
   
   const systemMessage = `You are an expert SEO content writer for Royal Carriage, a luxury transportation service in Chicago. 
 Write engaging, informative content that ranks well while genuinely helping potential customers.
-Focus on benefits, user experience, and clear calls-to-action.`;
+Focus on benefits, user experience, and clear calls-to-action.
+
+Master Rules (STRICT):
+- Minimum 1500 words (aim for 2000+)
+- At least 5 sections with H2 headers
+- FAQ section required (minimum 5 questions)
+- Include Chicago-specific details and local value
+- Service-specific CTAs (phone number, booking links)
+- Schema blocks (LocalBusiness, Service, FAQ)
+- Image requirements (minimum 3 images with descriptive alt text)
+- Internal link suggestions (minimum 3 relevant links)`;
 
   const prompt = `Create a comprehensive blog post outline and content for the keyword: "${topic.keyword}"
 
 Target site: ${topic.targetSite}
 Intent: ${topic.intent}
 Difficulty: ${topic.difficulty}
+
+REQUIREMENTS:
+- Minimum 1500 words (target 2000+)
+- 5+ sections with H2 headers
+- FAQ section with 5+ questions
+- Chicago-specific local details (neighborhoods, airports, landmarks)
+- Service-specific CTAs with phone number
+- Schema markup (LocalBusiness, Service, FAQ)
+- 3+ high-quality images with descriptive alt text
+- 3+ internal links to relevant pages
 
 Please provide a JSON response with the following structure:
 {
@@ -79,30 +99,38 @@ Please provide a JSON response with the following structure:
   "outline": [
     { "heading": "Introduction", "subheadings": [] },
     { "heading": "Main Point 1", "subheadings": ["Sub point 1.1", "Sub point 1.2"] },
-    { "heading": "Main Point 2", "subheadings": [] }
+    { "heading": "Main Point 2", "subheadings": [] },
+    { "heading": "FAQ", "subheadings": ["Q1", "Q2", "Q3", "Q4", "Q5"] }
   ],
   "sections": [
     {
       "heading": "Introduction",
-      "content": "Full paragraph content here..."
+      "content": "Full paragraph content here with Chicago-specific details..."
     }
+  ],
+  "faqSection": [
+    { "question": "FAQ question", "answer": "Detailed answer" }
+  ],
+  "ctas": [
+    { "text": "Call Now: (312) 555-0100", "url": "tel:+13125550100", "placement": "after intro" },
+    { "text": "Book Your Ride", "url": "/booking", "placement": "end of page" }
   ],
   "keywords": ["primary keyword", "secondary keyword 1", "secondary keyword 2"],
   "internalLinks": [
     { "anchor": "link text", "url": "/suggested-page", "context": "where to place it" }
   ],
   "images": [
-    { "alt": "descriptive alt text", "caption": "image caption", "placement": "after intro" }
+    { "alt": "descriptive alt text including Chicago and service type", "caption": "image caption", "placement": "after intro" }
   ],
   "schema": {
     "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": "Article headline",
-    "description": "Article description"
+    "@type": "LocalBusiness",
+    "name": "Royal Carriage",
+    "description": "Luxury transportation in Chicago"
   }
 }
 
-Make the content at least 1500 words, informative, and naturally incorporate the keyword. Include specific Chicago-area information where relevant.`;
+Make the content informative, naturally incorporate the keyword, and include specific Chicago-area information.`;
 
   const responseText = await callOpenAI(prompt, systemMessage);
   
