@@ -23,36 +23,42 @@ import { getStorage, type FirebaseStorage } from "firebase/storage";
 
 const DEFAULT_ORG = "royalcarriage";
 
-function readEnv(key: string): string | undefined {
-  if (typeof process !== "undefined" && process.env[key]) return process.env[key];
-  if (typeof window !== "undefined") {
-    // @ts-ignore
-    return window?.__ENV__?.[key];
-  }
-  return undefined;
+// Embed Firebase config at module load time so Next.js can inline values
+const FIREBASE_CONFIG: FirebaseOptions = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "",
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "",
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "",
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "",
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID || "",
+};
+
+if (typeof window !== "undefined") {
+  console.log("[Firebase] Config status:", {
+    apiKey: !!FIREBASE_CONFIG.apiKey,
+    authDomain: !!FIREBASE_CONFIG.authDomain,
+    projectId: !!FIREBASE_CONFIG.projectId,
+    appId: !!FIREBASE_CONFIG.appId,
+    allPresent: Object.values(FIREBASE_CONFIG).every(Boolean),
+  });
 }
 
 export function getClientConfig(): FirebaseOptions | null {
-  const apiKey = readEnv("NEXT_PUBLIC_FIREBASE_API_KEY");
-  const authDomain = readEnv("NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN");
-  const projectId = readEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
-  const storageBucket = readEnv("NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET");
-  const messagingSenderId = readEnv("NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID");
-  const appId = readEnv("NEXT_PUBLIC_FIREBASE_APP_ID");
-  const measurementId = readEnv("NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID");
+  // Check if config has required Firebase values
+  // Note: measurementId is optional for Analytics
+  const required = [
+    FIREBASE_CONFIG.apiKey,
+    FIREBASE_CONFIG.authDomain,
+    FIREBASE_CONFIG.projectId,
+    FIREBASE_CONFIG.appId,
+  ];
+  const valid = required.every(Boolean);
 
-  const config: FirebaseOptions = {
-    apiKey,
-    authDomain,
-    projectId,
-    storageBucket,
-    messagingSenderId,
-    appId,
-    measurementId,
-  };
-
-  const valid = Object.values(config).every(Boolean);
-  return valid ? config : null;
+  if (!valid && typeof window !== "undefined") {
+    console.warn("[Firebase] Config incomplete:", FIREBASE_CONFIG);
+  }
+  return valid ? FIREBASE_CONFIG : null;
 }
 
 export function ensureFirebaseApp(customConfig?: FirebaseOptions): {

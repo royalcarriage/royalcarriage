@@ -4,7 +4,7 @@ import { KpiCard } from "../components/ui/KpiCard";
 import { Table } from "../components/ui/Table";
 import { PillButton } from "../components/ui/PillButton";
 import { Modal } from "../components/ui/Modal";
-import { ToastProvider, useToast } from "../components/ui/Toast";
+import { useToast } from "../components/ui/Toast";
 import {
   addDeployLog,
   addGateReport,
@@ -24,14 +24,13 @@ import {
   listSeoDrafts,
   listSeoQueue,
   listUsers,
-  logAlert,
   recordImport,
   saveSettings,
   updateUserRole,
   usingMockStore,
   runSelfAudit,
 } from "../lib/dataStore";
-import { AuthProvider, useAuth } from "../state/AuthProvider";
+import { useAuth } from "../state/AuthProvider";
 import type {
   AlertItem,
   DeployLog,
@@ -738,19 +737,75 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
       push("Requires Editor role to import", "error");
       return;
     }
-    const text = await file.text();
-    const rows = text.split("\n").filter(Boolean).length - 1;
-    const record = await recordImport({
-      type,
-      fileName: file.name,
-      rows: Math.max(rows, 1),
-      warnings: rows < 2 ? ["Low row count"] : [],
-      status: "completed",
-      site,
-    });
-    push(`${type === "moovs" ? "Moovs" : "Ads"} import logged`, "success");
-    if (type === "moovs") setMoovsImports((prev) => [record, ...prev]);
-    else setAdsImports((prev) => [record, ...prev]);
+
+    try {
+      push(`Uploading ${file.name}...`, "info");
+
+      // Read file content
+      const csvData = await file.text();
+      const rows = csvData.split("\n").filter(Boolean).length - 1;
+
+      // Call Cloud Functions API
+      const endpoint = type === "moovs" ? "/api/imports/moovs" : "/api/imports/ads";
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}${endpoint}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${await user?.getIdToken()}`,
+        },
+        body: JSON.stringify({
+          csvData,
+          fileName: file.name,
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Import failed");
+      }
+
+      const result = await response.json();
+
+      // Create display record
+      const record = await recordImport({
+        type,
+        fileName: file.name,
+        rows: Math.max(rows, 1),
+        warnings: [
+          ...(result.errors.length > 0 ? [`${result.errors.length} validation errors`] : []),
+          ...(result.duplicates.length > 0 ? [`${result.duplicates.length} duplicates skipped`] : []),
+          ...(rows < 2 ? ["Low row count"] : []),
+        ],
+        status: result.errors.length === 0 ? "completed" : "completed_with_errors",
+        site,
+      });
+
+      // Show success message
+      const successMsg = `${type === "moovs" ? "Moovs" : "Ads"} import completed: ${result.imported} imported, ${result.skipped} skipped`;
+      push(successMsg, result.errors.length === 0 ? "success" : "warning");
+
+      // Update state
+      if (type === "moovs") setMoovsImports((prev) => [record, ...prev]);
+      else setAdsImports((prev) => [record, ...prev]);
+
+      // Show detailed errors if any
+      if (result.errors.length > 0 && result.errors.length <= 5) {
+        setTimeout(() => {
+          result.errors.forEach((err: any) => {
+            push(`Row ${err.row}: ${err.error}`, "error");
+          });
+        }, 500);
+      } else if (result.errors.length > 5) {
+        push(`${result.errors.length} validation errors. Check console for details.`, "error");
+        console.error("Import errors:", result.errors);
+      }
+    } catch (error) {
+      console.error("Import error:", error);
+      push(
+        `Import failed: ${error instanceof Error ? error.message : String(error)}`,
+        "error"
+      );
+    }
   };
 
   const handleQueue = async () => {
@@ -1021,11 +1076,5 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
 }
 
 export default function AdminApp({ activePage }: { activePage: PageKey }) {
-  return (
-    <ToastProvider>
-      <AuthProvider>
-        <AdminAppInner activePage={activePage} />
-      </AuthProvider>
-    </ToastProvider>
-  );
+  return <AdminAppInner activePage={activePage} />;
 }

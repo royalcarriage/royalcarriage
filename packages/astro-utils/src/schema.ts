@@ -6,7 +6,7 @@ export interface LocalBusinessSchemaProps {
 }
 
 export function generateLocalBusinessSchema(props: LocalBusinessSchemaProps) {
-  const { config, url } = props;
+  const { config, url: _url } = props;
 
   return {
     '@context': 'https://schema.org',
@@ -72,7 +72,7 @@ export interface ServiceSchemaProps {
 }
 
 export function generateServiceSchema(props: ServiceSchemaProps) {
-  const { config, serviceName, serviceDescription, serviceType, url } = props;
+  const { config, serviceName, serviceDescription, serviceType, url: _url } = props;
 
   return {
     '@context': 'https://schema.org',
@@ -90,7 +90,7 @@ export function generateServiceSchema(props: ServiceSchemaProps) {
       name: 'Chicago',
       '@id': 'https://en.wikipedia.org/wiki/Chicago'
     },
-    url,
+    url: _url,
     offers: {
       '@type': 'Offer',
       availability: 'https://schema.org/InStock',
