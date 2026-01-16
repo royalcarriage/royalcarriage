@@ -3,7 +3,7 @@
 *   **Accounting Module:**
     *   Schemas: PASS (shared/accountingSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/accountingFunctions.ts)
-    *   UI: PENDING
+    *   UI: IN_PROGRESS
     *   Validation/Anomaly Detection: PENDING
 *   **Payroll Module:**
     *   Schemas: PASS (shared/payrollSchemas.ts)
