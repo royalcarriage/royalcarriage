@@ -1643,6 +1643,10 @@ export function getRelatedCities(
   const currentCity = getCityBySlug(currentSlug);
   if (!currentCity) return [];
 
+  // Pre-compute limit values to avoid redundant calculations
+  const halfLimitFloor = Math.floor(limit / 2);
+  const halfLimitCeil = Math.ceil(limit / 2);
+
   // Use the pre-built region index for O(1) lookup instead of O(n) filter
   const regionCities = getCitiesByRegion(currentCity.region);
   const sameRegion = regionCities.filter((c) => c.slug !== currentSlug);
@@ -1656,16 +1660,16 @@ export function getRelatedCities(
         if (city.slug !== currentSlug) {
           otherCities.push(city);
           // Early exit if we have enough other cities
-          if (otherCities.length >= Math.floor(limit / 2)) break;
+          if (otherCities.length >= halfLimitFloor) break;
         }
       }
-      if (otherCities.length >= Math.floor(limit / 2)) break;
+      if (otherCities.length >= halfLimitFloor) break;
     }
   }
 
   const result = [
-    ...sameRegion.slice(0, Math.ceil(limit / 2)),
-    ...otherCities.slice(0, Math.floor(limit / 2)),
+    ...sameRegion.slice(0, halfLimitCeil),
+    ...otherCities.slice(0, halfLimitFloor),
   ];
   return result.slice(0, limit);
 }
