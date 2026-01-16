@@ -10,7 +10,7 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^4.5.9",
+    "astro": "^5.15.8",
     "@astrojs/tailwind": "^5.1.0",
     "@royal-carriage/ui": "workspace:*"
   }
