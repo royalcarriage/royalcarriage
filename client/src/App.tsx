@@ -4,6 +4,8 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HelmetProvider } from "react-helmet-async";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import OHareAirport from "@/pages/OHareAirport";
@@ -17,6 +19,7 @@ import About from "@/pages/About";
 import Contact from "@/pages/Contact";
 
 // Admin Pages
+import LoginPage from "@/pages/admin/LoginPage";
 import DashboardPage from "@/pages/admin/DashboardPage";
 import TripsPage from "@/pages/admin/TripsPage";
 import DriversPage from "@/pages/admin/DriversPage";
@@ -32,10 +35,13 @@ import HelpPage from "@/pages/admin/HelpPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
+import ROIDashboard from "@/pages/admin/ROIDashboard";
+import SEOWorkflow from "@/pages/admin/SEOWorkflow";
 
 function Router() {
   return (
     <Switch>
+      {/* Public Routes */}
       <Route path="/" component={Home} />
       <Route path="/ohare-airport-limo" component={OHareAirport} />
       <Route path="/midway-airport-limo" component={MidwayAirport} />
@@ -47,22 +53,95 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/contact" component={Contact} />
       
-      {/* Admin Routes */}
-      <Route path="/admin" component={DashboardPage} />
-      <Route path="/admin/trips" component={TripsPage} />
-      <Route path="/admin/drivers" component={DriversPage} />
-      <Route path="/admin/vehicles" component={VehiclesPage} />
-      <Route path="/admin/customers" component={CustomersPage} />
-      <Route path="/admin/imports" component={ImportsPage} />
-      <Route path="/admin/analytics" component={AnalyticsPage} />
-      <Route path="/admin/payroll" component={PayrollPage} />
-      <Route path="/admin/invoices" component={InvoicesPage} />
-      <Route path="/admin/payments" component={PaymentsPage} />
-      <Route path="/admin/settings" component={SettingsPage} />
-      <Route path="/admin/help" component={HelpPage} />
-      <Route path="/admin" component={AdminDashboardV2} />
-      <Route path="/admin/v1" component={AdminDashboard} />
-      <Route path="/admin/analyze" component={PageAnalyzer} />
+      {/* Admin Login (Public) */}
+      <Route path="/admin/login" component={LoginPage} />
+      
+      {/* Protected Admin Routes */}
+      <Route path="/admin">
+        <ProtectedRoute>
+          <DashboardPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/trips">
+        <ProtectedRoute>
+          <TripsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/drivers">
+        <ProtectedRoute>
+          <DriversPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/vehicles">
+        <ProtectedRoute>
+          <VehiclesPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/customers">
+        <ProtectedRoute>
+          <CustomersPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/imports">
+        <ProtectedRoute>
+          <ImportsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/analytics">
+        <ProtectedRoute>
+          <AnalyticsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/payroll">
+        <ProtectedRoute>
+          <PayrollPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/invoices">
+        <ProtectedRoute>
+          <InvoicesPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/payments">
+        <ProtectedRoute>
+          <PaymentsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/settings">
+        <ProtectedRoute>
+          <SettingsPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/help">
+        <ProtectedRoute>
+          <HelpPage />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/v2">
+        <ProtectedRoute>
+          <AdminDashboardV2 />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/v1">
+        <ProtectedRoute>
+          <AdminDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/analyze">
+        <ProtectedRoute>
+          <PageAnalyzer />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/roi">
+        <ProtectedRoute>
+          <ROIDashboard />
+        </ProtectedRoute>
+      </Route>
+      <Route path="/admin/seo-workflow">
+        <ProtectedRoute>
+          <SEOWorkflow />
+        </ProtectedRoute>
+      </Route>
       
       <Route component={NotFound} />
     </Switch>
@@ -73,10 +152,12 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );

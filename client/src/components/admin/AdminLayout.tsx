@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -137,11 +138,21 @@ export function AdminLayout({
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [location] = useLocation();
+  const [location, setLocation] = useLocation();
+  const { signOut, user } = useAuth();
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle("dark");
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      setLocation('/admin/login');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
   };
 
   return (
@@ -406,12 +417,16 @@ export function AdminLayout({
                     <Button variant="ghost" className="gap-2 pl-2 pr-3">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback className="bg-primary text-primary-foreground text-sm">
-                          AD
+                          {user?.email?.charAt(0).toUpperCase() || 'A'}
                         </AvatarFallback>
                       </Avatar>
                       <div className="hidden md:flex flex-col items-start">
-                        <span className="text-sm font-medium">Admin User</span>
-                        <span className="text-xs text-muted-foreground">Administrator</span>
+                        <span className="text-sm font-medium">
+                          {user?.email?.split('@')[0] || 'Admin User'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {user?.email || 'Administrator'}
+                        </span>
                       </div>
                     </Button>
                   </DropdownMenuTrigger>
@@ -427,7 +442,10 @@ export function AdminLayout({
                       Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer text-destructive">
+                    <DropdownMenuItem 
+                      className="cursor-pointer text-destructive"
+                      onClick={handleSignOut}
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       Log out
                     </DropdownMenuItem>
