@@ -13,15 +13,15 @@ export async function proposeTopics(
   
   // Skeleton implementation - propose topics based on keyword gaps
   // In production, this would analyze existing content and identify gaps
+  // TODO: Implement actual topic proposal logic with dynamic site/page type selection
   
   const proposed = Math.min(limit, 25);
   
   // Store some example topics
   for (let i = 0; i < proposed; i++) {
     await db.collection("seo_topics").add({
-      topicId: `topic-${Date.now()}-${i}`,
-      siteSlug: "airport",
-      pageType: "service",
+      siteSlug: "airport", // TODO: Make dynamic based on analysis
+      pageType: "service", // TODO: Make dynamic based on keyword research
       keywordCluster: `keyword-cluster-${i}`,
       status: "draft",
       createdAt: new Date().toISOString(),

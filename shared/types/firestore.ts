@@ -48,7 +48,6 @@ export interface MetricsRollupDoc {
 
 // SEO topics
 export interface SeoTopicDoc {
-  topicId: string;
   siteSlug: string;
   pageType: "service" | "city" | "blog" | "fleet";
   keywordCluster: string;
@@ -59,7 +58,6 @@ export interface SeoTopicDoc {
 
 // SEO runs
 export interface SeoRunDoc {
-  runId: string;
   startedAt: string;
   completedAt?: string;
   status: "running" | "pass" | "fail";

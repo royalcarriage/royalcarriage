@@ -21,11 +21,10 @@ export async function runQualityGate(
   
   const status = failReasons.length === 0 ? "pass" : "fail";
   
-  // Store run results
+  // Store run results - using document ID as runId
   const runDoc = await db.collection("seo_runs").add({
-    runId: `run-${Date.now()}`,
     startedAt: new Date().toISOString(),
-    completedAt: new Date().toISOString(),
+    // completedAt will be set when the run actually completes
     status,
     failReasons,
     org,

@@ -222,7 +222,7 @@ function Router() {
           </ProtectedRoute>
         )}
       </Route>
-      <Route path="/admin/sites/party-bus">
+      <Route path="/admin/sites/partybus">
         {() => (
           <ProtectedRoute requiredRole={UserRole.VIEWER}>
             <PartyBusSitePage />

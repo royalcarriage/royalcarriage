@@ -20,9 +20,8 @@ export async function publishApproved(
   
   const published = 0; // No drafts to publish in skeleton
   
-  // Store publish manifest
+  // Store publish manifest - using document ID as manifestId
   const manifestDoc = await db.collection("seo_publish_manifests").add({
-    manifestId: `manifest-${Date.now()}`,
     publishedAt: new Date().toISOString(),
     publishedCount: published,
     org,
