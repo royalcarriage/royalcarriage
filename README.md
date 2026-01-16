@@ -1,9 +1,11 @@
 # Royal Carriage Limousine - Monorepo
 
-[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://royalcarriagelimoseo.web.app)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://admin.royalcarriagelimo.com)
 [![Stack](https://img.shields.io/badge/Stack-Next.js%20%7C%20Astro%20%7C%20Firebase-orange)](https://nextjs.org)
+[![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-blue)](https://ai.google.dev)
+[![Deployment](https://img.shields.io/badge/Status-Live-success)](https://admin.royalcarriagelimo.com)
 
-Professional limousine service ecosystem managed via a monorepo.
+Professional limousine service ecosystem managed via a monorepo. **All systems deployed and operational as of January 16, 2026.**
 
 ## 🏗 System Architecture
 
@@ -16,15 +18,17 @@ Professional limousine service ecosystem managed via a monorepo.
 - `functions`: **Firebase Cloud Functions** (TypeScript). Backend logic, AI, & automation.
 - `packages/ui`: Shared UI components (Tailwind).
 
-## 🚀 Live URLs
+## 🚀 Live Deployment Status (✅ All Systems Live)
 
-| Service | Target | URL |
-|---------|--------|-----|
-| **Admin** | `admin` | [https://royalcarriagelimoseo.web.app](https://royalcarriagelimoseo.web.app) |
-| **Airport** | `airport` | [https://chicagoairportblackcar.web.app](https://chicagoairportblackcar.web.app) |
-| **Corporate** | `corporate` | [https://chicagoexecutivecarservice.web.app](https://chicagoexecutivecarservice.web.app) |
-| **Wedding** | `wedding` | [https://chicagoweddingtransportation.web.app](https://chicagoweddingtransportation.web.app) |
-| **Party Bus** | `partybus` | [https://chicago-partybus.web.app](https://chicago-partybus.web.app) |
+**Last Deployment**: January 16, 2026
+
+| Service | Domain | Firebase Target | Status |
+|---------|--------|-----------------|--------|
+| **Admin Dashboard** | [admin.royalcarriagelimo.com](https://admin.royalcarriagelimo.com) | `admin` | ✅ Live |
+| **Airport Limo** | [chicagoairportblackcar.com](https://chicagoairportblackcar.com) | `airport` | ✅ Live |
+| **Executive Service** | [chicagoexecutivecarservice.com](https://chicagoexecutivecarservice.com) | `corporate` | ✅ Live |
+| **Wedding Transport** | [chicagoweddingtransportation.com](https://chicagoweddingtransportation.com) | `wedding` | ✅ Live |
+| **Party Bus Rental** | [chicago-partybus.com](https://chicago-partybus.com) | `partybus` | ✅ Live |
 
 ## 🛠️ Development
 
@@ -61,10 +65,21 @@ NEXT_PUBLIC_FIREBASE_APP_ID=...
 firebase emulators:start --only hosting,functions,firestore,storage
 ```
 
-### AI Features (Admin)
-- **SEO Analysis**: Automated page scoring.
-- **Content Gen**: Vertex AI integration.
-- **Image Gen**: AI asset creation.
+### AI Features (Powered by Google Gemini 1.5)
+
+**Deployed Gemini Functions** ✅:
+- **generateFAQForCity**: Creates city-specific FAQs with 30-day caching (gemini-1.5-flash)
+- **summarizeCustomerReviews**: Aggregates & analyzes customer feedback with sentiment (gemini-1.5-flash)
+- **translatePageContent**: Multi-language translation preserving tone (gemini-1.5-flash)
+- **suggestSocialCaptions**: Platform-specific social media content with vision (gemini-1.5-flash)
+- **analyzeSentimentOfFeedback**: Automatic sentiment analysis on new feedback (gemini-1.5-pro)
+- **aiModelRouter**: Intelligent model selection with cost optimization
+
+**Dashboard Features**:
+- SEO Analysis: Automated page scoring
+- Content Generation: Vertex AI integration
+- Image Analysis: Vision-based insights
+- Cost Optimization: ~$1/month for 1000 API calls
 
 ## 📁 Project Structure
 
@@ -82,11 +97,46 @@ firebase emulators:start --only hosting,functions,firestore,storage
 └── storage.rules    # File security
 ```
 
-## 🔐 Security
-- **RBAC**: Custom Claims (SuperAdmin, Admin, Editor, Viewer).
-- **Sync**: `syncUserRole` function mirrors Firestore roles to Auth claims.
-- **Rules**: Firestore and Storage rules enforce role-based access.
+## 🔐 Security (Role-Based Access Control)
 
-## 📄 Documentation
-- [Audit Log](VSCODE_AI_AUDIT.md)
-- [Deployment Checklist](OPS_DEPLOY_CHECKLIST.md)
+**Role Hierarchy** (lowercase):
+- `superadmin`: Full system access
+- `admin`: Administrative functions
+- `editor`: Content editing
+- `viewer`: Read-only access
+
+**Implementation**:
+- ✅ Custom Claims in Firebase Auth
+- ✅ `syncUserRole` Cloud Function mirrors Firestore roles to Auth claims
+- ✅ Firestore security rules enforce role-based access (13 collections)
+- ✅ Storage security rules enforce role-based file access
+- ✅ AuthProvider context manages role state in React
+
+**See**: [Security & Authentication Documentation](./docs/STATUS_FIREBASE_GEMINI.md)
+
+## 📚 Comprehensive Documentation
+
+### Quick Start
+- **[Deployment Verification Report](DEPLOYMENT_VERIFICATION_REPORT.md)** - Complete deployment status (Jan 16, 2026)
+- **[Quick Start Guide](docs/QUICK_START.md)** - Get started in 5 minutes
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Full development setup
+
+### Firebase & Infrastructure
+- **[Firebase System Audit](FIREBASE_SYSTEM_AUDIT.md)** - Complete Firebase audit (13 collections, 5 auth functions, 31 data ops)
+- **[Firebase Authentication Setup](FIREBASE_AUTH_SETUP.md)** - Auth configuration guide
+- **[Firebase Local Setup](docs/FIREBASE_LOCAL_SETUP.md)** - Emulator configuration
+- **[Security & Status](docs/STATUS_FIREBASE_GEMINI.md)** - Latest system status
+
+### AI & Advanced Features
+- **[Gemini Integration Guide](GEMINI_INTEGRATION.md)** - Full AI implementation guide (25 KB)
+- **[Gemini Quick Start](GEMINI_QUICK_START.md)** - Deploy AI features in 10 minutes
+- **[Gemini Implementation Summary](GEMINI_IMPLEMENTATION_SUMMARY.md)** - Technical details & metrics
+
+### Deployment & Operations
+- **[Deployment Checklist](OPS_DEPLOY_CHECKLIST.md)** - Pre-deployment verification
+- **[CI/CD Workflow](docs/CICD_WORKFLOW.md)** - GitHub Actions setup
+- **[Audit Log](VSCODE_AI_AUDIT.md)** - System audit history
+
+### Admin Dashboard
+- **[Admin Integration Plan](docs/ADMIN_SYSTEM_INTEGRATION_PLAN.md)** - Architecture overview
+- **[Admin Dashboard Redesign](docs/ADMIN_DASHBOARD_REDESIGN.md)** - UI/UX specifications

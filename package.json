@@ -27,8 +27,9 @@
     "deploy:functions": "firebase deploy --only functions",
     "deploy:hosting": "firebase deploy --only hosting",
     "deploy": "firebase deploy",
-    "lint": "eslint \"**/*.{js,ts,tsx}\" --ignore-pattern \"**/node_modules/**\" --ignore-pattern \"**/.venv/**\" --ignore-pattern \"**/site-packages/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/.next/**\" --ignore-pattern \"**/_next/**\" --ignore-pattern \"**/out/**\" --ignore-pattern \"**/.astro/**\" --ignore-pattern \"**/functions/lib/**\"",
-    "lint:fix": "eslint \"**/*.{js,ts,tsx}\" --ignore-pattern \"**/node_modules/**\" --ignore-pattern \"**/.venv/**\" --ignore-pattern \"**/site-packages/**\" --ignore-pattern \"**/dist/**\" --ignore-pattern \"**/.next/**\" --ignore-pattern \"**/_next/**\" --ignore-pattern \"**/out/**\" --ignore-pattern \"**/.astro/**\" --fix"
+    "lint": "pnpm -w -r run lint",
+    "lint:fix": "pnpm -w -r run lint --filter ./ -- \"--fix\"",
+    "start:emulators": "bash ./scripts/start-local-emulators.sh .env.local"
   },
   "packageManager": "pnpm@10.28.0",
   "dependencies": {

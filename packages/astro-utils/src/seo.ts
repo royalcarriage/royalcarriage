@@ -13,7 +13,7 @@ export function generateMetaTags(props: SEOProps) {
     title,
     description,
     canonical,
-    ogImage = '/images/og-default.jpg',
+    ogImage = '/images/og-default.svg',
     ogType = 'website',
     noindex = false,
     nofollow = false

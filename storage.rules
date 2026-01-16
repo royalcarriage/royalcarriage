@@ -10,13 +10,13 @@ service firebase.storage {
     
     function isAdmin() {
       return isAuthenticated() && (
-        request.auth.token.role == 'Admin' || 
-        request.auth.token.role == 'SuperAdmin'
+        request.auth.token.role == 'admin' ||
+        request.auth.token.role == 'superadmin'
       );
     }
-    
+
     function isEditor() {
-      return isAdmin() || (isAuthenticated() && request.auth.token.role == 'Editor');
+      return isAdmin() || (isAuthenticated() && request.auth.token.role == 'editor');
     }
 
     // --- Path Rules ---

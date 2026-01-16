@@ -8,28 +8,30 @@ service cloud.firestore {
       return request.auth != null;
     }
     
+    // Get role from custom auth token claims (set by syncUserRole Cloud Function)
+    // Falls back to 'viewer' if role claim not set
     function getRole() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      return request.auth.token.role != null ? request.auth.token.role : 'viewer';
     }
-    
+
     function hasRole(role) {
       return isAuthenticated() && getRole() == role;
     }
     
     function isSuperAdmin() {
-      return hasRole('SuperAdmin');
+      return hasRole('superadmin');
     }
-    
+
     function isAdmin() {
-      return isSuperAdmin() || hasRole('Admin');
+      return isSuperAdmin() || hasRole('admin');
     }
-    
+
     function isEditor() {
-      return isAdmin() || hasRole('Editor');
+      return isAdmin() || hasRole('editor');
     }
-    
+
     function isViewer() {
-      return isEditor() || hasRole('Viewer');
+      return isEditor() || hasRole('viewer');
     }
 
     // --- Collection Rules ---
@@ -84,6 +86,54 @@ service cloud.firestore {
       allow write: if isAdmin();
     }
     
+    // --- Phase 3: Content Generation & Quality Scoring ---
+
+    // Service content (generated for location-service combinations)
+    match /service_content/{contentId} {
+      allow read: if isViewer();
+      allow create, update: if isAdmin() || request.auth.token.custom_claims.role == 'api';
+      allow delete: if isSuperAdmin();
+    }
+
+    // Content quality scores and metrics
+    match /content_quality_scores/{contentId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || request.auth.token.custom_claims.role == 'api';
+    }
+
+    // Auto-regeneration queue and history
+    match /regeneration_queue/{taskId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() || request.auth.token.custom_claims.role == 'api';
+    }
+
+    match /regeneration_logs/{logId} {
+      allow read: if isAdmin();
+      allow write: if request.auth.token.custom_claims.role == 'api';
+    }
+
+    match /content_regeneration_history/{historyId} {
+      allow read: if isAdmin();
+      allow write: if request.auth.token.custom_claims.role == 'api';
+    }
+
+    // Competitor analysis results
+    match /competitor_analysis/{analysisId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin() || request.auth.token.custom_claims.role == 'api';
+    }
+
+    // Locations and services master data
+    match /locations/{locationId} {
+      allow read: if isViewer();
+      allow write: if isAdmin();
+    }
+
+    match /services/{serviceId} {
+      allow read: if isViewer();
+      allow write: if isAdmin();
+    }
+
     // Legacy support (optional, can be removed once migrated)
     match /page_analyses/{id} { allow read: if isViewer(); allow write: if isAdmin(); }
     match /content_suggestions/{id} { allow read: if isViewer(); allow write: if isEditor(); }

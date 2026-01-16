@@ -38,7 +38,7 @@ export class FirestoreStorage implements IStorage {
   async createUser(insertUser: InsertUser, id?: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
     const user: Omit<User, 'id'> = {
-      ...insertUser,
+      username: insertUser.username,
       password: hashedPassword,
       role: UserRole.USER,
       createdAt: new Date(),

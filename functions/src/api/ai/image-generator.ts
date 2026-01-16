@@ -48,16 +48,56 @@ export class ImageGenerator {
   async generateImage(request: ImageGenerationRequest): Promise<ImageGenerationResult> {
     const prompt = this.buildImagePrompt(request);
 
+    let result: ImageGenerationResult;
+
     if (this.vertexAI) {
       try {
-        return await this.generateWithVertexAI(prompt, request);
+        result = await this.generateWithVertexAI(prompt, request);
       } catch (error) {
         console.error('Vertex AI image generation failed:', error);
+        // Fallback to placeholder
+        result = this.generatePlaceholder(request, prompt);
       }
+    } else {
+      // Return placeholder for development
+      result = this.generatePlaceholder(request, prompt);
     }
 
-    // Return placeholder for development
-    return this.generatePlaceholder(request, prompt);
+    // Store metadata in Firestore
+    await this.saveImageMetadata(result, request);
+
+    return result;
+  }
+
+  /**
+   * Save image metadata to Firestore
+   */
+  private async saveImageMetadata(
+    result: ImageGenerationResult,
+    request: ImageGenerationRequest
+  ): Promise<void> {
+    try {
+      const admin = await import('firebase-admin');
+      const db = admin.firestore();
+
+      await db.collection('ai_images').add({
+        imageUrl: result.imageUrl,
+        prompt: result.prompt,
+        purpose: request.purpose,
+        location: request.location || null,
+        vehicle: request.vehicle || null,
+        style: request.style || null,
+        description: request.description || null,
+        width: result.width,
+        height: result.height,
+        format: result.format,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        usageCount: 0,
+      });
+    } catch (error) {
+      console.error('Failed to save image metadata:', error);
+      // Don't throw - this is non-critical
+    }
   }
 
   /**
@@ -138,15 +178,120 @@ export class ImageGenerator {
     prompt: string,
     request: ImageGenerationRequest
   ): Promise<ImageGenerationResult> {
-    // Note: This uses Vertex AI's Imagen model
-    // Actual implementation depends on available APIs
-    
-    const model = 'imagegeneration@006'; // Imagen model
-    
-    // This is a placeholder - actual Vertex AI image generation would use
-    // the appropriate API endpoint and authentication
-    
-    throw new Error('Vertex AI image generation not yet configured. Please set up Imagen API access by following the deployment guide at docs/DEPLOYMENT_GUIDE.md. You need to enable the Vertex AI API in Google Cloud Console and configure service account credentials.');
+    if (!this.vertexAI) {
+      throw new Error('Vertex AI not initialized');
+    }
+
+    try {
+      // Get the generative model for Imagen
+      const generativeModel = this.vertexAI.preview.getGenerativeModel({
+        model: 'imagegeneration@006',
+      });
+
+      // Determine image dimensions based on purpose
+      const specs = ImageGenerator.getRecommendedSpecs(request.purpose);
+
+      // Generate the image
+      const result = await generativeModel.generateContent({
+        contents: [{
+          role: 'user',
+          parts: [{
+            text: prompt,
+          }],
+        }],
+        generationConfig: {
+          temperature: 0.4,
+          topK: 32,
+          topP: 1,
+        },
+      });
+
+      // Extract image data from response
+      const response = result.response;
+      const candidates = response.candidates;
+
+      if (!candidates || candidates.length === 0) {
+        throw new Error('No image candidates returned from Vertex AI');
+      }
+
+      // Get the first candidate
+      const candidate = candidates[0];
+      const content = candidate.content;
+
+      if (!content || !content.parts || content.parts.length === 0) {
+        throw new Error('No image parts in response');
+      }
+
+      // Extract image data (base64 or URL)
+      const imagePart = content.parts[0];
+      let imageUrl: string;
+
+      if ('inlineData' in imagePart && imagePart.inlineData) {
+        // Image is returned as base64
+        const base64Data = imagePart.inlineData.data;
+        const mimeType = imagePart.inlineData.mimeType || 'image/png';
+
+        // Upload to Firebase Storage
+        imageUrl = await this.uploadToStorage(base64Data, mimeType, request.purpose);
+      } else if ('fileData' in imagePart && imagePart.fileData) {
+        // Image is returned as a file URI
+        imageUrl = imagePart.fileData.fileUri;
+      } else {
+        throw new Error('Unexpected image format in response');
+      }
+
+      return {
+        imageUrl,
+        prompt,
+        width: specs.width,
+        height: specs.height,
+        format: specs.format,
+      };
+    } catch (error) {
+      console.error('Vertex AI image generation error:', error);
+      throw new Error(`Failed to generate image: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  /**
+   * Upload image to Firebase Storage
+   */
+  private async uploadToStorage(
+    base64Data: string,
+    mimeType: string,
+    purpose: string
+  ): Promise<string> {
+    const admin = await import('firebase-admin');
+    const bucket = admin.storage().bucket();
+
+    // Generate unique filename
+    const timestamp = Date.now();
+    const extension = mimeType.split('/')[1] || 'png';
+    const filename = `ai-generated/${purpose}/${timestamp}.${extension}`;
+
+    // Convert base64 to buffer
+    const buffer = Buffer.from(base64Data, 'base64');
+
+    // Create file reference
+    const file = bucket.file(filename);
+
+    // Upload file
+    await file.save(buffer, {
+      metadata: {
+        contentType: mimeType,
+        metadata: {
+          generatedBy: 'vertex-ai-imagen',
+          purpose,
+          timestamp: new Date().toISOString(),
+        },
+      },
+    });
+
+    // Make file publicly accessible
+    await file.makePublic();
+
+    // Return public URL
+    return `https://storage.googleapis.com/${bucket.name}/${filename}`;
   }
 
   /**
