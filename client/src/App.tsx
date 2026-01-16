@@ -37,6 +37,7 @@ import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 import UsersPage from "@/pages/admin/UsersPage";
+import KPIDashboard from "@/pages/admin/KPIDashboard";
 
 function Router() {
   return (
@@ -164,6 +165,13 @@ function Router() {
         {() => (
           <ProtectedRoute requiredRole={UserRole.EDITOR}>
             <PageAnalyzer />
+          </ProtectedRoute>
+        )}
+      </Route>
+      <Route path="/admin/kpi">
+        {() => (
+          <ProtectedRoute requiredRole={UserRole.VIEWER}>
+            <KPIDashboard />
           </ProtectedRoute>
         )}
       </Route>

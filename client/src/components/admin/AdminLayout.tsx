@@ -47,6 +47,7 @@ import {
   ChevronsUpDown,
   Check,
   Plus,
+  TrendingUp,
 } from "lucide-react";
 
 // Mock organizations for the switcher
@@ -74,6 +75,7 @@ const navigation: NavGroup[] = [
     label: "Overview",
     items: [
       { title: "Dashboard", href: "/admin", icon: LayoutDashboard },
+      { title: "KPI Dashboard", href: "/admin/kpi", icon: TrendingUp, badge: "New", badgeVariant: "default" },
     ],
   },
   {
@@ -341,6 +343,20 @@ export function AdminLayout({
 
               {/* Right side actions */}
               <div className="flex items-center gap-2">
+                {/* Quick KPI Indicators */}
+                <Link href="/admin/kpi">
+                  <Button variant="ghost" size="sm" className="hidden lg:flex gap-2">
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-muted-foreground">Data:</span>
+                      <span className="font-semibold">🟢</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-xs">
+                      <span className="text-muted-foreground">Gates:</span>
+                      <span className="font-semibold">🟢</span>
+                    </div>
+                  </Button>
+                </Link>
+                
                 {/* Theme toggle */}
                 <Button variant="ghost" size="icon" onClick={toggleDarkMode}>
                   {darkMode ? (
