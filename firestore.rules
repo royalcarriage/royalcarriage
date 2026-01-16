@@ -7,10 +7,47 @@ service cloud.firestore {
       return request.auth != null;
     }
     
-    // Helper function to check if user is admin
-    function isAdmin() {
+    // Helper function to get user data
+    function getUserData() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+    
+    // Helper function to check user role
+    function hasRole(role) {
+      return isAuthenticated() && getUserData().role == role;
+    }
+    
+    // Helper function to check if user has minimum role
+    function hasMinimumRole(role) {
+      let userRole = getUserData().role;
+      let roleHierarchy = {
+        'SuperAdmin': 4,
+        'Admin': 3,
+        'Editor': 2,
+        'Viewer': 1
+      };
       return isAuthenticated() && 
-             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+             roleHierarchy[userRole] >= roleHierarchy[role];
+    }
+    
+    // Helper function to check if user is SuperAdmin
+    function isSuperAdmin() {
+      return hasRole('SuperAdmin');
+    }
+    
+    // Helper function to check if user is Admin or higher
+    function isAdmin() {
+      return hasMinimumRole('Admin');
+    }
+    
+    // Helper function to check if user is Editor or higher
+    function isEditor() {
+      return hasMinimumRole('Editor');
+    }
+    
+    // Helper function to check if user is authenticated (Viewer or higher)
+    function isViewer() {
+      return hasMinimumRole('Viewer');
     }
     
     // Helper function to check image generation rate limit
@@ -36,27 +73,35 @@ service cloud.firestore {
              request.resource.data.createdBy == request.auth.uid;
     }
     
-    // Users collection - only admins can read/write
+    // Users collection - role-based access
     match /users/{userId} {
+      // Users can read their own data
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      // Admins can read all users
       allow read: if isAdmin();
-      allow write: if isAdmin();
+      // Users can update their own profile (but not role)
+      allow update: if isAuthenticated() && 
+                      request.auth.uid == userId && 
+                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
+      // Only SuperAdmin and Admin can manage user roles
+      allow write: if isSuperAdmin() || isAdmin();
     }
     
-    // Page analyses - admin only
+    // Page analyses - Editor or higher can write, Viewer can read
     match /page_analyses/{analysisId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
+      allow read: if isViewer();
+      allow write: if isEditor();
     }
     
-    // Content suggestions - admin only
+    // Content suggestions - Editor or higher
     match /content_suggestions/{suggestionId} {
-      allow read: if isAdmin();
-      allow write: if isAdmin();
+      allow read: if isViewer();
+      allow write: if isEditor();
     }
     
     // AI images - admin only with validation
     match /ai_images/{imageId} {
-      allow read: if isAdmin();
+      allow read: if isViewer();
       
       // Create: admin only, must pass validation and rate limit
       allow create: if isAdmin() && 
@@ -86,25 +131,43 @@ service cloud.firestore {
     
     // Scheduled jobs - admin only
     match /scheduled_jobs/{jobId} {
-      allow read: if isAdmin();
+      allow read: if isViewer();
       allow write: if isAdmin();
     }
     
     // AI settings - admin only
     match /ai_settings/{settingId} {
-      allow read: if isAdmin();
+      allow read: if isViewer();
       allow write: if isAdmin();
     }
     
-    // SEO reports - admin only
+    // SEO reports - viewer can read, editor can write
     match /seo_reports/{reportId} {
-      allow read: if isAdmin();
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+    
+    // Pages - viewer can read, editor can write
+    match /pages/{pageId} {
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+    
+    // CSV imports - admin only
+    match /csv_imports/{importId} {
+      allow read: if isViewer();
       allow write: if isAdmin();
     }
     
-    // Pages - admin only
-    match /pages/{pageId} {
-      allow read: if isAdmin();
+    // Analytics data - viewer can read, admin can write
+    match /analytics/{docId} {
+      allow read: if isViewer();
+      allow write: if isAdmin();
+    }
+    
+    // Settings - admin only
+    match /settings/{settingId} {
+      allow read: if isViewer();
       allow write: if isAdmin();
     }
   }
