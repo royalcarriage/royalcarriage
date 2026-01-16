@@ -1,0 +1,35 @@
+---
+import { MainLayout } from '@royal-carriage/ui';
+---
+
+<MainLayout
+  title="Chicago Executive Car Service | Corporate Black Car Transportation"
+  description="Professional executive car service in Chicago. Reliable corporate transportation for meetings, events, and business travel."
+  siteTitle="Chicago Executive Car Service"
+  navLinks={[
+    { href: '/', text: 'Home' },
+    { href: '/corporate', text: 'Corporate' },
+    { href: '/fleet', text: 'Fleet' },
+    { href: '/pricing', text: 'Pricing' },
+    { href: '/contact', text: 'Contact' }
+  ]}
+  utmSource="executive"
+>
+  <div class="container mx-auto p-8">
+    <h1 class="text-5xl font-bold mb-6">Chicago Executive Car Service</h1>
+    <p class="text-xl mb-4">
+      Professional corporate transportation for executives and businesses.
+      Reliable, discreet, and punctual service for all your business needs.
+    </p>
+    <div class="grid md:grid-cols-2 gap-8 mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Corporate Accounts</h2>
+        <p>Streamlined billing and dedicated account management for businesses</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Executive Travel</h2>
+        <p>Premium black car service for C-suite and VIP transportation</p>
+      </div>
+    </div>
+  </div>
+</MainLayout>
