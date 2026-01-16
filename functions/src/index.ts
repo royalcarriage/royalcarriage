@@ -68,6 +68,34 @@ import {
 // Import data initialization function - PHASE 4
 import { initializeProductionData } from './dataInitializationFunction';
 
+// Import content enhancement functions - P2 RC-201
+import {
+  generateLocationFAQ,
+  translateContent,
+  optimizeContentSEO,
+  generateABVariants,
+  createContentVersion,
+  rollbackContentVersion,
+} from './contentEnhancements';
+
+// Import image optimization functions - P2 RC-202
+import {
+  optimizeImageOnUpload,
+  batchOptimizeImages,
+  generateSrcset,
+  runImageAudit,
+  getOptimizedImageUrl,
+} from './imageOptimization';
+
+// Import ROI dashboard functions - P2 RC-203
+import {
+  getMetricTrends,
+  getCohortAnalysis,
+  generateForecast,
+  exportDashboardData,
+  getDateRangeSummary,
+} from './roiDashboard';
+
 // Initialize Firebase Admin
 if (!admin.apps.length) {
   admin.initializeApp();
@@ -510,3 +538,37 @@ export {
 
 // Export data initialization function
 export { initializeProductionData };
+
+// --- P2 RC-201: CONTENT GENERATION ENHANCEMENTS ---
+
+// Export content enhancement functions
+export {
+  generateLocationFAQ,
+  translateContent,
+  optimizeContentSEO,
+  generateABVariants,
+  createContentVersion,
+  rollbackContentVersion,
+};
+
+// --- P2 RC-202: IMAGE OPTIMIZATION PIPELINE ---
+
+// Export image optimization functions
+export {
+  optimizeImageOnUpload,
+  batchOptimizeImages,
+  generateSrcset,
+  runImageAudit,
+  getOptimizedImageUrl,
+};
+
+// --- P2 RC-203: ROI DASHBOARD ENHANCEMENTS ---
+
+// Export ROI dashboard functions
+export {
+  getMetricTrends,
+  getCohortAnalysis,
+  generateForecast,
+  exportDashboardData,
+  getDateRangeSummary,
+};
