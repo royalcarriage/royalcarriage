@@ -1,0 +1,17 @@
+/Users/admin/VSCODE/node_modules/firebase-admin/lib/utils/error.js:148
+        return new FirebaseAuthError(error);
+               ^
+
+FirebaseAuthError: The email address is already in use by another account.
+    at FirebaseAuthError.fromServerError (/Users/admin/VSCODE/node_modules/firebase-admin/lib/utils/error.js:148:16)
+    at /Users/admin/VSCODE/node_modules/firebase-admin/lib/auth/auth-api-request.js:1629:49
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async main (file:///Users/admin/VSCODE/scripts/create-admin.mjs:68:25) {
+  errorInfo: {
+    code: 'auth/email-already-exists',
+    message: 'The email address is already in use by another account.'
+  },
+  codePrefix: 'auth'
+}
+
+Node.js v24.12.0

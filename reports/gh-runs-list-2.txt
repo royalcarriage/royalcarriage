@@ -1,0 +1,10 @@
+{"conclusion":"","headBranch":"ci/oidc-workflows","number":9,"status":"in_progress","workflowName":"Deploy to Firebase (OIDC)"}
+{"conclusion":"failure","headBranch":"ci/oidc-workflows","number":8,"status":"completed","workflowName":"Deploy to Firebase (OIDC)"}
+{"conclusion":"","headBranch":"copilot/implement-firestore-rules-functions-ui","number":62,"status":"in_progress","workflowName":"Copilot coding agent"}
+{"conclusion":"action_required","headBranch":"copilot/add-kpi-dashboard-component","number":102,"status":"completed","workflowName":"CI - Test and Build"}
+{"conclusion":"action_required","headBranch":"copilot/add-kpi-dashboard-component","number":101,"status":"completed","workflowName":"CI - Test and Build"}
+{"conclusion":"action_required","headBranch":"copilot/implement-ai-seo-system","number":100,"status":"completed","workflowName":"CI - Test and Build"}
+{"conclusion":"action_required","headBranch":"copilot/add-kpi-dashboard-component","number":99,"status":"completed","workflowName":"CI - Test and Build"}
+{"conclusion":"failure","headBranch":"ci/oidc-workflows","number":65,"status":"completed","workflowName":"CI - Build and Test"}
+{"conclusion":"failure","headBranch":"ci/oidc-workflows","number":98,"status":"completed","workflowName":"CI - Test and Build"}
+{"conclusion":"failure","headBranch":"ci/oidc-workflows","number":7,"status":"completed","workflowName":"Deploy to Firebase (OIDC)"}

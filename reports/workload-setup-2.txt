@@ -1,0 +1,389 @@
++/bin/zsh:16> gcloud iam workload-identity-pools providers create-oidc github-provider '--project=royalcarriagelimoseo' '--location=global' '--workload-identity-pool=github-pool' '--issuer-uri=https://token.actions.githubusercontent.com' '--allowed-audiences=https://github.com/royalcarriage' '--attribute-mapping=google.subject=assertion.sub,attribute.repository=assertion.repository'
+ERROR: (gcloud.iam.workload-identity-pools.providers.create-oidc) INVALID_ARGUMENT: The attribute condition must reference one of the provider's claims. For more information, see https://cloud.google.com/iam/docs/workload-identity-federation-with-deployment-pipelines#conditions
++/bin/zsh:18> SA_EMAIL=github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com 
++/bin/zsh:18> gcloud projects add-iam-policy-binding royalcarriagelimoseo '--member=serviceAccount:github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com' '--role=roles/firebase.admin' '--condition=None'
+Updated IAM policy for project [royalcarriagelimoseo].
+bindings:
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/aiplatform.admin
+- members:
+  - serviceAccount:910418192896-compute@developer.gserviceaccount.com
+  role: roles/aiplatform.agentServiceAgent
+- members:
+  - serviceAccount:vertex-express@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/aiplatform.expressUser
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+  role: roles/aiplatform.reasoningEngineServiceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-aiplatform.iam.gserviceaccount.com
+  role: roles/aiplatform.serviceAgent
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/aiplatform.user
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-binaryauthorization.iam.gserviceaccount.com
+  role: roles/binaryauthorization.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudaicompanion.iam.gserviceaccount.com
+  role: roles/cloudaicompanion.serviceAgent
+- members:
+  - serviceAccount:910418192896@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/cloudfunctions.developer
+- members:
+  - serviceAccount:service-910418192896@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-910418192896@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:service-910418192896@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/datastore.owner
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/datastore.user
+- condition:
+    expression: request.time < timestamp("2026-01-07T19:12:34.529Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:backend-service-account@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/developerconnect.readTokenAccessor
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-devconnect.iam.gserviceaccount.com
+  role: roles/developerconnect.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-discoveryengine.iam.gserviceaccount.com
+  role: roles/discoveryengine.serviceAgent
+- members:
+  - serviceAccount:910418192896@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - deleted:serviceAccount:rc-admin-sa-temp@royalcarriagelimoseo.iam.gserviceaccount.com?uid=114229106419226519363
+  - deleted:serviceAccount:rc-admin-sa@royalcarriagelimoseo.iam.gserviceaccount.com?uid=104270841468141032855
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - user:info@royalcarriagelimo.com
+  role: roles/firebase.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebase.iam.gserviceaccount.com
+  role: roles/firebase.managementServiceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebase.sdkAdminServiceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseappcheck.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebaseappcheck.iam.gserviceaccount.com
+  role: roles/firebaseappcheck.serviceAgent
+- members:
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseapphosting.computeRunner
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebaseapphosting.iam.gserviceaccount.com
+  role: roles/firebaseapphosting.serviceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseauth.admin
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebasedatabase.admin
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebasehosting.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasevertexai.iam.gserviceaccount.com
+  role: roles/firebaseml.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasemods.iam.gserviceaccount.com
+  role: roles/firebasemods.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasestorage.iam.gserviceaccount.com
+  role: roles/firebaserules.firestoreServiceAgent
+- members:
+  - serviceAccount:service-910418192896@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasestorage.iam.gserviceaccount.com
+  role: roles/firebasestorage.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firestore.iam.gserviceaccount.com
+  role: roles/firestore.serviceAgent
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountCreator
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountKeyAdmin
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountTokenCreator
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountUser
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-notebooks.iam.gserviceaccount.com
+  role: roles/notebooks.serviceAgent
+- members:
+  - user:info@royalcarriagelimo.com
+  role: roles/owner
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/run.admin
+- members:
+  - serviceAccount:910418192896-compute@developer.gserviceaccount.com
+  role: roles/run.builder
+- members:
+  - serviceAccount:service-910418192896@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- condition:
+    expression: request.time < timestamp("2026-01-15T22:12:33.237Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:service-910418192896@gcp-sa-devconnect.iam.gserviceaccount.com
+  role: roles/secretmanager.admin
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/storage.admin
+- condition:
+    expression: request.time < timestamp("2026-01-07T19:12:34.529Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:backend-service-account@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+etag: BwZId8pr8KM=
+version: 3
++/bin/zsh:20> SA_EMAIL=github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com 
++/bin/zsh:20> gcloud projects add-iam-policy-binding royalcarriagelimoseo '--member=serviceAccount:github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com' '--role=roles/storage.admin' '--condition=None'
+Updated IAM policy for project [royalcarriagelimoseo].
+bindings:
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/aiplatform.admin
+- members:
+  - serviceAccount:910418192896-compute@developer.gserviceaccount.com
+  role: roles/aiplatform.agentServiceAgent
+- members:
+  - serviceAccount:vertex-express@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/aiplatform.expressUser
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-aiplatform-re.iam.gserviceaccount.com
+  role: roles/aiplatform.reasoningEngineServiceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-aiplatform.iam.gserviceaccount.com
+  role: roles/aiplatform.serviceAgent
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/aiplatform.user
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-artifactregistry.iam.gserviceaccount.com
+  role: roles/artifactregistry.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-binaryauthorization.iam.gserviceaccount.com
+  role: roles/binaryauthorization.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudaicompanion.iam.gserviceaccount.com
+  role: roles/cloudaicompanion.serviceAgent
+- members:
+  - serviceAccount:910418192896@cloudbuild.gserviceaccount.com
+  role: roles/cloudbuild.builds.builder
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudbuild.iam.gserviceaccount.com
+  role: roles/cloudbuild.serviceAgent
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/cloudfunctions.developer
+- members:
+  - serviceAccount:service-910418192896@gcf-admin-robot.iam.gserviceaccount.com
+  role: roles/cloudfunctions.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudscheduler.iam.gserviceaccount.com
+  role: roles/cloudscheduler.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-cloudtasks.iam.gserviceaccount.com
+  role: roles/cloudtasks.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@compute-system.iam.gserviceaccount.com
+  role: roles/compute.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@container-engine-robot.iam.gserviceaccount.com
+  role: roles/container.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@container-analysis.iam.gserviceaccount.com
+  role: roles/containeranalysis.ServiceAgent
+- members:
+  - serviceAccount:service-910418192896@containerregistry.iam.gserviceaccount.com
+  role: roles/containerregistry.ServiceAgent
+- members:
+  - serviceAccount:service-910418192896@dataflow-service-producer-prod.iam.gserviceaccount.com
+  role: roles/dataflow.serviceAgent
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/datastore.owner
+- members:
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/datastore.user
+- condition:
+    expression: request.time < timestamp("2026-01-07T19:12:34.529Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:backend-service-account@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/datastore.user
+- members:
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/developerconnect.readTokenAccessor
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-devconnect.iam.gserviceaccount.com
+  role: roles/developerconnect.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-discoveryengine.iam.gserviceaccount.com
+  role: roles/discoveryengine.serviceAgent
+- members:
+  - serviceAccount:910418192896@cloudservices.gserviceaccount.com
+  role: roles/editor
+- members:
+  - deleted:serviceAccount:rc-admin-sa-temp@royalcarriagelimoseo.iam.gserviceaccount.com?uid=114229106419226519363
+  - deleted:serviceAccount:rc-admin-sa@royalcarriagelimoseo.iam.gserviceaccount.com?uid=104270841468141032855
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - user:info@royalcarriagelimo.com
+  role: roles/firebase.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebase.iam.gserviceaccount.com
+  role: roles/firebase.managementServiceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebase.sdkAdminServiceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseappcheck.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebaseappcheck.iam.gserviceaccount.com
+  role: roles/firebaseappcheck.serviceAgent
+- members:
+  - serviceAccount:firebase-app-hosting-compute@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseapphosting.computeRunner
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebaseapphosting.iam.gserviceaccount.com
+  role: roles/firebaseapphosting.serviceAgent
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebaseauth.admin
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebasedatabase.admin
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/firebasehosting.admin
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasevertexai.iam.gserviceaccount.com
+  role: roles/firebaseml.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasemods.iam.gserviceaccount.com
+  role: roles/firebasemods.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasestorage.iam.gserviceaccount.com
+  role: roles/firebaserules.firestoreServiceAgent
+- members:
+  - serviceAccount:service-910418192896@firebase-rules.iam.gserviceaccount.com
+  role: roles/firebaserules.system
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firebasestorage.iam.gserviceaccount.com
+  role: roles/firebasestorage.serviceAgent
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-firestore.iam.gserviceaccount.com
+  role: roles/firestore.serviceAgent
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountCreator
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountKeyAdmin
+- members:
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountTokenCreator
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/iam.serviceAccountUser
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-notebooks.iam.gserviceaccount.com
+  role: roles/notebooks.serviceAgent
+- members:
+  - user:info@royalcarriagelimo.com
+  role: roles/owner
+- members:
+  - serviceAccount:service-910418192896@gcp-sa-pubsub.iam.gserviceaccount.com
+  role: roles/pubsub.serviceAgent
+- members:
+  - serviceAccount:github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/run.admin
+- members:
+  - serviceAccount:910418192896-compute@developer.gserviceaccount.com
+  role: roles/run.builder
+- members:
+  - serviceAccount:service-910418192896@serverless-robot-prod.iam.gserviceaccount.com
+  role: roles/run.serviceAgent
+- condition:
+    expression: request.time < timestamp("2026-01-15T22:12:33.237Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:service-910418192896@gcp-sa-devconnect.iam.gserviceaccount.com
+  role: roles/secretmanager.admin
+- members:
+  - serviceAccount:ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com
+  - serviceAccount:royalcarriagelimoseo@appspot.gserviceaccount.com
+  role: roles/storage.admin
+- condition:
+    expression: request.time < timestamp("2026-01-07T19:12:34.529Z")
+    title: developer-connect-connection-setup
+  members:
+  - serviceAccount:backend-service-account@royalcarriagelimoseo.iam.gserviceaccount.com
+  role: roles/storage.objectAdmin
+etag: BwZId8qECDk=
+version: 3
+WORKLOAD_IDENTITY_PROVIDER=projects/910418192896/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+WORKLOAD_IDENTITY_SERVICE_ACCOUNT=github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com

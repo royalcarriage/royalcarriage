@@ -1,0 +1,31 @@
+=== set ADC quota project
+
+Credentials saved to file: [/Users/admin/.config/gcloud/application_default_credentials.json]
+
+These credentials will be used by any library that requests Application Default Credentials (ADC).
+
+Quota project "royalcarriagelimoseo" was added to ADC which can be used by Google client libraries for billing and quota. Note that some services may still bill the project owning the resource.
+
+=== firebase deploy functions+hosting
+/Users/admin/VSCODE/node_modules/depd/index.js:415
+    throw new TypeError('argument fn must be a function')
+    ^
+
+TypeError: argument fn must be a function
+    at deprecate.wrapfunction [as function] (/Users/admin/VSCODE/node_modules/depd/index.js:415:11)
+    at Object.<anonymous> (/Users/admin/VSCODE/node_modules/express/lib/utils.js:70:37)
+    at Module._compile (node:internal/modules/cjs/loader:1761:14)
+    at Object..js (node:internal/modules/cjs/loader:1893:10)
+    at Module.load (node:internal/modules/cjs/loader:1481:32)
+    at Module._load (node:internal/modules/cjs/loader:1300:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:245:24)
+    at Module.require (node:internal/modules/cjs/loader:1504:12)
+    at require (node:internal/modules/helpers:152:16)
+
+Node.js v24.12.0
+
+=== gcloud functions get-iam-policy
+etag: ACAB
+
+=== curl checks
