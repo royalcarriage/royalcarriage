@@ -143,6 +143,8 @@ export default function TopicQueueBoard() {
       case 'published': return 'default';
       case 'ready': return 'secondary';
       case 'blocked': return 'destructive';
+      case 'proposed': return 'outline';
+      case 'draft': return 'outline';
       default: return 'outline';
     }
   };
