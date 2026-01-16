@@ -38,6 +38,24 @@ import AdminDashboardV2 from "@/pages/admin/AdminDashboardV2";
 import PageAnalyzer from "@/pages/admin/PageAnalyzer";
 import UsersPage from "@/pages/admin/UsersPage";
 
+// New Admin Pages
+import OverviewPage from "@/pages/admin/OverviewPage";
+import MoovsImportPage from "@/pages/admin/imports/MoovsImportPage";
+import AdsImportPage from "@/pages/admin/imports/AdsImportPage";
+import RoiPage from "@/pages/admin/RoiPage";
+import AirportSitePage from "@/pages/admin/sites/AirportSitePage";
+import PartyBusSitePage from "@/pages/admin/sites/PartyBusSitePage";
+import CorporateSitePage from "@/pages/admin/sites/CorporateSitePage";
+import WeddingSitePage from "@/pages/admin/sites/WeddingSitePage";
+import QueuePage from "@/pages/admin/seo-bot/QueuePage";
+import DraftsPage from "@/pages/admin/seo-bot/DraftsPage";
+import RunsPage from "@/pages/admin/seo-bot/RunsPage";
+import PublishPage from "@/pages/admin/seo-bot/PublishPage";
+import LibraryPage from "@/pages/admin/images/LibraryPage";
+import MissingPage from "@/pages/admin/images/MissingPage";
+import DeployPage from "@/pages/admin/DeployPage";
+import LogsPage from "@/pages/admin/LogsPage";
+
 function Router() {
   return (
     <Switch>

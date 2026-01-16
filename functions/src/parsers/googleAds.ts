@@ -1,26 +1,27 @@
 import { Firestore } from "firebase-admin/firestore";
 
-interface MoovsImportParams {
+interface GoogleAdsImportParams {
   org: string;
+  datasetName: string;
   rawCsvText: string;
 }
 
-export async function importMoovsCsv(
+export async function importGoogleAdsCsv(
   db: Firestore,
-  params: MoovsImportParams
+  params: GoogleAdsImportParams
 ): Promise<{ importId: string; records: number }> {
-  const { org, rawCsvText } = params;
+  const { org, datasetName, rawCsvText } = params;
   
   // Parse CSV (skeleton implementation)
   const lines = rawCsvText.trim().split("\n");
   const records = lines.length - 1; // Subtract header row
   
   // Store import log
-  const importDoc = await db.collection("moovs_imports").add({
-    fileName: `moovs-${Date.now()}.csv`,
+  const importDoc = await db.collection("ads_imports").add({
+    fileName: `${datasetName}-${Date.now()}.csv`,
+    datasetName,
     importedAt: new Date().toISOString(),
     status: "success",
-    records,
     org,
   });
   
