@@ -14,10 +14,26 @@ export const createVehicle = functions.https.onRequest(async (req, res) => {
   }
 
   try {
-    const { make, model, year, vin, licensePlate, color, purchaseDate, purchasePrice, currentMileage, status, assignedDriverId, imageUrl } = req.body;
+    const {
+      make,
+      model,
+      year,
+      vin,
+      licensePlate,
+      color,
+      purchaseDate,
+      purchasePrice,
+      currentMileage,
+      status,
+      assignedDriverId,
+      imageUrl,
+    } = req.body;
 
     if (!make || !model || !year || !vin || !licensePlate || !currentMileage) {
-      return res.status(400).json({ error: "Missing required fields: make, model, year, vin, licensePlate, currentMileage" });
+      return res.status(400).json({
+        error:
+          "Missing required fields: make, model, year, vin, licensePlate, currentMileage",
+      });
     }
 
     const vehicle = {
@@ -37,9 +53,11 @@ export const createVehicle = functions.https.onRequest(async (req, res) => {
       createdBy: req.body.auth?.uid || null,
     };
 
-    const writeResult = await admin.firestore().collection("vehicles").add(vehicle);
+    const writeResult = await admin
+      .firestore()
+      .collection("vehicles")
+      .add(vehicle);
     res.status(201).json({ id: writeResult.id, ...vehicle });
-
   } catch (error) {
     functions.logger.error("Error creating vehicle:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -53,7 +71,10 @@ export const getVehicles = functions.https.onRequest(async (req, res) => {
 
   try {
     const snapshot = await admin.firestore().collection("vehicles").get();
-    const vehicles = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const vehicles = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.status(200).json(vehicles);
   } catch (error) {
     functions.logger.error("Error fetching vehicles:", error);
@@ -72,9 +93,11 @@ export const deleteVehicle = functions.https.onRequest((req, res) => {
 
 // --- Maintenance Schedules Functions (Placeholders) ---
 
-export const createMaintenanceSchedule = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Create Maintenance Schedule");
-});
+export const createMaintenanceSchedule = functions.https.onRequest(
+  (req, res) => {
+    res.status(501).send("Not Implemented: Create Maintenance Schedule");
+  },
+);
 
 export const getMaintenanceSchedules = functions.https.onRequest((req, res) => {
   res.status(501).send("Not Implemented: Get Maintenance Schedules");
