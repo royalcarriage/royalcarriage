@@ -45,13 +45,31 @@ async function loadAllDrafts() {
   return drafts;
 }
 
-function calculateSimilarity(text1, text2) {
-  const words1 = text1.toLowerCase().split(/\s+/);
-  const words2 = text2.toLowerCase().split(/\s+/);
+// Cache for extracted content and word sets to avoid repeated processing
+const contentCache = new Map();
+const wordSetCache = new Map();
 
-  const set1 = new Set(words1);
-  const set2 = new Set(words2);
+function getExtractedContent(draft) {
+  const key = draft.filename;
+  if (!contentCache.has(key)) {
+    const content = draft.data.content.sections.map((s) => s.content).join(" ");
+    contentCache.set(key, content);
+  }
+  return contentCache.get(key);
+}
 
+function getWordSet(draft) {
+  const key = draft.filename;
+  if (!wordSetCache.has(key)) {
+    const content = getExtractedContent(draft);
+    const words = content.toLowerCase().split(/\s+/);
+    wordSetCache.set(key, new Set(words));
+  }
+  return wordSetCache.get(key);
+}
+
+function calculateSimilarity(set1, set2) {
+  // Pre-computed word sets for efficiency
   const intersection = new Set([...set1].filter((x) => set2.has(x)));
   const union = new Set([...set1, ...set2]);
 
@@ -62,18 +80,14 @@ async function checkDuplicateContent(draft, allDrafts) {
   const issues = [];
   const warnings = [];
 
-  const draftContent = draft.data.content.sections
-    .map((s) => s.content)
-    .join(" ");
+  const draftWordSet = getWordSet(draft);
 
   for (const otherDraft of allDrafts) {
     if (otherDraft.filename === draft.filename) continue;
 
-    const otherContent = otherDraft.data.content.sections
-      .map((s) => s.content)
-      .join(" ");
-
-    const similarity = calculateSimilarity(draftContent, otherContent);
+    // Use cached word sets instead of extracting content each time
+    const otherWordSet = getWordSet(otherDraft);
+    const similarity = calculateSimilarity(draftWordSet, otherWordSet);
 
     if (similarity > HIGH_SIMILARITY_THRESHOLD) {
       issues.push(
