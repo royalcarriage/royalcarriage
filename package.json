@@ -90,7 +90,8 @@
     "report:weekly": "node ./scripts/generate-weekly-report.mjs",
     "backup:firestore": "node ./scripts/backup-firestore.mjs",
     "start": "NODE_ENV=production node dist/index.cjs",
-    "check": "tsc"
+    "check": "tsc",
+    "deploy": "firebase deploy --only hosting:admin,hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus,functions --non-interactive"
   },
   "dependencies": {
     "@google-cloud/aiplatform": "^6.1.0",

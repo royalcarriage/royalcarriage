@@ -20,6 +20,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@latest --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Authenticate to GCP using Workload Identity (OIDC)
         if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER != '' }}
