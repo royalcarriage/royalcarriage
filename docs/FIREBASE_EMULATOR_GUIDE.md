@@ -5,6 +5,7 @@ This guide helps you set up and use Firebase emulators for local development and
 ## Why Use Firebase Emulators?
 
 Firebase emulators allow you to:
+
 - ✅ Test functions, Firestore, and Storage locally without affecting production
 - ✅ Develop offline without internet connectivity
 - ✅ Iterate faster with instant deployments
@@ -26,6 +27,7 @@ npm install -g firebase-tools
 ```
 
 Verify installation:
+
 ```bash
 firebase --version
 ```
@@ -41,11 +43,13 @@ This opens a browser for authentication.
 ### 3. Initialize Firebase (if needed)
 
 If this is your first time:
+
 ```bash
 firebase init
 ```
 
 Select:
+
 - ☑ Functions
 - ☑ Firestore
 - ☑ Hosting
@@ -61,6 +65,7 @@ firebase emulators:start
 ```
 
 This starts:
+
 - **Functions** on http://localhost:5001
 - **Firestore** on http://localhost:8080
 - **Hosting** on http://localhost:5000
@@ -95,6 +100,7 @@ firebase emulators:start --import ./emulator-data
 ### Accessing Emulator UI
 
 Open http://localhost:4000 in your browser to access:
+
 - 📊 Function logs and execution details
 - 📁 Firestore data browser and editor
 - 🖼️ Storage file browser
@@ -107,31 +113,31 @@ Open http://localhost:4000 in your browser to access:
 Add to your `server/index.ts` or initialization file:
 
 ```typescript
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin";
 
 // Initialize Admin SDK
 admin.initializeApp();
 
 // Connect to emulators in development
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   const db = admin.firestore();
   db.settings({
-    host: 'localhost:8080',
-    ssl: false
+    host: "localhost:8080",
+    ssl: false,
   });
-  
+
   // For Storage
-  process.env.FIREBASE_STORAGE_EMULATOR_HOST = 'localhost:9199';
+  process.env.FIREBASE_STORAGE_EMULATOR_HOST = "localhost:9199";
 }
 ```
 
 #### In Client Code (Web)
 
 ```javascript
-import { initializeApp } from 'firebase/app';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
+import { initializeApp } from "firebase/app";
+import { getFirestore, connectFirestoreEmulator } from "firebase/firestore";
+import { getStorage, connectStorageEmulator } from "firebase/storage";
+import { getFunctions, connectFunctionsEmulator } from "firebase/functions";
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -139,10 +145,10 @@ const storage = getStorage(app);
 const functions = getFunctions(app);
 
 // Connect to emulators in development
-if (process.env.NODE_ENV === 'development') {
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectStorageEmulator(storage, 'localhost', 9199);
-  connectFunctionsEmulator(functions, 'localhost', 5001);
+if (process.env.NODE_ENV === "development") {
+  connectFirestoreEmulator(db, "localhost", 8080);
+  connectStorageEmulator(storage, "localhost", 9199);
+  connectFunctionsEmulator(functions, "localhost", 5001);
 }
 ```
 
@@ -175,22 +181,23 @@ Open http://localhost:4000 → Functions → Logs
 Create a test file `firestore.rules.test.js`:
 
 ```javascript
-const { assertFails, assertSucceeds } = require('@firebase/rules-unit-testing');
+const { assertFails, assertSucceeds } = require("@firebase/rules-unit-testing");
 
 // Test admin access
-test('Admin can read users', async () => {
-  const admin = testEnv.authenticatedContext('user123', { role: 'admin' });
-  await assertSucceeds(admin.firestore().collection('users').doc('test').get());
+test("Admin can read users", async () => {
+  const admin = testEnv.authenticatedContext("user123", { role: "admin" });
+  await assertSucceeds(admin.firestore().collection("users").doc("test").get());
 });
 
 // Test non-admin access
-test('Non-admin cannot read users', async () => {
-  const user = testEnv.authenticatedContext('user456', { role: 'user' });
-  await assertFails(user.firestore().collection('users').doc('test').get());
+test("Non-admin cannot read users", async () => {
+  const user = testEnv.authenticatedContext("user456", { role: "user" });
+  await assertFails(user.firestore().collection("users").doc("test").get());
 });
 ```
 
 Run tests:
+
 ```bash
 npm test -- firestore.rules.test.js
 ```
@@ -249,11 +256,13 @@ rm -rf ./emulator-data
 ### Recommended Workflow
 
 1. **Start emulators in one terminal:**
+
    ```bash
    firebase emulators:start --import ./emulator-data --export-on-exit
    ```
 
 2. **Start dev server in another terminal:**
+
    ```bash
    npm run dev
    ```
@@ -280,6 +289,7 @@ firebase emulators:start
 ```
 
 When you save a function file:
+
 1. TypeScript rebuilds automatically
 2. Emulator detects changes and reloads
 3. Test immediately
@@ -325,6 +335,7 @@ java -version
 ### Function Not Found
 
 Make sure functions are built:
+
 ```bash
 cd functions
 npm run build
@@ -334,6 +345,7 @@ npm run build
 ### Connection Refused
 
 Check if emulators are running:
+
 ```bash
 # Should show running emulators
 firebase emulators:list
@@ -470,6 +482,7 @@ firebase emulators:kill
 ---
 
 **Next Steps:**
+
 1. Start emulators: `firebase emulators:start`
 2. Open Emulator UI: http://localhost:4000
 3. Connect your app to emulators

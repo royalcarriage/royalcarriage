@@ -1,17 +1,23 @@
 import { Layout } from "@/components/layout/Layout";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
-import { 
-  Brain, 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  Brain,
+  CheckCircle,
+  AlertCircle,
   TrendingUp,
   FileText,
-  ArrowLeft
+  ArrowLeft,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -34,20 +40,24 @@ export default function PageAnalyzer() {
 
   // Static pages to analyze
   const websitePages = [
-    { url: '/', name: 'Home', content: '' },
-    { url: '/ohare-airport-limo', name: 'O\'Hare Airport', content: '' },
-    { url: '/midway-airport-limo', name: 'Midway Airport', content: '' },
-    { url: '/airport-limo-downtown-chicago', name: 'Downtown Chicago', content: '' },
-    { url: '/airport-limo-suburbs', name: 'Suburbs Service', content: '' },
-    { url: '/fleet', name: 'Fleet', content: '' },
-    { url: '/pricing', name: 'Pricing', content: '' },
-    { url: '/about', name: 'About', content: '' },
-    { url: '/contact', name: 'Contact', content: '' },
+    { url: "/", name: "Home", content: "" },
+    { url: "/ohare-airport-limo", name: "O'Hare Airport", content: "" },
+    { url: "/midway-airport-limo", name: "Midway Airport", content: "" },
+    {
+      url: "/airport-limo-downtown-chicago",
+      name: "Downtown Chicago",
+      content: "",
+    },
+    { url: "/airport-limo-suburbs", name: "Suburbs Service", content: "" },
+    { url: "/fleet", name: "Fleet", content: "" },
+    { url: "/pricing", name: "Pricing", content: "" },
+    { url: "/about", name: "About", content: "" },
+    { url: "/contact", name: "Contact", content: "" },
   ];
 
   const handleAnalyzePages = async () => {
     setAnalyzing(true);
-    
+
     try {
       // Fetch actual page content for each URL
       const pagesWithContent = await Promise.all(
@@ -58,33 +68,35 @@ export default function PageAnalyzer() {
             const html = await response.text();
             return {
               ...page,
-              content: html
+              content: html,
             };
           } catch (error) {
             console.error(`Failed to fetch ${page.url}:`, error);
             return {
               ...page,
-              content: '' // Empty content if fetch fails
+              content: "", // Empty content if fetch fails
             };
           }
-        })
+        }),
       );
 
       // Call the real backend API
-      const response = await fetch('/api/ai/batch-analyze', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
+      const response = await fetch("/api/ai/batch-analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ pages: pagesWithContent })
+        body: JSON.stringify({ pages: pagesWithContent }),
       });
 
       if (!response.ok) {
-        throw new Error(`API returned ${response.status}: ${response.statusText}`);
+        throw new Error(
+          `API returned ${response.status}: ${response.statusText}`,
+        );
       }
 
       const data = await response.json();
-      
+
       // Transform API response to match PageScore interface
       const transformedResults: PageScore[] = data.results
         .filter((r: any) => r.success)
@@ -97,33 +109,44 @@ export default function PageAnalyzer() {
             seo: [],
             content: [],
             style: [],
-            conversion: []
+            conversion: [],
           },
         }));
-      
+
       setResults(transformedResults);
-      
+
       // Show success notification if all pages analyzed
       if (data.successCount === data.totalPages) {
         console.log(`✅ Successfully analyzed all ${data.totalPages} pages`);
       } else {
-        console.warn(`⚠️ Analyzed ${data.successCount} of ${data.totalPages} pages`);
+        console.warn(
+          `⚠️ Analyzed ${data.successCount} of ${data.totalPages} pages`,
+        );
       }
     } catch (error) {
-      console.error('Analysis failed:', error);
+      console.error("Analysis failed:", error);
       // Fall back to mock data in case of error
-      console.warn('Falling back to demo data due to API error');
-      
+      console.warn("Falling back to demo data due to API error");
+
       const mockResults: PageScore[] = websitePages.map((page) => ({
         url: page.url,
         name: page.name,
         seoScore: Math.floor(Math.random() * 40) + 60,
         contentScore: Math.floor(Math.random() * 40) + 60,
         recommendations: {
-          seo: ['Add more location-specific keywords', 'Optimize meta description length'],
-          content: ['Expand content to 400+ words', 'Add vehicle-specific details'],
-          style: ['Ensure consistent font sizing'],
-          conversion: ['Add prominent phone number', 'Include clear call-to-action'],
+          seo: [
+            "Add more location-specific keywords",
+            "Optimize meta description length",
+          ],
+          content: [
+            "Expand content to 400+ words",
+            "Add vehicle-specific details",
+          ],
+          style: ["Ensure consistent font sizing"],
+          conversion: [
+            "Add prominent phone number",
+            "Include clear call-to-action",
+          ],
         },
       }));
       setResults(mockResults);
@@ -133,24 +156,32 @@ export default function PageAnalyzer() {
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Excellent</Badge>;
-    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
+    if (score >= 80)
+      return <Badge className="bg-green-100 text-green-800">Excellent</Badge>;
+    if (score >= 60)
+      return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
     return <Badge className="bg-red-100 text-red-800">Needs Work</Badge>;
   };
 
-  const averageSeoScore = results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + r.seoScore, 0) / results.length)
-    : 0;
+  const averageSeoScore =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, r) => sum + r.seoScore, 0) / results.length,
+        )
+      : 0;
 
-  const averageContentScore = results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + r.contentScore, 0) / results.length)
-    : 0;
+  const averageContentScore =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, r) => sum + r.contentScore, 0) / results.length,
+        )
+      : 0;
 
   return (
     <Layout>
@@ -184,12 +215,13 @@ export default function PageAnalyzer() {
             <CardHeader>
               <CardTitle>Start Analysis</CardTitle>
               <CardDescription>
-                Analyze all {websitePages.length} pages for SEO and content optimization opportunities
+                Analyze all {websitePages.length} pages for SEO and content
+                optimization opportunities
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button 
-                onClick={handleAnalyzePages} 
+              <Button
+                onClick={handleAnalyzePages}
                 disabled={analyzing}
                 className="w-full sm:w-auto"
                 size="lg"
@@ -219,7 +251,9 @@ export default function PageAnalyzer() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}>
+                  <div
+                    className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}
+                  >
                     {averageSeoScore}/100
                   </div>
                   <Progress value={averageSeoScore} className="mt-2" />
@@ -233,7 +267,9 @@ export default function PageAnalyzer() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}>
+                  <div
+                    className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}
+                  >
                     {averageContentScore}/100
                   </div>
                   <Progress value={averageContentScore} className="mt-2" />
@@ -250,7 +286,9 @@ export default function PageAnalyzer() {
                   <div className="text-3xl font-bold text-blue-600">
                     {results.length}
                   </div>
-                  <p className="text-sm text-gray-500 mt-1">Total pages scanned</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Total pages scanned
+                  </p>
                 </CardContent>
               </Card>
             </div>
@@ -259,8 +297,10 @@ export default function PageAnalyzer() {
           {/* Analysis Results */}
           {results.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Analysis Results</h2>
-              
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Analysis Results
+              </h2>
+
               {results.map((result, index) => (
                 <Card key={index}>
                   <CardHeader>
@@ -275,7 +315,9 @@ export default function PageAnalyzer() {
                         </CardDescription>
                       </div>
                       <div className="text-right">
-                        {getScoreBadge((result.seoScore + result.contentScore) / 2)}
+                        {getScoreBadge(
+                          (result.seoScore + result.contentScore) / 2,
+                        )}
                       </div>
                     </div>
                   </CardHeader>
@@ -285,7 +327,9 @@ export default function PageAnalyzer() {
                       <div>
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-sm font-medium">SEO Score</span>
-                          <span className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}>
+                          <span
+                            className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}
+                          >
                             {result.seoScore}/100
                           </span>
                         </div>
@@ -295,8 +339,12 @@ export default function PageAnalyzer() {
                       {/* Content Score */}
                       <div>
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium">Content Score</span>
-                          <span className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}>
+                          <span className="text-sm font-medium">
+                            Content Score
+                          </span>
+                          <span
+                            className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}
+                          >
                             {result.contentScore}/100
                           </span>
                         </div>
@@ -314,7 +362,10 @@ export default function PageAnalyzer() {
                           </h4>
                           <ul className="space-y-1">
                             {result.recommendations.seo.map((rec, i) => (
-                              <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                              <li
+                                key={i}
+                                className="text-sm text-gray-600 flex items-start gap-2"
+                              >
                                 <AlertCircle className="h-4 w-4 mt-0.5 text-yellow-500 flex-shrink-0" />
                                 {rec}
                               </li>
@@ -331,7 +382,10 @@ export default function PageAnalyzer() {
                           </h4>
                           <ul className="space-y-1">
                             {result.recommendations.content.map((rec, i) => (
-                              <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                              <li
+                                key={i}
+                                className="text-sm text-gray-600 flex items-start gap-2"
+                              >
                                 <AlertCircle className="h-4 w-4 mt-0.5 text-blue-500 flex-shrink-0" />
                                 {rec}
                               </li>
@@ -348,7 +402,10 @@ export default function PageAnalyzer() {
                           </h4>
                           <ul className="space-y-1">
                             {result.recommendations.conversion.map((rec, i) => (
-                              <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                              <li
+                                key={i}
+                                className="text-sm text-gray-600 flex items-start gap-2"
+                              >
                                 <AlertCircle className="h-4 w-4 mt-0.5 text-green-500 flex-shrink-0" />
                                 {rec}
                               </li>

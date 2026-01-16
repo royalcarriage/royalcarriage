@@ -14,6 +14,7 @@ Get the AI-powered website management system deployed in under 30 minutes!
 ### 1.1 Update Firebase Project ID
 
 Edit `.firebaserc`:
+
 ```json
 {
   "projects": {
@@ -29,6 +30,7 @@ cp .env.example .env
 ```
 
 Edit `.env` with minimum required values:
+
 ```env
 NODE_ENV=production
 PORT=5000
@@ -92,6 +94,7 @@ firebase deploy --only hosting
 ## Step 4: Create Admin User (5 minutes)
 
 ### Option A: Firebase Console
+
 1. Go to Firestore Database in Firebase Console
 2. Create collection: `users`
 3. Add document with ID: `admin-001`
@@ -105,12 +108,13 @@ firebase deploy --only hosting
      "createdAt": "2026-01-14T00:00:00Z"
    }
    ```
-   
+
 ### Option B: Firebase CLI
+
 ```bash
 firebase firestore:write users/admin-001 '{
   "id": "admin-001",
-  "username": "admin", 
+  "username": "admin",
   "password": "CHANGE_THIS_PASSWORD",
   "role": "admin",
   "createdAt": "2026-01-14T00:00:00Z"
@@ -122,19 +126,23 @@ firebase firestore:write users/admin-001 '{
 ## Step 5: Verify Deployment (5 minutes)
 
 ### 5.1 Check Website
+
 Visit: `https://your-project-id.web.app`
 
 ### 5.2 Check Admin Dashboard
+
 Visit: `https://your-project-id.web.app/admin`
 
 Login with admin credentials created in Step 4.
 
 ### 5.3 Verify Functions
+
 ```bash
 firebase functions:list
 ```
 
 Should show:
+
 - `dailyPageAnalysis`
 - `weeklySeoReport`
 - `triggerPageAnalysis`
@@ -153,11 +161,13 @@ Should show:
 ## What's Next
 
 ### Immediate (Optional)
+
 - [ ] Configure custom domain
 - [ ] Set up Google Analytics
 - [ ] Configure monitoring alerts
 
 ### Enable Full AI Features (2-3 hours)
+
 1. **Enable Vertex AI**
    - Go to Google Cloud Console
    - Enable Vertex AI API
@@ -175,6 +185,7 @@ Should show:
    - Store securely (never commit to git)
 
 4. **Update Environment**
+
    ```env
    GOOGLE_CLOUD_PROJECT=your-gcp-project-id
    GOOGLE_CLOUD_LOCATION=us-central1
@@ -189,6 +200,7 @@ Should show:
 ## Troubleshooting
 
 ### Build Fails
+
 ```bash
 rm -rf node_modules dist
 npm install
@@ -196,16 +208,19 @@ npm run build
 ```
 
 ### Deploy Fails
+
 - Check Firebase project ID in `.firebaserc`
 - Ensure logged in: `firebase login`
 - Check Firebase quota limits
 
 ### Admin Dashboard Not Loading
+
 - Verify build succeeded
 - Check browser console for errors
 - Ensure routing configured in `firebase.json`
 
 ### Functions Not Running
+
 - Check Firebase Console → Functions
 - View logs: `firebase functions:log`
 - Verify function deployment: `firebase functions:list`
@@ -213,22 +228,26 @@ npm run build
 ## Cost Estimate
 
 **First Month**: $0-5 (Free tier covers most usage)
+
 - Hosting: Free tier sufficient
 - Functions: 2M invocations free
 - Firestore: 50K reads/day free
 
 **With AI Enabled**: $15-50/month
+
 - Depends on content generation frequency
 - Monitor usage in Google Cloud Console
 
 ## Support
 
 **Documentation**
+
 - Full System Guide: `docs/AI_SYSTEM_GUIDE.md`
 - Detailed Deployment: `docs/DEPLOYMENT_GUIDE.md`
 - Audit Report: `docs/PRE_DEPLOYMENT_AUDIT.md`
 
 **Commands**
+
 - Check status: `firebase deploy --only hosting --dry-run`
 - View logs: `firebase functions:log`
 - Rollback: `firebase hosting:rollback`

@@ -38,24 +38,25 @@ This is a **full-stack TypeScript web application** with:
 ### Website Projects
 
 **Primary Website:** Chicago Airport Black Car Service
+
 - Single Page Application with multiple routes
 - Professional black car/limousine service website
 - Target markets: O'Hare Airport, Midway Airport, Chicago suburbs
 
 ### Tech Stack
 
-| Layer | Technology | Version |
-|-------|-----------|---------|
-| Runtime | Node.js | 20.x LTS |
-| Package Manager | npm | 10.x |
-| Frontend Framework | React | 18.3.1 |
-| Backend Framework | Express | 4.21.2 |
-| Build Tool | Vite | 7.3.1 |
-| Language | TypeScript | 5.6.3 |
-| CSS Framework | Tailwind CSS | 3.4.17 |
-| UI Components | Radix UI | Latest |
-| Database ORM | Drizzle | 0.39.3 |
-| Database | PostgreSQL | Latest |
+| Layer              | Technology   | Version  |
+| ------------------ | ------------ | -------- |
+| Runtime            | Node.js      | 20.x LTS |
+| Package Manager    | npm          | 10.x     |
+| Frontend Framework | React        | 18.3.1   |
+| Backend Framework  | Express      | 4.21.2   |
+| Build Tool         | Vite         | 7.3.1    |
+| Language           | TypeScript   | 5.6.3    |
+| CSS Framework      | Tailwind CSS | 3.4.17   |
+| UI Components      | Radix UI     | Latest   |
+| Database ORM       | Drizzle      | 0.39.3   |
+| Database           | PostgreSQL   | Latest   |
 
 ---
 
@@ -71,28 +72,33 @@ This is a **full-stack TypeScript web application** with:
 ### Initial Setup
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/royalcarriage/royalcarriage.git
    cd royalcarriage
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
 3. **Create environment file**
+
    ```bash
    cp .env.example .env
    # Edit .env with your local configuration
    ```
 
 4. **Setup database** (if needed)
+
    ```bash
    npm run db:push
    ```
 
 5. **Start development server**
+
    ```bash
    npm run dev
    ```
@@ -189,11 +195,13 @@ npm run build
 ```
 
 **Build Process:**
+
 1. Cleans `dist/` directory
 2. Builds client with Vite → `dist/public/`
 3. Builds server with esbuild → `dist/index.cjs`
 
 **Build Output:**
+
 - `dist/public/index.html` - Main HTML file
 - `dist/public/assets/` - Bundled JS, CSS, and images
 - `dist/index.cjs` - Bundled Express server
@@ -233,11 +241,13 @@ test -d dist/public/assets && echo "✓ assets directory exists"
 ### Manual Testing
 
 1. **Build the project:**
+
    ```bash
    npm run build
    ```
 
 2. **Serve the production build locally:**
+
    ```bash
    npm start
    ```
@@ -251,6 +261,7 @@ test -d dist/public/assets && echo "✓ assets directory exists"
 ### Future: Automated Tests
 
 Recommended additions:
+
 - Unit tests with Vitest
 - Component tests with React Testing Library
 - E2E tests with Playwright
@@ -290,6 +301,7 @@ This section outlines the recommended steps for rolling out this website to prod
 #### Pre-Deployment Checklist
 
 **Infrastructure Setup:**
+
 1. Create Firebase project at [Firebase Console](https://console.firebase.google.com/)
 2. Enable Firebase Hosting for the project
 3. Update `.firebaserc` with actual Firebase project ID
@@ -303,6 +315,7 @@ This section outlines the recommended steps for rolling out this website to prod
      - macOS: `base64 -i key.json`
 
 **Code Verification:**
+
 1. All builds passing locally
 2. Type checking passes (`npm run check`)
 3. Smoke tests pass (`npm test`)
@@ -314,6 +327,7 @@ This section outlines the recommended steps for rolling out this website to prod
 **Phase 1: Initial Deployment (Week 1)**
 
 1. **Merge PR to Main Branch**
+
    ```bash
    # After PR review and approval
    git checkout main
@@ -387,6 +401,7 @@ This section outlines the recommended steps for rolling out this website to prod
 If issues are discovered after deployment:
 
 **Option 1: Rollback via Firebase Console**
+
 ```bash
 # List recent deployments
 firebase hosting:releases
@@ -396,6 +411,7 @@ firebase hosting:releases
 ```
 
 **Option 2: Revert Git Commit**
+
 ```bash
 # Identify the commit to revert
 git log --oneline
@@ -408,6 +424,7 @@ git push origin main
 ```
 
 **Option 3: Emergency Manual Deploy**
+
 ```bash
 # Checkout last known good commit
 git checkout <last-good-commit>
@@ -423,6 +440,7 @@ firebase deploy --only hosting
 #### Success Criteria
 
 The deployment is considered successful when:
+
 - All routes are accessible and load correctly
 - Images and assets load properly
 - No console errors on any page
@@ -462,6 +480,7 @@ The deployment is considered successful when:
    - Review workflow logs in Actions tab
 
 For additional help, refer to:
+
 - [Firebase Hosting Documentation](https://firebase.google.com/docs/hosting)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Vite Documentation](https://vitejs.dev/)
@@ -495,21 +514,25 @@ This repository uses GitHub Actions for continuous integration and continuous de
 #### Workflow Steps Summary
 
 **Security Audit:**
+
 - Install dependencies
 - Run npm audit (moderate and high severity checks)
 - Report vulnerabilities as warnings
 
 **Build:**
+
 - Run TypeScript type checking
 - Build client and server
 - Run smoke tests
 - Upload build artifacts
 
 **Deploy Production:**
+
 - Download build artifacts
 - Deploy to Firebase Hosting live channel
 
 **Deploy Preview:**
+
 - Download build artifacts
 - Deploy to Firebase Hosting preview channel
 - Comment on PR with preview URL
@@ -523,17 +546,20 @@ Configure these in **Settings → Secrets and variables → Actions**:
 **Value:** Base64-encoded Firebase service account JSON
 
 **How to get:**
+
 1. Go to Firebase Console → Project Settings → Service Accounts
 2. Click "Generate New Private Key"
 3. Download the JSON file
 4. Base64 encode it:
+
    ```bash
    # Linux/WSL
    base64 -w 0 < service-account-key.json
-   
+
    # macOS
    base64 -i service-account-key.json
    ```
+
 5. Copy the output and add as GitHub secret
 
 #### FIREBASE_PROJECT_ID (Optional)
@@ -544,11 +570,11 @@ Configure these in **Settings → Secrets and variables → Actions**:
 
 ### Deployment Behavior
 
-| Branch | Trigger | Deploy To | Status |
-|--------|---------|-----------|--------|
-| `main` | Push | Production | Auto |
-| `feature/*` | PR | Preview Channel | Auto |
-| Other branches | Manual | N/A | Manual |
+| Branch         | Trigger | Deploy To       | Status |
+| -------------- | ------- | --------------- | ------ |
+| `main`         | Push    | Production      | Auto   |
+| `feature/*`    | PR      | Preview Channel | Auto   |
+| Other branches | Manual  | N/A             | Manual |
 
 ---
 
@@ -575,6 +601,7 @@ PORT=5000
 ### Production Environment
 
 For Firebase Hosting, environment variables should be:
+
 - Built into the client bundle at build time (for public config)
 - Stored in Firebase Environment Config (for backend/functions)
 - Never hardcoded in source code
@@ -582,11 +609,13 @@ For Firebase Hosting, environment variables should be:
 ### Environment Variable Usage
 
 **Client-side (Vite):**
+
 - Prefix with `VITE_` to expose to client
 - Access via `import.meta.env.VITE_*`
 - Only include non-sensitive data
 
 **Server-side:**
+
 - Access via `process.env.*`
 - Can include sensitive data
 - Set in `.env` locally or hosting platform
@@ -603,10 +632,12 @@ For Firebase Hosting, environment variables should be:
    - Enable Firebase Hosting
 
 2. **Initialize Firebase (one-time)**
+
    ```bash
    firebase login
    firebase init hosting
    ```
+
    - Select your Firebase project
    - Set public directory to `dist/public`
    - Configure as single-page app: Yes
@@ -629,11 +660,7 @@ For Firebase Hosting, environment variables should be:
 {
   "hosting": {
     "public": "dist/public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
@@ -645,6 +672,7 @@ For Firebase Hosting, environment variables should be:
 ```
 
 **Key Settings:**
+
 - `public`: Build output directory
 - `rewrites`: Enables SPA routing (all routes serve index.html)
 
@@ -674,23 +702,27 @@ firebase open hosting
 **Solution:** Ensure `vite.config.ts` exists and has correct configuration
 
 **Issue:** Module not found errors
-**Solution:** 
+**Solution:**
+
 ```bash
 rm -rf node_modules package-lock.json
 npm install
 ```
 
 **Issue:** TypeScript errors
-**Solution:** 
+**Solution:**
+
 ```bash
 npm run check
 ```
+
 Fix reported errors in source files
 
 ### Development Server Issues
 
 **Issue:** Port already in use
 **Solution:** Change PORT in .env or kill process using port:
+
 ```bash
 # Find process
 lsof -i :5000
@@ -699,7 +731,8 @@ kill -9 <PID>
 ```
 
 **Issue:** Hot reload not working
-**Solution:** 
+**Solution:**
+
 - Clear browser cache
 - Restart dev server
 - Check for console errors
@@ -710,14 +743,16 @@ kill -9 <PID>
 **Solution:** Update `.firebaserc` with correct project ID
 
 **Issue:** "Authentication error"
-**Solution:** 
+**Solution:**
+
 ```bash
 firebase logout
 firebase login
 ```
 
 **Issue:** "Deployment failed"
-**Solution:** 
+**Solution:**
+
 - Ensure build succeeded (`npm run build`)
 - Check `dist/public/` exists and has files
 - Verify Firebase project permissions
@@ -725,7 +760,8 @@ firebase login
 ### CI/CD Issues
 
 **Issue:** GitHub Actions workflow failing
-**Solution:** 
+**Solution:**
+
 - Check workflow logs in Actions tab
 - Verify GitHub secrets are set correctly
 - Ensure secret name matches workflow file

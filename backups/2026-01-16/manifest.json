@@ -1,0 +1,65 @@
+{
+  "backupDate": "2026-01-16T02:20:33.422Z",
+  "backupId": "backup_2026-01-16",
+  "timestamp": "2026-01-16",
+  "collections": {
+    "bookings": {
+      "documentCount": 15,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 2453
+    },
+    "ads_imports": {
+      "documentCount": 63,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 8848
+    },
+    "seo_topics": {
+      "documentCount": 100,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 8093
+    },
+    "seo_drafts": {
+      "documentCount": 97,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 7849
+    },
+    "image_metadata": {
+      "documentCount": 17,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 1437
+    },
+    "audit_logs": {
+      "documentCount": 97,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 7849
+    },
+    "gsc_pages": {
+      "documentCount": 15,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 1192
+    },
+    "settings": {
+      "documentCount": 48,
+      "hasError": false,
+      "error": null,
+      "sizeBytes": 3784
+    }
+  },
+  "totals": {
+    "collectionCount": 8,
+    "documentCount": 452,
+    "errors": 0
+  },
+  "metadata": {
+    "version": "1.0",
+    "generator": "backup-firestore.mjs",
+    "projectId": "royalcarriagelimoseo"
+  }
+}

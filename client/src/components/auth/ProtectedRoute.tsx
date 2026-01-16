@@ -1,7 +1,7 @@
-import React from 'react';
-import { Redirect } from 'wouter';
-import { useAuth } from '@/contexts/AuthContext';
-import { UserRole, hasPermission } from '@/lib/firebase';
+import React from "react";
+import { Redirect } from "wouter";
+import { useAuth } from "@/contexts/AuthContext";
+import { UserRole, hasPermission } from "@/lib/firebase";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,10 +9,10 @@ interface ProtectedRouteProps {
   redirectTo?: string;
 }
 
-export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ 
-  children, 
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
   requiredRole = UserRole.VIEWER,
-  redirectTo = '/login' 
+  redirectTo = "/login",
 }) => {
   const { user, userData, loading } = useAuth();
 
@@ -35,9 +35,15 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-gray-600">You don't have permission to access this page.</p>
-          <p className="text-sm text-gray-500 mt-2">Required role: {requiredRole}</p>
+          <h1 className="text-2xl font-bold text-red-600 mb-4">
+            Access Denied
+          </h1>
+          <p className="text-gray-600">
+            You don't have permission to access this page.
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            Required role: {requiredRole}
+          </p>
           <p className="text-sm text-gray-500">Your role: {userData.role}</p>
         </div>
       </div>

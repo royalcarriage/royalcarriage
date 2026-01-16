@@ -39,7 +39,7 @@ The Firebase system has three layers that need to be connected:
                   ├─→ Firestore (read/write analysis data)
                   ├─→ Vertex AI (AI processing)
                   └─→ Firebase Storage (store images)
-                  
+
 ┌─────────────────────────────────────────────────────────────┐
 │          Firebase Functions (functions/src/index.ts)         │
 │  Functions: triggerPageAnalysis, generateContent, etc.      │
@@ -58,6 +58,7 @@ The Firebase system has three layers that need to be connected:
 **Location:** `client/src/pages/admin/PageAnalyzer.tsx:52`
 
 **Current State:**
+
 ```typescript
 // TODO: Replace with actual API call to /api/ai/batch-analyze
 // This is currently using mock data for demonstration purposes
@@ -70,38 +71,40 @@ The Firebase system has three layers that need to be connected:
 ```
 
 **What's Needed:**
+
 1. Uncomment and enable the API call
 2. Add authentication headers (Bearer token)
 3. Handle loading states and errors
 4. Display real results instead of mock data
 
 **Implementation:**
+
 ```typescript
 const handleAnalyzePages = async () => {
   setAnalyzing(true);
-  
+
   try {
     // Get auth token (from Firebase Auth context)
     const token = await user.getIdToken();
-    
+
     // Call backend API
-    const response = await fetch('/api/ai/batch-analyze', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+    const response = await fetch("/api/ai/batch-analyze", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ pages: websitePages })
+      body: JSON.stringify({ pages: websitePages }),
     });
-    
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
-    
+
     const data = await response.json();
     setResults(data.results);
   } catch (error) {
-    console.error('Analysis failed:', error);
+    console.error("Analysis failed:", error);
     // Show error toast/notification
   } finally {
     setAnalyzing(false);
@@ -110,6 +113,7 @@ const handleAnalyzePages = async () => {
 ```
 
 **Files to Modify:**
+
 - `client/src/pages/admin/PageAnalyzer.tsx` - Connect to API
 - Add authentication context provider if missing
 - Update UI to handle real data format
@@ -121,6 +125,7 @@ const handleAnalyzePages = async () => {
 **Location:** `functions/src/index.ts:168`
 
 **Current State:**
+
 ```typescript
 // TODO: Replace with actual AI analysis using PageAnalyzer
 // This is currently using mock data for demonstration
@@ -136,13 +141,14 @@ const analysis = {
   seoScore: Math.floor(Math.random() * 40) + 60,
   contentScore: Math.floor(Math.random() * 40) + 60,
   analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-  status: 'completed',
+  status: "completed",
 };
 ```
 
 **Challenge:**
+
 - Firebase Functions run in isolated environment
-- Cannot directly import from `../../server/ai/` 
+- Cannot directly import from `../../server/ai/`
 - Need to either:
   1. Copy AI classes to functions/src/
   2. Deploy as separate microservice
@@ -151,68 +157,76 @@ const analysis = {
 **Recommended Solution: Option 3 - Functions call Backend API**
 
 ```typescript
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import fetch from 'node-fetch'; // Install: npm install node-fetch
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import fetch from "node-fetch"; // Install: npm install node-fetch
 
-export const triggerPageAnalysis = functions.https.onRequest(async (req, res) => {
-  // ... authentication and validation ...
-  
-  try {
-    // Call backend API instead of using PageAnalyzer directly
-    const backendUrl = process.env.BACKEND_API_URL || 'https://your-backend-url.com';
-    
-    const analysisResponse = await fetch(`${backendUrl}/api/ai/analyze-page`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': req.headers.authorization || '', // Forward auth
-      },
-      body: JSON.stringify({
+export const triggerPageAnalysis = functions.https.onRequest(
+  async (req, res) => {
+    // ... authentication and validation ...
+
+    try {
+      // Call backend API instead of using PageAnalyzer directly
+      const backendUrl =
+        process.env.BACKEND_API_URL || "https://your-backend-url.com";
+
+      const analysisResponse = await fetch(
+        `${backendUrl}/api/ai/analyze-page`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: req.headers.authorization || "", // Forward auth
+          },
+          body: JSON.stringify({
+            pageUrl: sanitizedPageUrl,
+            pageName: sanitizedPageName,
+            pageContent: pageContent,
+          }),
+        },
+      );
+
+      if (!analysisResponse.ok) {
+        throw new Error(`Backend API error: ${analysisResponse.status}`);
+      }
+
+      const analysisData = await analysisResponse.json();
+
+      // Store in Firestore
+      const docRef = await admin.firestore().collection("page_analyses").add({
         pageUrl: sanitizedPageUrl,
         pageName: sanitizedPageName,
-        pageContent: pageContent,
-      }),
-    });
-    
-    if (!analysisResponse.ok) {
-      throw new Error(`Backend API error: ${analysisResponse.status}`);
+        seoScore: analysisData.analysis.seoScore,
+        contentScore: analysisData.analysis.contentScore,
+        recommendations: analysisData.analysis.recommendations,
+        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+        status: "completed",
+      });
+
+      res.status(200).json({
+        success: true,
+        analysisId: docRef.id,
+        analysis: analysisData.analysis,
+      });
+    } catch (error) {
+      console.error("Page analysis failed:", error);
+      res.status(500).json({
+        error: "Analysis failed",
+        message: error instanceof Error ? error.message : "Unknown error",
+      });
     }
-    
-    const analysisData = await analysisResponse.json();
-    
-    // Store in Firestore
-    const docRef = await admin.firestore().collection('page_analyses').add({
-      pageUrl: sanitizedPageUrl,
-      pageName: sanitizedPageName,
-      seoScore: analysisData.analysis.seoScore,
-      contentScore: analysisData.analysis.contentScore,
-      recommendations: analysisData.analysis.recommendations,
-      analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-      status: 'completed',
-    });
-    
-    res.status(200).json({
-      success: true,
-      analysisId: docRef.id,
-      analysis: analysisData.analysis,
-    });
-  } catch (error) {
-    console.error('Page analysis failed:', error);
-    res.status(500).json({
-      error: 'Analysis failed',
-      message: error instanceof Error ? error.message : 'Unknown error',
-    });
-  }
-});
+  },
+);
 ```
 
 **Files to Modify:**
+
 - `functions/src/index.ts` - All 3 HTTP functions (triggerPageAnalysis, generateContent, generateImage)
 - `functions/package.json` - Add `node-fetch` dependency
 - `.env` / Firebase Functions config - Add `BACKEND_API_URL`
 
 **Alternative: Copy AI Classes to Functions (Not Recommended)**
+
 ```bash
 # This creates duplication but works
 cp -r server/ai functions/src/
@@ -226,11 +240,13 @@ cp -r server/ai functions/src/
 **Location:** `server/ai/content-generator.ts`, `server/ai/image-generator.ts`
 
 **Current State:**
+
 - Services are implemented
 - Gracefully fall back to templates if credentials missing
 - Need Google Cloud credentials to enable AI
 
 **What's Needed:**
+
 ```env
 # .env file
 GOOGLE_CLOUD_PROJECT=your-project-id
@@ -239,6 +255,7 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
 ```
 
 **Service Account Setup:**
+
 ```bash
 # 1. Create service account
 gcloud iam service-accounts create vertex-ai-service \
@@ -258,6 +275,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/vertex-ai-key.json"
 ```
 
 **Status Check:**
+
 ```typescript
 // In server/ai/content-generator.ts
 // If Vertex AI is configured, it will use AI
@@ -271,6 +289,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/vertex-ai-key.json"
 ### Phase 1: Critical Setup (Before Any Integration)
 
 **1.1 Configure Firebase Project**
+
 ```bash
 # Update .firebaserc with actual project ID
 {
@@ -281,6 +300,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="/path/to/vertex-ai-key.json"
 ```
 
 **1.2 Set Environment Variables**
+
 ```bash
 # Copy and configure
 cp .env.example .env
@@ -293,33 +313,34 @@ ALLOWED_ORIGINS=https://your-domain.com
 ```
 
 **1.3 Create Admin User**
+
 ```javascript
 // Run once to create first admin
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
 
 async function createAdmin() {
   const userRecord = await admin.auth().createUser({
-    email: 'admin@yourdomain.com',
-    password: 'secure-password',
+    email: "admin@yourdomain.com",
+    password: "secure-password",
     emailVerified: true,
   });
-  
+
   // Set custom claims for Storage rules
-  await admin.auth().setCustomUserClaims(userRecord.uid, { 
-    role: 'admin' 
+  await admin.auth().setCustomUserClaims(userRecord.uid, {
+    role: "admin",
   });
-  
+
   // Create Firestore document for Firestore rules
-  await admin.firestore().collection('users').doc(userRecord.uid).set({
+  await admin.firestore().collection("users").doc(userRecord.uid).set({
     id: userRecord.uid,
-    username: 'admin',
-    email: 'admin@yourdomain.com',
-    role: 'admin',
+    username: "admin",
+    email: "admin@yourdomain.com",
+    role: "admin",
     createdAt: admin.firestore.FieldValue.serverTimestamp(),
   });
-  
-  console.log('Admin created:', userRecord.uid);
+
+  console.log("Admin created:", userRecord.uid);
 }
 
 createAdmin();
@@ -332,12 +353,14 @@ createAdmin();
 **2.1 Deploy Backend to Firebase Hosting or Cloud Run**
 
 Option A: Firebase Hosting (Static + Functions)
+
 ```bash
 # Backend runs as Express in Cloud Functions
 firebase deploy --only hosting,functions
 ```
 
 Option B: Cloud Run (Better for Backend API)
+
 ```bash
 # Build container
 docker build -t gcr.io/your-project/backend .
@@ -354,6 +377,7 @@ gcloud run deploy backend \
 ```
 
 **2.2 Update Firebase Functions to Call Backend**
+
 ```bash
 # In functions directory
 npm install node-fetch
@@ -363,6 +387,7 @@ firebase functions:config:set backend.api.url="https://your-backend-url.com"
 ```
 
 **2.3 Connect Functions to Backend API**
+
 - Edit `functions/src/index.ts`
 - Replace mock data with fetch calls to backend
 - Test with emulators first
@@ -372,10 +397,11 @@ firebase functions:config:set backend.api.url="https://your-backend-url.com"
 ### Phase 3: Admin Dashboard → Backend Integration
 
 **3.1 Add Firebase Auth to Client**
+
 ```typescript
 // client/src/lib/firebase-client.ts
-import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -389,6 +415,7 @@ export const auth = getAuth(app);
 ```
 
 **3.2 Create Auth Context**
+
 ```typescript
 // client/src/contexts/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -435,40 +462,41 @@ export const useAuth = () => {
 ```
 
 **3.3 Update PageAnalyzer to Call API**
+
 ```typescript
 // client/src/pages/admin/PageAnalyzer.tsx
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function PageAnalyzer() {
   const { getToken } = useAuth();
-  
+
   const handleAnalyzePages = async () => {
     setAnalyzing(true);
-    
+
     try {
       const token = await getToken();
-      
-      const response = await fetch('/api/ai/batch-analyze', {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+
+      const response = await fetch("/api/ai/batch-analyze", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ pages: websitePages })
+        body: JSON.stringify({ pages: websitePages }),
       });
-      
-      if (!response.ok) throw new Error('Analysis failed');
-      
+
+      if (!response.ok) throw new Error("Analysis failed");
+
       const data = await response.json();
       setResults(data.results);
     } catch (error) {
-      console.error('Analysis error:', error);
+      console.error("Analysis error:", error);
       // Show error notification
     } finally {
       setAnalyzing(false);
     }
   };
-  
+
   // ... rest of component
 }
 ```
@@ -478,23 +506,27 @@ export default function PageAnalyzer() {
 ### Phase 4: Enable Vertex AI (Optional but Recommended)
 
 **4.1 Enable APIs**
+
 ```bash
 gcloud services enable aiplatform.googleapis.com
 gcloud services enable vertexai.googleapis.com
 ```
 
 **4.2 Create Service Account**
+
 ```bash
 # See "Vertex AI → Content/Image Generators" section above
 ```
 
 **4.3 Set Credentials**
+
 ```bash
 # In .env
 GOOGLE_APPLICATION_CREDENTIALS=/path/to/vertex-ai-key.json
 ```
 
 **4.4 Test AI Services**
+
 ```bash
 # Test content generation
 curl -X POST http://localhost:5000/api/ai/generate-content \
@@ -521,6 +553,7 @@ cd client && npm run dev
 ```
 
 **Test Flow:**
+
 1. Login to admin dashboard → Gets Firebase Auth token
 2. Click "Analyze Pages" → Calls backend API with token
 3. Backend processes → Returns real analysis
@@ -531,6 +564,7 @@ cd client && npm run dev
 ## Environment Configuration Summary
 
 **Required for Basic Operation:**
+
 ```env
 NODE_ENV=production
 PORT=5000
@@ -540,6 +574,7 @@ ALLOWED_ORIGINS=https://your-domain.com
 ```
 
 **Required for Full AI Features:**
+
 ```env
 GOOGLE_CLOUD_PROJECT=your-firebase-project-id
 GOOGLE_CLOUD_LOCATION=us-central1
@@ -547,6 +582,7 @@ GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json
 ```
 
 **Optional:**
+
 ```env
 SCHEDULED_TIMEZONE=America/Chicago
 PAGES_TO_ANALYZE=/,/ohare-airport-limo,...
@@ -559,30 +595,35 @@ BACKEND_API_URL=https://your-backend-url.com
 ## Deployment Checklist
 
 ### Pre-Integration
+
 - [ ] `.firebaserc` updated with project ID
 - [ ] `.env` configured with all required variables
 - [ ] Admin user created with custom claims
 - [ ] Service account created for Vertex AI (optional)
 
 ### Backend Integration
+
 - [ ] Backend deployed (Firebase Functions or Cloud Run)
 - [ ] Backend API URL configured
 - [ ] Functions updated to call backend API
 - [ ] Authentication forwarding working
 
 ### Frontend Integration
+
 - [ ] Firebase client SDK initialized
 - [ ] Auth context provider added
 - [ ] PageAnalyzer connected to API
 - [ ] Other admin pages connected (AITools, ImageGallery)
 
 ### Vertex AI Integration (Optional)
+
 - [ ] Vertex AI API enabled
 - [ ] Service account with permissions
 - [ ] Credentials file configured
 - [ ] Test AI endpoints
 
 ### Validation
+
 - [ ] Can login to admin dashboard
 - [ ] Can trigger page analysis (gets real results)
 - [ ] Can generate content (gets AI or template)
@@ -630,21 +671,25 @@ node scripts/create-admin.js
 ## Troubleshooting
 
 ### "Authentication required" errors
+
 - Check admin user has custom claims set
 - Verify token is being sent in Authorization header
 - Check token hasn't expired
 
 ### "CORS error" in browser
+
 - Verify ALLOWED_ORIGINS includes your domain
 - Check backend is returning proper CORS headers
 - In development, ensure localhost is allowed
 
 ### "Analysis failed" errors
+
 - Check backend API is accessible from Functions
 - Verify BACKEND_API_URL is set correctly
 - Check service account permissions
 
 ### Mock data still showing
+
 - Verify fetch call is uncommented
 - Check network tab for API calls
 - Ensure no errors in console

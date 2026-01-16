@@ -19,12 +19,14 @@ This guide covers monitoring, logging, and observability setup for the Royal Car
 Firebase provides built-in monitoring for Functions, Firestore, and Hosting.
 
 **Access Monitoring:**
+
 ```bash
 # Open Firebase Console
 https://console.firebase.google.com/project/{your-project}/overview
 ```
 
 **Key Metrics to Monitor:**
+
 - Function invocations and errors
 - Function execution time
 - Firestore reads/writes
@@ -52,10 +54,10 @@ Setup error tracking for the application:
 
 ```typescript
 // In your application
-import { getAnalytics, logEvent } from 'firebase/analytics';
+import { getAnalytics, logEvent } from "firebase/analytics";
 
 function trackError(error: Error, context: Record<string, any>) {
-  logEvent(analytics, 'error', {
+  logEvent(analytics, "error", {
     error_message: error.message,
     error_stack: error.stack,
     ...context,
@@ -68,12 +70,14 @@ function trackError(error: Error, context: Record<string, any>) {
 Errors in Firebase Functions are automatically sent to Cloud Error Reporting:
 
 **View Errors:**
+
 ```bash
 # Open Cloud Console
 https://console.cloud.google.com/errors?project={your-project}
 ```
 
 **Configure Error Notifications:**
+
 ```bash
 # Create error notification channel
 gcloud beta error-reporting events list \
@@ -89,20 +93,20 @@ Add Performance Monitoring SDK to track app performance:
 
 ```typescript
 // client/src/lib/performance.ts
-import { getPerformance, trace } from 'firebase/performance';
+import { getPerformance, trace } from "firebase/performance";
 
 const perf = getPerformance();
 
 export async function measureImageGeneration(fn: () => Promise<any>) {
-  const t = trace(perf, 'image_generation');
+  const t = trace(perf, "image_generation");
   t.start();
-  
+
   try {
     const result = await fn();
-    t.putMetric('success', 1);
+    t.putMetric("success", 1);
     return result;
   } catch (error) {
-    t.putMetric('error', 1);
+    t.putMetric("error", 1);
     throw error;
   } finally {
     t.stop();
@@ -118,14 +122,14 @@ Track custom metrics for AI operations:
 // server/ai/metrics.ts
 export class PerformanceMetrics {
   private metrics: Map<string, number[]> = new Map();
-  
+
   record(metricName: string, value: number) {
     if (!this.metrics.has(metricName)) {
       this.metrics.set(metricName, []);
     }
     this.metrics.get(metricName)!.push(value);
   }
-  
+
   getStats(metricName: string) {
     const values = this.metrics.get(metricName) || [];
     return {
@@ -148,47 +152,53 @@ Implement structured logging for better queryability:
 // server/lib/logger.ts
 export class Logger {
   private context: Record<string, any>;
-  
+
   constructor(context: Record<string, any> = {}) {
     this.context = context;
   }
-  
+
   info(message: string, data?: Record<string, any>) {
-    console.log(JSON.stringify({
-      severity: 'INFO',
-      message,
-      timestamp: new Date().toISOString(),
-      ...this.context,
-      ...data,
-    }));
+    console.log(
+      JSON.stringify({
+        severity: "INFO",
+        message,
+        timestamp: new Date().toISOString(),
+        ...this.context,
+        ...data,
+      }),
+    );
   }
-  
+
   error(message: string, error?: Error, data?: Record<string, any>) {
-    console.error(JSON.stringify({
-      severity: 'ERROR',
-      message,
-      error: error?.message,
-      stack: error?.stack,
-      timestamp: new Date().toISOString(),
-      ...this.context,
-      ...data,
-    }));
+    console.error(
+      JSON.stringify({
+        severity: "ERROR",
+        message,
+        error: error?.message,
+        stack: error?.stack,
+        timestamp: new Date().toISOString(),
+        ...this.context,
+        ...data,
+      }),
+    );
   }
-  
+
   warn(message: string, data?: Record<string, any>) {
-    console.warn(JSON.stringify({
-      severity: 'WARNING',
-      message,
-      timestamp: new Date().toISOString(),
-      ...this.context,
-      ...data,
-    }));
+    console.warn(
+      JSON.stringify({
+        severity: "WARNING",
+        message,
+        timestamp: new Date().toISOString(),
+        ...this.context,
+        ...data,
+      }),
+    );
   }
 }
 
 // Usage
-const logger = new Logger({ service: 'image-generation' });
-logger.info('Image generation started', { userId, purpose });
+const logger = new Logger({ service: "image-generation" });
+logger.info("Image generation started", { userId, purpose });
 ```
 
 ### Log Queries
@@ -219,6 +229,7 @@ gcloud logging sinks create image-gen-logs \
 Budget alerts are covered in COST_MONITORING_SETUP.md, but here are additional alerts:
 
 **Function Error Rate Alert:**
+
 ```bash
 # Create alerting policy for high error rate
 gcloud alpha monitoring policies create \
@@ -230,6 +241,7 @@ gcloud alpha monitoring policies create \
 ```
 
 **Response Time Alert:**
+
 ```bash
 # Alert on slow function execution
 gcloud alpha monitoring policies create \
@@ -276,7 +288,7 @@ mosaicLayout:
                   aggregation:
                     alignmentPeriod: 60s
                     perSeriesAligner: ALIGN_RATE
-    
+
     - width: 6
       height: 4
       widget:
@@ -286,7 +298,7 @@ mosaicLayout:
             - timeSeriesQuery:
                 timeSeriesFilter:
                   filter: 'resource.type="cloud_function" AND metric.type="cloudfunctions.googleapis.com/function/execution_count" AND metric.label.status="error"'
-    
+
     - width: 6
       height: 4
       widget:
@@ -299,7 +311,7 @@ mosaicLayout:
                   aggregation:
                     alignmentPeriod: 60s
                     perSeriesAligner: ALIGN_DELTA
-    
+
     - width: 6
       height: 4
       widget:
@@ -314,6 +326,7 @@ mosaicLayout:
 ```
 
 **Create Dashboard:**
+
 ```bash
 gcloud monitoring dashboards create --config-from-file=monitoring-dashboard.yaml
 ```
@@ -325,16 +338,19 @@ For Firestore usage statistics:
 ```typescript
 // Track daily image generation stats
 async function recordDailyStats(userId: string, purpose: string) {
-  const today = new Date().toISOString().split('T')[0];
-  const statsRef = db.collection('usage_stats').doc(`${userId}_${today}`);
-  
-  await statsRef.set({
-    userId,
-    date: today,
-    imageGenerations: FieldValue.increment(1),
-    purposes: FieldValue.arrayUnion(purpose),
-    lastGeneration: FieldValue.serverTimestamp(),
-  }, { merge: true });
+  const today = new Date().toISOString().split("T")[0];
+  const statsRef = db.collection("usage_stats").doc(`${userId}_${today}`);
+
+  await statsRef.set(
+    {
+      userId,
+      date: today,
+      imageGenerations: FieldValue.increment(1),
+      purposes: FieldValue.arrayUnion(purpose),
+      lastGeneration: FieldValue.serverTimestamp(),
+    },
+    { merge: true },
+  );
 }
 ```
 
@@ -346,13 +362,13 @@ Create health check endpoints:
 
 ```typescript
 // server/api/health.ts
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
-router.get('/health', async (req, res) => {
+router.get("/health", async (req, res) => {
   const health = {
-    status: 'ok',
+    status: "ok",
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     checks: {
@@ -361,36 +377,38 @@ router.get('/health', async (req, res) => {
       firestore: await checkFirestore(),
     },
   };
-  
-  const allHealthy = Object.values(health.checks).every(c => c.status === 'ok');
+
+  const allHealthy = Object.values(health.checks).every(
+    (c) => c.status === "ok",
+  );
   res.status(allHealthy ? 200 : 503).json(health);
 });
 
 async function checkVertexAI() {
   try {
     // Lightweight check
-    return { status: 'ok', message: 'Vertex AI accessible' };
+    return { status: "ok", message: "Vertex AI accessible" };
   } catch (error) {
-    return { status: 'error', message: error.message };
+    return { status: "error", message: error.message };
   }
 }
 
 async function checkStorage() {
   try {
     // Check bucket accessibility
-    return { status: 'ok', message: 'Storage accessible' };
+    return { status: "ok", message: "Storage accessible" };
   } catch (error) {
-    return { status: 'error', message: error.message };
+    return { status: "error", message: error.message };
   }
 }
 
 async function checkFirestore() {
   try {
     // Simple read operation
-    await db.collection('_health').doc('check').get();
-    return { status: 'ok', message: 'Firestore accessible' };
+    await db.collection("_health").doc("check").get();
+    return { status: "ok", message: "Firestore accessible" };
   } catch (error) {
-    return { status: 'error', message: error.message };
+    return { status: "error", message: error.message };
   }
 }
 

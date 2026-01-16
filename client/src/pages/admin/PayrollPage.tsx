@@ -3,7 +3,13 @@ import { AdminLayout } from "@/components/admin/AdminLayout";
 import { StatsCard, StatsGrid } from "@/components/admin/StatsCard";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -150,7 +156,8 @@ const currentPayouts: DriverPayout[] = [
 
 const statusColors: Record<PayoutBatch["status"], string> = {
   draft: "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
-  review: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
+  review:
+    "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
   approved: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",
   paid: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400",
 };
@@ -163,7 +170,9 @@ const statusLabels: Record<PayoutBatch["status"], string> = {
 };
 
 export default function PayrollPage() {
-  const [selectedDrivers, setSelectedDrivers] = useState<Set<string>>(new Set());
+  const [selectedDrivers, setSelectedDrivers] = useState<Set<string>>(
+    new Set(),
+  );
   const [isApproveDialogOpen, setIsApproveDialogOpen] = useState(false);
 
   const toggleDriver = (id: string) => {
@@ -260,7 +269,9 @@ export default function PayrollPage() {
                   <div>
                     <CardTitle className="flex items-center gap-2">
                       Week of Jan 8 - Jan 14, 2024
-                      <Badge className={statusColors.review}>{statusLabels.review}</Badge>
+                      <Badge className={statusColors.review}>
+                        {statusLabels.review}
+                      </Badge>
                     </CardTitle>
                     <CardDescription>
                       Review and approve driver payouts for this period
@@ -269,10 +280,14 @@ export default function PayrollPage() {
                   <div className="flex items-center gap-2">
                     {selectedDrivers.size > 0 && (
                       <span className="text-sm text-muted-foreground">
-                        {selectedDrivers.size} selected (${totalSelected.toLocaleString()})
+                        {selectedDrivers.size} selected ($
+                        {totalSelected.toLocaleString()})
                       </span>
                     )}
-                    <Dialog open={isApproveDialogOpen} onOpenChange={setIsApproveDialogOpen}>
+                    <Dialog
+                      open={isApproveDialogOpen}
+                      onOpenChange={setIsApproveDialogOpen}
+                    >
                       <DialogTrigger asChild>
                         <Button disabled={selectedDrivers.size === 0}>
                           <CheckCircle className="h-4 w-4 mr-2" />
@@ -283,24 +298,32 @@ export default function PayrollPage() {
                         <DialogHeader>
                           <DialogTitle>Approve Payouts</DialogTitle>
                           <DialogDescription>
-                            You are about to approve payouts for {selectedDrivers.size} drivers
-                            totaling ${totalSelected.toLocaleString()}.
+                            You are about to approve payouts for{" "}
+                            {selectedDrivers.size} drivers totaling $
+                            {totalSelected.toLocaleString()}.
                           </DialogDescription>
                         </DialogHeader>
                         <div className="py-4">
                           <div className="bg-muted rounded-lg p-4 space-y-2">
                             <div className="flex justify-between text-sm">
                               <span>Drivers</span>
-                              <span className="font-medium">{selectedDrivers.size}</span>
+                              <span className="font-medium">
+                                {selectedDrivers.size}
+                              </span>
                             </div>
                             <div className="flex justify-between text-sm">
                               <span>Total Payout</span>
-                              <span className="font-medium">${totalSelected.toLocaleString()}</span>
+                              <span className="font-medium">
+                                ${totalSelected.toLocaleString()}
+                              </span>
                             </div>
                           </div>
                         </div>
                         <DialogFooter>
-                          <Button variant="outline" onClick={() => setIsApproveDialogOpen(false)}>
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsApproveDialogOpen(false)}
+                          >
                             Cancel
                           </Button>
                           <Button onClick={() => setIsApproveDialogOpen(false)}>
@@ -319,7 +342,9 @@ export default function PayrollPage() {
                     <TableRow>
                       <TableHead className="w-12">
                         <Checkbox
-                          checked={selectedDrivers.size === currentPayouts.length}
+                          checked={
+                            selectedDrivers.size === currentPayouts.length
+                          }
                           onCheckedChange={toggleAllDrivers}
                         />
                       </TableHead>
@@ -353,15 +378,21 @@ export default function PayrollPage() {
                             </Avatar>
                             <div>
                               <p className="font-medium">{payout.driverName}</p>
-                              <p className="text-xs text-muted-foreground">{payout.driverEmail}</p>
+                              <p className="text-xs text-muted-foreground">
+                                {payout.driverEmail}
+                              </p>
                             </div>
                           </div>
                         </TableCell>
                         <TableCell>{payout.trips}</TableCell>
-                        <TableCell>${payout.grossAmount.toLocaleString()}</TableCell>
+                        <TableCell>
+                          ${payout.grossAmount.toLocaleString()}
+                        </TableCell>
                         <TableCell>
                           {payout.deductions > 0 ? (
-                            <span className="text-red-600">-${payout.deductions}</span>
+                            <span className="text-red-600">
+                              -${payout.deductions}
+                            </span>
                           ) : (
                             <span className="text-muted-foreground">$0</span>
                           )}
@@ -394,7 +425,9 @@ export default function PayrollPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Payout History</CardTitle>
-                <CardDescription>View past payout batches and their status</CardDescription>
+                <CardDescription>
+                  View past payout batches and their status
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <Table>
@@ -412,7 +445,9 @@ export default function PayrollPage() {
                   <TableBody>
                     {payoutBatches.map((batch) => (
                       <TableRow key={batch.id}>
-                        <TableCell className="font-medium">{batch.period}</TableCell>
+                        <TableCell className="font-medium">
+                          {batch.period}
+                        </TableCell>
                         <TableCell>
                           <Badge className={statusColors[batch.status]}>
                             {statusLabels[batch.status]}
@@ -441,10 +476,18 @@ export default function PayrollPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-1">
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <FileText className="h-4 w-4" />
                             </Button>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                            >
                               <Download className="h-4 w-4" />
                             </Button>
                           </div>
@@ -465,7 +508,8 @@ export default function PayrollPage() {
                   <div>
                     <CardTitle>Deductions</CardTitle>
                     <CardDescription>
-                      Manage driver deductions for damages, fuel cards, and chargebacks
+                      Manage driver deductions for damages, fuel cards, and
+                      chargebacks
                     </CardDescription>
                   </div>
                   <Button>
@@ -499,11 +543,17 @@ export default function PayrollPage() {
                       <TableCell>
                         <Badge variant="outline">Damage</Badge>
                       </TableCell>
-                      <TableCell className="text-red-600 font-medium">-$125</TableCell>
-                      <TableCell className="text-sm">Minor vehicle scratch repair</TableCell>
+                      <TableCell className="text-red-600 font-medium">
+                        -$125
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        Minor vehicle scratch repair
+                      </TableCell>
                       <TableCell>Jan 10, 2024</TableCell>
                       <TableCell>
-                        <Badge className="bg-green-100 text-green-800">Applied</Badge>
+                        <Badge className="bg-green-100 text-green-800">
+                          Applied
+                        </Badge>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -518,11 +568,17 @@ export default function PayrollPage() {
                       <TableCell>
                         <Badge variant="outline">Fuel Card</Badge>
                       </TableCell>
-                      <TableCell className="text-red-600 font-medium">-$200</TableCell>
-                      <TableCell className="text-sm">Fuel card overage - December</TableCell>
+                      <TableCell className="text-red-600 font-medium">
+                        -$200
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        Fuel card overage - December
+                      </TableCell>
                       <TableCell>Jan 5, 2024</TableCell>
                       <TableCell>
-                        <Badge className="bg-green-100 text-green-800">Applied</Badge>
+                        <Badge className="bg-green-100 text-green-800">
+                          Applied
+                        </Badge>
                       </TableCell>
                     </TableRow>
                     <TableRow>
@@ -537,11 +593,17 @@ export default function PayrollPage() {
                       <TableCell>
                         <Badge variant="outline">Chargeback</Badge>
                       </TableCell>
-                      <TableCell className="text-red-600 font-medium">-$85</TableCell>
-                      <TableCell className="text-sm">Customer dispute - Trip #4412</TableCell>
+                      <TableCell className="text-red-600 font-medium">
+                        -$85
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        Customer dispute - Trip #4412
+                      </TableCell>
                       <TableCell>Jan 12, 2024</TableCell>
                       <TableCell>
-                        <Badge className="bg-amber-100 text-amber-800">Pending Review</Badge>
+                        <Badge className="bg-amber-100 text-amber-800">
+                          Pending Review
+                        </Badge>
                       </TableCell>
                     </TableRow>
                   </TableBody>
