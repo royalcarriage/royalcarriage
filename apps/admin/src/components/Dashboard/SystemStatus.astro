@@ -1,0 +1,120 @@
+---
+const systems = [
+  { name: 'Firebase Hosting', status: 'operational', icon: '🌐' },
+  { name: 'Firestore Database', status: 'operational', icon: '💾' },
+  { name: 'Cloud Functions', status: 'operational', icon: '⚡' },
+  { name: 'Firebase Auth', status: 'operational', icon: '🔐' },
+  { name: 'Storage Bucket', status: 'operational', icon: '📦' },
+];
+---
+
+<div class="system-status">
+  <h3>System Status</h3>
+  <div class="status-list">
+    {systems.map(system => (
+      <div class="status-item">
+        <div class="status-icon">{system.icon}</div>
+        <div class="status-content">
+          <span class="status-name">{system.name}</span>
+        </div>
+        <div class={`status-badge ${system.status}`}>
+          <span class="status-indicator"></span>
+          <span>{system.status}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+  <div class="status-footer">
+    <a href="https://status.firebase.google.com" target="_blank" rel="noopener noreferrer">
+      View Firebase Status →
+    </a>
+  </div>
+</div>
+
+<style>
+  .system-status {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .system-status h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+
+  .status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f9fafb;
+  }
+
+  .status-icon {
+    font-size: 20px;
+  }
+
+  .status-content {
+    flex: 1;
+  }
+
+  .status-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .status-badge.operational {
+    background: #d1fae5;
+    color: #065f46;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status-badge.operational .status-indicator {
+    background: #10b981;
+  }
+
+  .status-footer {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+  }
+
+  .status-footer a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .status-footer a:hover {
+    text-decoration: underline;
+  }
+</style>

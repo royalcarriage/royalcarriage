@@ -1,0 +1,34 @@
+---
+import { MainLayout } from '@royal-carriage/ui';
+---
+
+<MainLayout
+  title="Chicago Airport Limo Service | O'Hare & Midway Black Car"
+  description="Premium Chicago airport transportation. Professional black car service to O'Hare and Midway airports."
+  siteTitle="Chicago Airport Black Car"
+  navLinks={[
+    { href: '/', text: 'Home' },
+    { href: '/fleet', text: 'Fleet' },
+    { href: '/pricing', text: 'Pricing' },
+    { href: '/contact', text: 'Contact' }
+  ]}
+  utmSource="airport"
+>
+  <div class="container mx-auto p-8">
+    <h1 class="text-5xl font-bold mb-6">Chicago Airport Black Car Service</h1>
+    <p class="text-xl mb-4">
+      Experience luxury airport transportation with our professional black car service.
+      Reliable rides to O'Hare (ORD) and Midway (MDW) airports.
+    </p>
+    <div class="grid md:grid-cols-2 gap-8 mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">O'Hare Airport</h2>
+        <p>Premium transportation to and from O'Hare International Airport (ORD)</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-4">Midway Airport</h2>
+        <p>Reliable service to and from Midway International Airport (MDW)</p>
+      </div>
+    </div>
+  </div>
+</MainLayout>

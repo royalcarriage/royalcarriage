@@ -1,0 +1,195 @@
+---
+export interface Props {
+  title?: string;
+}
+
+const { title = "Admin Dashboard" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Royal Carriage</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        background: #f5f7fa;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h1>🚗 Royal Carriage</h1>
+          <p>Admin Portal</p>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="/" class="nav-item active">
+            <span class="icon">📊</span>
+            <span>Dashboard</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">📝</span>
+            <span>Bookings</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">🚙</span>
+            <span>Fleet</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">👥</span>
+            <span>Customers</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">💰</span>
+            <span>Revenue</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">🔍</span>
+            <span>SEO</span>
+          </a>
+          <a href="#" class="nav-item">
+            <span class="icon">⚙️</span>
+            <span>Settings</span>
+          </a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <div class="main-content">
+        <!-- Top Bar -->
+        <header class="top-bar">
+          <div class="top-bar-left">
+            <h2>{title}</h2>
+          </div>
+          <div class="top-bar-right">
+            <div class="user-info">
+              <span>👤 Admin User</span>
+            </div>
+          </div>
+        </header>
+
+        <!-- Content Area -->
+        <main class="content">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <style>
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 260px;
+        background: #1a1f36;
+        color: white;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+      }
+
+      .sidebar-header {
+        padding: 24px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .sidebar-header h1 {
+        font-size: 20px;
+        margin-bottom: 4px;
+      }
+
+      .sidebar-header p {
+        font-size: 12px;
+        color: #8b92a7;
+      }
+
+      .sidebar-nav {
+        padding: 16px 0;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 20px;
+        color: #8b92a7;
+        text-decoration: none;
+        transition: all 0.2s;
+      }
+
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: white;
+      }
+
+      .nav-item.active {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        border-right: 3px solid #3b82f6;
+      }
+
+      .nav-item .icon {
+        margin-right: 12px;
+        font-size: 18px;
+      }
+
+      .main-content {
+        flex: 1;
+        margin-left: 260px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .top-bar {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 16px 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .top-bar h2 {
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .content {
+        padding: 32px;
+        flex: 1;
+      }
+
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .main-content {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </body>
+</html>

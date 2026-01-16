@@ -5,22 +5,11 @@
   "targets": {
     "royalcarriagelimoseo": {
       "hosting": {
-        "admin": [
-          "royalcarriagelimoseo",
-          "royalcarriageseo-admin"
-        ],
-        "airport": [
-          "chicagoairportblackcar"
-        ],
-        "partybus": [
-          "chicago-partybus"
-        ],
-        "executive": [
-          "chicagoexecutivecarservice"
-        ],
-        "wedding": [
-          "chicagoweddingtransportation"
-        ]
+        "admin": ["royalcarriagelimoseo"],
+        "airport": ["chicagoairportblackcar"],
+        "partybus": ["chicago-partybus"],
+        "executive": ["chicagoexecutivecarservice"],
+        "wedding": ["chicagoweddingtransportation"]
       }
     }
   },

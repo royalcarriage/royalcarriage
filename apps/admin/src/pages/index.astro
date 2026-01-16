@@ -1,16 +1,91 @@
 ---
-import { MainLayout } from '@royal-carriage/ui';
+import AdminLayout from '../components/AdminLayout.astro';
+import SiteSelector from '../components/Dashboard/SiteSelector.astro';
+import KPICard from '../components/Dashboard/KPICard.astro';
+import QuickActions from '../components/Dashboard/QuickActions.astro';
+import RecentActivity from '../components/Dashboard/RecentActivity.astro';
+import SystemStatus from '../components/Dashboard/SystemStatus.astro';
 ---
 
-<MainLayout
-  title="Admin Dashboard"
-  description="Admin dashboard for Royal Carriage"
-  siteTitle="Admin Dashboard"
-  navLinks={[]}
-  utmSource="admin"
->
-  <div class="container mx-auto p-4">
-    <h1 class="text-4xl font-bold">Admin Dashboard</h1>
-    <p class="mt-4">Welcome to the admin dashboard.</p>
+<AdminLayout title="Dashboard">
+  <SiteSelector />
+
+  <!-- KPI Cards Grid -->
+  <div class="kpi-grid">
+    <KPICard 
+      title="Total Revenue"
+      value="$24,380"
+      change="+12.5% from last month"
+      trend="up"
+      icon="💰"
+    />
+    <KPICard 
+      title="Bookings"
+      value="156"
+      change="+8.2% from last month"
+      trend="up"
+      icon="📝"
+    />
+    <KPICard 
+      title="SEO Score"
+      value="92/100"
+      change="+5 points"
+      trend="up"
+      icon="🔍"
+    />
+    <KPICard 
+      title="Page Views"
+      value="12.5K"
+      change="-2.4% from last month"
+      trend="down"
+      icon="👁️"
+    />
   </div>
-</MainLayout>
+
+  <!-- Dashboard Content Grid -->
+  <div class="dashboard-grid">
+    <div class="dashboard-col-2">
+      <QuickActions />
+    </div>
+    <div class="dashboard-col-1">
+      <SystemStatus />
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  <div class="dashboard-section">
+    <RecentActivity />
+  </div>
+
+  <style>
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    .dashboard-section {
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</AdminLayout>
