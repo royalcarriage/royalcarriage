@@ -23,7 +23,7 @@ interface PageAnalysis {
   error?: string;
 }
 
-export * from "./fleetFunctions";
+export * from "./dispatchFunctions";
 admin.initializeApp();
 
 // Helper function to get backend API URL
