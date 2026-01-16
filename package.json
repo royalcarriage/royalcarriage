@@ -180,7 +180,7 @@
     "@astrojs/sitemap": "^3.6.1",
     "@astrojs/tailwind": "^6.0.2",
     "@eslint/js": "^9.39.2",
-    "@firebase/rules-unit-testing": "^3.0.0",
+    "@firebase/rules-unit-testing": "^5.0.0",
     "@playwright/test": "^1.57.0",
     "@replit/vite-plugin-cartographer": "^0.4.4",
     "@replit/vite-plugin-dev-banner": "^0.1.1",
