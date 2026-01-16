@@ -30,8 +30,8 @@ env:
   PROJECT_ID: royalcarriagelimoseo
   BACKEND_ID: royalcarriage
   REGION: us-east4
-  BACKENDS: royalcarriage airport executive wedding partybus
-  HOSTING_TARGETS: hosting:admin,hosting:airport,hosting:executive,hosting:wedding,hosting:partybus
+  BACKENDS: royalcarriage airport corporate wedding partybus
+  HOSTING_TARGETS: hosting:admin,hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus
 
 permissions:
   contents: read

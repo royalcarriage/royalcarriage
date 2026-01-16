@@ -17,7 +17,7 @@ on:
         options:
           - airport
           - partybus
-          - executive
+          - corporate
           - wedding
           - all
       skip_tests:

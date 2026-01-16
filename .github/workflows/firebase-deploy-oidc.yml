@@ -43,7 +43,7 @@ jobs:
           FIREBASE_PROJECT: ${{ secrets.FIREBASE_PROJECT_ID || 'royalcarriagelimoseo' }}
         run: |
           echo "Deploying to project: $FIREBASE_PROJECT"
-          firebase deploy --project "$FIREBASE_PROJECT" --only hosting:admin,hosting:airport,hosting:executive,hosting:wedding,hosting:partybus,functions --non-interactive
+          firebase deploy --project "$FIREBASE_PROJECT" --only hosting:admin,hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus,functions --non-interactive
 
       - name: Notify
         run: echo "Firebase deploy complete"
