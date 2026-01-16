@@ -43,27 +43,30 @@ import {
 } from './pageGenerationFunctions';
 
 // Import quality scoring functions - PHASE 3
-// import {
-//   calculateContentQuality,
-//   bulkScoreContent,
-//   getQualityScoreSummary,
-// } from './qualityScoringFunctions';
+import {
+  calculateContentQuality,
+  bulkScoreContent,
+  getQualityScoreSummary,
+} from './qualityScoringFunctions';
 
 // Import auto-regeneration functions - PHASE 3
-// import {
-//   autoRegenerateContent,
-//   scheduledDailyRegeneration,
-//   processRegenerationQueue,
-//   getRegenerationStatus,
-// } from './autoRegenerationFunctions';
+import {
+  autoRegenerateContent,
+  scheduledDailyRegeneration,
+  processRegenerationQueue,
+  getRegenerationStatus,
+} from './autoRegenerationFunctions';
 
 // Import competitor analysis functions - PHASE 3
-// import {
-//   analyzeCompetitors,
-//   getCompetitorAnalysis,
-//   identifyServiceGaps,
-//   getKeywordOpportunities,
-// } from './competitorAnalysisFunctions';
+import {
+  analyzeCompetitors,
+  getCompetitorAnalysis,
+  identifyServiceGaps,
+  getKeywordOpportunities,
+} from './competitorAnalysisFunctions';
+
+// Import data initialization function - PHASE 4
+import { initializeProductionData } from './dataInitializationFunction';
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -477,28 +480,33 @@ export {
 // --- QUALITY SCORING FUNCTIONS - PHASE 3 ---
 
 // Export quality scoring functions
-// export {
-//   calculateContentQuality,
-//   bulkScoreContent,
-//   getQualityScoreSummary,
-// };
+export {
+  calculateContentQuality,
+  bulkScoreContent,
+  getQualityScoreSummary,
+};
 
 // --- AUTO-REGENERATION FUNCTIONS - PHASE 3 ---
 
 // Export auto-regeneration functions
-// export {
-//   autoRegenerateContent,
-//   scheduledDailyRegeneration,
-//   processRegenerationQueue,
-//   getRegenerationStatus,
-// };
+export {
+  autoRegenerateContent,
+  scheduledDailyRegeneration,
+  processRegenerationQueue,
+  getRegenerationStatus,
+};
 
 // --- COMPETITOR ANALYSIS FUNCTIONS - PHASE 3 ---
 
 // Export competitor analysis functions
-// export {
-//   analyzeCompetitors,
-//   getCompetitorAnalysis,
-//   identifyServiceGaps,
-//   getKeywordOpportunities,
-// };
+export {
+  analyzeCompetitors,
+  getCompetitorAnalysis,
+  identifyServiceGaps,
+  getKeywordOpportunities,
+};
+
+// --- PHASE 4: PRODUCTION DATA INITIALIZATION ---
+
+// Export data initialization function
+export { initializeProductionData };

@@ -3,6 +3,7 @@ import { aiRoutes } from "./ai/routes";
 import authRoutes from "./routes/auth";
 import usersRoutes from "./routes/users";
 import importsRoutes from "./routes/imports";
+import initializationRoutes from "./routes/initialization";
 
 export async function registerRoutes(app: Express) {
   // put application routes here
@@ -19,4 +20,7 @@ export async function registerRoutes(app: Express) {
 
   // Import routes (CSV imports for Moovs and Ads)
   app.use("/api/imports", importsRoutes);
+
+  // Initialization routes (Phase 4)
+  app.use("/api/init", initializationRoutes);
 }
