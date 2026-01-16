@@ -1,0 +1,105 @@
+---
+const activities = [
+  { icon: '📝', title: 'New booking created', detail: 'Airport pickup #1234', time: '2 mins ago', type: 'success' },
+  { icon: '💰', title: 'Payment received', detail: '$150.00 from John Doe', time: '15 mins ago', type: 'success' },
+  { icon: '🚙', title: 'Vehicle dispatched', detail: 'Black Sedan to O\'Hare', time: '1 hour ago', type: 'info' },
+  { icon: '⚠️', title: 'Low inventory alert', detail: 'Party bus availability', time: '2 hours ago', type: 'warning' },
+  { icon: '✅', title: 'Trip completed', detail: 'Wedding transport #567', time: '3 hours ago', type: 'success' },
+];
+---
+
+<div class="recent-activity">
+  <h3>Recent Activity</h3>
+  <div class="activity-list">
+    {activities.map(activity => (
+      <div class={`activity-item ${activity.type}`}>
+        <div class="activity-icon">{activity.icon}</div>
+        <div class="activity-content">
+          <h4>{activity.title}</h4>
+          <p>{activity.detail}</p>
+        </div>
+        <div class="activity-time">{activity.time}</div>
+      </div>
+    ))}
+  </div>
+</div>
+
+<style>
+  .recent-activity {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+
+  .recent-activity h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #111827;
+  }
+
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 6px;
+    background: #f9fafb;
+    transition: background 0.2s;
+  }
+
+  .activity-item:hover {
+    background: #f3f4f6;
+  }
+
+  .activity-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: white;
+  }
+
+  .activity-item.success .activity-icon {
+    background: #d1fae5;
+  }
+
+  .activity-item.warning .activity-icon {
+    background: #fed7aa;
+  }
+
+  .activity-item.info .activity-icon {
+    background: #dbeafe;
+  }
+
+  .activity-content {
+    flex: 1;
+  }
+
+  .activity-content h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: #111827;
+  }
+
+  .activity-content p {
+    font-size: 13px;
+    color: #6b7280;
+  }
+
+  .activity-time {
+    font-size: 12px;
+    color: #9ca3af;
+  }
+</style>
