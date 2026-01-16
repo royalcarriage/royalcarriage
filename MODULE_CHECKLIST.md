@@ -16,7 +16,7 @@
 *   **Dispatch Module:**
     *   Schemas: PASS (shared/dispatchSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/dispatchFunctions.ts)
-    *   UI: PENDING
+    *   UI: IN_PROGRESS
 *   **Affiliate Module:**
     *   Schemas: PASS (shared/affiliateSchemas.ts)
     *   Functions: IN_PROGRESS (functions/src/affiliateFunctions.ts)
