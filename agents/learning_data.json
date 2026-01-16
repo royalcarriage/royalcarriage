@@ -1,0 +1,7 @@
+[
+  {
+    "timestamp": "2026-01-16T05:41:12.205960Z",
+    "prompt": "Test prompt from assistant",
+    "response": "[simulated response from intense | mode=normal] Received prompt of 26 chars"
+  }
+]
