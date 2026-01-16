@@ -24,7 +24,7 @@ export function GlobalSearch() {
   // Keyboard shortcut: '/' to focus search
   useHotkeys(
     "/",
-    (e) => {
+    (e: KeyboardEvent) => {
       e.preventDefault();
       setOpen(true);
     },

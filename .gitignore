@@ -63,3 +63,4 @@ coverage/
 tmp/
 temp/
 *.tmp
+rc-admin-sa.json

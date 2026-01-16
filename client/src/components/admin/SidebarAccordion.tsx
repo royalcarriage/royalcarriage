@@ -174,7 +174,8 @@ export function SidebarAccordion({
   onSectionChange,
 }: SidebarAccordionProps) {
   const { user } = useAuth();
-  const userRole = user?.role || "Viewer";
+  const userAny = user as any;
+  const userRole = userAny?.role || userAny?.customClaims?.role || "Viewer";
 
   // Load persisted state from localStorage
   const [expandedSection, setExpandedSection] = useState<AdminSection | null>(

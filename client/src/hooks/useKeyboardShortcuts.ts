@@ -40,7 +40,7 @@ const SHORTCUTS: Record<string, KeyboardShortcut> = {
 };
 
 export function useKeyboardShortcuts() {
-  const handleKeyPress = useCallback((event: KeyboardEvent) => {
+  const handleKeyPress = useCallback(async (event: KeyboardEvent) => {
     // Don't trigger shortcuts when typing in inputs
     if (
       event.target instanceof HTMLInputElement ||
