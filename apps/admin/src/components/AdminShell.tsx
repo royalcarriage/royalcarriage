@@ -149,6 +149,7 @@ export function AdminShell({
             onImportMoovs={onImportMoovs}
             onRunGate={onRunGate}
             onDeploy={onDeploy}
+            role={role}
           />
           {children}
         </main>
