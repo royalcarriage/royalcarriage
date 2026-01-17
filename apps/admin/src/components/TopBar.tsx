@@ -1,3 +1,22 @@
+import React from 'react';
+
+export default function TopBar() {
+  return (
+    <div className="flex items-center justify-between px-4 py-3 bg-slate-800 text-white">
+      <div className="flex items-center gap-4">
+        <button className="text-slate-300 hover:text-white">☰</button>
+        <div className="font-semibold">Royal Carriage — Admin</div>
+      </div>
+
+      <div className="flex items-center gap-3">
+        <input className="hidden sm:block bg-slate-700 placeholder-slate-400 px-3 py-1 rounded" placeholder="Search" />
+        <button title="Notifications" className="p-1 bg-slate-700 rounded">🔔</button>
+        <button title="Settings" className="p-1 bg-slate-700 rounded">⚙️</button>
+        <div className="w-8 h-8 bg-slate-600 rounded-full flex items-center justify-center">AD</div>
+      </div>
+    </div>
+  );
+}
 import { useMemo } from "react";
 import { PillButton } from "./ui/PillButton";
 import { DataFreshnessChip } from "./ui/DataFreshnessChip";
