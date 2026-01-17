@@ -806,3 +806,67 @@ export {
   deleteChatConversation,
   quickAIAction,
 };
+
+// --- AI CHAT WITH ROLE-BASED PERMISSIONS ---
+
+// Import role-based AI chat functions
+import {
+  processAIChatMessage,
+  getAIChatHistory,
+  executeAICommand,
+  deleteAIConversation,
+} from './aiChat';
+
+// Export role-based AI chat functions
+export {
+  processAIChatMessage,
+  getAIChatHistory,
+  executeAICommand,
+  deleteAIConversation,
+};
+
+// --- RBAC & USER MANAGEMENT FUNCTIONS ---
+
+// Import user management functions
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  assignRole,
+  updateUserRole,
+  getUsersByOrganization,
+  getUserPermissions,
+} from './userManagement';
+
+// Import organization management functions
+import {
+  createOrganization,
+  updateOrganization,
+  deleteOrganization,
+  listOrganizations,
+  addUserToOrganization,
+  removeUserFromOrganization,
+  getOrganizationUsers,
+} from './organizationManagement';
+
+// Export user management functions
+export {
+  createUser,
+  updateUser,
+  deleteUser,
+  assignRole,
+  updateUserRole,
+  getUsersByOrganization,
+  getUserPermissions,
+};
+
+// Export organization management functions
+export {
+  createOrganization,
+  updateOrganization,
+  deleteOrganization,
+  listOrganizations,
+  addUserToOrganization,
+  removeUserFromOrganization,
+  getOrganizationUsers,
+};

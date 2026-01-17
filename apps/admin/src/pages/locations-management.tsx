@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { ensureFirebaseApp } from '../lib/firebaseClient';
 import { useAuth } from '../state/AuthProvider';
+import { canPerformAction } from '../lib/permissions';
+import { Plus, Edit2, Trash2, Save, X, MapPin, Loader2, Search, Filter, RefreshCw } from 'lucide-react';
 
 interface LocationItem {
   id: string;
@@ -39,6 +43,179 @@ const REGIONS = [
 
 const WEBSITES = ['airport', 'corporate', 'wedding', 'partyBus'] as const;
 
+// Location Form Modal
+function LocationModal({
+  isOpen,
+  onClose,
+  onSave,
+  location,
+  isLoading,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (data: Partial<LocationItem>) => void;
+  location?: LocationItem;
+  isLoading: boolean;
+}) {
+  const [formData, setFormData] = useState<Partial<LocationItem>>({
+    name: '',
+    state: 'IL',
+    type: 'neighborhood',
+    region: 'downtown',
+    description: '',
+    population: 0,
+    zipCodes: [],
+    coordinates: { lat: 41.8781, lng: -87.6298 },
+    applicableServices: { airport: 10, corporate: 8, wedding: 6, partyBus: 4 },
+  });
+
+  useEffect(() => {
+    if (location) {
+      setFormData(location);
+    } else {
+      setFormData({
+        name: '',
+        state: 'IL',
+        type: 'neighborhood',
+        region: 'downtown',
+        description: '',
+        population: 0,
+        zipCodes: [],
+        coordinates: { lat: 41.8781, lng: -87.6298 },
+        applicableServices: { airport: 10, corporate: 8, wedding: 6, partyBus: 4 },
+      });
+    }
+  }, [location, isOpen]);
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-6 border-b">
+          <h2 className="text-xl font-bold">
+            {location ? 'Edit Location' : 'Add New Location'}
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Location Name</label>
+              <input
+                type="text"
+                value={formData.name || ''}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="e.g., Lincoln Park"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+              <input
+                type="text"
+                value={formData.state || 'IL'}
+                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <select
+                value={formData.type || 'neighborhood'}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'neighborhood' | 'suburb' })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="neighborhood">Neighborhood</option>
+                <option value="suburb">Suburb</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+              <select
+                value={formData.region || 'downtown'}
+                onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                {REGIONS.map((region) => (
+                  <option key={region} value={region}>{region.replace('-', ' ')}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Population</label>
+            <input
+              type="number"
+              value={formData.population || 0}
+              onChange={(e) => setFormData({ ...formData, population: parseInt(e.target.value) || 0 })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              value={formData.description || ''}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Brief description of this location..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Applicable Services (count per website)</label>
+            <div className="grid grid-cols-4 gap-3">
+              {WEBSITES.map((website) => (
+                <div key={website}>
+                  <label className="block text-xs text-gray-500 capitalize mb-1">{website}</label>
+                  <input
+                    type="number"
+                    value={formData.applicableServices?.[website as keyof typeof formData.applicableServices] || 0}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      applicableServices: {
+                        ...formData.applicableServices!,
+                        [website]: parseInt(e.target.value) || 0,
+                      },
+                    })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-3 p-6 border-t bg-gray-50">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onSave(formData)}
+            disabled={isLoading || !formData.name}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {location ? 'Update' : 'Create'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LocationsManagementPage() {
   const { user, role } = useAuth();
   const [locations, setLocations] = useState<LocationItem[]>([]);
@@ -50,6 +227,15 @@ export default function LocationsManagementPage() {
   const [selectedWebsites, setSelectedWebsites] = useState<Set<string>>(new Set(['airport', 'corporate']));
   const [generatingContent, setGeneratingContent] = useState(false);
   const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 });
+
+  // CRUD state
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingLocation, setEditingLocation] = useState<LocationItem | undefined>();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  const canEdit = canPerformAction(role, 'editSettings');
+  const canDelete = canPerformAction(role, 'deleteContent');
 
   useEffect(() => {
     if (role !== 'admin' && role !== 'superadmin') {
@@ -70,9 +256,9 @@ export default function LocationsManagementPage() {
 
       // Sort by region then name
       items.sort((a, b) => {
-        const regionCompare = a.region.localeCompare(b.region);
+        const regionCompare = (a.region || '').localeCompare(b.region || '');
         if (regionCompare !== 0) return regionCompare;
-        return a.name.localeCompare(b.name);
+        return (a.name || '').localeCompare(b.name || '');
       });
 
       setLocations(items);
@@ -81,6 +267,109 @@ export default function LocationsManagementPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // Create or Update location
+  async function handleSaveLocation(data: Partial<LocationItem>) {
+    if (!canEdit) {
+      alert('You do not have permission to edit locations');
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      if (editingLocation) {
+        // Update existing
+        await updateDoc(doc(db, 'locations', editingLocation.id), {
+          ...data,
+          updatedAt: Timestamp.now(),
+          updatedBy: user?.email,
+        });
+
+        // Log activity
+        await addDoc(collection(db, 'activity_log'), {
+          type: 'system',
+          message: `Updated location: ${data.name}`,
+          status: 'success',
+          userId: user?.uid,
+          userEmail: user?.email,
+          timestamp: Timestamp.now(),
+        });
+      } else {
+        // Create new
+        await addDoc(collection(db, 'locations'), {
+          ...data,
+          contentGenerationStatus: 'not-started',
+          createdAt: Timestamp.now(),
+          createdBy: user?.email,
+        });
+
+        // Log activity
+        await addDoc(collection(db, 'activity_log'), {
+          type: 'system',
+          message: `Created new location: ${data.name}`,
+          status: 'success',
+          userId: user?.uid,
+          userEmail: user?.email,
+          timestamp: Timestamp.now(),
+        });
+      }
+
+      setIsModalOpen(false);
+      setEditingLocation(undefined);
+      loadLocations();
+    } catch (error) {
+      console.error('Error saving location:', error);
+      alert('Failed to save location. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
+  // Delete location
+  async function handleDeleteLocation(location: LocationItem) {
+    if (!canDelete) {
+      alert('You do not have permission to delete locations');
+      return;
+    }
+
+    if (!confirm(`Are you sure you want to delete "${location.name}"? This cannot be undone.`)) {
+      return;
+    }
+
+    setIsDeleting(location.id);
+    try {
+      await deleteDoc(doc(db, 'locations', location.id));
+
+      // Log activity
+      await addDoc(collection(db, 'activity_log'), {
+        type: 'system',
+        message: `Deleted location: ${location.name}`,
+        status: 'success',
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: Timestamp.now(),
+      });
+
+      loadLocations();
+    } catch (error) {
+      console.error('Error deleting location:', error);
+      alert('Failed to delete location. Please try again.');
+    } finally {
+      setIsDeleting(null);
+    }
+  }
+
+  // Open edit modal
+  function handleEditLocation(location: LocationItem) {
+    setEditingLocation(location);
+    setIsModalOpen(true);
+  }
+
+  // Open create modal
+  function handleCreateLocation() {
+    setEditingLocation(undefined);
+    setIsModalOpen(true);
   }
 
   const filteredLocations = locations.filter((loc) => {
@@ -170,13 +459,42 @@ export default function LocationsManagementPage() {
 
   return (
     <div className="p-8 bg-white">
+      {/* Location Modal */}
+      <LocationModal
+        isOpen={isModalOpen}
+        onClose={() => { setIsModalOpen(false); setEditingLocation(undefined); }}
+        onSave={handleSaveLocation}
+        location={editingLocation}
+        isLoading={isSaving}
+      />
+
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Location Management</h1>
-          <p className="text-gray-600">
-            Manage 240+ Chicago locations and generate AI content for services
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Location Management</h1>
+            <p className="text-gray-600">
+              Manage 240+ Chicago locations and generate AI content for services
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={loadLocations}
+              className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            >
+              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </button>
+            {canEdit && (
+              <button
+                onClick={handleCreateLocation}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                <Plus className="w-4 h-4" />
+                Add Location
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -346,9 +664,36 @@ export default function LocationsManagementPage() {
                     className="w-5 h-5 mt-1"
                   />
                   <div className="flex-1">
-                    <h4 className="font-bold text-lg">{location.name}</h4>
+                    <div className="flex items-start justify-between">
+                      <h4 className="font-bold text-lg">{location.name}</h4>
+                      <div className="flex gap-2">
+                        {canEdit && (
+                          <button
+                            onClick={() => handleEditLocation(location)}
+                            className="p-2 hover:bg-blue-100 rounded-lg text-blue-600"
+                            title="Edit location"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                        )}
+                        {canDelete && (
+                          <button
+                            onClick={() => handleDeleteLocation(location)}
+                            disabled={isDeleting === location.id}
+                            className="p-2 hover:bg-red-100 rounded-lg text-red-600 disabled:opacity-50"
+                            title="Delete location"
+                          >
+                            {isDeleting === location.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        )}
+                      </div>
+                    </div>
                     <p className="text-sm text-gray-600 mb-2">
-                      {location.type} • {location.region.replace('-', ' ')} • Population: {location.population.toLocaleString()}
+                      {location.type} • {(location.region || '').replace('-', ' ')} • Population: {(location.population || 0).toLocaleString()}
                     </p>
                     <p className="text-sm text-gray-700 mb-3">{location.description.substring(0, 150)}...</p>
 

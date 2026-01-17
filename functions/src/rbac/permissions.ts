@@ -209,79 +209,69 @@ export const RolePermissions: Record<Role, Permission[]> = {
   ],
 
   saas_admin: [
-    // All permissions from admin
-    ...RolePermissions.admin,
+    // All vehicle permissions
+    Permissions.VEHICLES_VIEW,
+    Permissions.VEHICLES_CREATE,
+    Permissions.VEHICLES_UPDATE,
+    Permissions.VEHICLES_DELETE,
+    Permissions.VEHICLES_MANAGE,
+    // All driver permissions
+    Permissions.DRIVERS_VIEW,
+    Permissions.DRIVERS_CREATE,
+    Permissions.DRIVERS_UPDATE,
+    Permissions.DRIVERS_DELETE,
+    Permissions.DRIVERS_MANAGE,
+    Permissions.DRIVERS_PROFILES_MANAGE,
+    // All vehicle assignment permissions
+    Permissions.VEHICLE_ASSIGNMENTS_VIEW,
+    Permissions.VEHICLE_ASSIGNMENTS_CREATE,
+    Permissions.VEHICLE_ASSIGNMENTS_UPDATE,
+    Permissions.VEHICLE_ASSIGNMENTS_DELETE,
+    // All vehicle issues permissions
+    Permissions.VEHICLE_ISSUES_VIEW,
+    Permissions.VEHICLE_ISSUES_CREATE,
+    Permissions.VEHICLE_ISSUES_UPDATE,
+    Permissions.VEHICLE_ISSUES_DELETE,
+    Permissions.VEHICLE_ISSUES_REPORT,
+    // All fleet permissions
+    Permissions.FLEET_VIEW,
+    Permissions.FLEET_MANAGE,
+    // All accounting permissions
+    Permissions.ACCOUNTING_VIEW,
+    Permissions.ACCOUNTING_IMPORT_CSV,
+    Permissions.ACCOUNTING_EXPORT,
+    // All receipt permissions
+    Permissions.RECEIPTS_VIEW,
+    Permissions.RECEIPTS_UPLOAD,
+    Permissions.RECEIPTS_DELETE,
+    // All refund permissions
+    Permissions.REFUNDS_VIEW,
+    Permissions.REFUNDS_REPORT,
+    Permissions.REFUNDS_APPROVE,
+    // All deduction permissions
+    Permissions.DEDUCTIONS_VIEW,
+    Permissions.DEDUCTIONS_CREATE,
+    Permissions.DEDUCTIONS_UPDATE,
+    Permissions.DEDUCTIONS_DELETE,
+    // Organization permissions
+    Permissions.ORGANIZATION_VIEW,
+    Permissions.ORGANIZATION_UPDATE,
+    Permissions.ORGANIZATION_MANAGE_USERS,
+    // User management
+    Permissions.USERS_VIEW,
+    Permissions.USERS_CREATE,
+    Permissions.USERS_UPDATE,
+    Permissions.USERS_DELETE,
+    Permissions.USERS_ASSIGN_ROLES,
+    // AI Chat permissions
+    Permissions.AI_CHAT_ACCESS,
+    Permissions.AI_CHAT_VIEW_SENSITIVE_DATA,
     // SaaS-specific permissions
     Permissions.SAAS_VIEW_ALL_ORGANIZATIONS,
     Permissions.SAAS_MANAGE_ORGANIZATIONS,
     Permissions.SAAS_VIEW_ALL_DATA,
   ],
 };
-
-// Fix circular reference for saas_admin by explicitly setting all permissions
-RolePermissions.saas_admin = [
-  // All vehicle permissions
-  Permissions.VEHICLES_VIEW,
-  Permissions.VEHICLES_CREATE,
-  Permissions.VEHICLES_UPDATE,
-  Permissions.VEHICLES_DELETE,
-  Permissions.VEHICLES_MANAGE,
-  // All driver permissions
-  Permissions.DRIVERS_VIEW,
-  Permissions.DRIVERS_CREATE,
-  Permissions.DRIVERS_UPDATE,
-  Permissions.DRIVERS_DELETE,
-  Permissions.DRIVERS_MANAGE,
-  Permissions.DRIVERS_PROFILES_MANAGE,
-  // All vehicle assignment permissions
-  Permissions.VEHICLE_ASSIGNMENTS_VIEW,
-  Permissions.VEHICLE_ASSIGNMENTS_CREATE,
-  Permissions.VEHICLE_ASSIGNMENTS_UPDATE,
-  Permissions.VEHICLE_ASSIGNMENTS_DELETE,
-  // All vehicle issues permissions
-  Permissions.VEHICLE_ISSUES_VIEW,
-  Permissions.VEHICLE_ISSUES_CREATE,
-  Permissions.VEHICLE_ISSUES_UPDATE,
-  Permissions.VEHICLE_ISSUES_DELETE,
-  Permissions.VEHICLE_ISSUES_REPORT,
-  // All fleet permissions
-  Permissions.FLEET_VIEW,
-  Permissions.FLEET_MANAGE,
-  // All accounting permissions
-  Permissions.ACCOUNTING_VIEW,
-  Permissions.ACCOUNTING_IMPORT_CSV,
-  Permissions.ACCOUNTING_EXPORT,
-  // All receipt permissions
-  Permissions.RECEIPTS_VIEW,
-  Permissions.RECEIPTS_UPLOAD,
-  Permissions.RECEIPTS_DELETE,
-  // All refund permissions
-  Permissions.REFUNDS_VIEW,
-  Permissions.REFUNDS_REPORT,
-  Permissions.REFUNDS_APPROVE,
-  // All deduction permissions
-  Permissions.DEDUCTIONS_VIEW,
-  Permissions.DEDUCTIONS_CREATE,
-  Permissions.DEDUCTIONS_UPDATE,
-  Permissions.DEDUCTIONS_DELETE,
-  // Organization permissions
-  Permissions.ORGANIZATION_VIEW,
-  Permissions.ORGANIZATION_UPDATE,
-  Permissions.ORGANIZATION_MANAGE_USERS,
-  // User management
-  Permissions.USERS_VIEW,
-  Permissions.USERS_CREATE,
-  Permissions.USERS_UPDATE,
-  Permissions.USERS_DELETE,
-  Permissions.USERS_ASSIGN_ROLES,
-  // AI Chat permissions
-  Permissions.AI_CHAT_ACCESS,
-  Permissions.AI_CHAT_VIEW_SENSITIVE_DATA,
-  // SaaS-specific permissions
-  Permissions.SAAS_VIEW_ALL_ORGANIZATIONS,
-  Permissions.SAAS_MANAGE_ORGANIZATIONS,
-  Permissions.SAAS_VIEW_ALL_DATA,
-];
 
 // User interface for type checking
 export interface User {

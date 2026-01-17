@@ -132,7 +132,7 @@ export function useDashboardMetrics() {
             getCountFromServer(collection(db, 'imports')),
             getCountFromServer(collection(db, 'locations')),
             getCountFromServer(collection(db, 'services')),
-            getCountFromServer(collection(db, 'fleet')),
+            getCountFromServer(collection(db, 'fleet_vehicles')),
           ]);
 
         setMetrics({
@@ -323,7 +323,7 @@ export function useFleet() {
     capacity: number;
     status: string;
     imageUrl?: string;
-  }>('fleet', [orderBy('name', 'asc')]);
+  }>('fleet_vehicles', [orderBy('name', 'asc')]);
 }
 
 // Hook for recent imports

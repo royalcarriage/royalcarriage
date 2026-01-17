@@ -1,4 +1,4 @@
-export type Role = "superadmin" | "admin" | "editor" | "viewer";
+export type Role = "superadmin" | "saas_admin" | "admin" | "fleet_manager" | "accountant" | "dispatcher" | "editor" | "viewer";
 
 export type SiteKey = "all" | "admin" | "airport" | "partybus" | "corporate" | "wedding";
 
@@ -8,7 +8,39 @@ export interface UserProfile {
   displayName?: string;
   role: Role;
   org: string;
+  organizationId?: string;
+  photoURL?: string;
+  phoneNumber?: string;
+  department?: string;
   lastLogin?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  status?: "active" | "inactive" | "suspended";
+}
+
+export interface Organization {
+  id: string;
+  name: string;
+  slug: string;
+  status: "active" | "inactive" | "suspended";
+  plan: "free" | "starter" | "professional" | "enterprise";
+  settings?: {
+    branding?: {
+      logo?: string;
+      primaryColor?: string;
+      secondaryColor?: string;
+    };
+    features?: string[];
+    limits?: {
+      users?: number;
+      storage?: number;
+    };
+  };
+  contactEmail?: string;
+  contactPhone?: string;
+  address?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ImportRecord {
