@@ -1,6 +1,6 @@
-import { drizzle } from 'drizzle-orm/node-postgres';
-import { Pool } from 'pg';
-import * as schema from '../shared/schema';
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+import * as schema from "../shared/schema";
 
 // Get database URL from environment
 const getDatabaseUrl = (): string => {
@@ -8,8 +8,8 @@ const getDatabaseUrl = (): string => {
 
   if (!dbUrl) {
     // For development, use a default local PostgreSQL connection
-    console.warn('DATABASE_URL not set, using default local connection');
-    return 'postgresql://localhost:5432/royalcarriage';
+    console.warn("DATABASE_URL not set, using default local connection");
+    return "postgresql://localhost:5432/royalcarriage";
   }
 
   return dbUrl;
@@ -24,12 +24,12 @@ const pool = new Pool({
 });
 
 // Test connection on startup
-pool.on('connect', () => {
-  console.log('✓ Database connection established');
+pool.on("connect", () => {
+  console.log("✓ Database connection established");
 });
 
-pool.on('error', (err) => {
-  console.error('Unexpected database error:', err);
+pool.on("error", (err) => {
+  console.error("Unexpected database error:", err);
   process.exit(-1);
 });
 
@@ -43,11 +43,11 @@ export { pool };
 export async function checkDatabaseConnection(): Promise<boolean> {
   try {
     const client = await pool.connect();
-    await client.query('SELECT 1');
+    await client.query("SELECT 1");
     client.release();
     return true;
   } catch (error) {
-    console.error('Database connection failed:', error);
+    console.error("Database connection failed:", error);
     return false;
   }
 }

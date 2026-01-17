@@ -141,6 +141,7 @@
     "eslint-plugin-prettier": "^5.1.0",
     "firebase-tools": "^13.16.0",
     "globals": "^15.0.0",
+    "googleapis": "^170.1.0",
     "husky": "^8.0.0",
     "linkinator": "^6.1.0",
     "lint-staged": "^16.2.7",

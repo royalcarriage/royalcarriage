@@ -4,7 +4,7 @@
  * Real-time dashboard with live Firestore data, charts, and system status
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -26,7 +26,7 @@ import {
   Sparkles,
   Database,
   Globe,
-} from 'lucide-react';
+} from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -42,11 +42,19 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-} from 'recharts';
-import { collection, query, where, orderBy, limit, onSnapshot, getCountFromServer } from 'firebase/firestore';
-import { db } from '../lib/firebase';
-import { useAuth } from '../state/AuthProvider';
-import { RoleBadge } from '../components/AccessControl';
+} from "recharts";
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  onSnapshot,
+  getCountFromServer,
+} from "firebase/firestore";
+import { db } from "../lib/firebase";
+import { useAuth } from "../state/AuthProvider";
+import { RoleBadge } from "../components/AccessControl";
 
 // Types
 interface DashboardMetrics {
@@ -61,15 +69,15 @@ interface DashboardMetrics {
   fleetVehicles: number;
   activeDrivers: number;
   avgQualityScore: number;
-  systemHealth: 'healthy' | 'degraded' | 'down';
+  systemHealth: "healthy" | "degraded" | "down";
 }
 
 interface RecentActivity {
   id: string;
-  type: 'booking' | 'content' | 'import' | 'system';
+  type: "booking" | "content" | "import" | "system";
   message: string;
   timestamp: Date;
-  status: 'success' | 'pending' | 'error';
+  status: "success" | "pending" | "error";
 }
 
 // Metric Card Component
@@ -88,7 +96,7 @@ function MetricCard({
   changeLabel?: string;
   icon: React.ElementType;
   iconColor: string;
-  trend?: 'up' | 'down' | 'neutral';
+  trend?: "up" | "down" | "neutral";
 }) {
   return (
     <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
@@ -97,11 +105,22 @@ function MetricCard({
           <Icon className="w-6 h-6" />
         </div>
         {change !== undefined && (
-          <div className={`flex items-center gap-1 text-sm font-medium ${
-            trend === 'up' ? 'text-emerald-600' : trend === 'down' ? 'text-red-600' : 'text-slate-500'
-          }`}>
-            {trend === 'up' ? <TrendingUp className="w-4 h-4" /> : trend === 'down' ? <TrendingDown className="w-4 h-4" /> : null}
-            {change > 0 ? '+' : ''}{change}%
+          <div
+            className={`flex items-center gap-1 text-sm font-medium ${
+              trend === "up"
+                ? "text-emerald-600"
+                : trend === "down"
+                  ? "text-red-600"
+                  : "text-slate-500"
+            }`}
+          >
+            {trend === "up" ? (
+              <TrendingUp className="w-4 h-4" />
+            ) : trend === "down" ? (
+              <TrendingDown className="w-4 h-4" />
+            ) : null}
+            {change > 0 ? "+" : ""}
+            {change}%
           </div>
         )}
       </div>
@@ -160,24 +179,31 @@ function QuickActionCard({
 function ActivityItem({ activity }: { activity: RecentActivity }) {
   const getIcon = () => {
     switch (activity.type) {
-      case 'booking': return <Calendar className="w-4 h-4 text-blue-500" />;
-      case 'content': return <FileText className="w-4 h-4 text-purple-500" />;
-      case 'import': return <Database className="w-4 h-4 text-amber-500" />;
-      default: return <Activity className="w-4 h-4 text-slate-500" />;
+      case "booking":
+        return <Calendar className="w-4 h-4 text-blue-500" />;
+      case "content":
+        return <FileText className="w-4 h-4 text-purple-500" />;
+      case "import":
+        return <Database className="w-4 h-4 text-amber-500" />;
+      default:
+        return <Activity className="w-4 h-4 text-slate-500" />;
     }
   };
 
   const getStatusIcon = () => {
     switch (activity.status) {
-      case 'success': return <CheckCircle className="w-4 h-4 text-emerald-500" />;
-      case 'error': return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      default: return <Clock className="w-4 h-4 text-amber-500" />;
+      case "success":
+        return <CheckCircle className="w-4 h-4 text-emerald-500" />;
+      case "error":
+        return <AlertTriangle className="w-4 h-4 text-red-500" />;
+      default:
+        return <Clock className="w-4 h-4 text-amber-500" />;
     }
   };
 
   const timeAgo = (date: Date) => {
     const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-    if (seconds < 60) return 'just now';
+    if (seconds < 60) return "just now";
     const minutes = Math.floor(seconds / 60);
     if (minutes < 60) return `${minutes}m ago`;
     const hours = Math.floor(minutes / 60);
@@ -198,11 +224,27 @@ function ActivityItem({ activity }: { activity: RecentActivity }) {
 }
 
 // System Status Card
-function SystemStatusCard({ status }: { status: 'healthy' | 'degraded' | 'down' }) {
+function SystemStatusCard({
+  status,
+}: {
+  status: "healthy" | "degraded" | "down";
+}) {
   const config = {
-    healthy: { color: 'bg-emerald-500', text: 'All Systems Operational', textColor: 'text-emerald-700' },
-    degraded: { color: 'bg-amber-500', text: 'Some Systems Degraded', textColor: 'text-amber-700' },
-    down: { color: 'bg-red-500', text: 'System Issues Detected', textColor: 'text-red-700' },
+    healthy: {
+      color: "bg-emerald-500",
+      text: "All Systems Operational",
+      textColor: "text-emerald-700",
+    },
+    degraded: {
+      color: "bg-amber-500",
+      text: "Some Systems Degraded",
+      textColor: "text-amber-700",
+    },
+    down: {
+      color: "bg-red-500",
+      text: "System Issues Detected",
+      textColor: "text-red-700",
+    },
   };
 
   const { color, text, textColor } = config[status];
@@ -230,7 +272,7 @@ export function OverviewDashboard() {
     fleetVehicles: 0,
     activeDrivers: 0,
     avgQualityScore: 0,
-    systemHealth: 'healthy',
+    systemHealth: "healthy",
   });
   const [activities, setActivities] = useState<RecentActivity[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -238,20 +280,24 @@ export function OverviewDashboard() {
 
   // Revenue chart data (mock for visualization)
   const revenueData = [
-    { name: 'Mon', revenue: 4200, bookings: 12 },
-    { name: 'Tue', revenue: 5100, bookings: 15 },
-    { name: 'Wed', revenue: 4800, bookings: 14 },
-    { name: 'Thu', revenue: 6200, bookings: 18 },
-    { name: 'Fri', revenue: 7500, bookings: 22 },
-    { name: 'Sat', revenue: 8200, bookings: 25 },
-    { name: 'Sun', revenue: 6800, bookings: 20 },
+    { name: "Mon", revenue: 4200, bookings: 12 },
+    { name: "Tue", revenue: 5100, bookings: 15 },
+    { name: "Wed", revenue: 4800, bookings: 14 },
+    { name: "Thu", revenue: 6200, bookings: 18 },
+    { name: "Fri", revenue: 7500, bookings: 22 },
+    { name: "Sat", revenue: 8200, bookings: 25 },
+    { name: "Sun", revenue: 6800, bookings: 20 },
   ];
 
   // Content distribution data
   const contentDistribution = [
-    { name: 'Published', value: metrics.publishedContent, color: '#10b981' },
-    { name: 'Pending', value: metrics.pendingContent, color: '#f59e0b' },
-    { name: 'Draft', value: Math.floor(metrics.publishedContent * 0.3), color: '#6366f1' },
+    { name: "Published", value: metrics.publishedContent, color: "#10b981" },
+    { name: "Pending", value: metrics.pendingContent, color: "#f59e0b" },
+    {
+      name: "Draft",
+      value: Math.floor(metrics.publishedContent * 0.3),
+      color: "#6366f1",
+    },
   ];
 
   // Load real metrics from Firestore
@@ -267,15 +313,25 @@ export function OverviewDashboard() {
           servicesSnap,
           fleetSnap,
         ] = await Promise.all([
-          getCountFromServer(collection(db, 'bookings')),
-          getCountFromServer(query(collection(db, 'content'), where('status', '==', 'published'))),
-          getCountFromServer(query(collection(db, 'service_content'), where('approvalStatus', '==', 'pending'))),
-          getCountFromServer(collection(db, 'locations')),
-          getCountFromServer(collection(db, 'services')),
-          getCountFromServer(collection(db, 'fleet_vehicles')),
+          getCountFromServer(collection(db, "bookings")),
+          getCountFromServer(
+            query(
+              collection(db, "content"),
+              where("status", "==", "published"),
+            ),
+          ),
+          getCountFromServer(
+            query(
+              collection(db, "service_content"),
+              where("approvalStatus", "==", "pending"),
+            ),
+          ),
+          getCountFromServer(collection(db, "locations")),
+          getCountFromServer(collection(db, "services")),
+          getCountFromServer(collection(db, "fleet_vehicles")),
         ]);
 
-        setMetrics(prev => ({
+        setMetrics((prev) => ({
           ...prev,
           totalBookings: bookingsSnap.data().count || 0,
           publishedContent: publishedContentSnap.data().count || 0,
@@ -283,12 +339,12 @@ export function OverviewDashboard() {
           totalLocations: locationsSnap.data().count || 173, // Default from CLAUDE.md
           totalServices: servicesSnap.data().count || 91,
           fleetVehicles: fleetSnap.data().count || 8,
-          systemHealth: 'healthy',
+          systemHealth: "healthy",
         }));
       } catch (error) {
-        console.warn('Error loading metrics:', error);
+        console.warn("Error loading metrics:", error);
         // Use defaults
-        setMetrics(prev => ({
+        setMetrics((prev) => ({
           ...prev,
           totalLocations: 173,
           totalServices: 91,
@@ -305,20 +361,25 @@ export function OverviewDashboard() {
   // Load recent activities
   useEffect(() => {
     const activityQuery = query(
-      collection(db, 'activity_log'),
-      orderBy('timestamp', 'desc'),
-      limit(5)
+      collection(db, "activity_log"),
+      orderBy("timestamp", "desc"),
+      limit(5),
     );
 
     const unsubscribe = onSnapshot(activityQuery, (snapshot) => {
-      const recentActivities = snapshot.docs.map(doc => {
+      const recentActivities = snapshot.docs.map((doc) => {
         const data = doc.data();
         return {
           id: doc.id,
-          type: data.type === 'content' ? 'content' : data.type === 'import' ? 'import' : 'system',
-          message: data.message || 'Activity logged',
+          type:
+            data.type === "content"
+              ? "content"
+              : data.type === "import"
+                ? "import"
+                : "system",
+          message: data.message || "Activity logged",
           timestamp: data.timestamp?.toDate() || new Date(),
-          status: data.status || 'success',
+          status: data.status || "success",
         } as RecentActivity;
       });
 
@@ -327,8 +388,20 @@ export function OverviewDashboard() {
       } else {
         // Default activities
         setActivities([
-          { id: '1', type: 'content', message: 'Content generation completed', timestamp: new Date(), status: 'success' },
-          { id: '2', type: 'system', message: 'Dashboard initialized', timestamp: new Date(), status: 'success' },
+          {
+            id: "1",
+            type: "content",
+            message: "Content generation completed",
+            timestamp: new Date(),
+            status: "success",
+          },
+          {
+            id: "2",
+            type: "system",
+            message: "Dashboard initialized",
+            timestamp: new Date(),
+            status: "success",
+          },
         ]);
       }
     });
@@ -346,9 +419,12 @@ export function OverviewDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Dashboard Overview</h1>
+          <h1 className="text-2xl font-bold text-slate-900">
+            Dashboard Overview
+          </h1>
           <p className="text-slate-500 mt-1">
-            Welcome back, {user?.displayName || user?.email?.split('@')[0] || 'Admin'}
+            Welcome back,{" "}
+            {user?.displayName || user?.email?.split("@")[0] || "Admin"}
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -358,7 +434,9 @@ export function OverviewDashboard() {
             disabled={isLoading}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </button>
         </div>
@@ -403,27 +481,46 @@ export function OverviewDashboard() {
         {/* Revenue Chart */}
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-slate-900">Weekly Revenue</h3>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Weekly Revenue
+            </h3>
             <span className="text-sm text-slate-500">Last 7 days</span>
           </div>
           <ResponsiveContainer width="100%" height={250}>
             <AreaChart data={revenueData}>
               <defs>
-                <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="revenueGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
                   <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="name" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} />
-              <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} tickFormatter={(v) => `$${v/1000}k`} />
+              <XAxis
+                dataKey="name"
+                stroke="#64748b"
+                tick={{ fill: "#64748b", fontSize: 12 }}
+              />
+              <YAxis
+                stroke="#64748b"
+                tick={{ fill: "#64748b", fontSize: 12 }}
+                tickFormatter={(v) => `$${v / 1000}k`}
+              />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '12px',
+                  backgroundColor: "#ffffff",
+                  border: "1px solid #e2e8f0",
+                  borderRadius: "12px",
                 }}
-                formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                formatter={(value: number) => [
+                  `$${value.toLocaleString()}`,
+                  "Revenue",
+                ]}
               />
               <Area
                 type="monotone"
@@ -438,7 +535,9 @@ export function OverviewDashboard() {
 
         {/* Content Distribution */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Content Status</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+            Content Status
+          </h3>
           <ResponsiveContainer width="100%" height={200}>
             <PieChart>
               <Pie
@@ -459,12 +558,20 @@ export function OverviewDashboard() {
           </ResponsiveContainer>
           <div className="space-y-2 mt-4">
             {contentDistribution.map((item) => (
-              <div key={item.name} className="flex items-center justify-between text-sm">
+              <div
+                key={item.name}
+                className="flex items-center justify-between text-sm"
+              >
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
                   <span className="text-slate-600">{item.name}</span>
                 </div>
-                <span className="font-semibold text-slate-900">{item.value}</span>
+                <span className="font-semibold text-slate-900">
+                  {item.value}
+                </span>
               </div>
             ))}
           </div>
@@ -475,14 +582,16 @@ export function OverviewDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">Quick Actions</h3>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+            Quick Actions
+          </h3>
           <div className="space-y-3">
             <QuickActionCard
               title="Content Approval"
               description="Review pending AI-generated content"
               icon={FileText}
               iconBg="bg-purple-100 text-purple-600"
-              onClick={() => window.location.hash = '#/content-approval'}
+              onClick={() => (window.location.hash = "#/content-approval")}
               count={metrics.pendingContent}
             />
             <QuickActionCard
@@ -490,21 +599,21 @@ export function OverviewDashboard() {
               description="Access AI systems and terminal"
               icon={Bot}
               iconBg="bg-indigo-100 text-indigo-600"
-              onClick={() => window.location.hash = '#/ai/command-center'}
+              onClick={() => (window.location.hash = "#/ai/command-center")}
             />
             <QuickActionCard
               title="Locations Management"
               description="Manage 173+ service locations"
               icon={MapPin}
               iconBg="bg-emerald-100 text-emerald-600"
-              onClick={() => window.location.hash = '#/locations'}
+              onClick={() => (window.location.hash = "#/locations")}
             />
             <QuickActionCard
               title="Fleet Management"
               description="Monitor vehicle status"
               icon={Truck}
               iconBg="bg-amber-100 text-amber-600"
-              onClick={() => window.location.hash = '#/fleet-management'}
+              onClick={() => (window.location.hash = "#/fleet-management")}
             />
           </div>
         </div>
@@ -512,7 +621,9 @@ export function OverviewDashboard() {
         {/* Recent Activity */}
         <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-slate-900">Recent Activity</h3>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Recent Activity
+            </h3>
             <span className="text-xs text-slate-500">Updated just now</span>
           </div>
           <div className="space-y-1">

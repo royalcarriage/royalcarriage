@@ -3,8 +3,8 @@
  * Handles organization CRUD operations and user-organization relationships
  */
 
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 import {
   Role,
   Roles,
@@ -12,7 +12,7 @@ import {
   User,
   Permissions,
   RoleHierarchy,
-} from './rbac/permissions';
+} from "./rbac/permissions";
 import {
   verifyAuthAndGetUser,
   hasPermission,
@@ -21,7 +21,7 @@ import {
   PermissionDeniedError,
   OrganizationAccessError,
   AuthenticationError,
-} from './rbac/guards';
+} from "./rbac/guards";
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
@@ -105,13 +105,18 @@ interface UserResponse {
 /**
  * Convert Firestore organization document to response format
  */
-function organizationToResponse(org: Organization, userCount?: number): OrganizationResponse {
+function organizationToResponse(
+  org: Organization,
+  userCount?: number,
+): OrganizationResponse {
   return {
     id: org.id,
     name: org.name,
     isActive: org.isActive,
-    createdAt: org.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-    updatedAt: org.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+    createdAt:
+      org.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+    updatedAt:
+      org.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
     settings: org.settings,
     userCount,
   };
@@ -124,20 +129,24 @@ function userToResponse(user: User): UserResponse {
   return {
     uid: user.uid,
     email: user.email,
-    displayName: user.displayName || '',
+    displayName: user.displayName || "",
     role: user.role,
     organizationId: user.organizationId,
     isActive: user.isActive,
-    createdAt: user.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
-    updatedAt: user.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+    createdAt:
+      user.createdAt?.toDate?.()?.toISOString() || new Date().toISOString(),
+    updatedAt:
+      user.updatedAt?.toDate?.()?.toISOString() || new Date().toISOString(),
   };
 }
 
 /**
  * Get organization from Firestore
  */
-async function getOrganization(organizationId: string): Promise<Organization | null> {
-  const orgDoc = await db.collection('organizations').doc(organizationId).get();
+async function getOrganization(
+  organizationId: string,
+): Promise<Organization | null> {
+  const orgDoc = await db.collection("organizations").doc(organizationId).get();
   if (!orgDoc.exists) {
     return null;
   }
@@ -148,7 +157,7 @@ async function getOrganization(organizationId: string): Promise<Organization | n
  * Get user from Firestore
  */
 async function getUser(uid: string): Promise<User | null> {
-  const userDoc = await db.collection('users').doc(uid).get();
+  const userDoc = await db.collection("users").doc(uid).get();
   if (!userDoc.exists) {
     return null;
   }
@@ -160,9 +169,9 @@ async function getUser(uid: string): Promise<User | null> {
  */
 async function countOrganizationUsers(organizationId: string): Promise<number> {
   const snapshot = await db
-    .collection('users')
-    .where('organizationId', '==', organizationId)
-    .where('isActive', '==', true)
+    .collection("users")
+    .where("organizationId", "==", organizationId)
+    .where("isActive", "==", true)
     .count()
     .get();
   return snapshot.data().count;
@@ -187,48 +196,50 @@ export const createOrganization = functions.https.onCall(
   async (data: CreateOrganizationRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       // Only saas_admin can create organizations
-      if (!hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS)) {
+      if (
+        !hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS)
+      ) {
         throw new PermissionDeniedError(
-          'Only SaaS administrators can create organizations',
+          "Only SaaS administrators can create organizations",
           Permissions.SAAS_MANAGE_ORGANIZATIONS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       if (!data.name) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization name is required'
+          "invalid-argument",
+          "Organization name is required",
         );
       }
 
       // Check if organization name already exists
       const existingOrg = await db
-        .collection('organizations')
-        .where('name', '==', data.name)
+        .collection("organizations")
+        .where("name", "==", data.name)
         .limit(1)
         .get();
 
       if (!existingOrg.empty) {
         throw new functions.https.HttpsError(
-          'already-exists',
-          'An organization with this name already exists'
+          "already-exists",
+          "An organization with this name already exists",
         );
       }
 
       const now = admin.firestore.Timestamp.now();
 
       // Create organization document
-      const orgRef = db.collection('organizations').doc();
-      const orgData: Omit<Organization, 'id'> = {
+      const orgRef = db.collection("organizations").doc();
+      const orgData: Omit<Organization, "id"> = {
         name: data.name,
         createdAt: now,
         updatedAt: now,
@@ -251,21 +262,21 @@ export const createOrganization = functions.https.onCall(
         });
 
         // Create Firestore user document
-        const userData: Omit<User, 'uid'> = {
+        const userData: Omit<User, "uid"> = {
           email: data.adminEmail,
           displayName: data.adminDisplayName,
-          role: 'admin',
+          role: "admin",
           organizationId: orgRef.id,
           createdAt: now,
           updatedAt: now,
           isActive: true,
         };
 
-        await db.collection('users').doc(userRecord.uid).set(userData);
+        await db.collection("users").doc(userRecord.uid).set(userData);
 
         // Set custom claims
         await auth.setCustomUserClaims(userRecord.uid, {
-          role: 'admin',
+          role: "admin",
           organizationId: orgRef.id,
         });
 
@@ -279,18 +290,24 @@ export const createOrganization = functions.https.onCall(
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error creating organization:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to create organization');
+      console.error("Error creating organization:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to create organization",
+      );
     }
-  }
+  },
 );
 
 /**
@@ -301,38 +318,44 @@ export const updateOrganization = functions.https.onCall(
   async (data: UpdateOrganizationRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       if (!data.organizationId) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization ID is required'
+          "invalid-argument",
+          "Organization ID is required",
         );
       }
 
       // Check if user can update this organization
-      const isSaasAdmin = hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS);
+      const isSaasAdmin = hasPermission(
+        requestingUser,
+        Permissions.SAAS_MANAGE_ORGANIZATIONS,
+      );
       const isOrgAdmin =
         hasPermission(requestingUser, Permissions.ORGANIZATION_UPDATE) &&
         requestingUser.organizationId === data.organizationId;
 
       if (!isSaasAdmin && !isOrgAdmin) {
         throw new PermissionDeniedError(
-          'User does not have permission to update this organization',
+          "User does not have permission to update this organization",
           Permissions.ORGANIZATION_UPDATE,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       // Get organization
       const org = await getOrganization(data.organizationId);
       if (!org) {
-        throw new functions.https.HttpsError('not-found', 'Organization not found');
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Organization not found",
+        );
       }
 
       // Build update object
@@ -344,15 +367,15 @@ export const updateOrganization = functions.https.onCall(
         // Check if new name already exists
         if (data.name !== org.name) {
           const existingOrg = await db
-            .collection('organizations')
-            .where('name', '==', data.name)
+            .collection("organizations")
+            .where("name", "==", data.name)
             .limit(1)
             .get();
 
           if (!existingOrg.empty) {
             throw new functions.https.HttpsError(
-              'already-exists',
-              'An organization with this name already exists'
+              "already-exists",
+              "An organization with this name already exists",
             );
           }
         }
@@ -367,15 +390,18 @@ export const updateOrganization = functions.https.onCall(
       if (data.isActive !== undefined) {
         if (!isSaasAdmin) {
           throw new PermissionDeniedError(
-            'Only SaaS administrators can change organization active status',
+            "Only SaaS administrators can change organization active status",
             Permissions.SAAS_MANAGE_ORGANIZATIONS,
-            requestingUser.role
+            requestingUser.role,
           );
         }
         updateData.isActive = data.isActive;
       }
 
-      await db.collection('organizations').doc(data.organizationId).update(updateData);
+      await db
+        .collection("organizations")
+        .doc(data.organizationId)
+        .update(updateData);
 
       // Get updated organization
       const updatedOrg = await getOrganization(data.organizationId);
@@ -383,22 +409,30 @@ export const updateOrganization = functions.https.onCall(
 
       return {
         success: true,
-        organization: updatedOrg ? organizationToResponse(updatedOrg, userCount) : null,
+        organization: updatedOrg
+          ? organizationToResponse(updatedOrg, userCount)
+          : null,
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error updating organization:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to update organization');
+      console.error("Error updating organization:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to update organization",
+      );
     }
-  }
+  },
 );
 
 /**
@@ -409,33 +443,38 @@ export const deleteOrganization = functions.https.onCall(
   async (data: DeleteOrganizationRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       // Only saas_admin can delete organizations
-      if (!hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS)) {
+      if (
+        !hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS)
+      ) {
         throw new PermissionDeniedError(
-          'Only SaaS administrators can delete organizations',
+          "Only SaaS administrators can delete organizations",
           Permissions.SAAS_MANAGE_ORGANIZATIONS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       if (!data.organizationId) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization ID is required'
+          "invalid-argument",
+          "Organization ID is required",
         );
       }
 
       // Get organization
       const org = await getOrganization(data.organizationId);
       if (!org) {
-        throw new functions.https.HttpsError('not-found', 'Organization not found');
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Organization not found",
+        );
       }
 
       // Check if organization has users
@@ -443,7 +482,7 @@ export const deleteOrganization = functions.https.onCall(
 
       if (userCount > 0 && !data.hardDelete) {
         // Soft delete - just mark as inactive
-        await db.collection('organizations').doc(data.organizationId).update({
+        await db.collection("organizations").doc(data.organizationId).update({
           isActive: false,
           deletedAt: admin.firestore.Timestamp.now(),
           deletedBy: requestingUser.uid,
@@ -463,8 +502,8 @@ export const deleteOrganization = functions.https.onCall(
 
         // Get all users in organization
         const usersSnapshot = await db
-          .collection('users')
-          .where('organizationId', '==', data.organizationId)
+          .collection("users")
+          .where("organizationId", "==", data.organizationId)
           .get();
 
         // Deactivate all users
@@ -484,7 +523,7 @@ export const deleteOrganization = functions.https.onCall(
         }
 
         // Delete organization
-        batch.delete(db.collection('organizations').doc(data.organizationId));
+        batch.delete(db.collection("organizations").doc(data.organizationId));
 
         await batch.commit();
 
@@ -497,27 +536,33 @@ export const deleteOrganization = functions.https.onCall(
       }
 
       // No users, safe to delete
-      await db.collection('organizations').doc(data.organizationId).delete();
+      await db.collection("organizations").doc(data.organizationId).delete();
 
       return {
         success: true,
-        message: 'Organization has been deleted',
+        message: "Organization has been deleted",
         softDeleted: false,
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error deleting organization:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to delete organization');
+      console.error("Error deleting organization:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to delete organization",
+      );
     }
-  }
+  },
 );
 
 /**
@@ -528,34 +573,36 @@ export const listOrganizations = functions.https.onCall(
   async (data: ListOrganizationsRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       // Only saas_admin can list all organizations
-      if (!hasPermission(requestingUser, Permissions.SAAS_VIEW_ALL_ORGANIZATIONS)) {
+      if (
+        !hasPermission(requestingUser, Permissions.SAAS_VIEW_ALL_ORGANIZATIONS)
+      ) {
         throw new PermissionDeniedError(
-          'Only SaaS administrators can list all organizations',
+          "Only SaaS administrators can list all organizations",
           Permissions.SAAS_VIEW_ALL_ORGANIZATIONS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       const limit = data.limit || 50;
 
       // Build query
-      let query = db.collection('organizations').orderBy('name');
+      let query = db.collection("organizations").orderBy("name");
 
       if (!data.includeInactive) {
-        query = query.where('isActive', '==', true);
+        query = query.where("isActive", "==", true);
       }
 
       if (data.startAfter) {
         const startAfterDoc = await db
-          .collection('organizations')
+          .collection("organizations")
           .doc(data.startAfter)
           .get();
         if (startAfterDoc.exists) {
@@ -573,7 +620,7 @@ export const listOrganizations = functions.https.onCall(
           const org = { id: doc.id, ...doc.data() } as Organization;
           const userCount = await countOrganizationUsers(doc.id);
           return organizationToResponse(org, userCount);
-        })
+        }),
       );
 
       const lastDoc = snapshot.docs[snapshot.docs.length - 1];
@@ -587,18 +634,24 @@ export const listOrganizations = functions.https.onCall(
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error listing organizations:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to list organizations');
+      console.error("Error listing organizations:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to list organizations",
+      );
     }
-  }
+  },
 );
 
 /**
@@ -609,39 +662,42 @@ export const addUserToOrganization = functions.https.onCall(
   async (data: AddUserToOrganizationRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       if (!data.organizationId || !data.userId || !data.role) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization ID, user ID, and role are required'
+          "invalid-argument",
+          "Organization ID, user ID, and role are required",
         );
       }
 
       // Validate role
       if (!isValidRole(data.role)) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          `Invalid role: ${data.role}`
+          "invalid-argument",
+          `Invalid role: ${data.role}`,
         );
       }
 
       // Check permissions
-      const isSaasAdmin = hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS);
+      const isSaasAdmin = hasPermission(
+        requestingUser,
+        Permissions.SAAS_MANAGE_ORGANIZATIONS,
+      );
       const canManageOrgUsers =
         hasPermission(requestingUser, Permissions.ORGANIZATION_MANAGE_USERS) &&
         canAccessOrganization(requestingUser, data.organizationId);
 
       if (!isSaasAdmin && !canManageOrgUsers) {
         throw new PermissionDeniedError(
-          'User does not have permission to add users to this organization',
+          "User does not have permission to add users to this organization",
           Permissions.ORGANIZATION_MANAGE_USERS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
@@ -650,40 +706,43 @@ export const addUserToOrganization = functions.https.onCall(
         throw new PermissionDeniedError(
           `Cannot assign role '${data.role}'. Can only assign roles lower than your own.`,
           Permissions.USERS_ASSIGN_ROLES,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       // Get organization
       const org = await getOrganization(data.organizationId);
       if (!org) {
-        throw new functions.https.HttpsError('not-found', 'Organization not found');
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Organization not found",
+        );
       }
 
       if (!org.isActive) {
         throw new functions.https.HttpsError(
-          'failed-precondition',
-          'Cannot add users to an inactive organization'
+          "failed-precondition",
+          "Cannot add users to an inactive organization",
         );
       }
 
       // Get user
       const user = await getUser(data.userId);
       if (!user) {
-        throw new functions.https.HttpsError('not-found', 'User not found');
+        throw new functions.https.HttpsError("not-found", "User not found");
       }
 
       // Check if user is already in an organization
       if (user.organizationId && user.organizationId !== data.organizationId) {
         throw new functions.https.HttpsError(
-          'failed-precondition',
-          'User is already associated with another organization. Remove them first.'
+          "failed-precondition",
+          "User is already associated with another organization. Remove them first.",
         );
       }
 
       // Update user
       const now = admin.firestore.Timestamp.now();
-      await db.collection('users').doc(data.userId).update({
+      await db.collection("users").doc(data.userId).update({
         organizationId: data.organizationId,
         role: data.role,
         updatedAt: now,
@@ -705,21 +764,30 @@ export const addUserToOrganization = functions.https.onCall(
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof OrganizationAccessError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error adding user to organization:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to add user to organization');
+      console.error("Error adding user to organization:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to add user to organization",
+      );
     }
-  }
+  },
 );
 
 /**
@@ -730,68 +798,71 @@ export const removeUserFromOrganization = functions.https.onCall(
   async (data: RemoveUserFromOrganizationRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       if (!data.organizationId || !data.userId) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization ID and user ID are required'
+          "invalid-argument",
+          "Organization ID and user ID are required",
         );
       }
 
       // Check permissions
-      const isSaasAdmin = hasPermission(requestingUser, Permissions.SAAS_MANAGE_ORGANIZATIONS);
+      const isSaasAdmin = hasPermission(
+        requestingUser,
+        Permissions.SAAS_MANAGE_ORGANIZATIONS,
+      );
       const canManageOrgUsers =
         hasPermission(requestingUser, Permissions.ORGANIZATION_MANAGE_USERS) &&
         canAccessOrganization(requestingUser, data.organizationId);
 
       if (!isSaasAdmin && !canManageOrgUsers) {
         throw new PermissionDeniedError(
-          'User does not have permission to remove users from this organization',
+          "User does not have permission to remove users from this organization",
           Permissions.ORGANIZATION_MANAGE_USERS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       // Cannot remove yourself
       if (requestingUser.uid === data.userId) {
         throw new functions.https.HttpsError(
-          'failed-precondition',
-          'Cannot remove yourself from the organization'
+          "failed-precondition",
+          "Cannot remove yourself from the organization",
         );
       }
 
       // Get user
       const user = await getUser(data.userId);
       if (!user) {
-        throw new functions.https.HttpsError('not-found', 'User not found');
+        throw new functions.https.HttpsError("not-found", "User not found");
       }
 
       // Verify user is in this organization
       if (user.organizationId !== data.organizationId) {
         throw new functions.https.HttpsError(
-          'failed-precondition',
-          'User is not in this organization'
+          "failed-precondition",
+          "User is not in this organization",
         );
       }
 
       // Cannot remove users with equal or higher role
       if (RoleHierarchy[requestingUser.role] <= RoleHierarchy[user.role]) {
         throw new PermissionDeniedError(
-          'Cannot remove users with equal or higher role',
+          "Cannot remove users with equal or higher role",
           Permissions.ORGANIZATION_MANAGE_USERS,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       // Deactivate user (soft remove)
       const now = admin.firestore.Timestamp.now();
-      await db.collection('users').doc(data.userId).update({
+      await db.collection("users").doc(data.userId).update({
         isActive: false,
         removedFromOrgAt: now,
         removedBy: requestingUser.uid,
@@ -803,30 +874,36 @@ export const removeUserFromOrganization = functions.https.onCall(
 
       return {
         success: true,
-        message: 'User has been removed from the organization',
+        message: "User has been removed from the organization",
         userId: data.userId,
         organizationId: data.organizationId,
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof OrganizationAccessError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error removing user from organization:', error);
+      console.error("Error removing user from organization:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to remove user from organization'
+        "internal",
+        "Failed to remove user from organization",
       );
     }
-  }
+  },
 );
 
 /**
@@ -837,51 +914,54 @@ export const getOrganizationUsers = functions.https.onCall(
   async (data: GetOrganizationUsersRequest, context) => {
     try {
       if (!context.auth) {
-        throw new AuthenticationError('Authentication required');
+        throw new AuthenticationError("Authentication required");
       }
 
       const requestingUser = await verifyAuthAndGetUser(
-        `Bearer ${context.auth.token}`
+        `Bearer ${context.auth.token}`,
       );
 
       if (!data.organizationId) {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Organization ID is required'
+          "invalid-argument",
+          "Organization ID is required",
         );
       }
 
       // Check organization access
       if (!canAccessOrganization(requestingUser, data.organizationId)) {
         throw new OrganizationAccessError(
-          'Cannot access users in this organization',
+          "Cannot access users in this organization",
           requestingUser.organizationId,
-          data.organizationId
+          data.organizationId,
         );
       }
 
       // Check permission
       if (!hasPermission(requestingUser, Permissions.USERS_VIEW)) {
         throw new PermissionDeniedError(
-          'User does not have permission to view users',
+          "User does not have permission to view users",
           Permissions.USERS_VIEW,
-          requestingUser.role
+          requestingUser.role,
         );
       }
 
       // Get organization
       const org = await getOrganization(data.organizationId);
       if (!org) {
-        throw new functions.https.HttpsError('not-found', 'Organization not found');
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Organization not found",
+        );
       }
 
       // Build query
       let query = db
-        .collection('users')
-        .where('organizationId', '==', data.organizationId);
+        .collection("users")
+        .where("organizationId", "==", data.organizationId);
 
       if (!data.includeInactive) {
-        query = query.where('isActive', '==', true);
+        query = query.where("isActive", "==", true);
       }
 
       const snapshot = await query.get();
@@ -895,7 +975,7 @@ export const getOrganizationUsers = functions.https.onCall(
       users.sort((a, b) => {
         const roleCompare = RoleHierarchy[b.role] - RoleHierarchy[a.role];
         if (roleCompare !== 0) return roleCompare;
-        return (a.displayName || '').localeCompare(b.displayName || '');
+        return (a.displayName || "").localeCompare(b.displayName || "");
       });
 
       return {
@@ -906,19 +986,28 @@ export const getOrganizationUsers = functions.https.onCall(
       };
     } catch (error) {
       if (error instanceof PermissionDeniedError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof OrganizationAccessError) {
-        throw new functions.https.HttpsError('permission-denied', error.message);
+        throw new functions.https.HttpsError(
+          "permission-denied",
+          error.message,
+        );
       }
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
       if (error instanceof functions.https.HttpsError) {
         throw error;
       }
-      console.error('Error getting organization users:', error);
-      throw new functions.https.HttpsError('internal', 'Failed to get organization users');
+      console.error("Error getting organization users:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        "Failed to get organization users",
+      );
     }
-  }
+  },
 );

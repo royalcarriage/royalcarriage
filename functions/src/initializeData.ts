@@ -81,14 +81,32 @@ const locationsData: Location[] = [
     coordinates: { lat: 41.8819, lng: -87.6278 },
     zipCodes: ["60601", "60602", "60603"],
     population: 15000,
-    description: "The heart of Chicago's business district, home to iconic skyscrapers, the Chicago Stock Exchange, and world-class dining and entertainment.",
-    landmarks: ["Willis Tower", "Chicago Board of Trade", "Thompson Center", "Millennium Park"],
-    nearbyAirports: { primary: { name: "Chicago O'Hare", code: "ORD", distance: 18 }, secondary: { name: "Chicago Midway", code: "MDW", distance: 20 } },
-    demographics: { medianIncome: "high", businessDensity: "very-high", touristAttraction: "high" },
+    description:
+      "The heart of Chicago's business district, home to iconic skyscrapers, the Chicago Stock Exchange, and world-class dining and entertainment.",
+    landmarks: [
+      "Willis Tower",
+      "Chicago Board of Trade",
+      "Thompson Center",
+      "Millennium Park",
+    ],
+    nearbyAirports: {
+      primary: { name: "Chicago O'Hare", code: "ORD", distance: 18 },
+      secondary: { name: "Chicago Midway", code: "MDW", distance: 20 },
+    },
+    demographics: {
+      medianIncome: "high",
+      businessDensity: "very-high",
+      touristAttraction: "high",
+    },
     weddingVenues: 25,
     hotels: 40,
     restaurants: 200,
-    applicableServices: { airport: 20, corporate: 20, wedding: 18, partyBus: 15 },
+    applicableServices: {
+      airport: 20,
+      corporate: 20,
+      wedding: 18,
+      partyBus: 15,
+    },
   },
   {
     id: "naperville",
@@ -99,14 +117,33 @@ const locationsData: Location[] = [
     coordinates: { lat: 41.7658, lng: -88.1477 },
     zipCodes: ["60540", "60563", "60564"],
     population: 141853,
-    description: "Upscale western suburb known for fine dining, shopping, beautiful riverwalk, and excellent schools.",
-    landmarks: ["Riverwalk", "Millennium Carillon", "Knoch Park", "Mayslake Peabody Estate", "Naper Settlement"],
-    nearbyAirports: { primary: { name: "Chicago O'Hare", code: "ORD", distance: 28 }, secondary: { name: "Chicago Midway", code: "MDW", distance: 35 } },
-    demographics: { medianIncome: "very-high", businessDensity: "medium-high", touristAttraction: "high" },
+    description:
+      "Upscale western suburb known for fine dining, shopping, beautiful riverwalk, and excellent schools.",
+    landmarks: [
+      "Riverwalk",
+      "Millennium Carillon",
+      "Knoch Park",
+      "Mayslake Peabody Estate",
+      "Naper Settlement",
+    ],
+    nearbyAirports: {
+      primary: { name: "Chicago O'Hare", code: "ORD", distance: 28 },
+      secondary: { name: "Chicago Midway", code: "MDW", distance: 35 },
+    },
+    demographics: {
+      medianIncome: "very-high",
+      businessDensity: "medium-high",
+      touristAttraction: "high",
+    },
     weddingVenues: 15,
     hotels: 12,
     restaurants: 85,
-    applicableServices: { airport: 20, corporate: 18, wedding: 19, partyBus: 17 },
+    applicableServices: {
+      airport: 20,
+      corporate: 18,
+      wedding: 19,
+      partyBus: 17,
+    },
   },
 ];
 
@@ -116,13 +153,29 @@ const servicesData: Service[] = [
     website: "airport",
     name: "O'Hare Airport Transfer",
     category: "airport-transfer",
-    description: "Professional limousine service to and from Chicago O'Hare International Airport with flight tracking and real-time updates",
-    longDescription: "Our O'Hare airport transfer service ensures stress-free travel to Chicago's largest airport. We monitor flight schedules to provide timely pickups, ensuring you never miss your departure.",
+    description:
+      "Professional limousine service to and from Chicago O'Hare International Airport with flight tracking and real-time updates",
+    longDescription:
+      "Our O'Hare airport transfer service ensures stress-free travel to Chicago's largest airport. We monitor flight schedules to provide timely pickups, ensuring you never miss your departure.",
     basePrice: 75,
     pricingModel: "flat-rate",
-    applicableVehicles: ["lincoln-continental", "cadillac-xts", "escalade-suv", "sprinter-14"],
-    relatedServices: ["midway-airport-transfer", "airport-downtown-hotel", "airport-business-meeting"],
-    keywords: ["O'Hare airport limo", "Chicago O'Hare transportation", "O'Hare limousine service", "ORD airport transfer"],
+    applicableVehicles: [
+      "lincoln-continental",
+      "cadillac-xts",
+      "escalade-suv",
+      "sprinter-14",
+    ],
+    relatedServices: [
+      "midway-airport-transfer",
+      "airport-downtown-hotel",
+      "airport-business-meeting",
+    ],
+    keywords: [
+      "O'Hare airport limo",
+      "Chicago O'Hare transportation",
+      "O'Hare limousine service",
+      "ORD airport transfer",
+    ],
     searchVolume: 2200,
     difficulty: "high",
   },
@@ -136,11 +189,27 @@ const fleetData: Vehicle[] = [
     capacity: 3,
     baseHourlyRate: 95,
     baseAirportRate: 75,
-    description: "Premium luxury sedan with elegant lines, advanced technology, and supremely comfortable seating for executive travel.",
-    features: ["leather-seats", "climate-control", "premium-sound-system", "wifi", "charging-ports", "privacy-partition"],
-    applicableServices: ["airport-ohare-transfer", "airport-midway-transfer", "business-meeting-transport"],
+    description:
+      "Premium luxury sedan with elegant lines, advanced technology, and supremely comfortable seating for executive travel.",
+    features: [
+      "leather-seats",
+      "climate-control",
+      "premium-sound-system",
+      "wifi",
+      "charging-ports",
+      "privacy-partition",
+    ],
+    applicableServices: [
+      "airport-ohare-transfer",
+      "airport-midway-transfer",
+      "business-meeting-transport",
+    ],
     imageUrl: "gs://bucket/lincoln-continental.jpg",
-    seoKeywords: ["Lincoln Continental rental Chicago", "luxury sedan service", "executive car rental"],
+    seoKeywords: [
+      "Lincoln Continental rental Chicago",
+      "luxury sedan service",
+      "executive car rental",
+    ],
     availability: { weekday: true, weekend: true, available24_7: true },
   },
 ];
@@ -148,7 +217,10 @@ const fleetData: Vehicle[] = [
 export const initializeData = functions.https.onCall(async (data, context) => {
   // Verify admin context
   if (!context.auth || !context.auth.token.admin) {
-    throw new functions.https.HttpsError("permission-denied", "Only admins can initialize data");
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Only admins can initialize data",
+    );
   }
 
   const db = admin.firestore();
@@ -158,12 +230,15 @@ export const initializeData = functions.https.onCall(async (data, context) => {
     // Initialize locations collection
     functions.logger.info("Starting locations initialization...");
     for (const location of locationsData) {
-      await db.collection("locations").doc(location.id).set({
-        ...location,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        contentGenerated: false,
-        approvalStatus: "pending",
-      });
+      await db
+        .collection("locations")
+        .doc(location.id)
+        .set({
+          ...location,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          contentGenerated: false,
+          approvalStatus: "pending",
+        });
       initialized++;
     }
     functions.logger.info(`Initialized ${initialized} locations`);
@@ -172,10 +247,13 @@ export const initializeData = functions.https.onCall(async (data, context) => {
     functions.logger.info("Starting services initialization...");
     let serviceCount = 0;
     for (const service of servicesData) {
-      await db.collection("services").doc(service.id).set({
-        ...service,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      await db
+        .collection("services")
+        .doc(service.id)
+        .set({
+          ...service,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
       serviceCount++;
     }
     functions.logger.info(`Initialized ${serviceCount} services`);
@@ -184,10 +262,13 @@ export const initializeData = functions.https.onCall(async (data, context) => {
     functions.logger.info("Starting fleet initialization...");
     let vehicleCount = 0;
     for (const vehicle of fleetData) {
-      await db.collection("fleet_vehicles").doc(vehicle.id).set({
-        ...vehicle,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
+      await db
+        .collection("fleet_vehicles")
+        .doc(vehicle.id)
+        .set({
+          ...vehicle,
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
       vehicleCount++;
     }
     functions.logger.info(`Initialized ${vehicleCount} fleet vehicles`);
@@ -203,7 +284,10 @@ export const initializeData = functions.https.onCall(async (data, context) => {
     };
   } catch (error) {
     functions.logger.error("Error initializing data:", error);
-    throw new functions.https.HttpsError("internal", `Initialization failed: ${error}`);
+    throw new functions.https.HttpsError(
+      "internal",
+      `Initialization failed: ${error}`,
+    );
   }
 });
 
@@ -212,101 +296,123 @@ export const initializeData = functions.https.onCall(async (data, context) => {
  * Purpose: Create mappings between locations and applicable services
  * This enables efficient querying of "all services available in Location X"
  */
-export const seedLocationServiceMappings = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token.admin) {
-    throw new functions.https.HttpsError("permission-denied", "Only admins can seed mappings");
-  }
-
-  const db = admin.firestore();
-
-  try {
-    functions.logger.info("Creating location-service mappings...");
-
-    // For each location, create service-location mappings
-    const locations = await db.collection("locations").get();
-    let mappingCount = 0;
-
-    for (const locDoc of locations.docs) {
-      const location = locDoc.data() as Location;
-      const services = await db.collection("services").get();
-
-      for (const serviceDoc of services.docs) {
-        const service = serviceDoc.data() as Service;
-
-        // Create mapping if service is applicable to location
-        const serviceType = service.website as keyof typeof location.applicableServices;
-        if (location.applicableServices[serviceType] > 0) {
-          const mappingId = `${location.id}-${service.id}`;
-
-          await db.collection("page_mappings").doc(mappingId).set({
-            locationId: location.id,
-            serviceId: service.id,
-            websiteId: service.website,
-            locationName: location.name,
-            serviceName: service.name,
-            pagePath: `/service/${service.id}/${location.id}`,
-            status: "draft",
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
-          mappingCount++;
-        }
-      }
+export const seedLocationServiceMappings = functions.https.onCall(
+  async (data, context) => {
+    if (!context.auth || !context.auth.token.admin) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Only admins can seed mappings",
+      );
     }
 
-    functions.logger.info(`Created ${mappingCount} location-service mappings`);
+    const db = admin.firestore();
 
-    return {
-      success: true,
-      message: `Created ${mappingCount} location-service mappings`,
-    };
-  } catch (error) {
-    functions.logger.error("Error seeding mappings:", error);
-    throw new functions.https.HttpsError("internal", `Mapping seeding failed: ${error}`);
-  }
-});
+    try {
+      functions.logger.info("Creating location-service mappings...");
+
+      // For each location, create service-location mappings
+      const locations = await db.collection("locations").get();
+      let mappingCount = 0;
+
+      for (const locDoc of locations.docs) {
+        const location = locDoc.data() as Location;
+        const services = await db.collection("services").get();
+
+        for (const serviceDoc of services.docs) {
+          const service = serviceDoc.data() as Service;
+
+          // Create mapping if service is applicable to location
+          const serviceType =
+            service.website as keyof typeof location.applicableServices;
+          if (location.applicableServices[serviceType] > 0) {
+            const mappingId = `${location.id}-${service.id}`;
+
+            await db
+              .collection("page_mappings")
+              .doc(mappingId)
+              .set({
+                locationId: location.id,
+                serviceId: service.id,
+                websiteId: service.website,
+                locationName: location.name,
+                serviceName: service.name,
+                pagePath: `/service/${service.id}/${location.id}`,
+                status: "draft",
+                createdAt: admin.firestore.FieldValue.serverTimestamp(),
+              });
+            mappingCount++;
+          }
+        }
+      }
+
+      functions.logger.info(
+        `Created ${mappingCount} location-service mappings`,
+      );
+
+      return {
+        success: true,
+        message: `Created ${mappingCount} location-service mappings`,
+      };
+    } catch (error) {
+      functions.logger.error("Error seeding mappings:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Mapping seeding failed: ${error}`,
+      );
+    }
+  },
+);
 
 /**
  * Cloud Function: createCollectionIndexes
  * Purpose: Ensure all required Firestore collections and indexes exist
  */
-export const createCollectionIndexes = functions.https.onCall(async (data, context) => {
-  if (!context.auth || !context.auth.token.admin) {
-    throw new functions.https.HttpsError("permission-denied", "Only admins can create indexes");
-  }
-
-  const db = admin.firestore();
-
-  try {
-    // Create collection references (documents will be auto-created on first write)
-    const collections = [
-      "locations",
-      "services",
-      "fleet_vehicles",
-      "page_mappings",
-      "service_content",
-      "content_approval_queue",
-    ];
-
-    for (const collection of collections) {
-      // Create a sentinel document to ensure collection exists
-      await db.collection(collection).doc("_system_sentinel").set(
-        {
-          _type: "sentinel",
-          _created: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true }
+export const createCollectionIndexes = functions.https.onCall(
+  async (data, context) => {
+    if (!context.auth || !context.auth.token.admin) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Only admins can create indexes",
       );
     }
 
-    functions.logger.info("Collection indexes created successfully");
+    const db = admin.firestore();
 
-    return {
-      success: true,
-      message: "Collection indexes created",
-      collections: collections,
-    };
-  } catch (error) {
-    functions.logger.error("Error creating indexes:", error);
-    throw new functions.https.HttpsError("internal", `Index creation failed: ${error}`);
-  }
-});
+    try {
+      // Create collection references (documents will be auto-created on first write)
+      const collections = [
+        "locations",
+        "services",
+        "fleet_vehicles",
+        "page_mappings",
+        "service_content",
+        "content_approval_queue",
+      ];
+
+      for (const collection of collections) {
+        // Create a sentinel document to ensure collection exists
+        await db.collection(collection).doc("_system_sentinel").set(
+          {
+            _type: "sentinel",
+            _created: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true },
+        );
+      }
+
+      functions.logger.info("Collection indexes created successfully");
+
+      return {
+        success: true,
+        message: "Collection indexes created",
+        collections: collections,
+      };
+    } catch (error) {
+      functions.logger.error("Error creating indexes:", error);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Index creation failed: ${error}`,
+      );
+    }
+  },
+);

@@ -1,15 +1,43 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { db, storage } from '../lib/firebase';
-import { collection, getDocs, query, doc, updateDoc, addDoc, deleteDoc, Timestamp, onSnapshot } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
-import { useAuth } from '../state/AuthProvider';
-import { canPerformAction } from '../lib/permissions';
-import { Plus, Edit2, Trash2, Save, X, Loader2, RefreshCw, Car, AlertTriangle, CheckCircle, Upload, Image as ImageIcon } from 'lucide-react';
+import React, { useEffect, useState, useRef } from "react";
+import { db, storage } from "../lib/firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  doc,
+  updateDoc,
+  addDoc,
+  deleteDoc,
+  Timestamp,
+  onSnapshot,
+} from "firebase/firestore";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import { useAuth } from "../state/AuthProvider";
+import { canPerformAction } from "../lib/permissions";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  X,
+  Loader2,
+  RefreshCw,
+  Car,
+  AlertTriangle,
+  CheckCircle,
+  Upload,
+  Image as ImageIcon,
+} from "lucide-react";
 
 interface VehicleItem {
   id: string;
   name: string;
-  category: 'sedan' | 'suv' | 'stretch' | 'van' | 'partybus' | 'coach';
+  category: "sedan" | "suv" | "stretch" | "van" | "partybus" | "coach";
   capacity: number;
   description: string;
   features: string[];
@@ -17,20 +45,20 @@ interface VehicleItem {
   hourlyRate?: number;
   airportRate?: number;
   serviceIds: string[];
-  status: 'active' | 'maintenance' | 'inactive';
+  status: "active" | "maintenance" | "inactive";
   year?: number;
   make?: string;
   model?: string;
 }
 
 const VEHICLE_CATEGORIES = [
-  { id: 'all', label: 'All Vehicles', icon: '🚗' },
-  { id: 'sedan', label: 'Sedans', icon: '🚙' },
-  { id: 'suv', label: 'SUVs', icon: '🚐' },
-  { id: 'stretch', label: 'Stretch Limos', icon: '🚖' },
-  { id: 'van', label: 'Vans', icon: '🚌' },
-  { id: 'partybus', label: 'Party Bus', icon: '🎉' },
-  { id: 'coach', label: 'Coach Bus', icon: '🚍' },
+  { id: "all", label: "All Vehicles", icon: "🚗" },
+  { id: "sedan", label: "Sedans", icon: "🚙" },
+  { id: "suv", label: "SUVs", icon: "🚐" },
+  { id: "stretch", label: "Stretch Limos", icon: "🚖" },
+  { id: "van", label: "Vans", icon: "🚌" },
+  { id: "partybus", label: "Party Bus", icon: "🎉" },
+  { id: "coach", label: "Coach Bus", icon: "🚍" },
 ] as const;
 
 // Vehicle Form Modal
@@ -48,20 +76,20 @@ function VehicleModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<Partial<VehicleItem>>({
-    name: '',
-    category: 'sedan',
+    name: "",
+    category: "sedan",
     capacity: 4,
-    description: '',
+    description: "",
     features: [],
     hourlyRate: 0,
     airportRate: 0,
-    status: 'active',
+    status: "active",
     year: new Date().getFullYear(),
-    make: '',
-    model: '',
+    make: "",
+    model: "",
     serviceIds: [],
   });
-  const [newFeature, setNewFeature] = useState('');
+  const [newFeature, setNewFeature] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -84,13 +112,18 @@ function VehicleModal({
 
     setUploadingImage(true);
     try {
-      const vehicleId = formData.name?.toLowerCase().replace(/\s+/g, '-') || `vehicle-${Date.now()}`;
-      const storageRef = ref(storage, `fleet-images/${vehicleId}-${Date.now()}.${imageFile.name.split('.').pop()}`);
+      const vehicleId =
+        formData.name?.toLowerCase().replace(/\s+/g, "-") ||
+        `vehicle-${Date.now()}`;
+      const storageRef = ref(
+        storage,
+        `fleet-images/${vehicleId}-${Date.now()}.${imageFile.name.split(".").pop()}`,
+      );
       await uploadBytes(storageRef, imageFile);
       const url = await getDownloadURL(storageRef);
       return url;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
       return null;
     } finally {
       setUploadingImage(false);
@@ -103,17 +136,17 @@ function VehicleModal({
       setImagePreview(vehicle.imageUrl || null);
     } else {
       setFormData({
-        name: '',
-        category: 'sedan',
+        name: "",
+        category: "sedan",
         capacity: 4,
-        description: '',
+        description: "",
         features: [],
         hourlyRate: 0,
         airportRate: 0,
-        status: 'active',
+        status: "active",
         year: new Date().getFullYear(),
-        make: '',
-        model: '',
+        make: "",
+        model: "",
         serviceIds: [],
       });
       setImagePreview(null);
@@ -127,7 +160,7 @@ function VehicleModal({
         ...formData,
         features: [...(formData.features || []), newFeature.trim()],
       });
-      setNewFeature('');
+      setNewFeature("");
     }
   }
 
@@ -145,20 +178,27 @@ function VehicleModal({
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-bold">
-            {vehicle ? 'Edit Vehicle' : 'Add New Vehicle'}
+            {vehicle ? "Edit Vehicle" : "Add New Vehicle"}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Vehicle Name
+            </label>
             <input
               type="text"
-              value={formData.name || ''}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.name || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="e.g., Lincoln MKT Stretch"
             />
@@ -166,30 +206,45 @@ function VehicleModal({
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Year
+              </label>
               <input
                 type="number"
-                value={formData.year || ''}
-                onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) || undefined })}
+                value={formData.year || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    year: parseInt(e.target.value) || undefined,
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Make</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Make
+              </label>
               <input
                 type="text"
-                value={formData.make || ''}
-                onChange={(e) => setFormData({ ...formData, make: e.target.value })}
+                value={formData.make || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, make: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., Lincoln"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Model</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Model
+              </label>
               <input
                 type="text"
-                value={formData.model || ''}
-                onChange={(e) => setFormData({ ...formData, model: e.target.value })}
+                value={formData.model || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, model: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., MKT"
               />
@@ -198,10 +253,17 @@ function VehicleModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Category
+              </label>
               <select
-                value={formData.category || 'sedan'}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value as VehicleItem['category'] })}
+                value={formData.category || "sedan"}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    category: e.target.value as VehicleItem["category"],
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="sedan">Sedan</option>
@@ -213,10 +275,17 @@ function VehicleModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
               <select
-                value={formData.status || 'active'}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as VehicleItem['status'] })}
+                value={formData.status || "active"}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    status: e.target.value as VehicleItem["status"],
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="active">Active</option>
@@ -228,39 +297,64 @@ function VehicleModal({
 
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Capacity</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Capacity
+              </label>
               <input
                 type="number"
                 value={formData.capacity || 4}
-                onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 4 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    capacity: parseInt(e.target.value) || 4,
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hourly Rate ($)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Hourly Rate ($)
+              </label>
               <input
                 type="number"
                 value={formData.hourlyRate || 0}
-                onChange={(e) => setFormData({ ...formData, hourlyRate: parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    hourlyRate: parseFloat(e.target.value) || 0,
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Airport Rate ($)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Airport Rate ($)
+              </label>
               <input
                 type="number"
                 value={formData.airportRate || 0}
-                onChange={(e) => setFormData({ ...formData, airportRate: parseFloat(e.target.value) || 0 })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    airportRate: parseFloat(e.target.value) || 0,
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
             <textarea
-              value={formData.description || ''}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.description || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               rows={3}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Describe this vehicle..."
@@ -269,14 +363,20 @@ function VehicleModal({
 
           {/* Image Upload */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Image</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Vehicle Image
+            </label>
             <div className="flex items-start gap-4">
               <div
                 onClick={() => fileInputRef.current?.click()}
                 className="w-40 h-32 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition overflow-hidden border-2 border-dashed border-gray-300"
               >
                 {imagePreview ? (
-                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="w-full h-full object-cover"
+                  />
                 ) : (
                   <div className="text-center text-gray-400">
                     <ImageIcon className="w-8 h-8 mx-auto mb-1" />
@@ -293,7 +393,8 @@ function VehicleModal({
               />
               <div className="flex-1">
                 <p className="text-sm text-gray-500 mb-2">
-                  Upload a high-quality image of the vehicle. Supported formats: JPG, PNG, WebP.
+                  Upload a high-quality image of the vehicle. Supported formats:
+                  JPG, PNG, WebP.
                 </p>
                 <div className="flex gap-2">
                   <button
@@ -310,7 +411,7 @@ function VehicleModal({
                       onClick={() => {
                         setImageFile(null);
                         setImagePreview(null);
-                        setFormData({ ...formData, imageUrl: '' });
+                        setFormData({ ...formData, imageUrl: "" });
                       }}
                       className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm"
                     >
@@ -328,13 +429,17 @@ function VehicleModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Features</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Features
+            </label>
             <div className="flex gap-2 mb-2">
               <input
                 type="text"
                 value={newFeature}
                 onChange={(e) => setNewFeature(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddFeature())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), handleAddFeature())
+                }
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Add a feature..."
               />
@@ -348,9 +453,16 @@ function VehicleModal({
             </div>
             <div className="flex flex-wrap gap-2">
               {(formData.features || []).map((feature, idx) => (
-                <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                <span
+                  key={idx}
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                >
                   {feature}
-                  <button type="button" onClick={() => handleRemoveFeature(idx)} className="hover:text-red-600">
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveFeature(idx)}
+                    className="hover:text-red-600"
+                  >
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -374,8 +486,12 @@ function VehicleModal({
             disabled={isLoading || uploadingImage || !formData.name}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {(isLoading || uploadingImage) ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {uploadingImage ? 'Uploading...' : vehicle ? 'Update' : 'Create'}
+            {isLoading || uploadingImage ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {uploadingImage ? "Uploading..." : vehicle ? "Update" : "Create"}
           </button>
         </div>
       </div>
@@ -387,45 +503,60 @@ export default function FleetManagementPage() {
   const { user, role } = useAuth();
   const [vehicles, setVehicles] = useState<VehicleItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // CRUD state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingVehicle, setEditingVehicle] = useState<VehicleItem | undefined>();
+  const [editingVehicle, setEditingVehicle] = useState<
+    VehicleItem | undefined
+  >();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  const canEdit = canPerformAction(role, 'editSettings');
-  const canDelete = canPerformAction(role, 'deleteContent');
+  const canEdit = canPerformAction(role, "editSettings");
+  const canDelete = canPerformAction(role, "deleteContent");
 
   // Real-time subscription to vehicles
   useEffect(() => {
-    if (role !== 'admin' && role !== 'superadmin') {
+    if (role !== "admin" && role !== "superadmin") {
       return;
     }
 
     setLoading(true);
-    const q = query(collection(db, 'fleet_vehicles'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const items = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as VehicleItem[];
+    const q = query(collection(db, "fleet_vehicles"));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as VehicleItem[];
 
-      items.sort((a, b) => {
-        const categoryOrder = ['sedan', 'suv', 'stretch', 'van', 'partybus', 'coach'];
-        const catCompare = categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
-        if (catCompare !== 0) return catCompare;
-        return a.name.localeCompare(b.name);
-      });
+        items.sort((a, b) => {
+          const categoryOrder = [
+            "sedan",
+            "suv",
+            "stretch",
+            "van",
+            "partybus",
+            "coach",
+          ];
+          const catCompare =
+            categoryOrder.indexOf(a.category) -
+            categoryOrder.indexOf(b.category);
+          if (catCompare !== 0) return catCompare;
+          return a.name.localeCompare(b.name);
+        });
 
-      setVehicles(items);
-      setLoading(false);
-    }, (error) => {
-      console.error('Error listening to vehicles:', error);
-      setLoading(false);
-    });
+        setVehicles(items);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Error listening to vehicles:", error);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe();
   }, [role]);
@@ -433,7 +564,7 @@ export default function FleetManagementPage() {
   async function loadVehicles() {
     try {
       setLoading(true);
-      const q = query(collection(db, 'fleet_vehicles'));
+      const q = query(collection(db, "fleet_vehicles"));
       const snapshot = await getDocs(q);
       const items = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -441,15 +572,23 @@ export default function FleetManagementPage() {
       })) as VehicleItem[];
 
       items.sort((a, b) => {
-        const categoryOrder = ['sedan', 'suv', 'stretch', 'van', 'partybus', 'coach'];
-        const catCompare = categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
+        const categoryOrder = [
+          "sedan",
+          "suv",
+          "stretch",
+          "van",
+          "partybus",
+          "coach",
+        ];
+        const catCompare =
+          categoryOrder.indexOf(a.category) - categoryOrder.indexOf(b.category);
         if (catCompare !== 0) return catCompare;
         return a.name.localeCompare(b.name);
       });
 
       setVehicles(items);
     } catch (error) {
-      console.error('Error loading vehicles:', error);
+      console.error("Error loading vehicles:", error);
     } finally {
       setLoading(false);
     }
@@ -458,7 +597,7 @@ export default function FleetManagementPage() {
   // Create or Update vehicle
   async function handleSaveVehicle(data: Partial<VehicleItem>) {
     if (!canEdit) {
-      alert('You do not have permission to edit vehicles');
+      alert("You do not have permission to edit vehicles");
       return;
     }
 
@@ -466,24 +605,24 @@ export default function FleetManagementPage() {
     try {
       if (editingVehicle) {
         // Update existing
-        await updateDoc(doc(db, 'fleet_vehicles', editingVehicle.id), {
+        await updateDoc(doc(db, "fleet_vehicles", editingVehicle.id), {
           ...data,
           updatedAt: Timestamp.now(),
           updatedBy: user?.email,
         });
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'system',
+        await addDoc(collection(db, "activity_log"), {
+          type: "system",
           message: `Updated vehicle: ${data.name}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: Timestamp.now(),
         });
       } else {
         // Create new
-        await addDoc(collection(db, 'fleet_vehicles'), {
+        await addDoc(collection(db, "fleet_vehicles"), {
           ...data,
           serviceIds: data.serviceIds || [],
           createdAt: Timestamp.now(),
@@ -491,10 +630,10 @@ export default function FleetManagementPage() {
         });
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'system',
+        await addDoc(collection(db, "activity_log"), {
+          type: "system",
           message: `Added new vehicle: ${data.name}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: Timestamp.now(),
@@ -504,8 +643,8 @@ export default function FleetManagementPage() {
       setIsModalOpen(false);
       setEditingVehicle(undefined);
     } catch (error) {
-      console.error('Error saving vehicle:', error);
-      alert('Failed to save vehicle. Please try again.');
+      console.error("Error saving vehicle:", error);
+      alert("Failed to save vehicle. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -514,30 +653,34 @@ export default function FleetManagementPage() {
   // Delete vehicle
   async function handleDeleteVehicle(vehicle: VehicleItem) {
     if (!canDelete) {
-      alert('You do not have permission to delete vehicles');
+      alert("You do not have permission to delete vehicles");
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete "${vehicle.name}"? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${vehicle.name}"? This cannot be undone.`,
+      )
+    ) {
       return;
     }
 
     setIsDeleting(vehicle.id);
     try {
-      await deleteDoc(doc(db, 'fleet_vehicles', vehicle.id));
+      await deleteDoc(doc(db, "fleet_vehicles", vehicle.id));
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'system',
+      await addDoc(collection(db, "activity_log"), {
+        type: "system",
         message: `Deleted vehicle: ${vehicle.name}`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
       });
     } catch (error) {
-      console.error('Error deleting vehicle:', error);
-      alert('Failed to delete vehicle. Please try again.');
+      console.error("Error deleting vehicle:", error);
+      alert("Failed to delete vehicle. Please try again.");
     } finally {
       setIsDeleting(null);
     }
@@ -556,56 +699,60 @@ export default function FleetManagementPage() {
   }
 
   // Update vehicle status quickly
-  async function handleStatusChange(vehicle: VehicleItem, newStatus: VehicleItem['status']) {
+  async function handleStatusChange(
+    vehicle: VehicleItem,
+    newStatus: VehicleItem["status"],
+  ) {
     if (!canEdit) {
-      alert('You do not have permission to update vehicle status');
+      alert("You do not have permission to update vehicle status");
       return;
     }
 
     try {
-      await updateDoc(doc(db, 'fleet_vehicles', vehicle.id), {
+      await updateDoc(doc(db, "fleet_vehicles", vehicle.id), {
         status: newStatus,
         updatedAt: Timestamp.now(),
         updatedBy: user?.email,
       });
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'system',
+      await addDoc(collection(db, "activity_log"), {
+        type: "system",
         message: `Changed ${vehicle.name} status to ${newStatus}`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
       });
     } catch (error) {
-      console.error('Error updating vehicle status:', error);
-      alert('Failed to update status');
+      console.error("Error updating vehicle status:", error);
+      alert("Failed to update status");
     }
   }
 
-  const filteredVehicles = selectedCategory === 'all'
-    ? vehicles
-    : vehicles.filter((v) => v.category === selectedCategory);
+  const filteredVehicles =
+    selectedCategory === "all"
+      ? vehicles
+      : vehicles.filter((v) => v.category === selectedCategory);
 
   function getCategoryIcon(category: string) {
     const cat = VEHICLE_CATEGORIES.find((c) => c.id === category);
-    return cat?.icon || '🚗';
+    return cat?.icon || "🚗";
   }
 
   function getCategoryColor(category: string) {
     const colors: Record<string, string> = {
-      sedan: 'blue',
-      suv: 'green',
-      stretch: 'purple',
-      van: 'orange',
-      partybus: 'pink',
-      coach: 'indigo',
+      sedan: "blue",
+      suv: "green",
+      stretch: "purple",
+      van: "orange",
+      partybus: "pink",
+      coach: "indigo",
     };
-    return colors[category] || 'gray';
+    return colors[category] || "gray";
   }
 
-  if (role !== 'admin' && role !== 'superadmin') {
+  if (role !== "admin" && role !== "superadmin") {
     return <div className="p-8">Access Denied. Admins only.</div>;
   }
 
@@ -614,7 +761,10 @@ export default function FleetManagementPage() {
       {/* Vehicle Modal */}
       <VehicleModal
         isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false); setEditingVehicle(undefined); }}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingVehicle(undefined);
+        }}
         onSave={handleSaveVehicle}
         vehicle={editingVehicle}
         isLoading={isSaving}
@@ -630,7 +780,9 @@ export default function FleetManagementPage() {
                 onClick={loadVehicles}
                 className="flex items-center gap-2 px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
                 Refresh
               </button>
               {canEdit && (
@@ -643,21 +795,21 @@ export default function FleetManagementPage() {
                 </button>
               )}
               <button
-                onClick={() => setViewMode('grid')}
+                onClick={() => setViewMode("grid")}
                 className={`px-4 py-2 rounded-lg transition ${
-                  viewMode === 'grid'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300'
+                  viewMode === "grid"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 border border-gray-300"
                 }`}
               >
                 Grid
               </button>
               <button
-                onClick={() => setViewMode('list')}
+                onClick={() => setViewMode("list")}
                 className={`px-4 py-2 rounded-lg transition ${
-                  viewMode === 'list'
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 border border-gray-300'
+                  viewMode === "list"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-gray-700 border border-gray-300"
                 }`}
               >
                 List
@@ -665,31 +817,37 @@ export default function FleetManagementPage() {
             </div>
           </div>
           <p className="text-gray-600">
-            Manage your fleet of {vehicles.length} premium vehicles across all service categories
+            Manage your fleet of {vehicles.length} premium vehicles across all
+            service categories
           </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-3xl font-bold text-blue-600">{vehicles.length}</div>
+            <div className="text-3xl font-bold text-blue-600">
+              {vehicles.length}
+            </div>
             <div className="text-gray-600">Total Vehicles</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="text-3xl font-bold text-green-600">
-              {vehicles.filter((v) => v.status === 'active').length}
+              {vehicles.filter((v) => v.status === "active").length}
             </div>
             <div className="text-gray-600">Active</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="text-3xl font-bold text-orange-600">
-              {vehicles.filter((v) => v.status === 'maintenance').length}
+              {vehicles.filter((v) => v.status === "maintenance").length}
             </div>
             <div className="text-gray-600">In Maintenance</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
             <div className="text-3xl font-bold text-purple-600">
-              {Math.round(vehicles.reduce((sum, v) => sum + v.capacity, 0) / vehicles.length)}
+              {Math.round(
+                vehicles.reduce((sum, v) => sum + v.capacity, 0) /
+                  vehicles.length,
+              )}
             </div>
             <div className="text-gray-600">Avg Capacity</div>
           </div>
@@ -699,9 +857,10 @@ export default function FleetManagementPage() {
         <div className="mb-6">
           <div className="flex gap-2 flex-wrap">
             {VEHICLE_CATEGORIES.map((cat) => {
-              const count = cat.id === 'all'
-                ? vehicles.length
-                : vehicles.filter((v) => v.category === cat.id).length;
+              const count =
+                cat.id === "all"
+                  ? vehicles.length
+                  : vehicles.filter((v) => v.category === cat.id).length;
 
               return (
                 <button
@@ -709,8 +868,8 @@ export default function FleetManagementPage() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-5 py-2.5 rounded-lg font-medium transition-all ${
                     selectedCategory === cat.id
-                      ? 'bg-blue-600 text-white shadow-lg'
-                      : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                      ? "bg-blue-600 text-white shadow-lg"
+                      : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50"
                   }`}
                 >
                   <span className="mr-2">{cat.icon}</span>
@@ -724,7 +883,7 @@ export default function FleetManagementPage() {
         {/* Vehicles Display */}
         {loading ? (
           <div className="text-center py-12">Loading vehicles...</div>
-        ) : viewMode === 'grid' ? (
+        ) : viewMode === "grid" ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredVehicles.map((vehicle) => {
               const color = getCategoryColor(vehicle.category);
@@ -752,14 +911,18 @@ export default function FleetManagementPage() {
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
                       <div>
-                        <h3 className="text-xl font-bold text-gray-900">{vehicle.name}</h3>
+                        <h3 className="text-xl font-bold text-gray-900">
+                          {vehicle.name}
+                        </h3>
                         {vehicle.make && vehicle.model && (
                           <p className="text-sm text-gray-500">
                             {vehicle.year} {vehicle.make} {vehicle.model}
                           </p>
                         )}
                       </div>
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800 capitalize`}>
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800 capitalize`}
+                      >
                         {vehicle.category}
                       </span>
                     </div>
@@ -772,11 +935,15 @@ export default function FleetManagementPage() {
                     <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
                       <div className="bg-gray-50 p-3 rounded">
                         <div className="text-gray-500">Capacity</div>
-                        <div className="font-bold text-gray-900">{vehicle.capacity} passengers</div>
+                        <div className="font-bold text-gray-900">
+                          {vehicle.capacity} passengers
+                        </div>
                       </div>
                       <div className="bg-gray-50 p-3 rounded">
                         <div className="text-gray-500">Services</div>
-                        <div className="font-bold text-gray-900">{vehicle.serviceIds.length}</div>
+                        <div className="font-bold text-gray-900">
+                          {vehicle.serviceIds.length}
+                        </div>
                       </div>
                     </div>
 
@@ -825,14 +992,20 @@ export default function FleetManagementPage() {
 
                     {/* Status Badge */}
                     <div className="mb-4">
-                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
-                        vehicle.status === 'active'
-                          ? 'bg-green-100 text-green-800'
-                          : vehicle.status === 'maintenance'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {vehicle.status === 'active' ? '✓ Active' : vehicle.status === 'maintenance' ? '⚠ Maintenance' : 'Inactive'}
+                      <span
+                        className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                          vehicle.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : vehicle.status === "maintenance"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {vehicle.status === "active"
+                          ? "✓ Active"
+                          : vehicle.status === "maintenance"
+                            ? "⚠ Maintenance"
+                            : "Inactive"}
                       </span>
                     </div>
 
@@ -840,16 +1013,20 @@ export default function FleetManagementPage() {
                     {canEdit && (
                       <div className="flex gap-1 mb-4">
                         <button
-                          onClick={() => handleStatusChange(vehicle, 'active')}
-                          className={`flex-1 px-2 py-1 text-xs rounded ${vehicle.status === 'active' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-green-100'}`}
+                          onClick={() => handleStatusChange(vehicle, "active")}
+                          className={`flex-1 px-2 py-1 text-xs rounded ${vehicle.status === "active" ? "bg-green-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-green-100"}`}
                         >
-                          <CheckCircle className="w-3 h-3 inline mr-1" />Active
+                          <CheckCircle className="w-3 h-3 inline mr-1" />
+                          Active
                         </button>
                         <button
-                          onClick={() => handleStatusChange(vehicle, 'maintenance')}
-                          className={`flex-1 px-2 py-1 text-xs rounded ${vehicle.status === 'maintenance' ? 'bg-yellow-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-yellow-100'}`}
+                          onClick={() =>
+                            handleStatusChange(vehicle, "maintenance")
+                          }
+                          className={`flex-1 px-2 py-1 text-xs rounded ${vehicle.status === "maintenance" ? "bg-yellow-600 text-white" : "bg-gray-100 text-gray-600 hover:bg-yellow-100"}`}
                         >
-                          <AlertTriangle className="w-3 h-3 inline mr-1" />Maint
+                          <AlertTriangle className="w-3 h-3 inline mr-1" />
+                          Maint
                         </button>
                       </div>
                     )}
@@ -919,7 +1096,9 @@ export default function FleetManagementPage() {
                   return (
                     <tr key={vehicle.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4">
-                        <div className="font-semibold text-gray-900">{vehicle.name}</div>
+                        <div className="font-semibold text-gray-900">
+                          {vehicle.name}
+                        </div>
                         {vehicle.make && vehicle.model && (
                           <div className="text-sm text-gray-500">
                             {vehicle.year} {vehicle.make} {vehicle.model}
@@ -927,7 +1106,9 @@ export default function FleetManagementPage() {
                         )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800 capitalize`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-${color}-100 text-${color}-800 capitalize`}
+                        >
                           {vehicle.category}
                         </span>
                       </td>
@@ -935,20 +1116,26 @@ export default function FleetManagementPage() {
                         {vehicle.capacity} passengers
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {vehicle.hourlyRate && <div>${vehicle.hourlyRate}/hr</div>}
-                        {vehicle.airportRate && <div>${vehicle.airportRate} airport</div>}
+                        {vehicle.hourlyRate && (
+                          <div>${vehicle.hourlyRate}/hr</div>
+                        )}
+                        {vehicle.airportRate && (
+                          <div>${vehicle.airportRate} airport</div>
+                        )}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                         {vehicle.serviceIds.length}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                          vehicle.status === 'active'
-                            ? 'bg-green-100 text-green-800'
-                            : vehicle.status === 'maintenance'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            vehicle.status === "active"
+                              ? "bg-green-100 text-green-800"
+                              : vehicle.status === "maintenance"
+                                ? "bg-yellow-100 text-yellow-800"
+                                : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
                           {vehicle.status}
                         </span>
                       </td>
@@ -957,11 +1144,26 @@ export default function FleetManagementPage() {
                           {canEdit && (
                             <>
                               <button
-                                onClick={() => handleStatusChange(vehicle, vehicle.status === 'active' ? 'maintenance' : 'active')}
-                                className={`p-1.5 rounded ${vehicle.status === 'active' ? 'hover:bg-yellow-100 text-yellow-600' : 'hover:bg-green-100 text-green-600'}`}
-                                title={vehicle.status === 'active' ? 'Set to maintenance' : 'Set to active'}
+                                onClick={() =>
+                                  handleStatusChange(
+                                    vehicle,
+                                    vehicle.status === "active"
+                                      ? "maintenance"
+                                      : "active",
+                                  )
+                                }
+                                className={`p-1.5 rounded ${vehicle.status === "active" ? "hover:bg-yellow-100 text-yellow-600" : "hover:bg-green-100 text-green-600"}`}
+                                title={
+                                  vehicle.status === "active"
+                                    ? "Set to maintenance"
+                                    : "Set to active"
+                                }
                               >
-                                {vehicle.status === 'active' ? <AlertTriangle className="w-4 h-4" /> : <CheckCircle className="w-4 h-4" />}
+                                {vehicle.status === "active" ? (
+                                  <AlertTriangle className="w-4 h-4" />
+                                ) : (
+                                  <CheckCircle className="w-4 h-4" />
+                                )}
                               </button>
                               <button
                                 onClick={() => handleEditVehicle(vehicle)}

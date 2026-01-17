@@ -14,41 +14,43 @@ initFirebase();
  * Runs every day at 2:00 AM to analyze all website pages
  */
 export const dailyPageAnalysis = functions.pubsub
-  .schedule('0 2 * * *')
-  .timeZone('America/Chicago')
+  .schedule("0 2 * * *")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Starting daily page analysis...');
+    functions.logger.info("Starting daily page analysis...");
 
     try {
       const pages = [
-        { url: '/', name: 'Home' },
-        { url: '/ohare-airport-limo', name: 'O\'Hare Airport' },
-        { url: '/midway-airport-limo', name: 'Midway Airport' },
-        { url: '/airport-limo-downtown-chicago', name: 'Downtown Chicago' },
-        { url: '/airport-limo-suburbs', name: 'Suburbs Service' },
-        { url: '/fleet', name: 'Fleet' },
-        { url: '/pricing', name: 'Pricing' },
-        { url: '/about', name: 'About' },
-        { url: '/contact', name: 'Contact' },
+        { url: "/", name: "Home" },
+        { url: "/ohare-airport-limo", name: "O'Hare Airport" },
+        { url: "/midway-airport-limo", name: "Midway Airport" },
+        { url: "/airport-limo-downtown-chicago", name: "Downtown Chicago" },
+        { url: "/airport-limo-suburbs", name: "Suburbs Service" },
+        { url: "/fleet", name: "Fleet" },
+        { url: "/pricing", name: "Pricing" },
+        { url: "/about", name: "About" },
+        { url: "/contact", name: "Contact" },
       ];
 
       // Analyze each page
       for (const page of pages) {
         functions.logger.info(`Analyzing page: ${page.name}`);
-        
+
         // Store analysis results in Firestore
-        await admin.firestore().collection('page_analyses').add({
+        await admin.firestore().collection("page_analyses").add({
           pageUrl: page.url,
           pageName: page.name,
           analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-          status: 'pending',
+          status: "pending",
         });
       }
 
-      functions.logger.info(`Daily analysis completed for ${pages.length} pages`);
+      functions.logger.info(
+        `Daily analysis completed for ${pages.length} pages`,
+      );
       return null;
     } catch (error) {
-      functions.logger.error('Daily analysis failed:', error);
+      functions.logger.error("Daily analysis failed:", error);
       throw error;
     }
   });
@@ -58,40 +60,45 @@ export const dailyPageAnalysis = functions.pubsub
  * Runs every Monday at 9:00 AM to generate SEO report
  */
 export const weeklySeoReport = functions.pubsub
-  .schedule('0 9 * * 1')
-  .timeZone('America/Chicago')
+  .schedule("0 9 * * 1")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Generating weekly SEO report...');
+    functions.logger.info("Generating weekly SEO report...");
 
     try {
       // Get all page analyses from the past week
       const oneWeekAgo = new Date();
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-      const snapshot = await admin.firestore()
-        .collection('page_analyses')
-        .where('analyzedAt', '>=', oneWeekAgo)
+      const snapshot = await admin
+        .firestore()
+        .collection("page_analyses")
+        .where("analyzedAt", ">=", oneWeekAgo)
         .get();
 
-      const analyses = snapshot.docs.map(doc => doc.data());
+      const analyses = snapshot.docs.map((doc) => doc.data());
 
       // Generate summary report
       const report = {
         periodStart: oneWeekAgo,
         periodEnd: new Date(),
         totalPages: analyses.length,
-        averageSeoScore: analyses.reduce((sum, a: any) => sum + (a.seoScore || 0), 0) / analyses.length,
-        averageContentScore: analyses.reduce((sum, a: any) => sum + (a.contentScore || 0), 0) / analyses.length,
+        averageSeoScore:
+          analyses.reduce((sum, a: any) => sum + (a.seoScore || 0), 0) /
+          analyses.length,
+        averageContentScore:
+          analyses.reduce((sum, a: any) => sum + (a.contentScore || 0), 0) /
+          analyses.length,
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
       // Store report
-      await admin.firestore().collection('seo_reports').add(report);
+      await admin.firestore().collection("seo_reports").add(report);
 
-      functions.logger.info('Weekly SEO report generated successfully');
+      functions.logger.info("Weekly SEO report generated successfully");
       return null;
     } catch (error) {
-      functions.logger.error('Weekly report generation failed:', error);
+      functions.logger.error("Weekly report generation failed:", error);
       throw error;
     }
   });
@@ -101,10 +108,10 @@ export const weeklySeoReport = functions.pubsub
  * Automatically analyze pages when they're added to the database
  */
 export const autoAnalyzeNewPage = functions.firestore
-  .document('pages/{pageId}')
+  .document("pages/{pageId}")
   .onCreate(async (snap, context) => {
     const page = snap.data();
-    
+
     if (!page) return null;
 
     functions.logger.info(`Auto-analyzing new page: ${page.name}`);
@@ -118,15 +125,15 @@ export const autoAnalyzeNewPage = functions.firestore
         seoScore: Math.floor(Math.random() * 40) + 60,
         contentScore: Math.floor(Math.random() * 40) + 60,
         analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-        status: 'completed',
+        status: "completed",
       };
 
       // Store analysis
-      await admin.firestore().collection('page_analyses').add(analysis);
+      await admin.firestore().collection("page_analyses").add(analysis);
 
       functions.logger.info(`Auto-analysis completed for page: ${page.name}`);
     } catch (error) {
-      functions.logger.error('Auto-analysis failed:', error);
+      functions.logger.error("Auto-analysis failed:", error);
     }
 
     return null;
@@ -137,7 +144,7 @@ export const autoAnalyzeNewPage = functions.firestore
  * Updates Firebase Auth custom claims when a user's role changes in Firestore
  */
 export const syncUserRole = functions.firestore
-  .document('users/{userId}')
+  .document("users/{userId}")
   .onWrite(async (change, context) => {
     const userId = context.params.userId;
     const newData = change.after.exists ? change.after.data() : null;
@@ -151,13 +158,17 @@ export const syncUserRole = functions.firestore
       return null;
     }
 
-    functions.logger.info(`Syncing role for user ${userId}: ${previousRole} -> ${newRole}`);
+    functions.logger.info(
+      `Syncing role for user ${userId}: ${previousRole} -> ${newRole}`,
+    );
 
     try {
       if (newRole) {
         // Set custom claim
         await admin.auth().setCustomUserClaims(userId, { role: newRole });
-        functions.logger.info(`Successfully set role '${newRole}' for user ${userId}`);
+        functions.logger.info(
+          `Successfully set role '${newRole}' for user ${userId}`,
+        );
       } else {
         // Remove custom claim if role is removed
         await admin.auth().setCustomUserClaims(userId, { role: null });

@@ -11,35 +11,35 @@
 
 ```css
 /* Primary Brand Colors */
---primary: #0F172A;        /* Dark blue/black */
---primary-light: #1E293B;
+--primary: #0f172a; /* Dark blue/black */
+--primary-light: #1e293b;
 --primary-dark: #020617;
 
---accent: #D4AF37;         /* Luxury gold */
---accent-light: #E8D4A0;
---accent-dark: #B8941F;
+--accent: #d4af37; /* Luxury gold */
+--accent-light: #e8d4a0;
+--accent-dark: #b8941f;
 
 /* Status Colors */
---success: #10B981;        /* Green */
---warning: #F59E0B;        /* Amber */
---error: #EF4444;          /* Red */
---info: #3B82F6;           /* Blue */
+--success: #10b981; /* Green */
+--warning: #f59e0b; /* Amber */
+--error: #ef4444; /* Red */
+--info: #3b82f6; /* Blue */
 
 /* Neutrals */
---gray-50: #F9FAFB;
---gray-100: #F3F4F6;
---gray-200: #E5E7EB;
---gray-300: #D1D5DB;
---gray-500: #6B7280;
+--gray-50: #f9fafb;
+--gray-100: #f3f4f6;
+--gray-200: #e5e7eb;
+--gray-300: #d1d5db;
+--gray-500: #6b7280;
 --gray-700: #374151;
 --gray-900: #111827;
 
 /* Role Colors */
---super-admin: #8B5CF6;    /* Purple */
---admin: #EF4444;          /* Red */
---content-mgr: #3B82F6;    /* Blue */
---coordinator: #10B981;    /* Green */
---driver: #F59E0B;         /* Amber */
+--super-admin: #8b5cf6; /* Purple */
+--admin: #ef4444; /* Red */
+--content-mgr: #3b82f6; /* Blue */
+--coordinator: #10b981; /* Green */
+--driver: #f59e0b; /* Amber */
 ```
 
 ### Typography
@@ -64,32 +64,24 @@ tiny: font-size: 0.75rem
 ### Spacing Scale
 
 ```css
---space-xs: 0.25rem   (4px)
---space-sm: 0.5rem    (8px)
---space-md: 1rem      (16px)
---space-lg: 1.5rem    (24px)
---space-xl: 2rem      (32px)
---space-2xl: 3rem     (48px)
---space-3xl: 4rem     (64px)
+--space-xs: 0.25rem (4px) --space-sm: 0.5rem (8px) --space-md: 1rem (16px)
+  --space-lg: 1.5rem (24px) --space-xl: 2rem (32px) --space-2xl: 3rem (48px)
+  --space-3xl: 4rem (64px);
 ```
 
 ### Border Radius
 
 ```css
---radius-sm: 0.25rem
---radius-md: 0.5rem
---radius-lg: 0.75rem
---radius-xl: 1rem
---radius-full: 9999px
+--radius-sm: 0.25rem --radius-md: 0.5rem --radius-lg: 0.75rem --radius-xl: 1rem
+  --radius-full: 9999px;
 ```
 
 ### Shadows
 
 ```css
---shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05)
---shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1)
---shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1)
---shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1)
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05) --shadow-md: 0 4px 6px -1px
+  rgb(0 0 0 / 0.1) --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1) --shadow-xl: 0
+  20px 25px -5px rgb(0 0 0 / 0.1);
 ```
 
 ---
@@ -118,16 +110,20 @@ tiny: font-size: 0.75rem
 
 ```css
 /* Mobile */
-@media (max-width: 640px) { }
+@media (max-width: 640px) {
+}
 
 /* Tablet */
-@media (min-width: 641px) and (max-width: 1024px) { }
+@media (min-width: 641px) and (max-width: 1024px) {
+}
 
 /* Desktop */
-@media (min-width: 1025px) { }
+@media (min-width: 1025px) {
+}
 
 /* Large Desktop */
-@media (min-width: 1440px) { }
+@media (min-width: 1440px) {
+}
 ```
 
 ---
@@ -149,6 +145,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌────────────────────────────────┐
 │ [Icon] Active Bookings         │
@@ -159,6 +156,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Variants:**
+
 - `size`: sm | md | lg
 - `color`: primary | success | warning | error
 - `trend`: up | down | neutral
@@ -182,6 +180,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │ [Search] [Filter▼] [Export]              [+ New]   │
@@ -206,6 +205,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌─────────────┐
 │ ● Active    │  (Green)
@@ -236,6 +236,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌─────────────────────────────────────────────────────┐
 │ Content Suggestions (3 pending review)              │
@@ -267,6 +268,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌────────────────────┐
 │  ✨                │
@@ -287,6 +289,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌────────────────────────────────┐
 │ 10:30 AM                       │
@@ -329,6 +332,7 @@ tiny: font-size: 0.75rem
 ```
 
 **Visual:**
+
 ```
 ┌────────────────────────────────┐
 │ Notifications (2 unread)       │
@@ -483,6 +487,7 @@ tiny: font-size: 0.75rem
 ## 🔄 Interaction Patterns
 
 ### Loading States
+
 ```typescript
 // Skeleton loading
 <Skeleton className="h-8 w-full" />
@@ -495,6 +500,7 @@ tiny: font-size: 0.75rem
 ```
 
 ### Empty States
+
 ```typescript
 <EmptyState
   icon={InboxIcon}
@@ -509,6 +515,7 @@ tiny: font-size: 0.75rem
 ```
 
 ### Error States
+
 ```typescript
 <Alert variant="destructive">
   <AlertTitle>Error</AlertTitle>
@@ -519,6 +526,7 @@ tiny: font-size: 0.75rem
 ```
 
 ### Success Messages
+
 ```typescript
 <Toast>
   <ToastTitle>Success!</ToastTitle>
@@ -533,18 +541,21 @@ tiny: font-size: 0.75rem
 ## 📐 Responsive Behavior
 
 ### Mobile (<640px)
+
 - Sidebar collapses to hamburger menu
 - Widgets stack vertically
 - Tables switch to card view
 - Actions move to dropdown menu
 
 ### Tablet (641-1024px)
+
 - Sidebar becomes collapsible
 - 2-column widget grid
 - Tables show essential columns only
 - Touch-friendly action buttons
 
 ### Desktop (1025px+)
+
 - Full sidebar visible
 - 4-column widget grid
 - All table columns visible
@@ -555,18 +566,21 @@ tiny: font-size: 0.75rem
 ## ♿ Accessibility
 
 ### Keyboard Navigation
+
 - All interactive elements tabbable
 - Escape closes modals/dropdowns
 - Arrow keys navigate menus
 - Enter/Space activates buttons
 
 ### Screen Readers
+
 - Proper ARIA labels
 - Semantic HTML elements
 - Status announcements
 - Error descriptions
 
 ### Color Contrast
+
 - WCAG AA compliance minimum
 - AAA for body text
 - Don't rely on color alone

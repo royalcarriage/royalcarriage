@@ -5,8 +5,8 @@
  * - Batch approval for efficiency
  */
 
-import * as functions from 'firebase-functions/v1';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions/v1";
+import * as admin from "firebase-admin";
 
 /**
  * Get pending content for approval
@@ -14,11 +14,13 @@ import * as admin from 'firebase-admin';
  */
 export const getPendingContentApprovals = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin', 'editor'].includes(context.auth.token.role)) {
+    if (
+      !context.auth?.token?.role ||
+      !["admin", "superadmin", "editor"].includes(context.auth.token.role)
+    ) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Editor access required'
+        "permission-denied",
+        "Editor access required",
       );
     }
 
@@ -28,29 +30,34 @@ export const getPendingContentApprovals = functions.https.onCall(
       const db = admin.firestore();
 
       let query = db
-        .collection('service_content')
-        .where('status', '==', 'generated')
-        .orderBy('generatedAt', 'desc');
+        .collection("service_content")
+        .where("status", "==", "generated")
+        .orderBy("generatedAt", "desc");
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
 
       const snapshot = await query.limit(limit).offset(offset).get();
 
-      const pendingContent = snapshot.docs.map(doc => ({
+      const pendingContent = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
         // Include quality score preview
-        qualityIndicator: doc.data().qualityScore >= 90 ? 'excellent' :
-                          doc.data().qualityScore >= 80 ? 'good' :
-                          doc.data().qualityScore >= 70 ? 'acceptable' : 'needs_review',
+        qualityIndicator:
+          doc.data().qualityScore >= 90
+            ? "excellent"
+            : doc.data().qualityScore >= 80
+              ? "good"
+              : doc.data().qualityScore >= 70
+                ? "acceptable"
+                : "needs_review",
       }));
 
       // Get total count for pagination
       const countSnapshot = await db
-        .collection('service_content')
-        .where('status', '==', 'generated')
+        .collection("service_content")
+        .where("status", "==", "generated")
         .count()
         .get();
 
@@ -61,207 +68,217 @@ export const getPendingContentApprovals = functions.https.onCall(
         offset,
       };
     } catch (error) {
-      functions.logger.error('[getPendingContentApprovals] Error:', error);
+      functions.logger.error("[getPendingContentApprovals] Error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to get pending content'
+        "internal",
+        "Failed to get pending content",
       );
     }
-  }
+  },
 );
 
 /**
  * Approve content for publishing
  * Updates status and creates approval record
  */
-export const approveContent = functions.https.onCall(
-  async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin', 'editor'].includes(context.auth.token.role)) {
-      throw new functions.https.HttpsError(
-        'permission-denied',
-        'Editor access required'
-      );
+export const approveContent = functions.https.onCall(async (data, context) => {
+  if (
+    !context.auth?.token?.role ||
+    !["admin", "superadmin", "editor"].includes(context.auth.token.role)
+  ) {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Editor access required",
+    );
+  }
+
+  const { contentId, notes, publishImmediately = false } = data;
+
+  if (!contentId) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "contentId is required",
+    );
+  }
+
+  try {
+    const db = admin.firestore();
+    const batch = db.batch();
+
+    const contentRef = db.collection("service_content").doc(contentId);
+    const contentDoc = await contentRef.get();
+
+    if (!contentDoc.exists) {
+      throw new functions.https.HttpsError("not-found", "Content not found");
     }
 
-    const { contentId, notes, publishImmediately = false } = data;
+    const contentData = contentDoc.data();
+    const newStatus = publishImmediately ? "published" : "approved";
 
-    if (!contentId) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentId is required'
-      );
-    }
+    // Update content status
+    batch.update(contentRef, {
+      status: newStatus,
+      approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+      approvedBy: context.auth?.uid,
+      approvalNotes: notes || "",
+      publishedAt: publishImmediately
+        ? admin.firestore.FieldValue.serverTimestamp()
+        : null,
+    });
 
-    try {
-      const db = admin.firestore();
-      const batch = db.batch();
+    // Create approval record
+    const approvalRef = db.collection("content_approvals").doc();
+    batch.set(approvalRef, {
+      contentId,
+      locationId: contentData?.locationId,
+      serviceId: contentData?.serviceId,
+      websiteId: contentData?.websiteId,
+      action: "approved",
+      notes: notes || "",
+      publishedImmediately: publishImmediately,
+      approvedBy: context.auth?.uid,
+      approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-      const contentRef = db.collection('service_content').doc(contentId);
-      const contentDoc = await contentRef.get();
-
-      if (!contentDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Content not found');
-      }
-
-      const contentData = contentDoc.data();
-      const newStatus = publishImmediately ? 'published' : 'approved';
-
-      // Update content status
-      batch.update(contentRef, {
-        status: newStatus,
-        approvedAt: admin.firestore.FieldValue.serverTimestamp(),
-        approvedBy: context.auth?.uid,
-        approvalNotes: notes || '',
-        publishedAt: publishImmediately ?
-          admin.firestore.FieldValue.serverTimestamp() : null,
-      });
-
-      // Create approval record
-      const approvalRef = db.collection('content_approvals').doc();
-      batch.set(approvalRef, {
-        contentId,
-        locationId: contentData?.locationId,
-        serviceId: contentData?.serviceId,
-        websiteId: contentData?.websiteId,
-        action: 'approved',
-        notes: notes || '',
-        publishedImmediately: publishImmediately,
-        approvedBy: context.auth?.uid,
-        approvedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      // If publishing immediately, create page mapping
-      if (publishImmediately) {
-        const pageMappingRef = db.collection('page_mappings').doc(contentId);
-        batch.set(pageMappingRef, {
+    // If publishing immediately, create page mapping
+    if (publishImmediately) {
+      const pageMappingRef = db.collection("page_mappings").doc(contentId);
+      batch.set(
+        pageMappingRef,
+        {
           contentId,
           locationId: contentData?.locationId,
           serviceId: contentData?.serviceId,
           websiteId: contentData?.websiteId,
           pagePath: `/${contentData?.locationId}/${contentData?.serviceId}`,
-          status: 'published',
+          status: "published",
           publishedAt: admin.firestore.FieldValue.serverTimestamp(),
           publishedBy: context.auth?.uid,
-        }, { merge: true });
-      }
-
-      await batch.commit();
-
-      functions.logger.info('[approveContent] Content approved', {
-        contentId,
-        publishedImmediately: publishImmediately,
-      });
-
-      return { success: true, contentId, status: newStatus };
-    } catch (error) {
-      functions.logger.error('[approveContent] Error:', error);
-      throw new functions.https.HttpsError(
-        'internal',
-        'Failed to approve content'
+        },
+        { merge: true },
       );
     }
+
+    await batch.commit();
+
+    functions.logger.info("[approveContent] Content approved", {
+      contentId,
+      publishedImmediately: publishImmediately,
+    });
+
+    return { success: true, contentId, status: newStatus };
+  } catch (error) {
+    functions.logger.error("[approveContent] Error:", error);
+    throw new functions.https.HttpsError(
+      "internal",
+      "Failed to approve content",
+    );
   }
-);
+});
 
 /**
  * Reject content with feedback
  * Marks content for revision and stores feedback
  */
-export const rejectContent = functions.https.onCall(
-  async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin', 'editor'].includes(context.auth.token.role)) {
-      throw new functions.https.HttpsError(
-        'permission-denied',
-        'Editor access required'
-      );
+export const rejectContent = functions.https.onCall(async (data, context) => {
+  if (
+    !context.auth?.token?.role ||
+    !["admin", "superadmin", "editor"].includes(context.auth.token.role)
+  ) {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Editor access required",
+    );
+  }
+
+  const {
+    contentId,
+    reason,
+    feedbackDetails,
+    requestRegeneration = false,
+  } = data;
+
+  if (!contentId || !reason) {
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "contentId and reason are required",
+    );
+  }
+
+  try {
+    const db = admin.firestore();
+    const batch = db.batch();
+
+    const contentRef = db.collection("service_content").doc(contentId);
+    const contentDoc = await contentRef.get();
+
+    if (!contentDoc.exists) {
+      throw new functions.https.HttpsError("not-found", "Content not found");
     }
 
-    const { contentId, reason, feedbackDetails, requestRegeneration = false } = data;
+    const contentData = contentDoc.data();
 
-    if (!contentId || !reason) {
-      throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentId and reason are required'
-      );
-    }
+    // Update content status
+    batch.update(contentRef, {
+      status: requestRegeneration ? "pending_regeneration" : "rejected",
+      rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
+      rejectedBy: context.auth?.uid,
+      rejectionReason: reason,
+      rejectionFeedback: feedbackDetails || "",
+    });
 
-    try {
-      const db = admin.firestore();
-      const batch = db.batch();
+    // Create rejection record
+    const rejectionRef = db.collection("content_approvals").doc();
+    batch.set(rejectionRef, {
+      contentId,
+      locationId: contentData?.locationId,
+      serviceId: contentData?.serviceId,
+      websiteId: contentData?.websiteId,
+      action: "rejected",
+      reason,
+      feedbackDetails: feedbackDetails || "",
+      requestedRegeneration: requestRegeneration,
+      rejectedBy: context.auth?.uid,
+      rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
 
-      const contentRef = db.collection('service_content').doc(contentId);
-      const contentDoc = await contentRef.get();
-
-      if (!contentDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Content not found');
-      }
-
-      const contentData = contentDoc.data();
-
-      // Update content status
-      batch.update(contentRef, {
-        status: requestRegeneration ? 'pending_regeneration' : 'rejected',
-        rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
-        rejectedBy: context.auth?.uid,
-        rejectionReason: reason,
-        rejectionFeedback: feedbackDetails || '',
-      });
-
-      // Create rejection record
-      const rejectionRef = db.collection('content_approvals').doc();
-      batch.set(rejectionRef, {
-        contentId,
+    // If regeneration requested, add to queue
+    if (requestRegeneration) {
+      const queueRef = db.collection("regeneration_queue").doc(contentId);
+      batch.set(queueRef, {
         locationId: contentData?.locationId,
         serviceId: contentData?.serviceId,
         websiteId: contentData?.websiteId,
-        action: 'rejected',
-        reason,
-        feedbackDetails: feedbackDetails || '',
-        requestedRegeneration: requestRegeneration,
-        rejectedBy: context.auth?.uid,
-        rejectedAt: admin.firestore.FieldValue.serverTimestamp(),
+        reason: `Rejected: ${reason}`,
+        priority: 10, // High priority for rejected content
+        status: "pending",
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        requestedBy: context.auth?.uid,
+        feedbackToIncorporate: feedbackDetails || "",
       });
-
-      // If regeneration requested, add to queue
-      if (requestRegeneration) {
-        const queueRef = db.collection('regeneration_queue').doc(contentId);
-        batch.set(queueRef, {
-          locationId: contentData?.locationId,
-          serviceId: contentData?.serviceId,
-          websiteId: contentData?.websiteId,
-          reason: `Rejected: ${reason}`,
-          priority: 10, // High priority for rejected content
-          status: 'pending',
-          createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          requestedBy: context.auth?.uid,
-          feedbackToIncorporate: feedbackDetails || '',
-        });
-      }
-
-      await batch.commit();
-
-      functions.logger.info('[rejectContent] Content rejected', {
-        contentId,
-        reason,
-        requestedRegeneration: requestRegeneration,
-      });
-
-      return {
-        success: true,
-        contentId,
-        status: requestRegeneration ? 'pending_regeneration' : 'rejected',
-      };
-    } catch (error) {
-      functions.logger.error('[rejectContent] Error:', error);
-      throw new functions.https.HttpsError(
-        'internal',
-        'Failed to reject content'
-      );
     }
+
+    await batch.commit();
+
+    functions.logger.info("[rejectContent] Content rejected", {
+      contentId,
+      reason,
+      requestedRegeneration: requestRegeneration,
+    });
+
+    return {
+      success: true,
+      contentId,
+      status: requestRegeneration ? "pending_regeneration" : "rejected",
+    };
+  } catch (error) {
+    functions.logger.error("[rejectContent] Error:", error);
+    throw new functions.https.HttpsError(
+      "internal",
+      "Failed to reject content",
+    );
   }
-);
+});
 
 /**
  * Batch approve multiple content items
@@ -269,11 +286,13 @@ export const rejectContent = functions.https.onCall(
  */
 export const batchApproveContent = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin'].includes(context.auth.token.role)) {
+    if (
+      !context.auth?.token?.role ||
+      !["admin", "superadmin"].includes(context.auth.token.role)
+    ) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Admin access required'
+        "permission-denied",
+        "Admin access required",
       );
     }
 
@@ -281,15 +300,15 @@ export const batchApproveContent = functions.https.onCall(
 
     if (!contentIds || !Array.isArray(contentIds) || contentIds.length === 0) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentIds array is required'
+        "invalid-argument",
+        "contentIds array is required",
       );
     }
 
     if (contentIds.length > 100) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Maximum 100 items per batch'
+        "invalid-argument",
+        "Maximum 100 items per batch",
       );
     }
 
@@ -308,35 +327,36 @@ export const batchApproveContent = functions.https.onCall(
 
         for (const contentId of chunk) {
           try {
-            const contentRef = db.collection('service_content').doc(contentId);
+            const contentRef = db.collection("service_content").doc(contentId);
             const contentDoc = await contentRef.get();
 
             if (!contentDoc.exists) {
-              results.failed.push({ id: contentId, error: 'Not found' });
+              results.failed.push({ id: contentId, error: "Not found" });
               continue;
             }
 
             const contentData = contentDoc.data();
-            const newStatus = publishImmediately ? 'published' : 'approved';
+            const newStatus = publishImmediately ? "published" : "approved";
 
             batch.update(contentRef, {
               status: newStatus,
               approvedAt: admin.firestore.FieldValue.serverTimestamp(),
               approvedBy: context.auth?.uid,
-              approvalNotes: notes || 'Batch approved',
-              publishedAt: publishImmediately ?
-                admin.firestore.FieldValue.serverTimestamp() : null,
+              approvalNotes: notes || "Batch approved",
+              publishedAt: publishImmediately
+                ? admin.firestore.FieldValue.serverTimestamp()
+                : null,
             });
 
             // Create approval record
-            const approvalRef = db.collection('content_approvals').doc();
+            const approvalRef = db.collection("content_approvals").doc();
             batch.set(approvalRef, {
               contentId,
               locationId: contentData?.locationId,
               serviceId: contentData?.serviceId,
               websiteId: contentData?.websiteId,
-              action: 'batch_approved',
-              notes: notes || 'Batch approved',
+              action: "batch_approved",
+              notes: notes || "Batch approved",
               publishedImmediately: publishImmediately,
               approvedBy: context.auth?.uid,
               approvedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -344,24 +364,30 @@ export const batchApproveContent = functions.https.onCall(
 
             // If publishing immediately, create page mapping
             if (publishImmediately) {
-              const pageMappingRef = db.collection('page_mappings').doc(contentId);
-              batch.set(pageMappingRef, {
-                contentId,
-                locationId: contentData?.locationId,
-                serviceId: contentData?.serviceId,
-                websiteId: contentData?.websiteId,
-                pagePath: `/${contentData?.locationId}/${contentData?.serviceId}`,
-                status: 'published',
-                publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-                publishedBy: context.auth?.uid,
-              }, { merge: true });
+              const pageMappingRef = db
+                .collection("page_mappings")
+                .doc(contentId);
+              batch.set(
+                pageMappingRef,
+                {
+                  contentId,
+                  locationId: contentData?.locationId,
+                  serviceId: contentData?.serviceId,
+                  websiteId: contentData?.websiteId,
+                  pagePath: `/${contentData?.locationId}/${contentData?.serviceId}`,
+                  status: "published",
+                  publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+                  publishedBy: context.auth?.uid,
+                },
+                { merge: true },
+              );
             }
 
             results.approved.push(contentId);
           } catch (err) {
             results.failed.push({
               id: contentId,
-              error: err instanceof Error ? err.message : 'Unknown error',
+              error: err instanceof Error ? err.message : "Unknown error",
             });
           }
         }
@@ -369,20 +395,20 @@ export const batchApproveContent = functions.https.onCall(
         await batch.commit();
       }
 
-      functions.logger.info('[batchApproveContent] Batch approval complete', {
+      functions.logger.info("[batchApproveContent] Batch approval complete", {
         approved: results.approved.length,
         failed: results.failed.length,
       });
 
       return results;
     } catch (error) {
-      functions.logger.error('[batchApproveContent] Error:', error);
+      functions.logger.error("[batchApproveContent] Error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to batch approve content'
+        "internal",
+        "Failed to batch approve content",
       );
     }
-  }
+  },
 );
 
 /**
@@ -391,11 +417,13 @@ export const batchApproveContent = functions.https.onCall(
  */
 export const publishApprovedContent = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin'].includes(context.auth.token.role)) {
+    if (
+      !context.auth?.token?.role ||
+      !["admin", "superadmin"].includes(context.auth.token.role)
+    ) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Admin access required'
+        "permission-denied",
+        "Admin access required",
       );
     }
 
@@ -405,11 +433,11 @@ export const publishApprovedContent = functions.https.onCall(
       const db = admin.firestore();
 
       let query = db
-        .collection('service_content')
-        .where('status', '==', 'approved');
+        .collection("service_content")
+        .where("status", "==", "approved");
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
 
       let snapshot;
@@ -418,21 +446,24 @@ export const publishApprovedContent = functions.https.onCall(
       } else if (contentIds && contentIds.length > 0) {
         // Get specific content items
         const docs = await Promise.all(
-          contentIds.map(id => db.collection('service_content').doc(id).get())
+          contentIds.map((id) =>
+            db.collection("service_content").doc(id).get(),
+          ),
         );
         snapshot = {
-          docs: docs.filter(d => d.exists && d.data()?.status === 'approved'),
-          size: docs.filter(d => d.exists && d.data()?.status === 'approved').length,
+          docs: docs.filter((d) => d.exists && d.data()?.status === "approved"),
+          size: docs.filter((d) => d.exists && d.data()?.status === "approved")
+            .length,
         };
       } else {
         throw new functions.https.HttpsError(
-          'invalid-argument',
-          'Either publishAll or contentIds is required'
+          "invalid-argument",
+          "Either publishAll or contentIds is required",
         );
       }
 
       if (snapshot.size === 0) {
-        return { published: 0, message: 'No approved content to publish' };
+        return { published: 0, message: "No approved content to publish" };
       }
 
       const results = {
@@ -452,23 +483,27 @@ export const publishApprovedContent = functions.https.onCall(
           const contentData = doc.data();
 
           batch.update(doc.ref, {
-            status: 'published',
+            status: "published",
             publishedAt: admin.firestore.FieldValue.serverTimestamp(),
             publishedBy: context.auth?.uid,
           });
 
           // Create page mapping
-          const pageMappingRef = db.collection('page_mappings').doc(doc.id);
-          batch.set(pageMappingRef, {
-            contentId: doc.id,
-            locationId: contentData?.locationId,
-            serviceId: contentData?.serviceId,
-            websiteId: contentData?.websiteId,
-            pagePath: `/${contentData?.locationId}/${contentData?.serviceId}`,
-            status: 'published',
-            publishedAt: admin.firestore.FieldValue.serverTimestamp(),
-            publishedBy: context.auth?.uid,
-          }, { merge: true });
+          const pageMappingRef = db.collection("page_mappings").doc(doc.id);
+          batch.set(
+            pageMappingRef,
+            {
+              contentId: doc.id,
+              locationId: contentData?.locationId,
+              serviceId: contentData?.serviceId,
+              websiteId: contentData?.websiteId,
+              pagePath: `/${contentData?.locationId}/${contentData?.serviceId}`,
+              status: "published",
+              publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+              publishedBy: context.auth?.uid,
+            },
+            { merge: true },
+          );
 
           results.published++;
         }
@@ -476,20 +511,20 @@ export const publishApprovedContent = functions.https.onCall(
         await batch.commit();
       }
 
-      functions.logger.info('[publishApprovedContent] Content published', {
+      functions.logger.info("[publishApprovedContent] Content published", {
         published: results.published,
         websiteId,
       });
 
       return results;
     } catch (error) {
-      functions.logger.error('[publishApprovedContent] Error:', error);
+      functions.logger.error("[publishApprovedContent] Error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to publish content'
+        "internal",
+        "Failed to publish content",
       );
     }
-  }
+  },
 );
 
 /**
@@ -498,11 +533,15 @@ export const publishApprovedContent = functions.https.onCall(
  */
 export const getApprovalStatistics = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin', 'editor', 'viewer'].includes(context.auth.token.role)) {
+    if (
+      !context.auth?.token?.role ||
+      !["admin", "superadmin", "editor", "viewer"].includes(
+        context.auth.token.role,
+      )
+    ) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Access denied'
+        "permission-denied",
+        "Access denied",
       );
     }
 
@@ -512,16 +551,22 @@ export const getApprovalStatistics = functions.https.onCall(
       const db = admin.firestore();
 
       // Get counts by status
-      const statuses = ['generated', 'approved', 'published', 'rejected', 'pending_regeneration'];
+      const statuses = [
+        "generated",
+        "approved",
+        "published",
+        "rejected",
+        "pending_regeneration",
+      ];
       const statusCounts: { [key: string]: number } = {};
 
       for (const status of statuses) {
         let query = db
-          .collection('service_content')
-          .where('status', '==', status);
+          .collection("service_content")
+          .where("status", "==", status);
 
         if (websiteId) {
-          query = query.where('websiteId', '==', websiteId);
+          query = query.where("websiteId", "==", websiteId);
         }
 
         const countSnapshot = await query.count().get();
@@ -533,27 +578,30 @@ export const getApprovalStatistics = functions.https.onCall(
       cutoffDate.setDate(cutoffDate.getDate() - dateRange);
 
       const recentApprovalsSnapshot = await db
-        .collection('content_approvals')
-        .where('approvedAt', '>=', cutoffDate)
-        .orderBy('approvedAt', 'desc')
+        .collection("content_approvals")
+        .where("approvedAt", ">=", cutoffDate)
+        .orderBy("approvedAt", "desc")
         .limit(100)
         .get();
 
-      const approvalsByDay: { [key: string]: { approved: number; rejected: number } } = {};
+      const approvalsByDay: {
+        [key: string]: { approved: number; rejected: number };
+      } = {};
 
-      recentApprovalsSnapshot.docs.forEach(doc => {
+      recentApprovalsSnapshot.docs.forEach((doc) => {
         const data = doc.data();
-        const date = data.approvedAt?.toDate?.()?.toISOString?.()?.split('T')[0] ||
-                     data.rejectedAt?.toDate?.()?.toISOString?.()?.split('T')[0];
+        const date =
+          data.approvedAt?.toDate?.()?.toISOString?.()?.split("T")[0] ||
+          data.rejectedAt?.toDate?.()?.toISOString?.()?.split("T")[0];
 
         if (date) {
           if (!approvalsByDay[date]) {
             approvalsByDay[date] = { approved: 0, rejected: 0 };
           }
 
-          if (data.action === 'approved' || data.action === 'batch_approved') {
+          if (data.action === "approved" || data.action === "batch_approved") {
             approvalsByDay[date].approved++;
-          } else if (data.action === 'rejected') {
+          } else if (data.action === "rejected") {
             approvalsByDay[date].rejected++;
           }
         }
@@ -561,18 +609,18 @@ export const getApprovalStatistics = functions.https.onCall(
 
       // Calculate quality score distribution
       const qualitySnapshot = await db
-        .collection('service_content')
-        .where('qualityScore', '>', 0)
+        .collection("service_content")
+        .where("qualityScore", ">", 0)
         .get();
 
       const qualityDistribution = {
-        excellent: 0,  // 90-100
-        good: 0,       // 80-89
+        excellent: 0, // 90-100
+        good: 0, // 80-89
         acceptable: 0, // 70-79
-        needsWork: 0,  // <70
+        needsWork: 0, // <70
       };
 
-      qualitySnapshot.docs.forEach(doc => {
+      qualitySnapshot.docs.forEach((doc) => {
         const score = doc.data().qualityScore;
         if (score >= 90) qualityDistribution.excellent++;
         else if (score >= 80) qualityDistribution.good++;
@@ -589,13 +637,13 @@ export const getApprovalStatistics = functions.https.onCall(
         readyToPublish: statusCounts.approved || 0,
       };
     } catch (error) {
-      functions.logger.error('[getApprovalStatistics] Error:', error);
+      functions.logger.error("[getApprovalStatistics] Error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to get approval statistics'
+        "internal",
+        "Failed to get approval statistics",
       );
     }
-  }
+  },
 );
 
 /**
@@ -603,11 +651,13 @@ export const getApprovalStatistics = functions.https.onCall(
  */
 export const requestContentRevision = functions.https.onCall(
   async (data, context) => {
-    if (!context.auth?.token?.role ||
-        !['admin', 'superadmin', 'editor'].includes(context.auth.token.role)) {
+    if (
+      !context.auth?.token?.role ||
+      !["admin", "superadmin", "editor"].includes(context.auth.token.role)
+    ) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Editor access required'
+        "permission-denied",
+        "Editor access required",
       );
     }
 
@@ -615,26 +665,26 @@ export const requestContentRevision = functions.https.onCall(
 
     if (!contentId || !revisionNotes) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentId and revisionNotes are required'
+        "invalid-argument",
+        "contentId and revisionNotes are required",
       );
     }
 
     try {
       const db = admin.firestore();
 
-      const contentRef = db.collection('service_content').doc(contentId);
+      const contentRef = db.collection("service_content").doc(contentId);
       const contentDoc = await contentRef.get();
 
       if (!contentDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Content not found');
+        throw new functions.https.HttpsError("not-found", "Content not found");
       }
 
       const contentData = contentDoc.data();
 
       // Update content with revision request
       await contentRef.update({
-        status: 'revision_requested',
+        status: "revision_requested",
         revisionNotes,
         specificChanges: specificChanges || [],
         revisionRequestedAt: admin.firestore.FieldValue.serverTimestamp(),
@@ -642,31 +692,34 @@ export const requestContentRevision = functions.https.onCall(
       });
 
       // Add to regeneration queue with revision feedback
-      await db.collection('regeneration_queue').doc(contentId).set({
-        locationId: contentData?.locationId,
-        serviceId: contentData?.serviceId,
-        websiteId: contentData?.websiteId,
-        reason: 'Revision requested',
-        priority: 8, // High priority for revisions
-        status: 'pending',
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        requestedBy: context.auth?.uid,
-        revisionNotes,
-        specificChanges: specificChanges || [],
-        originalContentId: contentId,
-      });
+      await db
+        .collection("regeneration_queue")
+        .doc(contentId)
+        .set({
+          locationId: contentData?.locationId,
+          serviceId: contentData?.serviceId,
+          websiteId: contentData?.websiteId,
+          reason: "Revision requested",
+          priority: 8, // High priority for revisions
+          status: "pending",
+          createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          requestedBy: context.auth?.uid,
+          revisionNotes,
+          specificChanges: specificChanges || [],
+          originalContentId: contentId,
+        });
 
-      functions.logger.info('[requestContentRevision] Revision requested', {
+      functions.logger.info("[requestContentRevision] Revision requested", {
         contentId,
       });
 
-      return { success: true, contentId, status: 'revision_requested' };
+      return { success: true, contentId, status: "revision_requested" };
     } catch (error) {
-      functions.logger.error('[requestContentRevision] Error:', error);
+      functions.logger.error("[requestContentRevision] Error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        'Failed to request revision'
+        "internal",
+        "Failed to request revision",
       );
     }
-  }
+  },
 );

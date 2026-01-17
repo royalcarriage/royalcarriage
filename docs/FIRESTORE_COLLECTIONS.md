@@ -13,6 +13,7 @@ Royal Carriage Limousine uses a tenant-isolated Firestore database with comprehe
 Stores user authentication and profile data.
 
 **Schema:**
+
 ```javascript
 {
   email: string,                    // User's email address
@@ -30,11 +31,13 @@ Stores user authentication and profile data.
 ```
 
 **Access Rules:**
+
 - Users can read/update own profile
 - Tenant admins can read users in their tenant
 - Super admins can read/write all users
 
 **Example:**
+
 ```
 /users/user123abc {
   email: "john@company.com",
@@ -54,6 +57,7 @@ Stores user authentication and profile data.
 Defines role templates and their associated permissions.
 
 **Schema:**
+
 ```javascript
 {
   name: string,                     // Role name (e.g., "dispatcher")
@@ -66,10 +70,12 @@ Defines role templates and their associated permissions.
 ```
 
 **Access Rules:**
+
 - Authenticated users can read roles
 - Only super admins can write roles
 
 **Example:**
+
 ```
 /roles/dispatcher_role {
   name: "Dispatcher",
@@ -89,6 +95,7 @@ Defines role templates and their associated permissions.
 Global system settings (super admin only).
 
 **Schema:**
+
 ```javascript
 {
   key: string,                      // Setting key
@@ -99,6 +106,7 @@ Global system settings (super admin only).
 ```
 
 **Access Rules:**
+
 - Super admins only
 
 ---
@@ -108,6 +116,7 @@ Global system settings (super admin only).
 Email template definitions.
 
 **Schema:**
+
 ```javascript
 {
   name: string,                     // Template name
@@ -120,10 +129,12 @@ Email template definitions.
 ```
 
 **Access Rules:**
+
 - Authenticated users can read
 - Super admins can write
 
 **Examples:**
+
 - `booking_confirmation`
 - `driver_assignment`
 - `payment_receipt`
@@ -136,6 +147,7 @@ Email template definitions.
 SMS template definitions.
 
 **Schema:**
+
 ```javascript
 {
   name: string,                     // Template name
@@ -147,6 +159,7 @@ SMS template definitions.
 ```
 
 **Access Rules:**
+
 - Authenticated users can read
 - Super admins can write
 
@@ -157,6 +170,7 @@ SMS template definitions.
 User notifications (real-time updates, ride alerts, etc.).
 
 **Schema:**
+
 ```javascript
 {
   userId: string,                   // Target user ID
@@ -171,6 +185,7 @@ User notifications (real-time updates, ride alerts, etc.).
 ```
 
 **Access Rules:**
+
 - Users can read their own notifications
 - Users can update/delete their own
 - Super admins can access all
@@ -182,6 +197,7 @@ User notifications (real-time updates, ride alerts, etc.).
 System audit trail (super admin only).
 
 **Schema:**
+
 ```javascript
 {
   tenantId: string,                 // Associated tenant
@@ -197,6 +213,7 @@ System audit trail (super admin only).
 ```
 
 **Access Rules:**
+
 - Super admins only
 
 ---
@@ -206,6 +223,7 @@ System audit trail (super admin only).
 All collections below are organized under `/tenants/{tenantId}/` to enable complete tenant isolation.
 
 ### Structure:
+
 ```
 /tenants/{tenantId}/
   ├── bookings/
@@ -226,6 +244,7 @@ All collections below are organized under `/tenants/{tenantId}/` to enable compl
 Represents individual ride bookings.
 
 **Schema:**
+
 ```javascript
 {
   customerId: string,               // Customer who booked
@@ -268,11 +287,13 @@ Represents individual ride bookings.
 ```
 
 **Indexes:**
+
 - (tenantId, status, createdAt DESC)
 - (tenantId, customerId, createdAt DESC)
 - (tenantId, driverId, createdAt DESC)
 
 **Access Rules:**
+
 - Customers can read their own bookings
 - Drivers can read assigned bookings
 - Tenant admins can read all
@@ -285,6 +306,7 @@ Represents individual ride bookings.
 Customer profiles and contact information.
 
 **Schema:**
+
 ```javascript
 {
   email: string,                    // Customer email
@@ -306,6 +328,7 @@ Customer profiles and contact information.
 ```
 
 **Subcollection: `/preferences`**
+
 ```javascript
 {
   phoneNotifications: boolean,
@@ -317,6 +340,7 @@ Customer profiles and contact information.
 ```
 
 **Access Rules:**
+
 - Customers can read their own profile
 - Tenant admins can read all
 - Super admins can read/write
@@ -328,6 +352,7 @@ Customer profiles and contact information.
 Driver profiles and information.
 
 **Schema:**
+
 ```javascript
 {
   firstName: string,
@@ -362,6 +387,7 @@ Driver profiles and information.
 ```
 
 **Subcollection: `/documents`**
+
 ```javascript
 {
   type: string,                     // "license", "insurance", "background_check"
@@ -375,6 +401,7 @@ Driver profiles and information.
 ```
 
 **Subcollection: `/performance`**
+
 ```javascript
 {
   date: Timestamp,
@@ -390,9 +417,11 @@ Driver profiles and information.
 ```
 
 **Indexes:**
+
 - (tenantId, status, rating DESC)
 
 **Access Rules:**
+
 - Drivers can read their own profile
 - Tenant admins can read all
 - Super admins can read/write
@@ -404,6 +433,7 @@ Driver profiles and information.
 Fleet vehicles and their specifications.
 
 **Schema:**
+
 ```javascript
 {
   licensePlate: string,
@@ -434,9 +464,11 @@ Fleet vehicles and their specifications.
 ```
 
 **Indexes:**
+
 - (tenantId, type, status)
 
 **Access Rules:**
+
 - Authenticated users can read
 - Tenant admins can write
 - Super admins can read/write
@@ -448,6 +480,7 @@ Fleet vehicles and their specifications.
 Pricing rules and fare calculations.
 
 **Schema:**
+
 ```javascript
 {
   name: string,                     // e.g., "Standard Pricing"
@@ -483,6 +516,7 @@ Pricing rules and fare calculations.
 ```
 
 **Access Rules:**
+
 - Authenticated users can read
 - Tenant admins can write
 - Super admins can read/write
@@ -494,6 +528,7 @@ Pricing rules and fare calculations.
 Generated invoices for bookings.
 
 **Schema:**
+
 ```javascript
 {
   invoiceNumber: string,            // Unique invoice number
@@ -522,9 +557,11 @@ Generated invoices for bookings.
 ```
 
 **Indexes:**
+
 - (tenantId, customerId, createdAt DESC)
 
 **Access Rules:**
+
 - Customers can read their invoices
 - Tenant admins can read/write all
 - Super admins can read/write
@@ -536,6 +573,7 @@ Generated invoices for bookings.
 Payment transaction records.
 
 **Schema:**
+
 ```javascript
 {
   customerId: string,
@@ -559,9 +597,11 @@ Payment transaction records.
 ```
 
 **Indexes:**
+
 - (tenantId, status, createdAt DESC)
 
 **Access Rules:**
+
 - Customers can read their own payments
 - Tenant admins can read/write all
 - Super admins can read/write
@@ -573,6 +613,7 @@ Payment transaction records.
 Financial summaries and analytics (denormalized).
 
 **Schema:**
+
 ```javascript
 {
   date: Timestamp,                  // Date of financial record
@@ -605,9 +646,11 @@ Financial summaries and analytics (denormalized).
 ```
 
 **Indexes:**
+
 - (tenantId, date DESC)
 
 **Access Rules:**
+
 - Tenant admins can read
 - Super admins can read/write
 
@@ -618,6 +661,7 @@ Financial summaries and analytics (denormalized).
 Generated reports (analytics, performance, etc.).
 
 **Schema:**
+
 ```javascript
 {
   type: 'revenue' | 'driver_performance' | 'customer_activity' | 'fleet_utilization' | 'custom',
@@ -639,9 +683,11 @@ Generated reports (analytics, performance, etc.).
 ```
 
 **Indexes:**
+
 - (tenantId, type, createdAt DESC)
 
 **Access Rules:**
+
 - Tenant admins can read/write
 - Super admins can read/write
 
@@ -654,6 +700,7 @@ Generated reports (analytics, performance, etc.).
 Parent tenant configuration.
 
 **Schema:**
+
 ```javascript
 {
   name: string,                     // e.g., "Royal Carriage Chicago"
@@ -696,11 +743,13 @@ Parent tenant configuration.
 ## Security Model
 
 ### Authentication
+
 - Firebase Authentication for user management
 - Email/Password, Google OAuth, Microsoft OAuth support
 - Custom claims for role-based access control (can be added via Cloud Functions)
 
 ### Authorization (Firestore Security Rules)
+
 - **Super Admin**: Full access to all collections and tenants
 - **Tenant Admin**: Full access to their tenant's collections
 - **Dispatcher**: Limited access to bookings, customers, drivers
@@ -708,6 +757,7 @@ Parent tenant configuration.
 - **Viewer**: Read-only access to specific collections
 
 ### Data Isolation
+
 - All tenant data is stored under `/tenants/{tenantId}/`
 - Security rules enforce tenant isolation
 - Cross-tenant queries are not possible at the Firestore level
@@ -740,16 +790,19 @@ Total of 14 composite indexes created for optimal query performance:
 To optimize read performance, certain fields are denormalized:
 
 **Customers Collection:**
+
 - `totalBookings` - Count of all bookings
 - `totalSpent` - Sum of all booking amounts
 - `averageRating` - From booking ratings
 
 **Drivers Collection:**
+
 - `totalRides` - Count of completed bookings
 - `totalEarnings` - Sum of driver payouts
 - `rating` - Average rating from bookings
 
 **Financial Collection:**
+
 - All data is denormalized from transactions for daily/monthly summaries
 
 These fields must be updated via Cloud Functions whenever related data changes.

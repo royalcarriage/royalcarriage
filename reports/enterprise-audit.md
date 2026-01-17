@@ -1,7 +1,9 @@
 # Enterprise Audit Summary
+
 Status: PASS
 
 ## Checks
+
 - routing & redirects: VERIFIED
 - auth domains: VERIFIED
 - admin login: SMOKE TEST PASS

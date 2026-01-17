@@ -3,10 +3,10 @@
  * Calculates quality scores for generated content using 7-metric system
  */
 
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 
 if (!admin.apps.length) {
-  admin.initializeApp({ projectId: 'royalcarriagelimoseo' });
+  admin.initializeApp({ projectId: "royalcarriagelimoseo" });
 }
 
 const db = admin.firestore();
@@ -15,19 +15,19 @@ const db = admin.firestore();
 const WEIGHTS = {
   keywordDensity: 0.15,
   readability: 0.15,
-  contentLength: 0.10,
-  structure: 0.10,
+  contentLength: 0.1,
+  structure: 0.1,
   seo: 0.25,
   originality: 0.15,
-  engagement: 0.10,
+  engagement: 0.1,
 };
 
 function countWords(text) {
-  return text.split(/\s+/).filter(w => w.length > 0).length;
+  return text.split(/\s+/).filter((w) => w.length > 0).length;
 }
 
 function countSentences(text) {
-  return text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+  return text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length;
 }
 
 function calculateKeywordDensity(content, keywords) {
@@ -36,7 +36,7 @@ function calculateKeywordDensity(content, keywords) {
   let keywordCount = 0;
 
   for (const keyword of keywords) {
-    const regex = new RegExp(keyword.toLowerCase(), 'gi');
+    const regex = new RegExp(keyword.toLowerCase(), "gi");
     const matches = text.match(regex);
     keywordCount += matches ? matches.length : 0;
   }
@@ -50,7 +50,7 @@ function calculateKeywordDensity(content, keywords) {
 }
 
 function calculateReadability(content) {
-  const text = content.introduction || '';
+  const text = content.introduction || "";
   const words = countWords(text);
   const sentences = countSentences(text);
 
@@ -152,12 +152,12 @@ function calculateOverallScore(metrics) {
 }
 
 async function main() {
-  console.log('Starting Quality Scoring\n');
+  console.log("Starting Quality Scoring\n");
 
   // Get all generated content
   const contentSnapshot = await db
-    .collection('service_content')
-    .where('status', '==', 'generated')
+    .collection("service_content")
+    .where("status", "==", "generated")
     .get();
 
   console.log(`Found ${contentSnapshot.size} content items to score\n`);
@@ -169,8 +169,11 @@ async function main() {
     const content = data.content;
 
     // Get service for keywords
-    const serviceDoc = await db.collection('services').doc(data.serviceId).get();
-    const keywords = serviceDoc.exists ? (serviceDoc.data().keywords || []) : [];
+    const serviceDoc = await db
+      .collection("services")
+      .doc(data.serviceId)
+      .get();
+    const keywords = serviceDoc.exists ? serviceDoc.data().keywords || [] : [];
 
     // Calculate metrics
     const metrics = {
@@ -186,7 +189,7 @@ async function main() {
     const overallScore = calculateOverallScore(metrics);
 
     // Store quality score
-    await db.collection('content_quality_scores').doc(doc.id).set({
+    await db.collection("content_quality_scores").doc(doc.id).set({
       contentId: doc.id,
       locationId: data.locationId,
       serviceId: data.serviceId,
@@ -202,8 +205,12 @@ async function main() {
       scoredAt: admin.firestore.Timestamp.now(),
     });
 
-    console.log(`${data.locationId} + ${data.serviceId}: Score ${overallScore}/100`);
-    console.log(`  Metrics: KD=${metrics.keywordDensity.toFixed(0)} RD=${metrics.readability.toFixed(0)} CL=${metrics.contentLength.toFixed(0)} ST=${metrics.structure.toFixed(0)} SEO=${metrics.seo.toFixed(0)} OR=${metrics.originality.toFixed(0)} EN=${metrics.engagement.toFixed(0)}`);
+    console.log(
+      `${data.locationId} + ${data.serviceId}: Score ${overallScore}/100`,
+    );
+    console.log(
+      `  Metrics: KD=${metrics.keywordDensity.toFixed(0)} RD=${metrics.readability.toFixed(0)} CL=${metrics.contentLength.toFixed(0)} ST=${metrics.structure.toFixed(0)} SEO=${metrics.seo.toFixed(0)} OR=${metrics.originality.toFixed(0)} EN=${metrics.engagement.toFixed(0)}`,
+    );
     scored++;
   }
 
@@ -213,7 +220,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
-  console.error('Fatal error:', err);
+main().catch((err) => {
+  console.error("Fatal error:", err);
   process.exit(1);
 });

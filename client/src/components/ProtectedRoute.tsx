@@ -1,23 +1,31 @@
-import { ReactNode, useEffect } from 'react';
-import { useLocation } from 'wouter';
-import { useAuth, hasRole } from '@/hooks/useAuth';
-import { Loader2 } from 'lucide-react';
+import { ReactNode, useEffect } from "react";
+import { useLocation } from "wouter";
+import { useAuth, hasRole } from "@/hooks/useAuth";
+import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: ReactNode;
-  requiredRole?: 'user' | 'admin' | 'super_admin';
+  requiredRole?: "user" | "admin" | "super_admin";
 }
 
-export function ProtectedRoute({ children, requiredRole }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  children,
+  requiredRole,
+}: ProtectedRouteProps) {
   const { user, isLoading, isAuthenticated } = useAuth();
   const [, setLocation] = useLocation();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      setLocation('/login');
-    } else if (!isLoading && requiredRole && user && !hasRole(user, requiredRole)) {
+      setLocation("/login");
+    } else if (
+      !isLoading &&
+      requiredRole &&
+      user &&
+      !hasRole(user, requiredRole)
+    ) {
       // User is authenticated but doesn't have required role
-      setLocation('/unauthorized');
+      setLocation("/unauthorized");
     }
   }, [isLoading, isAuthenticated, user, requiredRole, setLocation]);
 

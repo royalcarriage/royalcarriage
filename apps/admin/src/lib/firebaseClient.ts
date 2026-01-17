@@ -69,7 +69,14 @@ export function ensureFirebaseApp(customConfig?: FirebaseOptions): {
   configured: boolean;
 } {
   const config = customConfig || getClientConfig();
-  if (!config) return { app: null, auth: null, db: null, storage: null, configured: false };
+  if (!config)
+    return {
+      app: null,
+      auth: null,
+      db: null,
+      storage: null,
+      configured: false,
+    };
   const app = getApps().length ? getApp() : initializeApp(config);
   const auth = getAuth(app);
   const db = getFirestore(app);
@@ -87,12 +94,20 @@ export async function googleSignOut(auth: Auth): Promise<void> {
   await signOut(auth);
 }
 
-export async function emailSignIn(auth: Auth, email: string, password: string): Promise<User> {
+export async function emailSignIn(
+  auth: Auth,
+  email: string,
+  password: string,
+): Promise<User> {
   const result = await signInWithEmailAndPassword(auth, email, password);
   return result.user;
 }
 
-export async function emailRegister(auth: Auth, email: string, password: string): Promise<User> {
+export async function emailRegister(
+  auth: Auth,
+  email: string,
+  password: string,
+): Promise<User> {
   const result = await createUserWithEmailAndPassword(auth, email, password);
   return result.user;
 }

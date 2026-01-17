@@ -4,12 +4,13 @@
  * Usage: npx ts-node scripts/initializeProductionData.ts
  */
 
-import * as admin from 'firebase-admin';
-import * as fs from 'fs';
-import * as path from 'path';
+import * as admin from "firebase-admin";
+import * as fs from "fs";
+import * as path from "path";
 
 // Initialize Firebase Admin SDK
-const serviceAccountPath = process.env.GOOGLE_APPLICATION_CREDENTIALS || './serviceAccountKey.json';
+const serviceAccountPath =
+  process.env.GOOGLE_APPLICATION_CREDENTIALS || "./serviceAccountKey.json";
 if (!admin.apps.length) {
   admin.initializeApp({
     credential: admin.credential.cert(require(serviceAccountPath)),
@@ -49,8 +50,8 @@ interface Service {
 
 async function loadJSON<T>(filePath: string): Promise<T> {
   try {
-    const fullPath = path.join(__dirname, '..', filePath);
-    const fileContent = fs.readFileSync(fullPath, 'utf-8');
+    const fullPath = path.join(__dirname, "..", filePath);
+    const fileContent = fs.readFileSync(fullPath, "utf-8");
     return JSON.parse(fileContent);
   } catch (error) {
     console.error(`Error loading ${filePath}:`, error);
@@ -64,7 +65,7 @@ async function insertLocations(locations: Location[]): Promise<number> {
   const batch = db.batch();
 
   for (const location of locations) {
-    const docRef = db.collection('locations').doc(location.id);
+    const docRef = db.collection("locations").doc(location.id);
     batch.set(docRef, {
       id: location.id,
       name: location.name,
@@ -82,7 +83,7 @@ async function insertLocations(locations: Location[]): Promise<number> {
     console.log(`✅ Successfully inserted ${inserted} locations`);
     return inserted;
   } catch (error) {
-    console.error('Error inserting locations:', error);
+    console.error("Error inserting locations:", error);
     throw error;
   }
 }
@@ -93,7 +94,7 @@ async function insertServices(services: Service[]): Promise<number> {
   const batch = db.batch();
 
   for (const service of services) {
-    const docRef = db.collection('services').doc(service.id);
+    const docRef = db.collection("services").doc(service.id);
     batch.set(docRef, {
       id: service.id,
       website: service.website,
@@ -115,23 +116,29 @@ async function insertServices(services: Service[]): Promise<number> {
     console.log(`✅ Successfully inserted ${inserted} services`);
     return inserted;
   } catch (error) {
-    console.error('Error inserting services:', error);
+    console.error("Error inserting services:", error);
     throw error;
   }
 }
 
 async function createLocationServiceMappings(
   locations: Location[],
-  services: Service[]
+  services: Service[],
 ): Promise<number> {
   console.log(`\n🗺️  Creating location-service mappings...`);
   let created = 0;
-  const mappings: Array<{ locationId: string; serviceId: string; relevance: number }> = [];
+  const mappings: Array<{
+    locationId: string;
+    serviceId: string;
+    relevance: number;
+  }> = [];
 
   // Create mappings based on applicableServices in locations
   for (const location of locations) {
     if (location.applicableServices) {
-      for (const [serviceId, relevance] of Object.entries(location.applicableServices)) {
+      for (const [serviceId, relevance] of Object.entries(
+        location.applicableServices,
+      )) {
         mappings.push({
           locationId: location.id,
           serviceId,
@@ -149,9 +156,9 @@ async function createLocationServiceMappings(
 
     for (const mapping of chunk) {
       const docRef = db
-        .collection('locations')
+        .collection("locations")
         .doc(mapping.locationId)
-        .collection('services')
+        .collection("services")
         .doc(mapping.serviceId);
 
       batch.set(docRef, {
@@ -171,7 +178,7 @@ async function createLocationServiceMappings(
 
 async function createInitialContentQueue(
   locations: Location[],
-  services: Service[]
+  services: Service[],
 ): Promise<number> {
   console.log(`\n📋 Creating initial content generation queue...`);
 
@@ -191,11 +198,11 @@ async function createInitialContentQueue(
         location.applicableServices[service.id] &&
         location.applicableServices[service.id] >= 15
       ) {
-        const queueRef = db.collection('regeneration_queue').doc();
+        const queueRef = db.collection("regeneration_queue").doc();
         batch.set(queueRef, {
           locationId: location.id,
           serviceId: service.id,
-          status: 'pending',
+          status: "pending",
           priority: 10,
           createdAt: admin.firestore.Timestamp.now(),
           retries: 0,
@@ -208,49 +215,56 @@ async function createInitialContentQueue(
   try {
     await batch.commit();
     console.log(
-      `✅ Queued ${queued} content generation tasks (${topLocations.length} locations × services)`
+      `✅ Queued ${queued} content generation tasks (${topLocations.length} locations × services)`,
     );
     return queued;
   } catch (error) {
-    console.error('Error creating queue:', error);
+    console.error("Error creating queue:", error);
     throw error;
   }
 }
 
 async function main() {
-  console.log('🚀 Starting Phase 4: Production Data Initialization\n');
+  console.log("🚀 Starting Phase 4: Production Data Initialization\n");
 
   try {
     // Load master data
-    console.log('📂 Loading master data files...');
-    const locations = await loadJSON<Location[]>('data/locations.json');
-    const services = await loadJSON<Service[]>('data/services.json');
+    console.log("📂 Loading master data files...");
+    const locations = await loadJSON<Location[]>("data/locations.json");
+    const services = await loadJSON<Service[]>("data/services.json");
 
-    console.log(`✅ Loaded ${locations.length} locations and ${services.length} services`);
+    console.log(
+      `✅ Loaded ${locations.length} locations and ${services.length} services`,
+    );
 
     // Insert data into Firestore
     const locationsInserted = await insertLocations(locations);
     const servicesInserted = await insertServices(services);
-    const mappingsCreated = await createLocationServiceMappings(locations, services);
+    const mappingsCreated = await createLocationServiceMappings(
+      locations,
+      services,
+    );
     const queuedTasks = await createInitialContentQueue(locations, services);
 
     // Summary
-    console.log('\n' + '='.repeat(50));
-    console.log('✅ PHASE 4 DATA INITIALIZATION COMPLETE');
-    console.log('='.repeat(50));
+    console.log("\n" + "=".repeat(50));
+    console.log("✅ PHASE 4 DATA INITIALIZATION COMPLETE");
+    console.log("=".repeat(50));
     console.log(`📍 Locations inserted: ${locationsInserted}`);
     console.log(`🔧 Services inserted: ${servicesInserted}`);
     console.log(`🗺️  Location-service mappings created: ${mappingsCreated}`);
     console.log(`📋 Content generation tasks queued: ${queuedTasks}`);
-    console.log('\n✨ System is ready for content generation and quality scoring!');
-    console.log('\nNext steps:');
-    console.log('1. Run: npm run generate-content');
-    console.log('2. Run: npm run score-quality');
-    console.log('3. Check admin dashboard for real data');
+    console.log(
+      "\n✨ System is ready for content generation and quality scoring!",
+    );
+    console.log("\nNext steps:");
+    console.log("1. Run: npm run generate-content");
+    console.log("2. Run: npm run score-quality");
+    console.log("3. Check admin dashboard for real data");
 
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error during initialization:', error);
+    console.error("❌ Error during initialization:", error);
     process.exit(1);
   }
 }

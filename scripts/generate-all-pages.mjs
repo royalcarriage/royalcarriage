@@ -1,17 +1,19 @@
 #!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, "..");
 
 // Airport pages with content
 const airportPages = {
-  'ohare-airport-limo.astro': {
-    title: "O'Hare Airport Limousine Service - Chicago Black Car Transportation",
-    description: "Professional limousine service to O'Hare International Airport. Luxury black car transportation with flight tracking, meet & greet service, and punctual pickup. Book your O'Hare limo now.",
+  "ohare-airport-limo.astro": {
+    title:
+      "O'Hare Airport Limousine Service - Chicago Black Car Transportation",
+    description:
+      "Professional limousine service to O'Hare International Airport. Luxury black car transportation with flight tracking, meet & greet service, and punctual pickup. Book your O'Hare limo now.",
     h1: "O'Hare Airport Limousine Service",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine provides premium transportation services to and from Chicago O'Hare International Airport (ORD). As Chicago's busiest airport, O'Hare requires reliable, professional transportation that you can count on. Our experienced chauffeurs and luxury fleet ensure you arrive on time, every time.</p>
 
@@ -48,11 +50,13 @@ const airportPages = {
 </div>
 
 <h2 class="text-2xl font-bold mb-4">Business Travel to O'Hare</h2>
-<p class="text-gray-700 mb-6">Our corporate clients rely on us for consistent, professional O'Hare airport transportation. We understand the importance of punctuality for business travel and provide quiet, productive environments for calls or work during transit. All vehicles feature Wi-Fi, power outlets, and privacy partitions.</p>`
+<p class="text-gray-700 mb-6">Our corporate clients rely on us for consistent, professional O'Hare airport transportation. We understand the importance of punctuality for business travel and provide quiet, productive environments for calls or work during transit. All vehicles feature Wi-Fi, power outlets, and privacy partitions.</p>`,
   },
-  'midway-airport-limo.astro': {
-    title: "Midway Airport Limousine Service - Chicago South Side Transportation",
-    description: "Reliable limousine service to Chicago Midway Airport. Professional black car service with experienced drivers, luxury vehicles, and on-time guarantee. Book Midway limo transportation now.",
+  "midway-airport-limo.astro": {
+    title:
+      "Midway Airport Limousine Service - Chicago South Side Transportation",
+    description:
+      "Reliable limousine service to Chicago Midway Airport. Professional black car service with experienced drivers, luxury vehicles, and on-time guarantee. Book Midway limo transportation now.",
     h1: "Midway Airport Limousine Service",
     content: `<p class="text-lg text-gray-700 mb-6">Experience premium transportation to and from Chicago Midway International Airport (MDW) with Royal Carriage Limousine. Conveniently located on Chicago's southwest side, Midway Airport serves millions of travelers annually. Our professional chauffeur service ensures stress-free airport transportation with punctual, reliable service.</p>
 
@@ -93,11 +97,12 @@ const airportPages = {
 <h2 class="text-2xl font-bold mb-4">Why Travelers Choose Us for Midway</h2>
 <p class="text-gray-700 mb-4">Midway Airport's location makes it a popular choice for South Side and suburban travelers. Our chauffeurs know the optimal routes to avoid traffic on the Stevenson Expressway (I-55) and surface streets. Whether you're flying Southwest, Delta, or another carrier, we provide seamless door-to-door service.</p>
 
-<p class="text-gray-700 mb-6">We serve frequent Midway travelers including business professionals commuting to Springfield or St. Louis, families visiting relatives, and tourists exploring Chicago. Our service includes luggage handling, vehicle cleanliness, and courteous drivers who make your journey comfortable and efficient.</p>`
+<p class="text-gray-700 mb-6">We serve frequent Midway travelers including business professionals commuting to Springfield or St. Louis, families visiting relatives, and tourists exploring Chicago. Our service includes luggage handling, vehicle cleanliness, and courteous drivers who make your journey comfortable and efficient.</p>`,
   },
-  'airport-limo-downtown-chicago.astro': {
+  "airport-limo-downtown-chicago.astro": {
     title: "Airport Limousine to Downtown Chicago - O'Hare & Midway Service",
-    description: "Professional airport limousine service between downtown Chicago and O'Hare or Midway airports. Luxury transportation to the Loop, River North, and all downtown destinations.",
+    description:
+      "Professional airport limousine service between downtown Chicago and O'Hare or Midway airports. Luxury transportation to the Loop, River North, and all downtown destinations.",
     h1: "Airport Limousine Service to Downtown Chicago",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine specializes in seamless transportation between Chicago's airports and downtown locations. Whether you're heading to a hotel in the Loop, a meeting in River North, or any downtown destination, our professional chauffeur service ensures timely, comfortable arrivals.</p>
 
@@ -138,11 +143,13 @@ const airportPages = {
 </ul>
 
 <h2 class="text-2xl font-bold mb-4">Hotel Partnerships</h2>
-<p class="text-gray-700 mb-6">We provide preferred airport transportation for guests at major downtown Chicago hotels including The Palmer House, The Langham, Four Seasons, Peninsula Chicago, and many others. Ask your hotel concierge about Royal Carriage Limousine for your airport transfers.</p>`
+<p class="text-gray-700 mb-6">We provide preferred airport transportation for guests at major downtown Chicago hotels including The Palmer House, The Langham, Four Seasons, Peninsula Chicago, and many others. Ask your hotel concierge about Royal Carriage Limousine for your airport transfers.</p>`,
   },
-  'airport-limo-suburbs.astro': {
-    title: "Chicago Suburbs Airport Limousine Service - Naperville, Schaumburg & More",
-    description: "Airport limousine service to all Chicago suburbs. Professional transportation from O'Hare and Midway to Naperville, Schaumburg, Oak Brook, and throughout Chicagoland.",
+  "airport-limo-suburbs.astro": {
+    title:
+      "Chicago Suburbs Airport Limousine Service - Naperville, Schaumburg & More",
+    description:
+      "Airport limousine service to all Chicago suburbs. Professional transportation from O'Hare and Midway to Naperville, Schaumburg, Oak Brook, and throughout Chicagoland.",
     h1: "Airport Limousine Service to Chicago Suburbs",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine provides comprehensive airport transportation throughout the Chicago metropolitan area. Whether you're traveling to the North Shore, western suburbs, or south suburbs, our professional chauffeur service delivers reliable, comfortable transportation to and from both O'Hare and Midway airports.</p>
 
@@ -190,11 +197,12 @@ const airportPages = {
 </ul>
 
 <h2 class="text-2xl font-bold mb-4">Suburban Corporate Accounts</h2>
-<p class="text-gray-700 mb-6">Many suburban businesses rely on Royal Carriage for employee airport transportation. We provide account billing, ride reports, and dedicated service for corporate locations in business parks and office complexes throughout Chicagoland. Contact us about establishing a corporate account for your suburban location.</p>`
+<p class="text-gray-700 mb-6">Many suburban businesses rely on Royal Carriage for employee airport transportation. We provide account billing, ride reports, and dedicated service for corporate locations in business parks and office complexes throughout Chicagoland. Contact us about establishing a corporate account for your suburban location.</p>`,
   },
-  'fleet.astro': {
+  "fleet.astro": {
     title: "Luxury Airport Limousine Fleet - Sedans, SUVs & Vans",
-    description: "View our luxury fleet of airport limousines including executive sedans, SUVs, and passenger vans. Immaculately maintained vehicles with professional chauffeurs for Chicago airport transportation.",
+    description:
+      "View our luxury fleet of airport limousines including executive sedans, SUVs, and passenger vans. Immaculately maintained vehicles with professional chauffeurs for Chicago airport transportation.",
     h1: "Our Luxury Fleet",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine maintains a premium fleet of vehicles to accommodate all your airport transportation needs. Every vehicle is meticulously maintained, regularly detailed, and equipped with modern amenities for your comfort and convenience.</p>
 
@@ -242,11 +250,12 @@ const airportPages = {
   <li>GPS tracking for optimal routing</li>
   <li>Fully insured and licensed</li>
   <li>Complimentary amenities: bottled water, phone chargers, Wi-Fi</li>
-</ul>`
+</ul>`,
   },
-  'pricing.astro': {
+  "pricing.astro": {
     title: "Airport Limousine Service Pricing - Transparent Flat Rates",
-    description: "View transparent flat rate pricing for Chicago airport limousine service. No hidden fees, no surge pricing. Get an instant quote for O'Hare or Midway airport transportation.",
+    description:
+      "View transparent flat rate pricing for Chicago airport limousine service. No hidden fees, no surge pricing. Get an instant quote for O'Hare or Midway airport transportation.",
     h1: "Transparent Pricing for Airport Limousine Service",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine believes in transparent, fair pricing. We offer flat rates for airport transportation with no hidden fees, no surge pricing, and no surprises. Get an instant quote online or call us for immediate pricing.</p>
 
@@ -322,11 +331,12 @@ const airportPages = {
 </ul>
 
 <h2 class="text-2xl font-bold mb-4">Payment Methods</h2>
-<p class="text-gray-700 mb-4">We accept all major credit cards, debit cards, corporate accounts, and cash. Payment can be made online during booking or directly to your chauffeur. Corporate invoicing available for established accounts.</p>`
+<p class="text-gray-700 mb-4">We accept all major credit cards, debit cards, corporate accounts, and cash. Payment can be made online during booking or directly to your chauffeur. Corporate invoicing available for established accounts.</p>`,
   },
-  'about.astro': {
+  "about.astro": {
     title: "About Royal Carriage Limousine - Chicago Airport Transportation",
-    description: "Learn about Royal Carriage Limousine, Chicago's premier airport transportation service. Professional chauffeurs, luxury fleet, and commitment to excellence since our founding.",
+    description:
+      "Learn about Royal Carriage Limousine, Chicago's premier airport transportation service. Professional chauffeurs, luxury fleet, and commitment to excellence since our founding.",
     h1: "About Royal Carriage Limousine",
     content: `<p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine has been providing exceptional airport transportation services throughout Chicago and surrounding suburbs. We've built our reputation on reliability, professionalism, and an unwavering commitment to customer satisfaction.</p>
 
@@ -367,11 +377,12 @@ const airportPages = {
 <p class="text-gray-700 mb-6">From downtown Chicago to the farthest suburbs, Royal Carriage provides comprehensive airport limousine service throughout the metropolitan area. We know the best routes to O'Hare and Midway airports from every neighborhood and suburb, ensuring efficient, comfortable transportation regardless of your location.</p>
 
 <h2 class="text-2xl font-bold mb-4">Corporate & Individual Services</h2>
-<p class="text-gray-700 mb-6">Whether you're a business executive requiring regular airport transportation, a family traveling on vacation, or an event planner coordinating group transfers, Royal Carriage Limousine has the expertise and fleet to meet your needs. We offer both individual reservations and corporate account services with flexible billing options.</p>`
+<p class="text-gray-700 mb-6">Whether you're a business executive requiring regular airport transportation, a family traveling on vacation, or an event planner coordinating group transfers, Royal Carriage Limousine has the expertise and fleet to meet your needs. We offer both individual reservations and corporate account services with flexible billing options.</p>`,
   },
-  'contact.astro': {
+  "contact.astro": {
     title: "Contact Royal Carriage Limousine - Book Airport Transportation",
-    description: "Contact Royal Carriage Limousine for Chicago airport transportation. Call (224) 801-3090 or book online. 24/7 customer service for O'Hare and Midway limo service.",
+    description:
+      "Contact Royal Carriage Limousine for Chicago airport transportation. Call (224) 801-3090 or book online. 24/7 customer service for O'Hare and Midway limo service.",
     h1: "Contact Us",
     content: `<p class="text-lg text-gray-700 mb-6">Ready to book your airport limousine service? Contact Royal Carriage Limousine today. We're available 24/7 to answer questions, provide quotes, and make reservations for O'Hare and Midway airport transportation.</p>
 
@@ -450,13 +461,13 @@ const airportPages = {
 <div class="bg-blue-600 text-white p-8 rounded-lg text-center">
   <h2 class="text-2xl font-bold mb-4">Ready to Experience Premium Airport Transportation?</h2>
   <p class="mb-6">Book online now or call us for immediate assistance</p>
-</div>`
-  }
+</div>`,
+  },
 };
 
 // Function to create airport page
 function createAirportPage(filename, pageData) {
-  const pagePath = path.join(rootDir, 'apps/airport/src/pages', filename);
+  const pagePath = path.join(rootDir, "apps/airport/src/pages", filename);
 
   const content = `---
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -478,7 +489,7 @@ const serviceSchema = generateServiceSchema({
 <BaseLayout
   title="${pageData.title}"
   description="${pageData.description}"
-  canonical="${'/' + filename.replace('.astro', '')}"
+  canonical="${"/" + filename.replace(".astro", "")}"
   schema={serviceSchema}
 >
   <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
@@ -514,10 +525,12 @@ const serviceSchema = generateServiceSchema({
 }
 
 // Create all airport pages
-console.log('Creating Airport site pages...');
+console.log("Creating Airport site pages...");
 Object.entries(airportPages).forEach(([filename, data]) => {
   createAirportPage(filename, data);
 });
 
-console.log('\n✓ Airport pages created successfully!');
-console.log('Note: You still need to create pages for Corporate, Wedding, and PartyBus sites.');
+console.log("\n✓ Airport pages created successfully!");
+console.log(
+  "Note: You still need to create pages for Corporate, Wedding, and PartyBus sites.",
+);

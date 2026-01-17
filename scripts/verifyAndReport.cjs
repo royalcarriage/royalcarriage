@@ -3,18 +3,18 @@
  * Verifies all data and generates comprehensive system report
  */
 
-const admin = require('firebase-admin');
-const fs = require('fs');
-const path = require('path');
+const admin = require("firebase-admin");
+const fs = require("fs");
+const path = require("path");
 
 if (!admin.apps.length) {
-  admin.initializeApp({ projectId: 'royalcarriagelimoseo' });
+  admin.initializeApp({ projectId: "royalcarriagelimoseo" });
 }
 
 const db = admin.firestore();
 
 async function verifyFirestoreData() {
-  console.log('=== VERIFYING FIRESTORE DATA ===\n');
+  console.log("=== VERIFYING FIRESTORE DATA ===\n");
 
   const verification = {
     locations: { count: 0, samples: [] },
@@ -26,27 +26,30 @@ async function verifyFirestoreData() {
   };
 
   // Verify Locations
-  const locationsSnapshot = await db.collection('locations').get();
+  const locationsSnapshot = await db.collection("locations").get();
   verification.locations.count = locationsSnapshot.size;
-  verification.locations.samples = locationsSnapshot.docs.slice(0, 3).map(d => ({
-    id: d.id,
-    name: d.data().name,
-    servicesCount: Object.keys(d.data().applicableServices || {}).length,
-  }));
+  verification.locations.samples = locationsSnapshot.docs
+    .slice(0, 3)
+    .map((d) => ({
+      id: d.id,
+      name: d.data().name,
+      servicesCount: Object.keys(d.data().applicableServices || {}).length,
+    }));
   console.log(`Locations: ${verification.locations.count}`);
 
   // Verify Services
-  const servicesSnapshot = await db.collection('services').get();
+  const servicesSnapshot = await db.collection("services").get();
   verification.services.count = servicesSnapshot.size;
   for (const doc of servicesSnapshot.docs) {
     const website = doc.data().website;
-    verification.services.byWebsite[website] = (verification.services.byWebsite[website] || 0) + 1;
+    verification.services.byWebsite[website] =
+      (verification.services.byWebsite[website] || 0) + 1;
   }
   console.log(`Services: ${verification.services.count}`);
   console.log(`  By website:`, verification.services.byWebsite);
 
   // Verify Content
-  const contentSnapshot = await db.collection('service_content').get();
+  const contentSnapshot = await db.collection("service_content").get();
   verification.content.count = contentSnapshot.size;
   let totalScore = 0;
   for (const doc of contentSnapshot.docs) {
@@ -54,51 +57,70 @@ async function verifyFirestoreData() {
     verification.content.scores.push(score);
     totalScore += score;
   }
-  verification.content.avgScore = verification.content.count > 0 ? Math.round(totalScore / verification.content.count) : 0;
+  verification.content.avgScore =
+    verification.content.count > 0
+      ? Math.round(totalScore / verification.content.count)
+      : 0;
   verification.content.minScore = Math.min(...verification.content.scores);
   verification.content.maxScore = Math.max(...verification.content.scores);
   console.log(`Content Items: ${verification.content.count}`);
-  console.log(`  Avg Score: ${verification.content.avgScore}, Min: ${verification.content.minScore}, Max: ${verification.content.maxScore}`);
+  console.log(
+    `  Avg Score: ${verification.content.avgScore}, Min: ${verification.content.minScore}, Max: ${verification.content.maxScore}`,
+  );
 
   // Verify Quality Scores
-  const scoresSnapshot = await db.collection('content_quality_scores').get();
+  const scoresSnapshot = await db.collection("content_quality_scores").get();
   verification.qualityScores.count = scoresSnapshot.size;
   for (const doc of scoresSnapshot.docs) {
     const score = doc.data().overallScore;
-    const range = score >= 90 ? '90-100' : score >= 80 ? '80-89' : score >= 70 ? '70-79' : '<70';
-    verification.qualityScores.distribution[range] = (verification.qualityScores.distribution[range] || 0) + 1;
+    const range =
+      score >= 90
+        ? "90-100"
+        : score >= 80
+          ? "80-89"
+          : score >= 70
+            ? "70-79"
+            : "<70";
+    verification.qualityScores.distribution[range] =
+      (verification.qualityScores.distribution[range] || 0) + 1;
   }
   console.log(`Quality Scores: ${verification.qualityScores.count}`);
   console.log(`  Distribution:`, verification.qualityScores.distribution);
 
   // Verify Regeneration Queue
-  const queueSnapshot = await db.collection('regeneration_queue').get();
+  const queueSnapshot = await db.collection("regeneration_queue").get();
   for (const doc of queueSnapshot.docs) {
     const status = doc.data().status;
-    verification.regenerationQueue[status] = (verification.regenerationQueue[status] || 0) + 1;
+    verification.regenerationQueue[status] =
+      (verification.regenerationQueue[status] || 0) + 1;
   }
   console.log(`Regeneration Queue: ${queueSnapshot.size} total`);
-  console.log(`  Pending: ${verification.regenerationQueue.pending}, Completed: ${verification.regenerationQueue.completed}, Failed: ${verification.regenerationQueue.failed}`);
+  console.log(
+    `  Pending: ${verification.regenerationQueue.pending}, Completed: ${verification.regenerationQueue.completed}, Failed: ${verification.regenerationQueue.failed}`,
+  );
 
   // Verify Competitor Analysis
-  const competitorSnapshot = await db.collection('competitor_analysis').get();
+  const competitorSnapshot = await db.collection("competitor_analysis").get();
   verification.competitorAnalysis.total = competitorSnapshot.size;
   for (const doc of competitorSnapshot.docs) {
-    if (doc.id === 'service_gaps_summary') {
+    if (doc.id === "service_gaps_summary") {
       verification.competitorAnalysis.gaps = doc.data().totalGaps || 0;
-    } else if (doc.id === 'keyword_opportunities') {
-      verification.competitorAnalysis.keywords = doc.data().totalOpportunities || 0;
+    } else if (doc.id === "keyword_opportunities") {
+      verification.competitorAnalysis.keywords =
+        doc.data().totalOpportunities || 0;
     } else {
       verification.competitorAnalysis.competitors++;
     }
   }
-  console.log(`Competitor Analysis: ${verification.competitorAnalysis.competitors} competitors, ${verification.competitorAnalysis.gaps} gaps, ${verification.competitorAnalysis.keywords} keyword opportunities`);
+  console.log(
+    `Competitor Analysis: ${verification.competitorAnalysis.competitors} competitors, ${verification.competitorAnalysis.gaps} gaps, ${verification.competitorAnalysis.keywords} keyword opportunities`,
+  );
 
   return verification;
 }
 
 async function generateReport(verification) {
-  console.log('\n=== GENERATING END-TO-END TEST REPORT ===\n');
+  console.log("\n=== GENERATING END-TO-END TEST REPORT ===\n");
 
   const timestamp = new Date().toISOString();
   const report = `# Phase 4: Production Data Initialization - End-to-End Test Report
@@ -138,11 +160,13 @@ Chicago metropolitan area locations have been loaded:
 - South side: Hyde Park, Kenwood, Wicker Park, Bucktown
 
 **Sample Records:**
-${verification.locations.samples.map(s => `- ${s.name} (${s.servicesCount} applicable services)`).join('\n')}
+${verification.locations.samples.map((s) => `- ${s.name} (${s.servicesCount} applicable services)`).join("\n")}
 
 ### Services (${verification.services.count} total)
 Services loaded by website:
-${Object.entries(verification.services.byWebsite).map(([website, count]) => `- **${website}:** ${count} services`).join('\n')}
+${Object.entries(verification.services.byWebsite)
+  .map(([website, count]) => `- **${website}:** ${count} services`)
+  .join("\n")}
 
 ---
 
@@ -155,7 +179,9 @@ Content has been generated for high-priority location-service combinations using
 **Quality Score Distribution:**
 | Score Range | Count |
 |-------------|-------|
-${Object.entries(verification.qualityScores.distribution).map(([range, count]) => `| ${range} | ${count} |`).join('\n')}
+${Object.entries(verification.qualityScores.distribution)
+  .map(([range, count]) => `| ${range} | ${count} |`)
+  .join("\n")}
 
 **Score Statistics:**
 - Minimum Score: ${verification.content.minScore}/100
@@ -303,16 +329,16 @@ The system is production-ready and optimized for search engine visibility.
 `;
 
   // Write report to file
-  const reportPath = path.join(__dirname, '..', 'PHASE4_TEST_REPORT.md');
+  const reportPath = path.join(__dirname, "..", "PHASE4_TEST_REPORT.md");
   fs.writeFileSync(reportPath, report);
   console.log(`Report saved to: ${reportPath}`);
 
   // Store report summary in Firestore
-  await db.collection('reports').doc('phase4_test_report').set({
+  await db.collection("reports").doc("phase4_test_report").set({
     timestamp,
     verification,
-    status: 'complete',
-    overallResult: 'PASS',
+    status: "complete",
+    overallResult: "PASS",
   });
 
   return report;
@@ -323,12 +349,12 @@ async function main() {
     const verification = await verifyFirestoreData();
     const report = await generateReport(verification);
 
-    console.log('\n=== PHASE 4 VERIFICATION COMPLETE ===');
-    console.log('All tests passed. System is production-ready.');
+    console.log("\n=== PHASE 4 VERIFICATION COMPLETE ===");
+    console.log("All tests passed. System is production-ready.");
 
     process.exit(0);
   } catch (error) {
-    console.error('Verification failed:', error);
+    console.error("Verification failed:", error);
     process.exit(1);
   }
 }

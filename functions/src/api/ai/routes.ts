@@ -3,17 +3,17 @@
  * API endpoints for AI-powered website management
  */
 
-import { Router } from 'express';
-import { PageAnalyzer } from './page-analyzer';
-import { ContentGenerator } from './content-generator';
-import { ImageGenerator } from './image-generator';
+import { Router } from "express";
+import { PageAnalyzer } from "./page-analyzer";
+import { ContentGenerator } from "./content-generator";
+import { ImageGenerator } from "./image-generator";
 
 const router = Router();
 
 // Initialize AI services
 const pageAnalyzer = new PageAnalyzer();
-const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'royalcarriagelimoseo';
-const location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+const projectId = process.env.GOOGLE_CLOUD_PROJECT || "royalcarriagelimoseo";
+const location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 const contentGenerator = new ContentGenerator(projectId, location);
 const imageGenerator = new ImageGenerator(projectId, location);
 
@@ -21,18 +21,22 @@ const imageGenerator = new ImageGenerator(projectId, location);
  * Analyze a page for SEO and content quality
  * POST /api/ai/analyze-page
  */
-router.post('/analyze-page', async (req, res) => {
+router.post("/analyze-page", async (req, res) => {
   try {
     const { pageUrl, pageContent, pageName } = req.body;
 
     if (!pageUrl || !pageContent || !pageName) {
       res.status(400).json({
-        error: 'Missing required fields: pageUrl, pageContent, pageName',
+        error: "Missing required fields: pageUrl, pageContent, pageName",
       });
       return;
     }
 
-    const analysis = await pageAnalyzer.analyzePage(pageContent, pageUrl, pageName);
+    const analysis = await pageAnalyzer.analyzePage(
+      pageContent,
+      pageUrl,
+      pageName,
+    );
 
     res.json({
       success: true,
@@ -40,10 +44,10 @@ router.post('/analyze-page', async (req, res) => {
       analyzedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Page analysis error:', error);
+    console.error("Page analysis error:", error);
     res.status(500).json({
-      error: 'Failed to analyze page',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to analyze page",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -52,7 +56,7 @@ router.post('/analyze-page', async (req, res) => {
  * Generate optimized content
  * POST /api/ai/generate-content
  */
-router.post('/generate-content', async (req, res) => {
+router.post("/generate-content", async (req, res) => {
   try {
     const {
       pageType,
@@ -66,7 +70,7 @@ router.post('/generate-content', async (req, res) => {
 
     if (!pageType || !targetKeywords) {
       res.status(400).json({
-        error: 'Missing required fields: pageType, targetKeywords',
+        error: "Missing required fields: pageType, targetKeywords",
       });
       return;
     }
@@ -76,8 +80,10 @@ router.post('/generate-content', async (req, res) => {
       location,
       vehicle,
       currentContent,
-      targetKeywords: Array.isArray(targetKeywords) ? targetKeywords : [targetKeywords],
-      tone: tone || 'professional',
+      targetKeywords: Array.isArray(targetKeywords)
+        ? targetKeywords
+        : [targetKeywords],
+      tone: tone || "professional",
       maxLength,
     });
 
@@ -87,10 +93,10 @@ router.post('/generate-content', async (req, res) => {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Content generation error:', error);
+    console.error("Content generation error:", error);
     res.status(500).json({
-      error: 'Failed to generate content',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to generate content",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -99,22 +105,22 @@ router.post('/generate-content', async (req, res) => {
  * Improve existing content
  * POST /api/ai/improve-content
  */
-router.post('/improve-content', async (req, res) => {
+router.post("/improve-content", async (req, res) => {
   try {
     const { currentContent, recommendations } = req.body;
 
     if (!currentContent || !recommendations) {
       res.status(400).json({
-        error: 'Missing required fields: currentContent, recommendations',
+        error: "Missing required fields: currentContent, recommendations",
       });
       return;
     }
 
     const improvedContent = await contentGenerator.generateContent({
-      pageType: 'improvement',
+      pageType: "improvement",
       currentContent,
       targetKeywords: recommendations,
-      tone: 'professional'
+      tone: "professional",
     });
 
     res.json({
@@ -123,10 +129,10 @@ router.post('/improve-content', async (req, res) => {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Content improvement error:', error);
+    console.error("Content improvement error:", error);
     res.status(500).json({
-      error: 'Failed to improve content',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to improve content",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -135,13 +141,13 @@ router.post('/improve-content', async (req, res) => {
  * Generate AI image
  * POST /api/ai/generate-image
  */
-router.post('/generate-image', async (req, res) => {
+router.post("/generate-image", async (req, res) => {
   try {
     const { purpose, location, vehicle, style, description } = req.body;
 
     if (!purpose) {
       res.status(400).json({
-        error: 'Missing required field: purpose',
+        error: "Missing required field: purpose",
       });
       return;
     }
@@ -160,10 +166,10 @@ router.post('/generate-image', async (req, res) => {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Image generation error:', error);
+    console.error("Image generation error:", error);
     res.status(500).json({
-      error: 'Failed to generate image',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to generate image",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -172,25 +178,25 @@ router.post('/generate-image', async (req, res) => {
  * Generate multiple image variations
  * POST /api/ai/generate-image-variations
  */
-router.post('/generate-image-variations', async (req, res) => {
+router.post("/generate-image-variations", async (req, res) => {
   try {
     const { purpose, location, vehicle, style, description } = req.body;
 
     if (!purpose) {
       res.status(400).json({
-        error: 'Missing required field: purpose',
+        error: "Missing required field: purpose",
       });
       return;
     }
 
-    // fallback 
+    // fallback
     const image = await imageGenerator.generateImage({
-        purpose,
-        location,
-        vehicle,
-        style,
-        description,
-      });
+      purpose,
+      location,
+      vehicle,
+      style,
+      description,
+    });
 
     res.json({
       success: true,
@@ -199,10 +205,10 @@ router.post('/generate-image-variations', async (req, res) => {
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Image variations generation error:', error);
+    console.error("Image variations generation error:", error);
     res.status(500).json({
-      error: 'Failed to generate image variations',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to generate image variations",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -211,13 +217,13 @@ router.post('/generate-image-variations', async (req, res) => {
  * Get location-specific content suggestions
  * POST /api/ai/location-content
  */
-router.post('/location-content', async (req, res) => {
+router.post("/location-content", async (req, res) => {
   try {
     const { location, pageType } = req.body;
 
     if (!location || !pageType) {
       res.status(400).json({
-        error: 'Missing required fields: location, pageType',
+        error: "Missing required fields: location, pageType",
       });
       return;
     }
@@ -231,10 +237,10 @@ router.post('/location-content', async (req, res) => {
       pageType,
     });
   } catch (error) {
-    console.error('Location content generation error:', error);
+    console.error("Location content generation error:", error);
     res.status(500).json({
-      error: 'Failed to generate location content',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to generate location content",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -243,13 +249,13 @@ router.post('/location-content', async (req, res) => {
  * Get vehicle-specific content suggestions
  * POST /api/ai/vehicle-content
  */
-router.post('/vehicle-content', async (req, res) => {
+router.post("/vehicle-content", async (req, res) => {
   try {
     const { vehicle } = req.body;
 
     if (!vehicle) {
       res.status(400).json({
-        error: 'Missing required field: vehicle',
+        error: "Missing required field: vehicle",
       });
       return;
     }
@@ -262,10 +268,10 @@ router.post('/vehicle-content', async (req, res) => {
       vehicle,
     });
   } catch (error) {
-    console.error('Vehicle content generation error:', error);
+    console.error("Vehicle content generation error:", error);
     res.status(500).json({
-      error: 'Failed to generate vehicle content',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to generate vehicle content",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -274,13 +280,13 @@ router.post('/vehicle-content', async (req, res) => {
  * Batch analyze multiple pages
  * POST /api/ai/batch-analyze
  */
-router.post('/batch-analyze', async (req, res) => {
+router.post("/batch-analyze", async (req, res) => {
   try {
     const { pages } = req.body;
 
     if (!pages || !Array.isArray(pages)) {
       res.status(400).json({
-        error: 'Missing required field: pages (array)',
+        error: "Missing required field: pages (array)",
       });
       return;
     }
@@ -291,7 +297,7 @@ router.post('/batch-analyze', async (req, res) => {
           const analysis = await pageAnalyzer.analyzePage(
             page.content,
             page.url,
-            page.name
+            page.name,
           );
           return {
             url: page.url,
@@ -303,25 +309,25 @@ router.post('/batch-analyze', async (req, res) => {
           return {
             url: page.url,
             name: page.name,
-            error: error instanceof Error ? error.message : 'Analysis failed',
+            error: error instanceof Error ? error.message : "Analysis failed",
             success: false,
           };
         }
-      })
+      }),
     );
 
     res.json({
       success: true,
       results,
       totalPages: pages.length,
-      successCount: results.filter(r => r.success).length,
+      successCount: results.filter((r) => r.success).length,
       analyzedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('Batch analysis error:', error);
+    console.error("Batch analysis error:", error);
     res.status(500).json({
-      error: 'Failed to perform batch analysis',
-      message: error instanceof Error ? error.message : 'Unknown error',
+      error: "Failed to perform batch analysis",
+      message: error instanceof Error ? error.message : "Unknown error",
     });
   }
 });
@@ -330,13 +336,13 @@ router.post('/batch-analyze', async (req, res) => {
  * Health check endpoint
  * GET /api/ai/health
  */
-router.get('/health', (req, res) => {
+router.get("/health", (req, res) => {
   res.json({
-    status: 'healthy',
+    status: "healthy",
     services: {
-      pageAnalyzer: 'active',
-      contentGenerator: 'active',
-      imageGenerator: 'active',
+      pageAnalyzer: "active",
+      contentGenerator: "active",
+      imageGenerator: "active",
     },
     timestamp: new Date().toISOString(),
   });

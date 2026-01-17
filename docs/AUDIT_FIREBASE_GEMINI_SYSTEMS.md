@@ -37,10 +37,10 @@ Risks & caveats
 
 Recommended next actions (prioritized)
 
-1. Stub or implement `image-generator` to return safe placeholders during local development (low-risk).  
-2. Add a `pnpm` script to start emulators from repo root and include it in README and CI (medium).  
-3. Review `.github/workflows` and update workflows to run `pnpm run gates`, run tests, and ensure CI injects `GOOGLE_APPLICATION_CREDENTIALS` via secrets when needed (high).  
-4. Integrate Gemini function tests into local CI gating and add smoke tests for admin dashboard integration (high).  
+1. Stub or implement `image-generator` to return safe placeholders during local development (low-risk).
+2. Add a `pnpm` script to start emulators from repo root and include it in README and CI (medium).
+3. Review `.github/workflows` and update workflows to run `pnpm run gates`, run tests, and ensure CI injects `GOOGLE_APPLICATION_CREDENTIALS` via secrets when needed (high).
+4. Integrate Gemini function tests into local CI gating and add smoke tests for admin dashboard integration (high).
 5. Add checks in admin dashboard to surface function availability and AI quota/health (optional).
 
 Files of interest (non-exhaustive)

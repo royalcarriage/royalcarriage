@@ -13,6 +13,7 @@
    - Plan Phase 1 (16 days)
 
 3. **Prepare Environment** (2 hours)
+
    ```bash
    cd ~/gemini-workspace/repo
    npm install
@@ -34,6 +35,7 @@
 ### Day 1-2: Authentication Foundation
 
 #### Step 1: Enable Firebase Auth Providers
+
 ```bash
 # In Firebase Console:
 # 1. Auth → Sign-in Method → Enable Email/Password
@@ -43,23 +45,33 @@
 ```
 
 #### Step 2: Create Auth Service Module
+
 ```javascript
 // src/services/auth.ts
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { getFirestore, doc, setDoc } from 'firebase/firestore';
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { getFirestore, doc, setDoc } from "firebase/firestore";
 
 export const authService = {
   async signup(email, password, displayName) {
     const auth = getAuth();
-    const { user } = await createUserWithEmailAndPassword(auth, email, password);
+    const { user } = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password,
+    );
 
     // Create user document
     const db = getFirestore();
-    await setDoc(doc(db, 'users', user.uid), {
+    await setDoc(doc(db, "users", user.uid), {
       email,
       displayName,
       createdAt: serverTimestamp(),
-      role: 'viewer'
+      role: "viewer",
     });
 
     return user;
@@ -74,11 +86,12 @@ export const authService = {
   async logout() {
     const auth = getAuth();
     await signOut(auth);
-  }
+  },
 };
 ```
 
 #### Step 3: Create Firestore User & Role Collections
+
 ```firestore
 /users/{userId}: {
   email: "admin@company.com",
@@ -101,6 +114,7 @@ export const authService = {
 ### Day 3-4: Firestore Security & Collections
 
 #### Step 1: Deploy Security Rules
+
 ```firestore
 // firestore.rules
 rules_version = '2';
@@ -130,6 +144,7 @@ service cloud.firestore {
 ```
 
 #### Step 2: Create All Collections in Firestore
+
 ```bash
 # Run in Firebase emulator or manually create:
 firebase emulators:start
@@ -139,17 +154,20 @@ firebase emulators:start
 
 ```javascript
 // admin/initialize.ts
-import admin from 'firebase-admin';
+import admin from "firebase-admin";
 
 async function initializeCollections() {
   const db = admin.firestore();
 
   // Create sample tenant
-  await db.collection('tenants').doc('test-tenant').set({
-    name: 'Royal Carriage Test',
-    slug: 'royal-carriage',
-    subscription: { plan: 'enterprise', status: 'active' }
-  });
+  await db
+    .collection("tenants")
+    .doc("test-tenant")
+    .set({
+      name: "Royal Carriage Test",
+      slug: "royal-carriage",
+      subscription: { plan: "enterprise", status: "active" },
+    });
 
   // Create indexes (deploy via firebase.json)
   // ...
@@ -159,6 +177,7 @@ async function initializeCollections() {
 ### Day 5-7: React Dashboard Scaffold
 
 #### Step 1: Initialize Vite React Project
+
 ```bash
 npm create vite@latest admin-dashboard -- --template react-ts
 cd admin-dashboard
@@ -168,6 +187,7 @@ npx tailwindcss init -p
 ```
 
 #### Step 2: Create Base Layout Components
+
 ```jsx
 // src/layouts/DashboardLayout.tsx
 export function DashboardLayout({ children }) {
@@ -176,9 +196,7 @@ export function DashboardLayout({ children }) {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <TopNav />
-        <main className="flex-1 overflow-auto p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto p-6">{children}</main>
       </div>
     </div>
   );
@@ -186,12 +204,18 @@ export function DashboardLayout({ children }) {
 ```
 
 #### Step 3: Create Routes & Protected Routes
+
 ```jsx
 // src/App.tsx
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { LoginPage } from "./pages/LoginPage";
+import { DashboardPage } from "./pages/DashboardPage";
 
 export function App() {
   return (
@@ -214,6 +238,7 @@ export function App() {
 ### Day 8-9: Cloud Functions Deployment
 
 #### Step 1: Initialize Functions
+
 ```bash
 cd functions
 npm init
@@ -221,26 +246,29 @@ npm install firebase-functions firebase-admin
 ```
 
 #### Step 2: Deploy Critical Functions
+
 ```javascript
 // functions/src/index.ts
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
 // User onCreate trigger
-export const createUserProfile = functions.auth.user().onCreate(async (user) => {
-  const db = admin.firestore();
-  await db.collection('users').doc(user.uid).set({
-    email: user.email,
-    createdAt: admin.firestore.FieldValue.serverTimestamp(),
-    role: 'viewer'
+export const createUserProfile = functions.auth
+  .user()
+  .onCreate(async (user) => {
+    const db = admin.firestore();
+    await db.collection("users").doc(user.uid).set({
+      email: user.email,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      role: "viewer",
+    });
   });
-});
 
 // HTTP callable: Create booking
 export const createBooking = functions.https.onCall(async (data, context) => {
-  if (!context.auth) throw new Error('Must be authenticated');
+  if (!context.auth) throw new Error("Must be authenticated");
 
   const db = admin.firestore();
   const booking = {
@@ -248,15 +276,16 @@ export const createBooking = functions.https.onCall(async (data, context) => {
     pickupLocation: data.pickupLocation,
     dropoffLocation: data.dropoffLocation,
     bookingTime: admin.firestore.FieldValue.serverTimestamp(),
-    status: 'pending'
+    status: "pending",
   };
 
-  const ref = await db.collection('bookings').add(booking);
+  const ref = await db.collection("bookings").add(booking);
   return { id: ref.id };
 });
 ```
 
 #### Step 3: Deploy Functions
+
 ```bash
 firebase deploy --only functions
 ```
@@ -264,6 +293,7 @@ firebase deploy --only functions
 ### Day 10-14: Complete Phase 1 Testing & Fixes
 
 #### Step 1: Security Testing
+
 ```bash
 # Test 1: Unauthenticated access should be blocked
 # Test 2: User can only read own profile
@@ -274,6 +304,7 @@ firebase emulators:start
 ```
 
 #### Step 2: E2E Testing Checklist
+
 - [ ] Login with email/password works
 - [ ] Google OAuth works
 - [ ] Redirects to dashboard after login
@@ -283,6 +314,7 @@ firebase emulators:start
 - [ ] Can't bypass auth with URL
 
 #### Step 3: Deploy to Staging
+
 ```bash
 firebase deploy --project royalcarriagelimoseo-staging
 ```
@@ -292,6 +324,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 ## Phase 2 Quick Reference (Days 15-42)
 
 ### Week 3: Dispatch System
+
 1. Build booking form component (UI)
 2. Create `processBooking` Cloud Function
 3. Create `estimatePrice` Function
@@ -300,6 +333,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 6. E2E test: booking → assignment → completion
 
 ### Week 4-5: Payment & Drivers
+
 1. Stripe integration (test mode first)
 2. Payment processing Cloud Function
 3. Driver profile creation UI
@@ -307,6 +341,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 5. Driver performance tracking
 
 ### Week 6: Financial System
+
 1. Invoice generation Function
 2. Invoice template design
 3. Payroll calculation Function
@@ -320,6 +355,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 ## Phase 3 & 4 Key Milestones
 
 ### Phase 3 (Weeks 7-10): Public Sites
+
 - [ ] 24 static pages created (4 domains)
 - [ ] All pages have SEO meta tags
 - [ ] Images uploaded and optimized
@@ -328,6 +364,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 - [ ] Lighthouse score > 80 on all pages
 
 ### Phase 4 (Weeks 11-16): Advanced Features
+
 - [ ] Real-time tracking (live locations)
 - [ ] Full analytics dashboard
 - [ ] Blog system with publishing
@@ -341,6 +378,7 @@ firebase deploy --project royalcarriagelimoseo-staging
 ## Continuous Deployment Setup
 
 ### GitHub Actions CI/CD
+
 ```yaml
 # .github/workflows/deploy.yml
 name: Deploy
@@ -356,7 +394,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '18'
+          node-version: "18"
 
       - name: Install dependencies
         run: npm install
@@ -376,6 +414,7 @@ jobs:
 ## Debugging & Common Issues
 
 ### Issue: "Permission denied" on Firestore writes
+
 ```
 Cause: Security rules too restrictive or user not authenticated
 Fix:
@@ -386,6 +425,7 @@ Fix:
 ```
 
 ### Issue: Cloud Function fails with "UNAUTHENTICATED"
+
 ```
 Cause: Function doesn't have access to Firestore
 Fix:
@@ -395,6 +435,7 @@ Fix:
 ```
 
 ### Issue: Images not displaying on public sites
+
 ```
 Cause: Cloud Storage CORS not configured
 Fix:
@@ -408,6 +449,7 @@ Fix:
 ## Success Checkpoints
 
 ### End of Phase 1 (Day 14)
+
 ```
 ✅ Auth system working (login/logout/roles)
 ✅ Firestore secure and structured
@@ -418,6 +460,7 @@ Fix:
 ```
 
 ### End of Phase 2 (Day 42)
+
 ```
 ✅ Full booking flow (create → complete)
 ✅ Payment processing working
@@ -428,6 +471,7 @@ Fix:
 ```
 
 ### End of Phase 3 (Day 70)
+
 ```
 ✅ 5 public websites live
 ✅ SEO optimized (> 80 Lighthouse)
@@ -438,6 +482,7 @@ Fix:
 ```
 
 ### End of Phase 4 (Day 112)
+
 ```
 ✅ All 500+ features planned
 ✅ Real-time features working
@@ -452,6 +497,7 @@ Fix:
 ## Handoff Checklist
 
 Before declaring "Done":
+
 - [ ] All automated tests passing
 - [ ] Manual testing checklist completed
 - [ ] Security audit passed
@@ -468,12 +514,14 @@ Before declaring "Done":
 ## Support & Escalation
 
 ### Issue Escalation Path
+
 ```
 Developer → Tech Lead → Engineering Manager → Executive
    Day 1      Day 2-3        Day 4-5           Day 5+
 ```
 
 ### Communication
+
 - Daily standup: 10am (15 min)
 - Weekly review: Friday 4pm (1 hour)
 - Slack #production-issues for real-time

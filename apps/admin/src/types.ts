@@ -1,6 +1,20 @@
-export type Role = "superadmin" | "saas_admin" | "admin" | "fleet_manager" | "accountant" | "dispatcher" | "editor" | "viewer";
+export type Role =
+  | "superadmin"
+  | "saas_admin"
+  | "admin"
+  | "fleet_manager"
+  | "accountant"
+  | "dispatcher"
+  | "editor"
+  | "viewer";
 
-export type SiteKey = "all" | "admin" | "airport" | "partybus" | "corporate" | "wedding";
+export type SiteKey =
+  | "all"
+  | "admin"
+  | "airport"
+  | "partybus"
+  | "corporate"
+  | "wedding";
 
 export interface UserProfile {
   uid: string;

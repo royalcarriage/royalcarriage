@@ -37,7 +37,10 @@ export const generatePageMetadata = functions.https.onCall(
     const { contentId, serviceId, locationId, websiteId } = data;
 
     if (!contentId || !serviceId || !locationId || !websiteId) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing parameters");
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Missing parameters",
+      );
     }
 
     const db = admin.firestore();
@@ -47,8 +50,14 @@ export const generatePageMetadata = functions.https.onCall(
 
       // Fetch service and location data
       const serviceDoc = await db.collection("services").doc(serviceId).get();
-      const locationDoc = await db.collection("locations").doc(locationId).get();
-      const contentDoc = await db.collection("service_content").doc(contentId).get();
+      const locationDoc = await db
+        .collection("locations")
+        .doc(locationId)
+        .get();
+      const contentDoc = await db
+        .collection("service_content")
+        .doc(contentId)
+        .get();
 
       if (!serviceDoc.exists || !locationDoc.exists || !contentDoc.exists) {
         throw new functions.https.HttpsError("not-found", "Missing data");
@@ -65,7 +74,13 @@ export const generatePageMetadata = functions.https.onCall(
         ogImage: generateOGImage(websiteId, service.name),
         twitterImage: generateOGImage(websiteId, service.name),
         canonical: generateCanonical(websiteId, serviceId, locationId),
-        breadcrumbs: generateBreadcrumbs(websiteId, serviceId, locationId, service.name, location.name),
+        breadcrumbs: generateBreadcrumbs(
+          websiteId,
+          serviceId,
+          locationId,
+          service.name,
+          location.name,
+        ),
         structuredData: content.schema,
       };
 
@@ -84,9 +99,12 @@ export const generatePageMetadata = functions.https.onCall(
       };
     } catch (error) {
       functions.logger.error("Error generating metadata:", error);
-      throw new functions.https.HttpsError("internal", `Metadata generation failed: ${error}`);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Metadata generation failed: ${error}`,
+      );
     }
-  }
+  },
 );
 
 /**
@@ -102,14 +120,17 @@ export const buildStaticPages = functions.https.onCall(
     const { websiteId, maxPages = 100 } = data;
 
     if (!websiteId) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing websiteId");
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Missing websiteId",
+      );
     }
 
     const db = admin.firestore();
 
     try {
       functions.logger.info(
-        `Starting page build for ${websiteId} (max ${maxPages} pages)`
+        `Starting page build for ${websiteId} (max ${maxPages} pages)`,
       );
 
       // Get approved content
@@ -138,7 +159,7 @@ export const buildStaticPages = functions.https.onCall(
             serviceId,
             locationId,
             content,
-            metadata
+            metadata,
           );
 
           // In production, would write to file system or trigger build
@@ -162,13 +183,11 @@ export const buildStaticPages = functions.https.onCall(
             });
 
           generatedPages++;
-          functions.logger.debug(
-            `Generated page: ${serviceId}/${locationId}`
-          );
+          functions.logger.debug(`Generated page: ${serviceId}/${locationId}`);
         } catch (error) {
           functions.logger.error(
             `Failed to generate ${serviceId}/${locationId}:`,
-            error
+            error,
           );
           failedPages++;
         }
@@ -184,9 +203,12 @@ export const buildStaticPages = functions.https.onCall(
       };
     } catch (error) {
       functions.logger.error("Error building pages:", error);
-      throw new functions.https.HttpsError("internal", `Page build failed: ${error}`);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Page build failed: ${error}`,
+      );
     }
-  }
+  },
 );
 
 /**
@@ -196,7 +218,7 @@ function generateAstroComponent(
   serviceId: string,
   locationId: string,
   content: ServiceContent,
-  metadata: Record<string, unknown>
+  metadata: Record<string, unknown>,
 ): string {
   const canonicalUrl = (metadata.canonical as string) || "/";
   const breadcrumbs = (metadata.breadcrumbs as any[]) || [];
@@ -210,7 +232,7 @@ const metaTags = generateMetaTags({
   title: "${content.title.replace(/"/g, '\\"')}",
   description: "${content.metaDescription.replace(/"/g, '\\"')}",
   canonical: "${canonicalUrl}",
-  ogImage: "${metadata.ogImage || '/images/og-default.svg'}",
+  ogImage: "${metadata.ogImage || "/images/og-default.svg"}",
 });
 
 const breadcrumbSchema = {
@@ -224,7 +246,7 @@ const breadcrumbSchema = {
       "position": ${idx + 1},
       "name": "${item.name}",
       "item": "${item.url}"
-    }`
+    }`,
       )
       .join(",\n    ")}
   ]
@@ -238,7 +260,8 @@ const breadcrumbSchema = {
       <ol class="flex text-sm text-gray-600">
         ${breadcrumbs
           .map(
-            (item: any) => `<li><a href="${item.url}" class="hover:text-blue-600">${item.name}</a> <span class="mx-2">/</span></li>`
+            (item: any) =>
+              `<li><a href="${item.url}" class="hover:text-blue-600">${item.name}</a> <span class="mx-2">/</span></li>`,
           )
           .join("\n        ")}
       </ol>
@@ -257,7 +280,8 @@ const breadcrumbSchema = {
     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
       ${content.internalLinks
         .map(
-          (link: string) => `<a href="${link}" class="text-blue-600 hover:underline">Related Service</a>`
+          (link: string) =>
+            `<a href="${link}" class="text-blue-600 hover:underline">Related Service</a>`,
         )
         .join("\n      ")}
     </div>
@@ -301,12 +325,13 @@ function generateOGImage(websiteId: string, serviceName: string): string {
     .replace(/\s+/g, "-")
     .replace(/[^a-z0-9-]/g, "");
 
-  const serviceType = {
-    airport: "airport-services",
-    corporate: "corporate-services",
-    wedding: "wedding-services",
-    partyBus: "party-bus-services",
-  }[websiteId] || "services";
+  const serviceType =
+    {
+      airport: "airport-services",
+      corporate: "corporate-services",
+      wedding: "wedding-services",
+      partyBus: "party-bus-services",
+    }[websiteId] || "services";
 
   return `/images/og-${serviceType}.svg`;
 }
@@ -317,14 +342,15 @@ function generateOGImage(websiteId: string, serviceName: string): string {
 function generateCanonical(
   websiteId: string,
   serviceId: string,
-  locationId: string
+  locationId: string,
 ): string {
-  const domain = {
-    airport: "https://chicagoairportblackcar.web.app",
-    corporate: "https://chicagoexecutivecarservice.web.app",
-    wedding: "https://chicagoweddingtransportation.web.app",
-    partyBus: "https://chicago-partybus.web.app",
-  }[websiteId] || "https://royalcarriagelimousine.com";
+  const domain =
+    {
+      airport: "https://chicagoairportblackcar.web.app",
+      corporate: "https://chicagoexecutivecarservice.web.app",
+      wedding: "https://chicagoweddingtransportation.web.app",
+      partyBus: "https://chicago-partybus.web.app",
+    }[websiteId] || "https://royalcarriagelimousine.com";
 
   return `${domain}/${serviceId}/${locationId}`;
 }
@@ -337,14 +363,15 @@ function generateBreadcrumbs(
   serviceId: string,
   locationId: string,
   serviceName: string,
-  locationName: string
+  locationName: string,
 ): Array<{ name: string; url: string }> {
-  const baseDomain = {
-    airport: "https://chicagoairportblackcar.web.app",
-    corporate: "https://chicagoexecutivecarservice.web.app",
-    wedding: "https://chicagoweddingtransportation.web.app",
-    partyBus: "https://chicago-partybus.web.app",
-  }[websiteId] || "https://royalcarriagelimousine.com";
+  const baseDomain =
+    {
+      airport: "https://chicagoairportblackcar.web.app",
+      corporate: "https://chicagoexecutivecarservice.web.app",
+      wedding: "https://chicagoweddingtransportation.web.app",
+      partyBus: "https://chicago-partybus.web.app",
+    }[websiteId] || "https://royalcarriagelimousine.com";
 
   return [
     { name: "Home", url: baseDomain },
@@ -366,7 +393,10 @@ export const publishPages = functions.https.onCall(async (data, context) => {
   const { websiteId } = data;
 
   if (!websiteId) {
-    throw new functions.https.HttpsError("invalid-argument", "Missing websiteId");
+    throw new functions.https.HttpsError(
+      "invalid-argument",
+      "Missing websiteId",
+    );
   }
 
   const db = admin.firestore();
@@ -402,7 +432,10 @@ export const publishPages = functions.https.onCall(async (data, context) => {
     };
   } catch (error) {
     functions.logger.error("Error publishing pages:", error);
-    throw new functions.https.HttpsError("internal", `Publishing failed: ${error}`);
+    throw new functions.https.HttpsError(
+      "internal",
+      `Publishing failed: ${error}`,
+    );
   }
 });
 

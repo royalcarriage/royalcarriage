@@ -18,17 +18,28 @@ const adminOut = path.join(root, "apps", "admin", "out", "index.html");
 if (fs.existsSync(adminOut)) {
   pass("Admin build", "apps/admin/out exists");
 } else {
-  fail("Admin build", "apps/admin/out missing, run npm run build in apps/admin");
+  fail(
+    "Admin build",
+    "apps/admin/out missing, run npm run build in apps/admin",
+  );
 }
 
 // Check firebase.json mapping
 try {
-  const firebase = JSON.parse(fs.readFileSync(path.join(root, "firebase.json"), "utf8"));
+  const firebase = JSON.parse(
+    fs.readFileSync(path.join(root, "firebase.json"), "utf8"),
+  );
   const adminHosting = firebase.hosting?.find((h) => h.target === "admin");
   if (adminHosting?.public === "apps/admin/out") {
-    pass("Hosting output alignment", "firebase.json points admin to apps/admin/out");
+    pass(
+      "Hosting output alignment",
+      "firebase.json points admin to apps/admin/out",
+    );
   } else {
-    fail("Hosting output alignment", "firebase.json admin public does not match apps/admin/out");
+    fail(
+      "Hosting output alignment",
+      "firebase.json admin public does not match apps/admin/out",
+    );
   }
 } catch {
   fail("Hosting output alignment", "Could not parse firebase.json");

@@ -6,91 +6,96 @@
 // Define all possible permissions in the system
 export const Permissions = {
   // Vehicle permissions
-  VEHICLES_VIEW: 'vehicles:view',
-  VEHICLES_CREATE: 'vehicles:create',
-  VEHICLES_UPDATE: 'vehicles:update',
-  VEHICLES_DELETE: 'vehicles:delete',
-  VEHICLES_MANAGE: 'vehicles:manage',
+  VEHICLES_VIEW: "vehicles:view",
+  VEHICLES_CREATE: "vehicles:create",
+  VEHICLES_UPDATE: "vehicles:update",
+  VEHICLES_DELETE: "vehicles:delete",
+  VEHICLES_MANAGE: "vehicles:manage",
 
   // Driver permissions
-  DRIVERS_VIEW: 'drivers:view',
-  DRIVERS_CREATE: 'drivers:create',
-  DRIVERS_UPDATE: 'drivers:update',
-  DRIVERS_DELETE: 'drivers:delete',
-  DRIVERS_MANAGE: 'drivers:manage',
-  DRIVERS_PROFILES_MANAGE: 'drivers:profiles:manage',
+  DRIVERS_VIEW: "drivers:view",
+  DRIVERS_CREATE: "drivers:create",
+  DRIVERS_UPDATE: "drivers:update",
+  DRIVERS_DELETE: "drivers:delete",
+  DRIVERS_MANAGE: "drivers:manage",
+  DRIVERS_PROFILES_MANAGE: "drivers:profiles:manage",
 
   // Vehicle assignment permissions
-  VEHICLE_ASSIGNMENTS_VIEW: 'vehicle_assignments:view',
-  VEHICLE_ASSIGNMENTS_CREATE: 'vehicle_assignments:create',
-  VEHICLE_ASSIGNMENTS_UPDATE: 'vehicle_assignments:update',
-  VEHICLE_ASSIGNMENTS_DELETE: 'vehicle_assignments:delete',
+  VEHICLE_ASSIGNMENTS_VIEW: "vehicle_assignments:view",
+  VEHICLE_ASSIGNMENTS_CREATE: "vehicle_assignments:create",
+  VEHICLE_ASSIGNMENTS_UPDATE: "vehicle_assignments:update",
+  VEHICLE_ASSIGNMENTS_DELETE: "vehicle_assignments:delete",
 
   // Vehicle issues/status permissions
-  VEHICLE_ISSUES_VIEW: 'vehicle_issues:view',
-  VEHICLE_ISSUES_CREATE: 'vehicle_issues:create',
-  VEHICLE_ISSUES_UPDATE: 'vehicle_issues:update',
-  VEHICLE_ISSUES_DELETE: 'vehicle_issues:delete',
-  VEHICLE_ISSUES_REPORT: 'vehicle_issues:report',
+  VEHICLE_ISSUES_VIEW: "vehicle_issues:view",
+  VEHICLE_ISSUES_CREATE: "vehicle_issues:create",
+  VEHICLE_ISSUES_UPDATE: "vehicle_issues:update",
+  VEHICLE_ISSUES_DELETE: "vehicle_issues:delete",
+  VEHICLE_ISSUES_REPORT: "vehicle_issues:report",
 
   // Fleet management permissions
-  FLEET_VIEW: 'fleet:view',
-  FLEET_MANAGE: 'fleet:manage',
+  FLEET_VIEW: "fleet:view",
+  FLEET_MANAGE: "fleet:manage",
 
   // Accounting permissions
-  ACCOUNTING_VIEW: 'accounting:view',
-  ACCOUNTING_IMPORT_CSV: 'accounting:import_csv',
-  ACCOUNTING_EXPORT: 'accounting:export',
+  ACCOUNTING_VIEW: "accounting:view",
+  ACCOUNTING_IMPORT_CSV: "accounting:import_csv",
+  ACCOUNTING_EXPORT: "accounting:export",
 
   // Receipt permissions
-  RECEIPTS_VIEW: 'receipts:view',
-  RECEIPTS_UPLOAD: 'receipts:upload',
-  RECEIPTS_DELETE: 'receipts:delete',
+  RECEIPTS_VIEW: "receipts:view",
+  RECEIPTS_UPLOAD: "receipts:upload",
+  RECEIPTS_DELETE: "receipts:delete",
 
   // Refund permissions
-  REFUNDS_VIEW: 'refunds:view',
-  REFUNDS_REPORT: 'refunds:report',
-  REFUNDS_APPROVE: 'refunds:approve',
+  REFUNDS_VIEW: "refunds:view",
+  REFUNDS_REPORT: "refunds:report",
+  REFUNDS_APPROVE: "refunds:approve",
 
   // Deduction permissions
-  DEDUCTIONS_VIEW: 'deductions:view',
-  DEDUCTIONS_CREATE: 'deductions:create',
-  DEDUCTIONS_UPDATE: 'deductions:update',
-  DEDUCTIONS_DELETE: 'deductions:delete',
+  DEDUCTIONS_VIEW: "deductions:view",
+  DEDUCTIONS_CREATE: "deductions:create",
+  DEDUCTIONS_UPDATE: "deductions:update",
+  DEDUCTIONS_DELETE: "deductions:delete",
 
   // Organization permissions
-  ORGANIZATION_VIEW: 'organization:view',
-  ORGANIZATION_UPDATE: 'organization:update',
-  ORGANIZATION_MANAGE_USERS: 'organization:manage_users',
+  ORGANIZATION_VIEW: "organization:view",
+  ORGANIZATION_UPDATE: "organization:update",
+  ORGANIZATION_MANAGE_USERS: "organization:manage_users",
 
   // User management permissions
-  USERS_VIEW: 'users:view',
-  USERS_CREATE: 'users:create',
-  USERS_UPDATE: 'users:update',
-  USERS_DELETE: 'users:delete',
-  USERS_ASSIGN_ROLES: 'users:assign_roles',
+  USERS_VIEW: "users:view",
+  USERS_CREATE: "users:create",
+  USERS_UPDATE: "users:update",
+  USERS_DELETE: "users:delete",
+  USERS_ASSIGN_ROLES: "users:assign_roles",
 
   // SaaS Admin permissions
-  SAAS_VIEW_ALL_ORGANIZATIONS: 'saas:view_all_organizations',
-  SAAS_MANAGE_ORGANIZATIONS: 'saas:manage_organizations',
-  SAAS_VIEW_ALL_DATA: 'saas:view_all_data',
+  SAAS_VIEW_ALL_ORGANIZATIONS: "saas:view_all_organizations",
+  SAAS_MANAGE_ORGANIZATIONS: "saas:manage_organizations",
+  SAAS_VIEW_ALL_DATA: "saas:view_all_data",
 
   // AI Chat permissions
-  AI_CHAT_ACCESS: 'ai_chat:access',
-  AI_CHAT_VIEW_SENSITIVE_DATA: 'ai_chat:view_sensitive_data',
+  AI_CHAT_ACCESS: "ai_chat:access",
+  AI_CHAT_VIEW_SENSITIVE_DATA: "ai_chat:view_sensitive_data",
 } as const;
 
 export type Permission = (typeof Permissions)[keyof typeof Permissions];
 
 // Define all roles in the system
-export type Role = 'dispatcher' | 'accountant' | 'fleet_manager' | 'admin' | 'saas_admin';
+export type Role =
+  | "dispatcher"
+  | "accountant"
+  | "fleet_manager"
+  | "admin"
+  | "saas_admin";
 
 export const Roles: Record<Role, Role> = {
-  dispatcher: 'dispatcher',
-  accountant: 'accountant',
-  fleet_manager: 'fleet_manager',
-  admin: 'admin',
-  saas_admin: 'saas_admin',
+  dispatcher: "dispatcher",
+  accountant: "accountant",
+  fleet_manager: "fleet_manager",
+  admin: "admin",
+  saas_admin: "saas_admin",
 } as const;
 
 // Role hierarchy - higher roles inherit permissions from lower roles
@@ -321,7 +326,7 @@ export function getAssignableRoles(userRole: Role): Role[] {
 
 // For admin, they can assign all roles except saas_admin
 export function getAssignableRolesForAdmin(): Role[] {
-  return ['dispatcher', 'accountant', 'fleet_manager', 'admin'];
+  return ["dispatcher", "accountant", "fleet_manager", "admin"];
 }
 
 // Export permission groups for easier reference

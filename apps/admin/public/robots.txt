@@ -1,0 +1,27 @@
+# Royal Carriage Limousine - Admin Dashboard
+# https://admin.royalcarriagelimo.com
+# This is a private admin dashboard - no crawling allowed
+
+User-agent: *
+Disallow: /
+
+# Block all search engines
+User-agent: Googlebot
+Disallow: /
+
+User-agent: Bingbot
+Disallow: /
+
+User-agent: Slurp
+Disallow: /
+
+User-agent: DuckDuckBot
+Disallow: /
+
+User-agent: Baiduspider
+Disallow: /
+
+User-agent: YandexBot
+Disallow: /
+
+# No sitemap - private site

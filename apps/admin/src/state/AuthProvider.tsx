@@ -13,7 +13,11 @@ import {
   signIn,
   signOutUser,
 } from "../lib/dataStore";
-import { signInWithEmail, registerWithEmail, resetPassword } from "../lib/dataStore";
+import {
+  signInWithEmail,
+  registerWithEmail,
+  resetPassword,
+} from "../lib/dataStore";
 import type { Role, UserProfile, SiteKey } from "../types";
 import { getSiteOptions } from "../lib/dataStore";
 
@@ -58,7 +62,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Safety timeout - if auth doesn't resolve in 5 seconds, proceed anyway
     timeoutId = setTimeout(() => {
       if (mounted) {
-        console.warn("[AuthProvider] Auth state check timed out after 5s, proceeding with current state");
+        console.warn(
+          "[AuthProvider] Auth state check timed out after 5s, proceeding with current state",
+        );
         setReadyWithTimeout();
       }
     }, 5000);
@@ -68,25 +74,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       try {
         if (firebaseUser) {
-          console.log("[AuthProvider] User signed in, email:", firebaseUser.email);
+          console.log(
+            "[AuthProvider] User signed in, email:",
+            firebaseUser.email,
+          );
           try {
             // Add timeout to profile creation (3 seconds max)
             const profile = await Promise.race([
               ensureUserProfile(firebaseUser),
               new Promise<any>((_, reject) =>
-                setTimeout(() => reject(new Error("Profile creation timeout")), 3000)
+                setTimeout(
+                  () => reject(new Error("Profile creation timeout")),
+                  3000,
+                ),
               ),
             ]);
             console.log("[AuthProvider] Profile loaded successfully");
             setUser(profile);
           } catch (profileError) {
-            console.warn("[AuthProvider] Failed to load profile, using basic user info:", profileError);
+            console.warn(
+              "[AuthProvider] Failed to load profile, using basic user info:",
+              profileError,
+            );
             // Use basic user info as fallback
             setUser({
               uid: firebaseUser.uid,
               email: firebaseUser.email || "unknown",
               displayName: firebaseUser.displayName || "",
-              role: firebaseUser.email === "info@royalcarriagelimo.com" ? "superadmin" : "viewer",
+              role:
+                firebaseUser.email === "info@royalcarriagelimo.com"
+                  ? "superadmin"
+                  : "viewer",
               org: "royalcarriage",
               lastLogin: new Date().toISOString(),
             });
@@ -96,7 +114,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(undefined);
         }
       } catch (error) {
-        console.error("[AuthProvider] Unexpected error in auth state change:", error);
+        console.error(
+          "[AuthProvider] Unexpected error in auth state change:",
+          error,
+        );
         setUser(undefined);
       } finally {
         if (mounted) {

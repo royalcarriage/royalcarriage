@@ -3,8 +3,8 @@
  * Content analytics, ROI analysis, competitor benchmarking, custom reports, and trend forecasting
  */
 
-import * as functions from 'firebase-functions/v1';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions/v1";
+import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
@@ -107,7 +107,7 @@ interface CustomReportConfig {
   dimensions: string[];
   filters: Array<{
     field: string;
-    operator: 'eq' | 'gt' | 'lt' | 'gte' | 'lte' | 'contains';
+    operator: "eq" | "gt" | "lt" | "gte" | "lte" | "contains";
     value: string | number;
   }>;
   dateRange: {
@@ -116,7 +116,7 @@ interface CustomReportConfig {
   };
   groupBy?: string;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
   limit?: number;
 }
 
@@ -132,7 +132,7 @@ interface TrendForecast {
     lowerBound: number;
     upperBound: number;
   }>;
-  trend: 'increasing' | 'decreasing' | 'stable' | 'volatile';
+  trend: "increasing" | "decreasing" | "stable" | "volatile";
   trendStrength: number;
   seasonality: {
     detected: boolean;
@@ -172,41 +172,53 @@ export const getContentAnalytics = functions.https.onCall(
   }> => {
     const { websiteId, category, startDate, endDate } = data;
 
-    functions.logger.info('Fetching content analytics', { websiteId, category, startDate, endDate });
+    functions.logger.info("Fetching content analytics", {
+      websiteId,
+      category,
+      startDate,
+      endDate,
+    });
 
     // Build query for content quality scores
-    let contentQuery = db.collection('content_quality_scores') as FirebaseFirestore.Query;
+    let contentQuery = db.collection(
+      "content_quality_scores",
+    ) as FirebaseFirestore.Query;
 
-    if (websiteId && websiteId !== 'all') {
-      contentQuery = contentQuery.where('websiteId', '==', websiteId);
+    if (websiteId && websiteId !== "all") {
+      contentQuery = contentQuery.where("websiteId", "==", websiteId);
     }
 
     const contentSnapshot = await contentQuery.get();
 
     // Build query for content metrics/analytics
-    let metricsQuery = db.collection('content_metrics') as FirebaseFirestore.Query;
+    let metricsQuery = db.collection(
+      "content_metrics",
+    ) as FirebaseFirestore.Query;
 
     if (startDate) {
-      metricsQuery = metricsQuery.where('date', '>=', startDate);
+      metricsQuery = metricsQuery.where("date", ">=", startDate);
     }
     if (endDate) {
-      metricsQuery = metricsQuery.where('date', '<=', endDate);
+      metricsQuery = metricsQuery.where("date", "<=", endDate);
     }
 
     const metricsSnapshot = await metricsQuery.get();
 
     // Process content data
     const contentByCategory: Record<string, any[]> = {};
-    const categoryMetrics: Record<string, {
-      totalViews: number;
-      totalConversions: number;
-      scores: number[];
-      engagements: number[];
-    }> = {};
+    const categoryMetrics: Record<
+      string,
+      {
+        totalViews: number;
+        totalConversions: number;
+        scores: number[];
+        engagements: number[];
+      }
+    > = {};
 
     for (const doc of contentSnapshot.docs) {
       const content = doc.data();
-      const cat = content.serviceId || content.category || 'uncategorized';
+      const cat = content.serviceId || content.category || "uncategorized";
 
       if (category && cat !== category) continue;
 
@@ -244,15 +256,19 @@ export const getContentAnalytics = functions.https.onCall(
 
     for (const [cat, items] of Object.entries(contentByCategory)) {
       const metrics = categoryMetrics[cat];
-      const avgScore = metrics.scores.length > 0
-        ? metrics.scores.reduce((a, b) => a + b, 0) / metrics.scores.length
-        : 0;
-      const avgEngagement = metrics.engagements.length > 0
-        ? metrics.engagements.reduce((a, b) => a + b, 0) / metrics.engagements.length
-        : 0;
-      const conversionRate = metrics.totalViews > 0
-        ? (metrics.totalConversions / metrics.totalViews) * 100
-        : 0;
+      const avgScore =
+        metrics.scores.length > 0
+          ? metrics.scores.reduce((a, b) => a + b, 0) / metrics.scores.length
+          : 0;
+      const avgEngagement =
+        metrics.engagements.length > 0
+          ? metrics.engagements.reduce((a, b) => a + b, 0) /
+            metrics.engagements.length
+          : 0;
+      const conversionRate =
+        metrics.totalViews > 0
+          ? (metrics.totalConversions / metrics.totalViews) * 100
+          : 0;
 
       // Sort for top/low performing
       const sorted = [...items].sort((a, b) => b.score - a.score);
@@ -276,11 +292,14 @@ export const getContentAnalytics = functions.https.onCall(
     }
 
     // Process trends from metrics
-    const trendData: Record<string, { views: number; conversions: number; scores: number[] }> = {};
+    const trendData: Record<
+      string,
+      { views: number; conversions: number; scores: number[] }
+    > = {};
 
     for (const doc of metricsSnapshot.docs) {
       const metric = doc.data();
-      const date = metric.date?.substring(0, 10) || '';
+      const date = metric.date?.substring(0, 10) || "";
 
       if (!trendData[date]) {
         trendData[date] = { views: 0, conversions: 0, scores: [] };
@@ -298,14 +317,19 @@ export const getContentAnalytics = functions.https.onCall(
         date,
         views: data.views,
         conversions: data.conversions,
-        avgScore: data.scores.length > 0
-          ? Math.round((data.scores.reduce((a, b) => a + b, 0) / data.scores.length) * 10) / 10
-          : 0,
+        avgScore:
+          data.scores.length > 0
+            ? Math.round(
+                (data.scores.reduce((a, b) => a + b, 0) / data.scores.length) *
+                  10,
+              ) / 10
+            : 0,
       }))
       .sort((a, b) => a.date.localeCompare(b.date));
 
     const avgQualityScore = totalContent > 0 ? totalScores / totalContent : 0;
-    const overallConversionRate = totalViews > 0 ? (totalConversions / totalViews) * 100 : 0;
+    const overallConversionRate =
+      totalViews > 0 ? (totalConversions / totalViews) * 100 : 0;
 
     return {
       summary: {
@@ -318,7 +342,7 @@ export const getContentAnalytics = functions.https.onCall(
       byCategory: byCategory.sort((a, b) => b.totalPages - a.totalPages),
       trends,
     };
-  }
+  },
 );
 
 // ==================== ROI ANALYSIS ====================
@@ -334,25 +358,28 @@ export const getROIAnalysis = functions.https.onCall(
   }): Promise<ROIMetrics> => {
     const { startDate, endDate, includeProjectedCosts = false } = data;
 
-    functions.logger.info('Calculating ROI analysis', { startDate, endDate });
+    functions.logger.info("Calculating ROI analysis", { startDate, endDate });
 
     // Fetch ad spend data
     const adsSnapshot = await db
-      .collection('metrics')
-      .where('date', '>=', startDate)
-      .where('date', '<=', endDate)
-      .orderBy('date')
+      .collection("metrics")
+      .where("date", ">=", startDate)
+      .where("date", "<=", endDate)
+      .orderBy("date")
       .get();
 
     // Fetch trips/revenue data
     const tripsSnapshot = await db
-      .collection('trips')
-      .where('pickupTime', '>=', startDate)
-      .where('pickupTime', '<=', endDate)
+      .collection("trips")
+      .where("pickupTime", ">=", startDate)
+      .where("pickupTime", "<=", endDate)
       .get();
 
     // Fetch cost configuration
-    const costConfigDoc = await db.collection('settings').doc('cost_config').get();
+    const costConfigDoc = await db
+      .collection("settings")
+      .doc("cost_config")
+      .get();
     const costConfig = costConfigDoc.exists ? costConfigDoc.data() : {};
 
     // Calculate totals
@@ -360,14 +387,18 @@ export const getROIAnalysis = functions.https.onCall(
     let totalRevenue = 0;
     let totalConversions = 0;
 
-    const channelData: Record<string, { spend: number; revenue: number; conversions: number }> = {};
-    const monthlyData: Record<string, { investment: number; revenue: number }> = {};
+    const channelData: Record<
+      string,
+      { spend: number; revenue: number; conversions: number }
+    > = {};
+    const monthlyData: Record<string, { investment: number; revenue: number }> =
+      {};
 
     // Process ad metrics
     for (const doc of adsSnapshot.docs) {
       const metric = doc.data();
-      const month = metric.date?.substring(0, 7) || '';
-      const channel = metric.platform || metric.channel || 'google';
+      const month = metric.date?.substring(0, 7) || "";
+      const channel = metric.platform || metric.channel || "google";
 
       totalAdSpend += metric.spend || metric.adSpend || 0;
       totalConversions += metric.conversions || 0;
@@ -388,18 +419,18 @@ export const getROIAnalysis = functions.https.onCall(
     for (const doc of tripsSnapshot.docs) {
       const trip = doc.data();
       const fare = trip.fare || trip.totalAmount || 0;
-      const month = trip.pickupTime?.substring(0, 7) || '';
-      const source = trip.source || trip.leadSource || 'organic';
+      const month = trip.pickupTime?.substring(0, 7) || "";
+      const source = trip.source || trip.leadSource || "organic";
 
       totalRevenue += fare;
 
       // Attribute revenue to channels
       if (channelData[source]) {
         channelData[source].revenue += fare;
-      } else if (source.includes('google') && channelData['google']) {
-        channelData['google'].revenue += fare;
-      } else if (source.includes('facebook') && channelData['facebook']) {
-        channelData['facebook'].revenue += fare;
+      } else if (source.includes("google") && channelData["google"]) {
+        channelData["google"].revenue += fare;
+      } else if (source.includes("facebook") && channelData["facebook"]) {
+        channelData["facebook"].revenue += fare;
       }
 
       if (monthlyData[month]) {
@@ -412,23 +443,32 @@ export const getROIAnalysis = functions.https.onCall(
     const toolsCost = costConfig?.toolsAndSoftware || 0;
     const laborCost = costConfig?.laborCosts || 0;
 
-    const totalInvestment = totalAdSpend + contentCreationCost + toolsCost + laborCost;
+    const totalInvestment =
+      totalAdSpend + contentCreationCost + toolsCost + laborCost;
     const netProfit = totalRevenue - totalInvestment;
     const roi = totalInvestment > 0 ? netProfit / totalInvestment : 0;
     const roiPercentage = roi * 100;
 
     // Calculate payback period (months to recover investment)
-    const monthlyRevenue = totalRevenue / (Object.keys(monthlyData).length || 1);
-    const paybackPeriod = monthlyRevenue > 0 ? totalInvestment / monthlyRevenue : 0;
+    const monthlyRevenue =
+      totalRevenue / (Object.keys(monthlyData).length || 1);
+    const paybackPeriod =
+      monthlyRevenue > 0 ? totalInvestment / monthlyRevenue : 0;
 
     // Build channel ROI array
     const channelROI = Object.entries(channelData).map(([channel, data]) => ({
       channel,
       spend: Math.round(data.spend * 100) / 100,
       revenue: Math.round(data.revenue * 100) / 100,
-      roi: data.spend > 0 ? Math.round(((data.revenue - data.spend) / data.spend) * 100) / 100 : 0,
+      roi:
+        data.spend > 0
+          ? Math.round(((data.revenue - data.spend) / data.spend) * 100) / 100
+          : 0,
       conversions: data.conversions,
-      cpa: data.conversions > 0 ? Math.round((data.spend / data.conversions) * 100) / 100 : 0,
+      cpa:
+        data.conversions > 0
+          ? Math.round((data.spend / data.conversions) * 100) / 100
+          : 0,
     }));
 
     // Build monthly trend
@@ -437,14 +477,17 @@ export const getROIAnalysis = functions.https.onCall(
         month,
         investment: Math.round(data.investment * 100) / 100,
         revenue: Math.round(data.revenue * 100) / 100,
-        roi: data.investment > 0
-          ? Math.round(((data.revenue - data.investment) / data.investment) * 100) / 100
-          : 0,
+        roi:
+          data.investment > 0
+            ? Math.round(
+                ((data.revenue - data.investment) / data.investment) * 100,
+              ) / 100
+            : 0,
       }))
       .sort((a, b) => a.month.localeCompare(b.month));
 
     // Store ROI analysis for historical tracking
-    await db.collection('roi_analyses').add({
+    await db.collection("roi_analyses").add({
       startDate,
       endDate,
       totalInvestment,
@@ -469,7 +512,7 @@ export const getROIAnalysis = functions.https.onCall(
       channelROI: channelROI.sort((a, b) => b.roi - a.roi),
       monthlyTrend,
     };
-  }
+  },
 );
 
 // ==================== COMPETITOR BENCHMARK ====================
@@ -484,27 +527,33 @@ export const getCompetitorBenchmark = functions.https.onCall(
   }): Promise<CompetitorBenchmark> => {
     const { websiteId, includeHistorical = false } = data;
 
-    functions.logger.info('Fetching competitor benchmark', { websiteId });
+    functions.logger.info("Fetching competitor benchmark", { websiteId });
 
     // Get our content quality data
-    const contentSnapshot = await db.collection('content_quality_scores').get();
+    const contentSnapshot = await db.collection("content_quality_scores").get();
 
     // Get competitor analysis data
     const competitorSnapshot = await db
-      .collection('competitor_analysis')
-      .orderBy('analysisDate', 'desc')
+      .collection("competitor_analysis")
+      .orderBy("analysisDate", "desc")
       .limit(1)
       .get();
 
     // Get site metrics
-    const siteMetricsDoc = await db.collection('settings').doc('site_metrics').get();
+    const siteMetricsDoc = await db
+      .collection("settings")
+      .doc("site_metrics")
+      .get();
     const siteMetrics = siteMetricsDoc.exists ? siteMetricsDoc.data() : {};
 
     // Calculate our metrics
-    const ourScores = contentSnapshot.docs.map(doc => doc.data().overallScore || 0);
-    const ourAvgScore = ourScores.length > 0
-      ? ourScores.reduce((a, b) => a + b, 0) / ourScores.length
-      : 0;
+    const ourScores = contentSnapshot.docs.map(
+      (doc) => doc.data().overallScore || 0,
+    );
+    const ourAvgScore =
+      ourScores.length > 0
+        ? ourScores.reduce((a, b) => a + b, 0) / ourScores.length
+        : 0;
 
     const ourMetrics = {
       avgQualityScore: Math.round(ourAvgScore * 10) / 10,
@@ -519,7 +568,7 @@ export const getCompetitorBenchmark = functions.https.onCall(
       ? competitorSnapshot.docs[0].data()
       : null;
 
-    const competitors: CompetitorBenchmark['competitors'] = [];
+    const competitors: CompetitorBenchmark["competitors"] = [];
 
     if (competitorData?.competitors) {
       for (const comp of competitorData.competitors) {
@@ -528,12 +577,14 @@ export const getCompetitorBenchmark = functions.https.onCall(
           metrics: {
             estimatedTraffic: comp.metrics?.estimatedTraffic || 0,
             pageCount: comp.topKeywords?.length || 0,
-            contentQuality: comp.metrics?.contentQuality || 'Unknown',
+            contentQuality: comp.metrics?.contentQuality || "Unknown",
             conversionRate: comp.metrics?.conversionRate || 0,
           },
           comparison: {
-            trafficDiff: ourMetrics.estimatedTraffic - (comp.metrics?.estimatedTraffic || 0),
-            qualityDiff: ourMetrics.avgQualityScore > 70 ? 'Higher' : 'Lower',
+            trafficDiff:
+              ourMetrics.estimatedTraffic -
+              (comp.metrics?.estimatedTraffic || 0),
+            qualityDiff: ourMetrics.avgQualityScore > 70 ? "Higher" : "Lower",
             contentGap: ourMetrics.totalPages - (comp.topKeywords?.length || 0),
           },
         });
@@ -541,58 +592,79 @@ export const getCompetitorBenchmark = functions.https.onCall(
     }
 
     // Calculate industry averages (from competitor data)
-    const allCompTraffic = competitors.map(c => c.metrics.estimatedTraffic);
-    const allCompPages = competitors.map(c => c.metrics.pageCount);
+    const allCompTraffic = competitors.map((c) => c.metrics.estimatedTraffic);
+    const allCompPages = competitors.map((c) => c.metrics.pageCount);
 
     const industryAverage = {
       avgQualityScore: 72, // Industry benchmark
-      totalPages: allCompPages.length > 0
-        ? Math.round(allCompPages.reduce((a, b) => a + b, 0) / allCompPages.length)
-        : 50,
-      estimatedTraffic: allCompTraffic.length > 0
-        ? Math.round(allCompTraffic.reduce((a, b) => a + b, 0) / allCompTraffic.length)
-        : 5000,
+      totalPages:
+        allCompPages.length > 0
+          ? Math.round(
+              allCompPages.reduce((a, b) => a + b, 0) / allCompPages.length,
+            )
+          : 50,
+      estimatedTraffic:
+        allCompTraffic.length > 0
+          ? Math.round(
+              allCompTraffic.reduce((a, b) => a + b, 0) / allCompTraffic.length,
+            )
+          : 5000,
       conversionRate: 2.5,
       avgPageSpeed: 3.2,
     };
 
     // Calculate rankings
-    const allTraffic = [...allCompTraffic, ourMetrics.estimatedTraffic].sort((a, b) => b - a);
-    const allPages = [...allCompPages, ourMetrics.totalPages].sort((a, b) => b - a);
+    const allTraffic = [...allCompTraffic, ourMetrics.estimatedTraffic].sort(
+      (a, b) => b - a,
+    );
+    const allPages = [...allCompPages, ourMetrics.totalPages].sort(
+      (a, b) => b - a,
+    );
 
     const rankings = {
       traffic: allTraffic.indexOf(ourMetrics.estimatedTraffic) + 1,
-      quality: ourMetrics.avgQualityScore >= industryAverage.avgQualityScore ? 1 : 2,
+      quality:
+        ourMetrics.avgQualityScore >= industryAverage.avgQualityScore ? 1 : 2,
       contentVolume: allPages.indexOf(ourMetrics.totalPages) + 1,
       overall: 0,
     };
-    rankings.overall = Math.round((rankings.traffic + rankings.quality + rankings.contentVolume) / 3);
+    rankings.overall = Math.round(
+      (rankings.traffic + rankings.quality + rankings.contentVolume) / 3,
+    );
 
     // Generate recommendations
     const recommendations: string[] = [];
 
     if (ourMetrics.avgQualityScore < industryAverage.avgQualityScore) {
-      recommendations.push('Improve content quality scores - currently below industry average');
+      recommendations.push(
+        "Improve content quality scores - currently below industry average",
+      );
     }
     if (ourMetrics.estimatedTraffic < industryAverage.estimatedTraffic) {
-      recommendations.push('Focus on SEO to increase organic traffic');
+      recommendations.push("Focus on SEO to increase organic traffic");
     }
     if (ourMetrics.totalPages < industryAverage.totalPages) {
-      recommendations.push('Create more content pages to expand keyword coverage');
+      recommendations.push(
+        "Create more content pages to expand keyword coverage",
+      );
     }
     if (ourMetrics.conversionRate < industryAverage.conversionRate) {
-      recommendations.push('Optimize landing pages to improve conversion rate');
+      recommendations.push("Optimize landing pages to improve conversion rate");
     }
-    if (competitors.some(c => c.comparison.contentGap < 0)) {
-      recommendations.push('Address content gaps - competitors have more pages');
+    if (competitors.some((c) => c.comparison.contentGap < 0)) {
+      recommendations.push(
+        "Address content gaps - competitors have more pages",
+      );
     }
 
     if (recommendations.length === 0) {
-      recommendations.push('Performance is above industry average - maintain current strategy');
+      recommendations.push(
+        "Performance is above industry average - maintain current strategy",
+      );
     }
 
     // Store benchmark
-    await db.collection('competitor_benchmarks').add({
+    await db.collection("competitor_benchmarks").add({
       ourMetrics,
       industryAverage,
       rankings,
@@ -607,7 +679,7 @@ export const getCompetitorBenchmark = functions.https.onCall(
       rankings,
       recommendations,
     };
-  }
+  },
 );
 
 // ==================== CUSTOM REPORT BUILDER ====================
@@ -616,7 +688,9 @@ export const getCompetitorBenchmark = functions.https.onCall(
  * Generate custom reports based on configuration
  */
 export const generateCustomReport = functions.https.onCall(
-  async (config: CustomReportConfig): Promise<{
+  async (
+    config: CustomReportConfig,
+  ): Promise<{
     reportId: string;
     name: string;
     generatedAt: string;
@@ -625,41 +699,55 @@ export const generateCustomReport = functions.https.onCall(
     summary: Record<string, number>;
     chartData: Array<{ label: string; value: number }>;
   }> => {
-    const { name, metrics, dimensions, filters, dateRange, groupBy, sortBy, sortOrder, limit } = config;
+    const {
+      name,
+      metrics,
+      dimensions,
+      filters,
+      dateRange,
+      groupBy,
+      sortBy,
+      sortOrder,
+      limit,
+    } = config;
 
-    functions.logger.info('Generating custom report', { name, metrics, dimensions });
+    functions.logger.info("Generating custom report", {
+      name,
+      metrics,
+      dimensions,
+    });
 
     // Determine which collection to query based on metrics
     const collectionMap: Record<string, string> = {
-      revenue: 'metrics',
-      adSpend: 'metrics',
-      conversions: 'metrics',
-      impressions: 'metrics',
-      clicks: 'metrics',
-      qualityScore: 'content_quality_scores',
-      pageViews: 'content_metrics',
-      trips: 'trips',
-      bookings: 'trips',
+      revenue: "metrics",
+      adSpend: "metrics",
+      conversions: "metrics",
+      impressions: "metrics",
+      clicks: "metrics",
+      qualityScore: "content_quality_scores",
+      pageViews: "content_metrics",
+      trips: "trips",
+      bookings: "trips",
     };
 
-    const primaryMetric = metrics[0] || 'revenue';
-    const collectionName = collectionMap[primaryMetric] || 'metrics';
+    const primaryMetric = metrics[0] || "revenue";
+    const collectionName = collectionMap[primaryMetric] || "metrics";
 
     // Build query
     let query = db.collection(collectionName) as FirebaseFirestore.Query;
 
     // Apply date range
-    if (dateRange.startDate && collectionName === 'metrics') {
-      query = query.where('date', '>=', dateRange.startDate);
+    if (dateRange.startDate && collectionName === "metrics") {
+      query = query.where("date", ">=", dateRange.startDate);
     }
-    if (dateRange.endDate && collectionName === 'metrics') {
-      query = query.where('date', '<=', dateRange.endDate);
+    if (dateRange.endDate && collectionName === "metrics") {
+      query = query.where("date", "<=", dateRange.endDate);
     }
-    if (dateRange.startDate && collectionName === 'trips') {
-      query = query.where('pickupTime', '>=', dateRange.startDate);
+    if (dateRange.startDate && collectionName === "trips") {
+      query = query.where("pickupTime", ">=", dateRange.startDate);
     }
-    if (dateRange.endDate && collectionName === 'trips') {
-      query = query.where('pickupTime', '<=', dateRange.endDate);
+    if (dateRange.endDate && collectionName === "trips") {
+      query = query.where("pickupTime", "<=", dateRange.endDate);
     }
 
     const snapshot = await query.get();
@@ -674,29 +762,29 @@ export const generateCustomReport = functions.https.onCall(
       // Extract requested metrics
       for (const metric of metrics) {
         switch (metric) {
-          case 'revenue':
+          case "revenue":
             row.revenue = data.revenue || data.fare || data.totalAmount || 0;
             break;
-          case 'adSpend':
+          case "adSpend":
             row.adSpend = data.spend || data.adSpend || 0;
             break;
-          case 'conversions':
+          case "conversions":
             row.conversions = data.conversions || 0;
             break;
-          case 'impressions':
+          case "impressions":
             row.impressions = data.impressions || 0;
             break;
-          case 'clicks':
+          case "clicks":
             row.clicks = data.clicks || 0;
             break;
-          case 'qualityScore':
+          case "qualityScore":
             row.qualityScore = data.overallScore || 0;
             break;
-          case 'pageViews':
+          case "pageViews":
             row.pageViews = data.views || data.pageViews || 0;
             break;
-          case 'trips':
-          case 'bookings':
+          case "trips":
+          case "bookings":
             row.bookings = 1;
             break;
           default:
@@ -706,7 +794,7 @@ export const generateCustomReport = functions.https.onCall(
 
       // Extract requested dimensions
       for (const dim of dimensions) {
-        row[dim] = data[dim] || data[dim.toLowerCase()] || 'Unknown';
+        row[dim] = data[dim] || data[dim.toLowerCase()] || "Unknown";
       }
 
       results.push(row);
@@ -714,16 +802,25 @@ export const generateCustomReport = functions.https.onCall(
 
     // Apply filters
     for (const filter of filters) {
-      results = results.filter(row => {
+      results = results.filter((row) => {
         const value = row[filter.field];
         switch (filter.operator) {
-          case 'eq': return value === filter.value;
-          case 'gt': return value > filter.value;
-          case 'lt': return value < filter.value;
-          case 'gte': return value >= filter.value;
-          case 'lte': return value <= filter.value;
-          case 'contains': return String(value).toLowerCase().includes(String(filter.value).toLowerCase());
-          default: return true;
+          case "eq":
+            return value === filter.value;
+          case "gt":
+            return value > filter.value;
+          case "lt":
+            return value < filter.value;
+          case "gte":
+            return value >= filter.value;
+          case "lte":
+            return value <= filter.value;
+          case "contains":
+            return String(value)
+              .toLowerCase()
+              .includes(String(filter.value).toLowerCase());
+          default:
+            return true;
         }
       });
     }
@@ -733,7 +830,7 @@ export const generateCustomReport = functions.https.onCall(
       const grouped: Record<string, any> = {};
 
       for (const row of results) {
-        const key = row[groupBy] || 'Unknown';
+        const key = row[groupBy] || "Unknown";
         if (!grouped[key]) {
           grouped[key] = { [groupBy]: key };
           for (const metric of metrics) {
@@ -756,7 +853,7 @@ export const generateCustomReport = functions.https.onCall(
       results.sort((a, b) => {
         const aVal = a[sortBy] || 0;
         const bVal = b[sortBy] || 0;
-        return sortOrder === 'desc' ? bVal - aVal : aVal - bVal;
+        return sortOrder === "desc" ? bVal - aVal : aVal - bVal;
       });
     }
 
@@ -768,19 +865,23 @@ export const generateCustomReport = functions.https.onCall(
     // Calculate summary
     const summary: Record<string, number> = {};
     for (const metric of metrics) {
-      summary[metric] = results.reduce((sum, row) => sum + (row[metric] || 0), 0);
-      summary[`avg_${metric}`] = results.length > 0 ? summary[metric] / results.length : 0;
+      summary[metric] = results.reduce(
+        (sum, row) => sum + (row[metric] || 0),
+        0,
+      );
+      summary[`avg_${metric}`] =
+        results.length > 0 ? summary[metric] / results.length : 0;
     }
     summary.totalRows = results.length;
 
     // Build chart data
-    const chartData = results.slice(0, 10).map(row => ({
-      label: row[groupBy || dimensions[0]] || row.id || 'Unknown',
+    const chartData = results.slice(0, 10).map((row) => ({
+      label: row[groupBy || dimensions[0]] || row.id || "Unknown",
       value: row[metrics[0]] || 0,
     }));
 
     // Store report
-    const reportRef = await db.collection('custom_reports').add({
+    const reportRef = await db.collection("custom_reports").add({
       name,
       config,
       summary,
@@ -797,7 +898,7 @@ export const generateCustomReport = functions.https.onCall(
       summary,
       chartData,
     };
-  }
+  },
 );
 
 // ==================== ANALYTICS TRENDS & FORECASTING ====================
@@ -807,14 +908,23 @@ export const generateCustomReport = functions.https.onCall(
  */
 export const getAnalyticsTrends = functions.https.onCall(
   async (data: {
-    metric: 'revenue' | 'conversions' | 'traffic' | 'qualityScore' | 'bookings';
+    metric: "revenue" | "conversions" | "traffic" | "qualityScore" | "bookings";
     historicalDays?: number;
     forecastDays?: number;
-    granularity?: 'day' | 'week' | 'month';
+    granularity?: "day" | "week" | "month";
   }): Promise<TrendForecast> => {
-    const { metric, historicalDays = 90, forecastDays = 30, granularity = 'day' } = data;
+    const {
+      metric,
+      historicalDays = 90,
+      forecastDays = 30,
+      granularity = "day",
+    } = data;
 
-    functions.logger.info('Calculating analytics trends', { metric, historicalDays, forecastDays });
+    functions.logger.info("Calculating analytics trends", {
+      metric,
+      historicalDays,
+      forecastDays,
+    });
 
     // Calculate date range
     const endDate = new Date();
@@ -822,45 +932,45 @@ export const getAnalyticsTrends = functions.https.onCall(
     startDate.setDate(endDate.getDate() - historicalDays);
 
     // Determine collection and field
-    let collectionName = 'metrics';
-    let valueField = 'revenue';
+    let collectionName = "metrics";
+    let valueField = "revenue";
 
     switch (metric) {
-      case 'revenue':
-        collectionName = 'metrics';
-        valueField = 'revenue';
+      case "revenue":
+        collectionName = "metrics";
+        valueField = "revenue";
         break;
-      case 'conversions':
-        collectionName = 'metrics';
-        valueField = 'conversions';
+      case "conversions":
+        collectionName = "metrics";
+        valueField = "conversions";
         break;
-      case 'traffic':
-        collectionName = 'metrics';
-        valueField = 'impressions';
+      case "traffic":
+        collectionName = "metrics";
+        valueField = "impressions";
         break;
-      case 'qualityScore':
-        collectionName = 'content_quality_scores';
-        valueField = 'overallScore';
+      case "qualityScore":
+        collectionName = "content_quality_scores";
+        valueField = "overallScore";
         break;
-      case 'bookings':
-        collectionName = 'trips';
-        valueField = 'count';
+      case "bookings":
+        collectionName = "trips";
+        valueField = "count";
         break;
     }
 
     // Fetch historical data
     let query = db.collection(collectionName) as FirebaseFirestore.Query;
 
-    if (collectionName === 'metrics') {
+    if (collectionName === "metrics") {
       query = query
-        .where('date', '>=', startDate.toISOString().split('T')[0])
-        .where('date', '<=', endDate.toISOString().split('T')[0])
-        .orderBy('date');
-    } else if (collectionName === 'trips') {
+        .where("date", ">=", startDate.toISOString().split("T")[0])
+        .where("date", "<=", endDate.toISOString().split("T")[0])
+        .orderBy("date");
+    } else if (collectionName === "trips") {
       query = query
-        .where('pickupTime', '>=', startDate.toISOString().split('T')[0])
-        .where('pickupTime', '<=', endDate.toISOString().split('T')[0])
-        .orderBy('pickupTime');
+        .where("pickupTime", ">=", startDate.toISOString().split("T")[0])
+        .where("pickupTime", "<=", endDate.toISOString().split("T")[0])
+        .orderBy("pickupTime");
     }
 
     const snapshot = await query.get();
@@ -870,18 +980,19 @@ export const getAnalyticsTrends = functions.https.onCall(
 
     for (const doc of snapshot.docs) {
       const docData = doc.data();
-      let date = '';
+      let date = "";
       let value = 0;
 
-      if (collectionName === 'trips') {
-        date = docData.pickupTime?.substring(0, 10) || '';
+      if (collectionName === "trips") {
+        date = docData.pickupTime?.substring(0, 10) || "";
         value = 1; // Count trips
-      } else if (collectionName === 'content_quality_scores') {
-        date = docData.scoredAt?.toDate?.()?.toISOString()?.substring(0, 10) ||
-               new Date().toISOString().substring(0, 10);
+      } else if (collectionName === "content_quality_scores") {
+        date =
+          docData.scoredAt?.toDate?.()?.toISOString()?.substring(0, 10) ||
+          new Date().toISOString().substring(0, 10);
         value = docData.overallScore || 0;
       } else {
-        date = docData.date?.substring(0, 10) || '';
+        date = docData.date?.substring(0, 10) || "";
         value = docData[valueField] || 0;
       }
 
@@ -898,9 +1009,10 @@ export const getAnalyticsTrends = functions.https.onCall(
     const historicalData: Array<{ date: string; value: number }> = [];
 
     for (const [date, values] of Object.entries(dailyData)) {
-      const aggregatedValue = metric === 'qualityScore'
-        ? values.reduce((a, b) => a + b, 0) / values.length  // Average for scores
-        : values.reduce((a, b) => a + b, 0);  // Sum for counts
+      const aggregatedValue =
+        metric === "qualityScore"
+          ? values.reduce((a, b) => a + b, 0) / values.length // Average for scores
+          : values.reduce((a, b) => a + b, 0); // Sum for counts
 
       historicalData.push({
         date,
@@ -911,7 +1023,7 @@ export const getAnalyticsTrends = functions.https.onCall(
     historicalData.sort((a, b) => a.date.localeCompare(b.date));
 
     // Calculate trend and forecast using linear regression
-    const values = historicalData.map(d => d.value);
+    const values = historicalData.map((d) => d.value);
     const n = values.length;
 
     if (n < 2) {
@@ -919,16 +1031,19 @@ export const getAnalyticsTrends = functions.https.onCall(
         metric,
         historicalData,
         forecast: [],
-        trend: 'stable',
+        trend: "stable",
         trendStrength: 0,
         seasonality: { detected: false },
-        insights: ['Insufficient data for trend analysis'],
+        insights: ["Insufficient data for trend analysis"],
         confidence: 0,
       };
     }
 
     // Linear regression
-    let sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0;
+    let sumX = 0,
+      sumY = 0,
+      sumXY = 0,
+      sumX2 = 0;
     for (let i = 0; i < n; i++) {
       sumX += i;
       sumY += values[i];
@@ -941,49 +1056,58 @@ export const getAnalyticsTrends = functions.https.onCall(
 
     // Calculate standard deviation for confidence intervals
     const mean = sumY / n;
-    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / n;
+    const variance =
+      values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / n;
     const stdDev = Math.sqrt(variance);
 
     // Determine trend
-    let trend: TrendForecast['trend'] = 'stable';
+    let trend: TrendForecast["trend"] = "stable";
     const trendThreshold = mean * 0.02; // 2% of mean
 
     if (slope > trendThreshold) {
-      trend = 'increasing';
+      trend = "increasing";
     } else if (slope < -trendThreshold) {
-      trend = 'decreasing';
+      trend = "decreasing";
     }
 
     // Check for volatility
     const coeffOfVariation = mean > 0 ? (stdDev / mean) * 100 : 0;
     if (coeffOfVariation > 50) {
-      trend = 'volatile';
+      trend = "volatile";
     }
 
     const trendStrength = Math.min(100, Math.abs(slope / (mean || 1)) * 1000);
 
     // Generate forecast
-    const forecast: TrendForecast['forecast'] = [];
-    const lastDate = new Date(historicalData[historicalData.length - 1]?.date || endDate);
+    const forecast: TrendForecast["forecast"] = [];
+    const lastDate = new Date(
+      historicalData[historicalData.length - 1]?.date || endDate,
+    );
 
     for (let i = 1; i <= forecastDays; i++) {
       const forecastDate = new Date(lastDate);
 
-      if (granularity === 'day') {
+      if (granularity === "day") {
         forecastDate.setDate(forecastDate.getDate() + i);
-      } else if (granularity === 'week') {
-        forecastDate.setDate(forecastDate.getDate() + (i * 7));
+      } else if (granularity === "week") {
+        forecastDate.setDate(forecastDate.getDate() + i * 7);
       } else {
         forecastDate.setMonth(forecastDate.getMonth() + i);
       }
 
       const predicted = intercept + slope * (n + i - 1);
-      const uncertainty = stdDev * Math.sqrt(1 + (1/n) + Math.pow(i - n/2, 2) / (n * variance || 1)) * 1.96;
+      const uncertainty =
+        stdDev *
+        Math.sqrt(1 + 1 / n + Math.pow(i - n / 2, 2) / (n * variance || 1)) *
+        1.96;
 
       forecast.push({
-        date: forecastDate.toISOString().split('T')[0],
+        date: forecastDate.toISOString().split("T")[0],
         predicted: Math.max(0, Math.round(predicted * 100) / 100),
-        lowerBound: Math.max(0, Math.round((predicted - uncertainty) * 100) / 100),
+        lowerBound: Math.max(
+          0,
+          Math.round((predicted - uncertainty) * 100) / 100,
+        ),
         upperBound: Math.round((predicted + uncertainty) * 100) / 100,
       });
     }
@@ -999,46 +1123,69 @@ export const getAnalyticsTrends = functions.https.onCall(
     }
 
     for (let i = 0; i < 7; i++) {
-      weeklyAverages[i] = weeklyCount[i] > 0 ? weeklyAverages[i] / weeklyCount[i] : 0;
+      weeklyAverages[i] =
+        weeklyCount[i] > 0 ? weeklyAverages[i] / weeklyCount[i] : 0;
     }
 
-    const weeklyVariance = weeklyAverages.reduce((sum, avg) => sum + Math.pow(avg - mean, 2), 0) / 7;
-    const seasonalityDetected = weeklyVariance > (variance * 0.1);
+    const weeklyVariance =
+      weeklyAverages.reduce((sum, avg) => sum + Math.pow(avg - mean, 2), 0) / 7;
+    const seasonalityDetected = weeklyVariance > variance * 0.1;
 
-    const peakDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const peakDays = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
     const peakDayIndex = weeklyAverages.indexOf(Math.max(...weeklyAverages));
 
     // Generate insights
     const insights: string[] = [];
 
-    if (trend === 'increasing') {
-      insights.push(`${metric} is trending upward with ${trendStrength.toFixed(0)}% strength`);
-    } else if (trend === 'decreasing') {
-      insights.push(`${metric} is trending downward - investigate potential causes`);
-    } else if (trend === 'volatile') {
-      insights.push(`${metric} shows high volatility - consider stabilization strategies`);
+    if (trend === "increasing") {
+      insights.push(
+        `${metric} is trending upward with ${trendStrength.toFixed(0)}% strength`,
+      );
+    } else if (trend === "decreasing") {
+      insights.push(
+        `${metric} is trending downward - investigate potential causes`,
+      );
+    } else if (trend === "volatile") {
+      insights.push(
+        `${metric} shows high volatility - consider stabilization strategies`,
+      );
     } else {
       insights.push(`${metric} is stable with minimal change`);
     }
 
     if (seasonalityDetected) {
-      insights.push(`Peak performance typically occurs on ${peakDays[peakDayIndex]}s`);
+      insights.push(
+        `Peak performance typically occurs on ${peakDays[peakDayIndex]}s`,
+      );
     }
 
     if (forecast.length > 0) {
       const lastForecast = forecast[forecast.length - 1];
       const currentValue = values[values.length - 1] || 0;
-      const predictedChange = ((lastForecast.predicted - currentValue) / (currentValue || 1)) * 100;
-      insights.push(`Projected ${predictedChange > 0 ? 'increase' : 'decrease'} of ${Math.abs(predictedChange).toFixed(1)}% over next ${forecastDays} ${granularity}s`);
+      const predictedChange =
+        ((lastForecast.predicted - currentValue) / (currentValue || 1)) * 100;
+      insights.push(
+        `Projected ${predictedChange > 0 ? "increase" : "decrease"} of ${Math.abs(predictedChange).toFixed(1)}% over next ${forecastDays} ${granularity}s`,
+      );
     }
 
     // Calculate confidence score
     const dataQualityScore = Math.min(100, (n / historicalDays) * 100);
-    const trendConsistencyScore = trend !== 'volatile' ? 70 : 30;
-    const confidence = Math.round((dataQualityScore + trendConsistencyScore) / 2);
+    const trendConsistencyScore = trend !== "volatile" ? 70 : 30;
+    const confidence = Math.round(
+      (dataQualityScore + trendConsistencyScore) / 2,
+    );
 
     // Store trend analysis
-    await db.collection('trend_analyses').add({
+    await db.collection("trend_analyses").add({
       metric,
       trend,
       trendStrength,
@@ -1055,28 +1202,31 @@ export const getAnalyticsTrends = functions.https.onCall(
       trendStrength: Math.round(trendStrength * 10) / 10,
       seasonality: {
         detected: seasonalityDetected,
-        pattern: seasonalityDetected ? 'weekly' : undefined,
+        pattern: seasonalityDetected ? "weekly" : undefined,
         peakPeriods: seasonalityDetected ? [peakDays[peakDayIndex]] : undefined,
       },
       insights,
       confidence,
     };
-  }
+  },
 );
 
 // ==================== HELPER FUNCTIONS ====================
 
-function getAggregationKey(date: string, granularity: 'day' | 'week' | 'month'): string {
+function getAggregationKey(
+  date: string,
+  granularity: "day" | "week" | "month",
+): string {
   const d = new Date(date);
 
   switch (granularity) {
-    case 'month':
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    case 'week':
+    case "month":
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    case "week":
       const startOfWeek = new Date(d);
       startOfWeek.setDate(d.getDate() - d.getDay());
-      return startOfWeek.toISOString().split('T')[0];
-    case 'day':
+      return startOfWeek.toISOString().split("T")[0];
+    case "day":
     default:
       return date.substring(0, 10);
   }

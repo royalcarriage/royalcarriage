@@ -1,4 +1,5 @@
 # Royal Carriage Fleet Vehicle Catalog
+
 **Complete Specifications & Pricing**
 
 ---
@@ -6,13 +7,16 @@
 ## LUXURY SEDANS
 
 ### 1. Lincoln Continental
+
 **Category**: Sedan | **Capacity**: 3 passengers | **ID**: `lincoln-continental`
 
 **Pricing**:
+
 - Hourly Rate: $85
 - Airport Transfer: $75
 
 **Features**:
+
 - Premium leather interior
 - Wi-Fi connectivity
 - USB charging ports
@@ -28,13 +32,16 @@
 ---
 
 ### 2. Cadillac XTS
+
 **Category**: Sedan | **Capacity**: 3 passengers | **ID**: `cadillac-xts`
 
 **Pricing**:
+
 - Hourly Rate: $80
 - Airport Transfer: $70
 
 **Features**:
+
 - Luxury leather interior
 - Advanced technology package
 - USB and power outlets
@@ -50,13 +57,16 @@
 ---
 
 ### 3. Mercedes-Benz S-Class
+
 **Category**: Sedan | **Capacity**: 3 passengers | **ID**: `mercedes-benz-s-class`
 
 **Pricing**:
+
 - Hourly Rate: $120
 - Airport Transfer: $100
 
 **Features**:
+
 - Premium Nappa leather
 - Advanced MBUX infotainment
 - Heated and ventilated seats
@@ -72,13 +82,16 @@
 ---
 
 ### 4. BMW 7 Series
+
 **Category**: Sedan | **Capacity**: 3 passengers | **ID**: `bmw-7-series`
 
 **Pricing**:
+
 - Hourly Rate: $115
 - Airport Transfer: $95
 
 **Features**:
+
 - Premium leather upholstery
 - iDrive infotainment system
 - Wireless charging
@@ -96,13 +109,16 @@
 ## LUXURY SUVs
 
 ### 5. Cadillac Escalade ESV
+
 **Category**: SUV | **Capacity**: 6 passengers | **ID**: `cadillac-escalade-esv`
 
 **Pricing**:
+
 - Hourly Rate: $130
 - Airport Transfer: $110
 
 **Features**:
+
 - Premium leather seating for 6
 - Rear entertainment system
 - Mini bar setup
@@ -118,13 +134,16 @@
 ---
 
 ### 6. Lincoln Navigator
+
 **Category**: SUV | **Capacity**: 6 passengers | **ID**: `lincoln-navigator`
 
 **Pricing**:
+
 - Hourly Rate: $125
 - Airport Transfer: $105
 
 **Features**:
+
 - Premium leather seating
 - Reclining second-row captain chairs
 - Panoramic moonroof
@@ -140,13 +159,16 @@
 ---
 
 ### 7. Chevrolet Suburban
+
 **Category**: SUV | **Capacity**: 6 passengers | **ID**: `chevrolet-suburban`
 
 **Pricing**:
+
 - Hourly Rate: $110
 - Airport Transfer: $90
 
 **Features**:
+
 - Comfortable seating for 6
 - Extensive cargo capacity (9 bags)
 - Reliable performance
@@ -162,13 +184,16 @@
 ---
 
 ### 8. GMC Yukon Denali
+
 **Category**: SUV | **Capacity**: 6 passengers | **ID**: `gmc-yukon-denali`
 
 **Pricing**:
+
 - Hourly Rate: $120
 - Airport Transfer: $100
 
 **Features**:
+
 - Premium Denali leather
 - Advanced technology suite
 - Bose premium audio
@@ -186,13 +211,16 @@
 ## STRETCH LIMOUSINES
 
 ### 9. Lincoln Stretch Limousine
+
 **Category**: Stretch | **Capacity**: 8-10 passengers | **ID**: `lincoln-stretch-limo`
 
 **Pricing**:
+
 - Hourly Rate: $150
 - Airport Transfer: N/A
 
 **Features**:
+
 - Leather seating for 8-10
 - Full bar with glassware
 - Premium sound system
@@ -211,13 +239,16 @@
 ## EXECUTIVE VANS
 
 ### 10. Mercedes Sprinter Van (14 Passenger)
+
 **Category**: Van | **Capacity**: 14 passengers | **ID**: `mercedes-sprinter-van-14`
 
 **Pricing**:
+
 - Hourly Rate: $140
 - Airport Transfer: $180
 
 **Features**:
+
 - Seating for 14 passengers
 - High roof design
 - Climate control
@@ -233,13 +264,16 @@
 ---
 
 ### 11. Luxury Executive Sprinter (12 Passenger)
+
 **Category**: Van | **Capacity**: 12 passengers | **ID**: `luxury-sprinter-van-12`
 
 **Pricing**:
+
 - Hourly Rate: $180
 - Airport Transfer: $220
 
 **Features**:
+
 - Executive leather seating for 12
 - Wi-Fi connectivity
 - Power outlets at every seat
@@ -257,13 +291,16 @@
 ## PARTY BUSES
 
 ### 12. Full-Size Party Bus (36 Passenger)
+
 **Category**: Party Bus | **Capacity**: 36 passengers | **ID**: `party-bus-36`
 
 **Pricing**:
+
 - Hourly Rate: $250
 - Airport Transfer: N/A
 
 **Features**:
+
 - Seating for 36 passengers
 - LED dance floor lighting
 - Premium sound system
@@ -280,13 +317,16 @@
 ---
 
 ### 13. Mid-Size Party Bus (24 Passenger)
+
 **Category**: Party Bus | **Capacity**: 24 passengers | **ID**: `party-bus-24`
 
 **Pricing**:
+
 - Hourly Rate: $200
 - Airport Transfer: N/A
 
 **Features**:
+
 - Seating for 24 passengers
 - LED lighting system
 - High-quality sound system
@@ -305,13 +345,16 @@
 ## COACH BUSES
 
 ### 14. Full-Size Motor Coach (50+ Passenger)
+
 **Category**: Coach | **Capacity**: 56 passengers | **ID**: `motor-coach-50`
 
 **Pricing**:
+
 - Hourly Rate: $180
 - Airport Transfer: $300
 
 **Features**:
+
 - Seating for 50+ passengers
 - Reclining seats
 - Overhead storage
@@ -331,35 +374,39 @@
 ## PRICING SUMMARY
 
 ### By Category
-| Category | Count | Price Range (Hourly) | Price Range (Airport) |
-|----------|-------|---------------------|----------------------|
-| Sedans | 4 | $80 - $120 | $70 - $100 |
-| SUVs | 4 | $110 - $130 | $90 - $110 |
-| Stretch Limos | 1 | $150 | N/A |
-| Executive Vans | 2 | $140 - $180 | $180 - $220 |
-| Party Buses | 2 | $200 - $250 | N/A |
-| Coach Buses | 1 | $180 | $300 |
+
+| Category       | Count | Price Range (Hourly) | Price Range (Airport) |
+| -------------- | ----- | -------------------- | --------------------- |
+| Sedans         | 4     | $80 - $120           | $70 - $100            |
+| SUVs           | 4     | $110 - $130          | $90 - $110            |
+| Stretch Limos  | 1     | $150                 | N/A                   |
+| Executive Vans | 2     | $140 - $180          | $180 - $220           |
+| Party Buses    | 2     | $200 - $250          | N/A                   |
+| Coach Buses    | 1     | $180                 | $300                  |
 
 ### By Capacity
-| Capacity | Vehicles | Best Use Case |
-|----------|----------|---------------|
-| 3 passengers | 4 sedans | Individual/executive travel |
-| 6 passengers | 4 SUVs | Small group/family travel |
-| 10 passengers | 1 stretch limo | Special events |
-| 12-14 passengers | 2 vans | Group corporate/airport |
-| 24-36 passengers | 2 party buses | Large celebrations |
-| 56 passengers | 1 coach | Large group charters |
+
+| Capacity         | Vehicles       | Best Use Case               |
+| ---------------- | -------------- | --------------------------- |
+| 3 passengers     | 4 sedans       | Individual/executive travel |
+| 6 passengers     | 4 SUVs         | Small group/family travel   |
+| 10 passengers    | 1 stretch limo | Special events              |
+| 12-14 passengers | 2 vans         | Group corporate/airport     |
+| 24-36 passengers | 2 party buses  | Large celebrations          |
+| 56 passengers    | 1 coach        | Large group charters        |
 
 ---
 
 ## AVAILABILITY
 
 **All Vehicles Available:**
+
 - Weekdays: ✓
 - Weekends: ✓
 - 24/7 Service: ✓ (except party buses and stretch limo)
 
 **Party Buses & Stretch Limo:**
+
 - Available weekdays and weekends
 - NOT 24/7 (evening/event service only)
 

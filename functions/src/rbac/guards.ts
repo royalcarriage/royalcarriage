@@ -3,7 +3,7 @@
  * Functions to check if a user can perform specific actions
  */
 
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin";
 import {
   Permission,
   Permissions,
@@ -13,17 +13,17 @@ import {
   getPermissionsForRole,
   isRoleHigherOrEqual,
   RoleHierarchy,
-} from './permissions';
+} from "./permissions";
 
 // Error types for permission failures
 export class PermissionDeniedError extends Error {
   constructor(
     message: string,
     public readonly requiredPermission?: Permission,
-    public readonly userRole?: Role
+    public readonly userRole?: Role,
   ) {
     super(message);
-    this.name = 'PermissionDeniedError';
+    this.name = "PermissionDeniedError";
   }
 }
 
@@ -31,17 +31,17 @@ export class OrganizationAccessError extends Error {
   constructor(
     message: string,
     public readonly userOrganizationId?: string,
-    public readonly targetOrganizationId?: string
+    public readonly targetOrganizationId?: string,
   ) {
     super(message);
-    this.name = 'OrganizationAccessError';
+    this.name = "OrganizationAccessError";
   }
 }
 
 export class AuthenticationError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
@@ -64,7 +64,7 @@ export interface PermissionCheckResult {
  */
 export async function getUserFromFirestore(uid: string): Promise<User | null> {
   const db = admin.firestore();
-  const userDoc = await db.collection('users').doc(uid).get();
+  const userDoc = await db.collection("users").doc(uid).get();
 
   if (!userDoc.exists) {
     return null;
@@ -77,24 +77,24 @@ export async function getUserFromFirestore(uid: string): Promise<User | null> {
  * Verify Firebase Auth token and get user
  */
 export async function verifyAuthAndGetUser(
-  authHeader: string | undefined
+  authHeader: string | undefined,
 ): Promise<User> {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new AuthenticationError('No valid authorization header provided');
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw new AuthenticationError("No valid authorization header provided");
   }
 
-  const token = authHeader.split('Bearer ')[1];
+  const token = authHeader.split("Bearer ")[1];
 
   try {
     const decodedToken = await admin.auth().verifyIdToken(token);
     const user = await getUserFromFirestore(decodedToken.uid);
 
     if (!user) {
-      throw new AuthenticationError('User not found in database');
+      throw new AuthenticationError("User not found in database");
     }
 
     if (!user.isActive) {
-      throw new AuthenticationError('User account is deactivated');
+      throw new AuthenticationError("User account is deactivated");
     }
 
     return user;
@@ -102,7 +102,7 @@ export async function verifyAuthAndGetUser(
     if (error instanceof AuthenticationError) {
       throw error;
     }
-    throw new AuthenticationError('Invalid or expired authentication token');
+    throw new AuthenticationError("Invalid or expired authentication token");
   }
 }
 
@@ -116,14 +116,20 @@ export function hasPermission(user: User, permission: Permission): boolean {
 /**
  * Check if user has any of the specified permissions
  */
-export function hasAnyPermission(user: User, permissions: Permission[]): boolean {
+export function hasAnyPermission(
+  user: User,
+  permissions: Permission[],
+): boolean {
   return permissions.some((permission) => hasPermission(user, permission));
 }
 
 /**
  * Check if user has all of the specified permissions
  */
-export function hasAllPermissions(user: User, permissions: Permission[]): boolean {
+export function hasAllPermissions(
+  user: User,
+  permissions: Permission[],
+): boolean {
   return permissions.every((permission) => hasPermission(user, permission));
 }
 
@@ -132,10 +138,10 @@ export function hasAllPermissions(user: User, permissions: Permission[]): boolea
  */
 export function canAccessOrganization(
   user: User,
-  targetOrganizationId: string
+  targetOrganizationId: string,
 ): boolean {
   // SaaS admin can access all organizations
-  if (user.role === 'saas_admin') {
+  if (user.role === "saas_admin") {
     return true;
   }
 
@@ -153,7 +159,7 @@ export function canManageUser(user: User, targetUser: User): boolean {
   }
 
   // SaaS admin can manage anyone
-  if (user.role === 'saas_admin') {
+  if (user.role === "saas_admin") {
     return true;
   }
 
@@ -181,7 +187,7 @@ export function canAssignRole(user: User, targetRole: Role): boolean {
   }
 
   // SaaS admin can assign any role
-  if (user.role === 'saas_admin') {
+  if (user.role === "saas_admin") {
     return true;
   }
 
@@ -194,7 +200,7 @@ export function canAssignRole(user: User, targetRole: Role): boolean {
  */
 export function requirePermission(
   user: User,
-  permission: Permission
+  permission: Permission,
 ): PermissionCheckResult {
   if (hasPermission(user, permission)) {
     return { allowed: true };
@@ -211,7 +217,7 @@ export function requirePermission(
  */
 export function requireOrganizationAccess(
   user: User,
-  targetOrganizationId: string
+  targetOrganizationId: string,
 ): PermissionCheckResult {
   if (canAccessOrganization(user, targetOrganizationId)) {
     return { allowed: true };
@@ -229,7 +235,7 @@ export function requireOrganizationAccess(
 export function requirePermissionAndOrganizationAccess(
   user: User,
   permission: Permission,
-  targetOrganizationId: string
+  targetOrganizationId: string,
 ): PermissionCheckResult {
   const permissionCheck = requirePermission(user, permission);
   if (!permissionCheck.allowed) {
@@ -266,7 +272,7 @@ export function canManageVehicles(user: User): PermissionCheckResult {
 
   return {
     allowed: false,
-    reason: 'User does not have permission to manage vehicles',
+    reason: "User does not have permission to manage vehicles",
   };
 }
 
@@ -293,7 +299,7 @@ export function canManageDrivers(user: User): PermissionCheckResult {
 
   return {
     allowed: false,
-    reason: 'User does not have permission to manage drivers',
+    reason: "User does not have permission to manage drivers",
   };
 }
 
@@ -397,14 +403,18 @@ export function canManageOrganizations(user: User): PermissionCheckResult {
  */
 export function withPermission<T>(
   permission: Permission,
-  handler: (user: User, data: T) => Promise<unknown>
+  handler: (user: User, data: T) => Promise<unknown>,
 ): (authHeader: string | undefined, data: T) => Promise<unknown> {
   return async (authHeader: string | undefined, data: T) => {
     const user = await verifyAuthAndGetUser(authHeader);
 
     const check = requirePermission(user, permission);
     if (!check.allowed) {
-      throw new PermissionDeniedError(check.reason || 'Permission denied', permission, user.role);
+      throw new PermissionDeniedError(
+        check.reason || "Permission denied",
+        permission,
+        user.role,
+      );
     }
 
     return handler(user, data);
@@ -416,7 +426,7 @@ export function withPermission<T>(
  */
 export function withOrganizationAccess<T extends { organizationId: string }>(
   permission: Permission,
-  handler: (user: User, data: T) => Promise<unknown>
+  handler: (user: User, data: T) => Promise<unknown>,
 ): (authHeader: string | undefined, data: T) => Promise<unknown> {
   return async (authHeader: string | undefined, data: T) => {
     const user = await verifyAuthAndGetUser(authHeader);
@@ -424,11 +434,15 @@ export function withOrganizationAccess<T extends { organizationId: string }>(
     const check = requirePermissionAndOrganizationAccess(
       user,
       permission,
-      data.organizationId
+      data.organizationId,
     );
 
     if (!check.allowed) {
-      throw new PermissionDeniedError(check.reason || 'Permission denied', permission, user.role);
+      throw new PermissionDeniedError(
+        check.reason || "Permission denied",
+        permission,
+        user.role,
+      );
     }
 
     return handler(user, data);
@@ -449,11 +463,11 @@ export async function validateUserExists(uid: string): Promise<User> {
   const user = await getUserFromFirestore(uid);
 
   if (!user) {
-    throw new AuthenticationError('User not found');
+    throw new AuthenticationError("User not found");
   }
 
   if (!user.isActive) {
-    throw new AuthenticationError('User account is deactivated');
+    throw new AuthenticationError("User account is deactivated");
   }
 
   return user;
@@ -465,14 +479,14 @@ export async function validateUserExists(uid: string): Promise<User> {
 export async function validateUserActionPermission(
   requestingUser: User,
   targetUserId: string,
-  requiredPermission: Permission
+  requiredPermission: Permission,
 ): Promise<User> {
   // Check if requesting user has the required permission
   if (!hasPermission(requestingUser, requiredPermission)) {
     throw new PermissionDeniedError(
       `User does not have permission: ${requiredPermission}`,
       requiredPermission,
-      requestingUser.role
+      requestingUser.role,
     );
   }
 
@@ -480,15 +494,15 @@ export async function validateUserActionPermission(
   const targetUser = await getUserFromFirestore(targetUserId);
 
   if (!targetUser) {
-    throw new Error('Target user not found');
+    throw new Error("Target user not found");
   }
 
   // Check organization access
   if (!canAccessOrganization(requestingUser, targetUser.organizationId)) {
     throw new OrganizationAccessError(
-      'Cannot access users from other organizations',
+      "Cannot access users from other organizations",
       requestingUser.organizationId,
-      targetUser.organizationId
+      targetUser.organizationId,
     );
   }
 
@@ -498,9 +512,9 @@ export async function validateUserActionPermission(
     !isRoleHigherOrEqual(requestingUser.role, targetUser.role)
   ) {
     throw new PermissionDeniedError(
-      'Cannot manage users with equal or higher role',
+      "Cannot manage users with equal or higher role",
       requiredPermission,
-      requestingUser.role
+      requestingUser.role,
     );
   }
 

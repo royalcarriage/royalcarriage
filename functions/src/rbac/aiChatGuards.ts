@@ -9,29 +9,29 @@ import {
   Permission,
   Permissions,
   roleHasPermission,
-} from './permissions';
+} from "./permissions";
 
 // Data categories that can be filtered
 export type DataCategory =
-  | 'vehicles'
-  | 'drivers'
-  | 'vehicle_assignments'
-  | 'vehicle_issues'
-  | 'accounting'
-  | 'receipts'
-  | 'refunds'
-  | 'deductions'
-  | 'fleet'
-  | 'users'
-  | 'organization'
-  | 'all_organizations';
+  | "vehicles"
+  | "drivers"
+  | "vehicle_assignments"
+  | "vehicle_issues"
+  | "accounting"
+  | "receipts"
+  | "refunds"
+  | "deductions"
+  | "fleet"
+  | "users"
+  | "organization"
+  | "all_organizations";
 
 // Sensitive field types
 export type SensitiveFieldCategory =
-  | 'financial'
-  | 'personal'
-  | 'internal'
-  | 'administrative';
+  | "financial"
+  | "personal"
+  | "internal"
+  | "administrative";
 
 // Configuration for what each role can access via AI chat
 export interface AIChatAccessConfig {
@@ -47,122 +47,110 @@ export interface AIChatAccessConfig {
 export const AIAccessConfigByRole: Record<Role, AIChatAccessConfig> = {
   dispatcher: {
     allowedDataCategories: [
-      'vehicles',
-      'drivers',
-      'vehicle_assignments',
-      'vehicle_issues',
+      "vehicles",
+      "drivers",
+      "vehicle_assignments",
+      "vehicle_issues",
     ],
     canViewSensitiveData: false,
     sensitiveFieldsAllowed: [],
     canQueryCrossOrganization: false,
     maxResultsPerQuery: 50,
-    allowedQueryTypes: [
-      'list',
-      'search',
-      'status',
-      'availability',
-    ],
+    allowedQueryTypes: ["list", "search", "status", "availability"],
   },
 
   accountant: {
-    allowedDataCategories: [
-      'drivers',
-      'accounting',
-      'receipts',
-      'refunds',
-    ],
+    allowedDataCategories: ["drivers", "accounting", "receipts", "refunds"],
     canViewSensitiveData: true,
-    sensitiveFieldsAllowed: ['financial'],
+    sensitiveFieldsAllowed: ["financial"],
     canQueryCrossOrganization: false,
     maxResultsPerQuery: 100,
-    allowedQueryTypes: [
-      'list',
-      'search',
-      'aggregate',
-      'report',
-      'export',
-    ],
+    allowedQueryTypes: ["list", "search", "aggregate", "report", "export"],
   },
 
   fleet_manager: {
     allowedDataCategories: [
-      'vehicles',
-      'drivers',
-      'vehicle_assignments',
-      'vehicle_issues',
-      'fleet',
-      'deductions',
+      "vehicles",
+      "drivers",
+      "vehicle_assignments",
+      "vehicle_issues",
+      "fleet",
+      "deductions",
     ],
     canViewSensitiveData: true,
-    sensitiveFieldsAllowed: ['personal', 'internal'],
+    sensitiveFieldsAllowed: ["personal", "internal"],
     canQueryCrossOrganization: false,
     maxResultsPerQuery: 100,
-    allowedQueryTypes: [
-      'list',
-      'search',
-      'status',
-      'report',
-      'analytics',
-    ],
+    allowedQueryTypes: ["list", "search", "status", "report", "analytics"],
   },
 
   admin: {
     allowedDataCategories: [
-      'vehicles',
-      'drivers',
-      'vehicle_assignments',
-      'vehicle_issues',
-      'accounting',
-      'receipts',
-      'refunds',
-      'deductions',
-      'fleet',
-      'users',
-      'organization',
+      "vehicles",
+      "drivers",
+      "vehicle_assignments",
+      "vehicle_issues",
+      "accounting",
+      "receipts",
+      "refunds",
+      "deductions",
+      "fleet",
+      "users",
+      "organization",
     ],
     canViewSensitiveData: true,
-    sensitiveFieldsAllowed: ['financial', 'personal', 'internal', 'administrative'],
+    sensitiveFieldsAllowed: [
+      "financial",
+      "personal",
+      "internal",
+      "administrative",
+    ],
     canQueryCrossOrganization: false,
     maxResultsPerQuery: 500,
     allowedQueryTypes: [
-      'list',
-      'search',
-      'aggregate',
-      'report',
-      'analytics',
-      'export',
-      'audit',
+      "list",
+      "search",
+      "aggregate",
+      "report",
+      "analytics",
+      "export",
+      "audit",
     ],
   },
 
   saas_admin: {
     allowedDataCategories: [
-      'vehicles',
-      'drivers',
-      'vehicle_assignments',
-      'vehicle_issues',
-      'accounting',
-      'receipts',
-      'refunds',
-      'deductions',
-      'fleet',
-      'users',
-      'organization',
-      'all_organizations',
+      "vehicles",
+      "drivers",
+      "vehicle_assignments",
+      "vehicle_issues",
+      "accounting",
+      "receipts",
+      "refunds",
+      "deductions",
+      "fleet",
+      "users",
+      "organization",
+      "all_organizations",
     ],
     canViewSensitiveData: true,
-    sensitiveFieldsAllowed: ['financial', 'personal', 'internal', 'administrative'],
+    sensitiveFieldsAllowed: [
+      "financial",
+      "personal",
+      "internal",
+      "administrative",
+    ],
     canQueryCrossOrganization: true,
     maxResultsPerQuery: 1000,
     allowedQueryTypes: [
-      'list',
-      'search',
-      'aggregate',
-      'report',
-      'analytics',
-      'export',
-      'audit',
-      'system',
+      "list",
+      "search",
+      "aggregate",
+      "report",
+      "analytics",
+      "export",
+      "audit",
+      "system",
     ],
   },
 };
@@ -170,42 +158,42 @@ export const AIAccessConfigByRole: Record<Role, AIChatAccessConfig> = {
 // Fields that should be redacted based on sensitivity level
 export const SensitiveFields: Record<SensitiveFieldCategory, string[]> = {
   financial: [
-    'salary',
-    'bankAccount',
-    'accountNumber',
-    'routingNumber',
-    'ssn',
-    'taxId',
-    'payRate',
-    'commission',
-    'bonus',
-    'deductionAmount',
-    'totalEarnings',
-    'netPay',
+    "salary",
+    "bankAccount",
+    "accountNumber",
+    "routingNumber",
+    "ssn",
+    "taxId",
+    "payRate",
+    "commission",
+    "bonus",
+    "deductionAmount",
+    "totalEarnings",
+    "netPay",
   ],
   personal: [
-    'dateOfBirth',
-    'socialSecurityNumber',
-    'driverLicense',
-    'homeAddress',
-    'personalPhone',
-    'emergencyContact',
-    'medicalInfo',
+    "dateOfBirth",
+    "socialSecurityNumber",
+    "driverLicense",
+    "homeAddress",
+    "personalPhone",
+    "emergencyContact",
+    "medicalInfo",
   ],
   internal: [
-    'internalNotes',
-    'performanceScore',
-    'disciplinaryActions',
-    'warnings',
-    'terminationReason',
+    "internalNotes",
+    "performanceScore",
+    "disciplinaryActions",
+    "warnings",
+    "terminationReason",
   ],
   administrative: [
-    'apiKeys',
-    'secretKeys',
-    'passwords',
-    'tokens',
-    'adminNotes',
-    'systemConfig',
+    "apiKeys",
+    "secretKeys",
+    "passwords",
+    "tokens",
+    "adminNotes",
+    "systemConfig",
   ],
 };
 
@@ -228,7 +216,7 @@ export function getAIAccessConfig(user: User): AIChatAccessConfig {
  */
 export function canAIAccessDataCategory(
   user: User,
-  category: DataCategory
+  category: DataCategory,
 ): boolean {
   const config = getAIAccessConfig(user);
   return config.allowedDataCategories.includes(category);
@@ -237,10 +225,7 @@ export function canAIAccessDataCategory(
 /**
  * Check if user can perform a specific query type via AI
  */
-export function canAIPerformQueryType(
-  user: User,
-  queryType: string
-): boolean {
+export function canAIPerformQueryType(user: User, queryType: string): boolean {
   const config = getAIAccessConfig(user);
   return config.allowedQueryTypes.includes(queryType);
 }
@@ -254,7 +239,11 @@ export function getFieldsToRedact(user: User): string[] {
 
   // Collect all sensitive fields that the user cannot see
   for (const [category, fields] of Object.entries(SensitiveFields)) {
-    if (!config.sensitiveFieldsAllowed.includes(category as SensitiveFieldCategory)) {
+    if (
+      !config.sensitiveFieldsAllowed.includes(
+        category as SensitiveFieldCategory,
+      )
+    ) {
       fieldsToRedact.push(...fields);
     }
   }
@@ -267,14 +256,14 @@ export function getFieldsToRedact(user: User): string[] {
  */
 export function redactSensitiveData<T extends Record<string, unknown>>(
   user: User,
-  data: T
+  data: T,
 ): T {
   const fieldsToRedact = getFieldsToRedact(user);
   const redactedData: Record<string, unknown> = { ...data };
 
   for (const field of fieldsToRedact) {
     if (field in redactedData) {
-      redactedData[field] = '[REDACTED]';
+      redactedData[field] = "[REDACTED]";
     }
   }
 
@@ -286,7 +275,7 @@ export function redactSensitiveData<T extends Record<string, unknown>>(
  */
 export function redactSensitiveDataArray<T extends Record<string, unknown>>(
   user: User,
-  dataArray: T[]
+  dataArray: T[],
 ): T[] {
   return dataArray.map((item) => redactSensitiveData(user, item));
 }
@@ -305,7 +294,7 @@ export interface AIQueryResult<T> {
 export function filterAIQueryResults<T extends Record<string, unknown>>(
   user: User,
   results: T[],
-  totalCount: number
+  totalCount: number,
 ): AIQueryResult<T> {
   const config = getAIAccessConfig(user);
   const fieldsToRedact = getFieldsToRedact(user);
@@ -318,7 +307,8 @@ export function filterAIQueryResults<T extends Record<string, unknown>>(
   const redactedResults = redactSensitiveDataArray(user, limitedResults);
 
   // Get allowed fields (all fields minus redacted ones)
-  const allFields = limitedResults.length > 0 ? Object.keys(limitedResults[0]) : [];
+  const allFields =
+    limitedResults.length > 0 ? Object.keys(limitedResults[0]) : [];
   const allowedFields = allFields.filter((f) => !fieldsToRedact.includes(f));
 
   return {
@@ -340,7 +330,7 @@ export interface OrganizationFilter {
 
 export function buildOrganizationFilter(
   user: User,
-  requestedOrgId?: string
+  requestedOrgId?: string,
 ): OrganizationFilter {
   const config = getAIAccessConfig(user);
 
@@ -376,7 +366,7 @@ export interface AIQueryValidationResult {
 
 export function validateAIQueryRequest(
   user: User,
-  request: AIQueryRequest
+  request: AIQueryRequest,
 ): AIQueryValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
@@ -384,7 +374,7 @@ export function validateAIQueryRequest(
 
   // Check AI chat access
   if (!canAccessAIChat(user)) {
-    errors.push('User does not have AI chat access');
+    errors.push("User does not have AI chat access");
     return { valid: false, errors, warnings };
   }
 
@@ -401,7 +391,7 @@ export function validateAIQueryRequest(
   // Check organization access
   if (request.organizationId && !config.canQueryCrossOrganization) {
     if (request.organizationId !== user.organizationId) {
-      errors.push('User cannot query data from other organizations');
+      errors.push("User cannot query data from other organizations");
     }
   }
 
@@ -417,8 +407,8 @@ export function validateAIQueryRequest(
   };
 
   // Add warnings for potential issues
-  if (request.queryType === 'export' && !config.canViewSensitiveData) {
-    warnings.push('Some sensitive fields will be redacted from export');
+  if (request.queryType === "export" && !config.canViewSensitiveData) {
+    warnings.push("Some sensitive fields will be redacted from export");
   }
 
   return {
@@ -439,18 +429,19 @@ export function generateAISystemPromptForRole(user: User): string {
   let prompt = `User Role: ${user.role}\n`;
   prompt += `Organization ID: ${user.organizationId}\n\n`;
 
-  prompt += 'DATA ACCESS RESTRICTIONS:\n';
-  prompt += `- Allowed data categories: ${config.allowedDataCategories.join(', ')}\n`;
-  prompt += `- Allowed query types: ${config.allowedQueryTypes.join(', ')}\n`;
+  prompt += "DATA ACCESS RESTRICTIONS:\n";
+  prompt += `- Allowed data categories: ${config.allowedDataCategories.join(", ")}\n`;
+  prompt += `- Allowed query types: ${config.allowedQueryTypes.join(", ")}\n`;
   prompt += `- Maximum results per query: ${config.maxResultsPerQuery}\n`;
-  prompt += `- Cross-organization queries: ${config.canQueryCrossOrganization ? 'ALLOWED' : 'NOT ALLOWED'}\n`;
+  prompt += `- Cross-organization queries: ${config.canQueryCrossOrganization ? "ALLOWED" : "NOT ALLOWED"}\n`;
 
   if (fieldsToRedact.length > 0) {
     prompt += `\nREDACTED FIELDS (do not display or discuss):\n`;
-    prompt += fieldsToRedact.map((f) => `- ${f}`).join('\n');
+    prompt += fieldsToRedact.map((f) => `- ${f}`).join("\n");
   }
 
-  prompt += '\n\nIMPORTANT: Only provide information that the user is authorized to access based on their role.';
+  prompt +=
+    "\n\nIMPORTANT: Only provide information that the user is authorized to access based on their role.";
 
   return prompt;
 }
@@ -490,13 +481,13 @@ export interface SafeQueryConfig {
     operator: FirebaseFirestore.WhereFilterOp;
     value: unknown;
   }>;
-  orderBy?: { field: string; direction: 'asc' | 'desc' };
+  orderBy?: { field: string; direction: "asc" | "desc" };
   limit?: number;
 }
 
 export function buildSafeQueryParams(
   user: User,
-  config: SafeQueryConfig
+  config: SafeQueryConfig,
 ): SafeQueryConfig {
   const accessConfig = getAIAccessConfig(user);
 
@@ -506,13 +497,13 @@ export function buildSafeQueryParams(
   if (!accessConfig.canQueryCrossOrganization) {
     // Add organization filter if not already present
     const hasOrgFilter = filters.some(
-      (f) => f.field === config.organizationIdField
+      (f) => f.field === config.organizationIdField,
     );
 
     if (!hasOrgFilter) {
       filters.push({
         field: config.organizationIdField,
-        operator: '==',
+        operator: "==",
         value: user.organizationId,
       });
     }
@@ -529,4 +520,3 @@ export function buildSafeQueryParams(
     limit: effectiveLimit,
   };
 }
-

@@ -1,5 +1,11 @@
 import { AdminLayout } from "@/components/layout/AdminLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -13,7 +19,7 @@ import {
   Database,
   Key,
   Globe,
-  Zap
+  Zap,
 } from "lucide-react";
 
 export default function Settings() {
@@ -29,7 +35,9 @@ export default function Settings() {
           <p className="text-gray-600">
             Configure AI services, automation, and system preferences
           </p>
-          <Badge variant="destructive" className="mt-2">Super Admin Only</Badge>
+          <Badge variant="destructive" className="mt-2">
+            Super Admin Only
+          </Badge>
         </div>
 
         <div className="space-y-6">
@@ -66,14 +74,18 @@ export default function Settings() {
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Enable AI Content Generation</p>
-                  <p className="text-sm text-gray-500">Automatically generate content suggestions</p>
+                  <p className="text-sm text-gray-500">
+                    Automatically generate content suggestions
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Enable AI Image Generation</p>
-                  <p className="text-sm text-gray-500">Generate images using Imagen</p>
+                  <p className="text-sm text-gray-500">
+                    Generate images using Imagen
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -95,28 +107,36 @@ export default function Settings() {
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Daily Page Analysis</p>
-                  <p className="text-sm text-gray-500">Runs daily at 2:00 AM PST</p>
+                  <p className="text-sm text-gray-500">
+                    Runs daily at 2:00 AM PST
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Weekly SEO Reports</p>
-                  <p className="text-sm text-gray-500">Runs every Monday at 9:00 AM</p>
+                  <p className="text-sm text-gray-500">
+                    Runs every Monday at 9:00 AM
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Auto-analyze New Pages</p>
-                  <p className="text-sm text-gray-500">Analyze pages when they're created</p>
+                  <p className="text-sm text-gray-500">
+                    Analyze pages when they're created
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Require Manual Approval</p>
-                  <p className="text-sm text-gray-500">Review suggestions before deployment</p>
+                  <p className="text-sm text-gray-500">
+                    Review suggestions before deployment
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -137,7 +157,9 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="session-timeout">Session Timeout (hours)</Label>
+                  <Label htmlFor="session-timeout">
+                    Session Timeout (hours)
+                  </Label>
                   <Input
                     id="session-timeout"
                     type="number"
@@ -158,14 +180,18 @@ export default function Settings() {
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Two-Factor Authentication</p>
-                  <p className="text-sm text-gray-500">Require 2FA for all admin users</p>
+                  <p className="text-sm text-gray-500">
+                    Require 2FA for all admin users
+                  </p>
                 </div>
                 <Switch />
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">IP Whitelisting</p>
-                  <p className="text-sm text-gray-500">Restrict admin access by IP address</p>
+                  <p className="text-sm text-gray-500">
+                    Restrict admin access by IP address
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -179,9 +205,7 @@ export default function Settings() {
                 <Database className="h-5 w-5 text-green-600" />
                 Database Configuration
               </CardTitle>
-              <CardDescription>
-                PostgreSQL and storage settings
-              </CardDescription>
+              <CardDescription>PostgreSQL and storage settings</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -193,13 +217,16 @@ export default function Settings() {
                   defaultValue="••••••••••••••••"
                 />
                 <p className="text-xs text-gray-500">
-                  Currently using memory storage. Connect PostgreSQL for persistent data.
+                  Currently using memory storage. Connect PostgreSQL for
+                  persistent data.
                 </p>
               </div>
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Enable Connection Pooling</p>
-                  <p className="text-sm text-gray-500">Max 10 concurrent connections</p>
+                  <p className="text-sm text-gray-500">
+                    Max 10 concurrent connections
+                  </p>
                 </div>
                 <Switch defaultChecked />
               </div>
@@ -220,10 +247,7 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="ga-id">Google Analytics ID</Label>
-                <Input
-                  id="ga-id"
-                  placeholder="G-XXXXXXXXXX"
-                />
+                <Input id="ga-id" placeholder="G-XXXXXXXXXX" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="firebase-key">Firebase API Key</Label>
@@ -269,7 +293,9 @@ export default function Settings() {
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Maintenance Mode</p>
-                  <p className="text-sm text-gray-500">Display maintenance page to visitors</p>
+                  <p className="text-sm text-gray-500">
+                    Display maintenance page to visitors
+                  </p>
                 </div>
                 <Switch />
               </div>
@@ -309,7 +335,9 @@ export default function Settings() {
               <div className="flex items-center justify-between py-2">
                 <div>
                   <p className="font-medium">Dark Mode</p>
-                  <p className="text-sm text-gray-500">Enable dark theme for admin panel</p>
+                  <p className="text-sm text-gray-500">
+                    Enable dark theme for admin panel
+                  </p>
                 </div>
                 <Switch />
               </div>

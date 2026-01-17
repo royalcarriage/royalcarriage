@@ -3,8 +3,8 @@
  * Time-series trends, cohort analysis, forecasting, custom date ranges, export
  */
 
-import * as functions from 'firebase-functions/v1';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions/v1";
+import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
@@ -17,7 +17,7 @@ interface TrendAnalysis {
   metric: string;
   period: string;
   dataPoints: MetricDataPoint[];
-  trend: 'up' | 'down' | 'stable';
+  trend: "up" | "down" | "stable";
   percentageChange: number;
   average: number;
   min: number;
@@ -50,21 +50,26 @@ interface Forecast {
  */
 export const getMetricTrends = functions.https.onCall(
   async (data: {
-    metric: 'revenue' | 'bookings' | 'adSpend' | 'conversions' | 'roas';
+    metric: "revenue" | "bookings" | "adSpend" | "conversions" | "roas";
     startDate: string;
     endDate: string;
-    granularity?: 'day' | 'week' | 'month';
+    granularity?: "day" | "week" | "month";
   }): Promise<TrendAnalysis> => {
-    const { metric, startDate, endDate, granularity = 'day' } = data;
+    const { metric, startDate, endDate, granularity = "day" } = data;
 
-    functions.logger.info('Fetching metric trends', { metric, startDate, endDate, granularity });
+    functions.logger.info("Fetching metric trends", {
+      metric,
+      startDate,
+      endDate,
+      granularity,
+    });
 
     // Query metrics collection
     const metricsSnapshot = await db
-      .collection('metrics')
-      .where('date', '>=', startDate)
-      .where('date', '<=', endDate)
-      .orderBy('date')
+      .collection("metrics")
+      .where("date", ">=", startDate)
+      .where("date", "<=", endDate)
+      .orderBy("date")
       .get();
 
     const dataPoints: MetricDataPoint[] = [];
@@ -75,19 +80,19 @@ export const getMetricTrends = functions.https.onCall(
       let value = 0;
 
       switch (metric) {
-        case 'revenue':
+        case "revenue":
           value = docData.revenue || 0;
           break;
-        case 'bookings':
+        case "bookings":
           value = docData.bookings || docData.conversions || 0;
           break;
-        case 'adSpend':
+        case "adSpend":
           value = docData.spend || docData.adSpend || 0;
           break;
-        case 'conversions':
+        case "conversions":
           value = docData.conversions || 0;
           break;
-        case 'roas':
+        case "roas":
           const spend = docData.spend || 1;
           value = (docData.revenue || 0) / spend;
           break;
@@ -105,31 +110,35 @@ export const getMetricTrends = functions.https.onCall(
       const sum = values.reduce((a, b) => a + b, 0);
       dataPoints.push({
         date,
-        value: metric === 'roas' ? sum / values.length : sum,
+        value: metric === "roas" ? sum / values.length : sum,
       });
     }
 
     // Calculate trend statistics
     const values = dataPoints.map((dp) => dp.value);
-    const average = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+    const average =
+      values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
     const min = values.length > 0 ? Math.min(...values) : 0;
     const max = values.length > 0 ? Math.max(...values) : 0;
 
     // Calculate trend direction
-    let trend: 'up' | 'down' | 'stable' = 'stable';
+    let trend: "up" | "down" | "stable" = "stable";
     let percentageChange = 0;
 
     if (dataPoints.length >= 2) {
       const firstHalf = dataPoints.slice(0, Math.floor(dataPoints.length / 2));
       const secondHalf = dataPoints.slice(Math.floor(dataPoints.length / 2));
 
-      const firstAvg = firstHalf.reduce((sum, dp) => sum + dp.value, 0) / firstHalf.length;
-      const secondAvg = secondHalf.reduce((sum, dp) => sum + dp.value, 0) / secondHalf.length;
+      const firstAvg =
+        firstHalf.reduce((sum, dp) => sum + dp.value, 0) / firstHalf.length;
+      const secondAvg =
+        secondHalf.reduce((sum, dp) => sum + dp.value, 0) / secondHalf.length;
 
-      percentageChange = firstAvg > 0 ? ((secondAvg - firstAvg) / firstAvg) * 100 : 0;
+      percentageChange =
+        firstAvg > 0 ? ((secondAvg - firstAvg) / firstAvg) * 100 : 0;
 
-      if (percentageChange > 5) trend = 'up';
-      else if (percentageChange < -5) trend = 'down';
+      if (percentageChange > 5) trend = "up";
+      else if (percentageChange < -5) trend = "down";
     }
 
     return {
@@ -142,7 +151,7 @@ export const getMetricTrends = functions.https.onCall(
       min: Math.round(min * 100) / 100,
       max: Math.round(max * 100) / 100,
     };
-  }
+  },
 );
 
 /**
@@ -150,37 +159,50 @@ export const getMetricTrends = functions.https.onCall(
  */
 export const getCohortAnalysis = functions.https.onCall(
   async (data: {
-    cohortType: 'monthly' | 'weekly';
+    cohortType: "monthly" | "weekly";
     startDate: string;
     endDate: string;
   }): Promise<CohortData[]> => {
     const { cohortType, startDate, endDate } = data;
 
-    functions.logger.info('Running cohort analysis', { cohortType, startDate, endDate });
+    functions.logger.info("Running cohort analysis", {
+      cohortType,
+      startDate,
+      endDate,
+    });
 
     // Get all trips/bookings with customer data
     const tripsSnapshot = await db
-      .collection('trips')
-      .where('pickupTime', '>=', startDate)
-      .where('pickupTime', '<=', endDate)
-      .orderBy('pickupTime')
+      .collection("trips")
+      .where("pickupTime", ">=", startDate)
+      .where("pickupTime", "<=", endDate)
+      .orderBy("pickupTime")
       .get();
 
     // Group customers by first booking date (cohort)
     const customerCohorts: Record<string, Set<string>> = {};
     const customerFirstBooking: Record<string, string> = {};
-    const customerBookings: Record<string, Array<{ date: string; revenue: number }>> = {};
+    const customerBookings: Record<
+      string,
+      Array<{ date: string; revenue: number }>
+    > = {};
 
     for (const doc of tripsSnapshot.docs) {
       const trip = doc.data();
       const customerId = trip.customerId;
-      const tripDate = trip.pickupTime?.substring(0, cohortType === 'monthly' ? 7 : 10);
+      const tripDate = trip.pickupTime?.substring(
+        0,
+        cohortType === "monthly" ? 7 : 10,
+      );
       const revenue = trip.fare || trip.totalAmount || 0;
 
       if (!customerId || !tripDate) continue;
 
       // Track first booking
-      if (!customerFirstBooking[customerId] || tripDate < customerFirstBooking[customerId]) {
+      if (
+        !customerFirstBooking[customerId] ||
+        tripDate < customerFirstBooking[customerId]
+      ) {
         customerFirstBooking[customerId] = tripDate;
       }
 
@@ -192,7 +214,9 @@ export const getCohortAnalysis = functions.https.onCall(
     }
 
     // Build cohorts
-    for (const [customerId, firstDate] of Object.entries(customerFirstBooking)) {
+    for (const [customerId, firstDate] of Object.entries(
+      customerFirstBooking,
+    )) {
       const cohortKey = firstDate;
       if (!customerCohorts[cohortKey]) {
         customerCohorts[cohortKey] = new Set();
@@ -218,7 +242,10 @@ export const getCohortAnalysis = functions.https.onCall(
         for (const customerId of customers) {
           const bookings = customerBookings[customerId] || [];
           const hasBookingInPeriod = bookings.some((b) => {
-            const bookingPeriod = b.date.substring(0, cohortType === 'monthly' ? 7 : 10);
+            const bookingPeriod = b.date.substring(
+              0,
+              cohortType === "monthly" ? 7 : 10,
+            );
             return bookingPeriod === periodDate;
           });
 
@@ -227,7 +254,8 @@ export const getCohortAnalysis = functions.https.onCall(
           }
         }
 
-        retention[`period_${period}`] = cohortSize > 0 ? (activeInPeriod / cohortSize) * 100 : 0;
+        retention[`period_${period}`] =
+          cohortSize > 0 ? (activeInPeriod / cohortSize) * 100 : 0;
       }
 
       // Calculate LTV
@@ -252,7 +280,7 @@ export const getCohortAnalysis = functions.https.onCall(
     cohortResults.sort((a, b) => a.cohortDate.localeCompare(b.cohortDate));
 
     // Store analysis
-    await db.collection('cohort_analyses').add({
+    await db.collection("cohort_analyses").add({
       cohortType,
       startDate,
       endDate,
@@ -261,7 +289,7 @@ export const getCohortAnalysis = functions.https.onCall(
     });
 
     return cohortResults;
-  }
+  },
 );
 
 /**
@@ -269,13 +297,17 @@ export const getCohortAnalysis = functions.https.onCall(
  */
 export const generateForecast = functions.https.onCall(
   async (data: {
-    metric: 'revenue' | 'bookings' | 'adSpend';
+    metric: "revenue" | "bookings" | "adSpend";
     horizon: number;
     historicalDays?: number;
   }): Promise<Forecast> => {
     const { metric, horizon, historicalDays = 90 } = data;
 
-    functions.logger.info('Generating forecast', { metric, horizon, historicalDays });
+    functions.logger.info("Generating forecast", {
+      metric,
+      horizon,
+      historicalDays,
+    });
 
     // Get historical data
     const endDate = new Date();
@@ -283,10 +315,10 @@ export const generateForecast = functions.https.onCall(
     startDate.setDate(endDate.getDate() - historicalDays);
 
     const metricsSnapshot = await db
-      .collection('metrics')
-      .where('date', '>=', startDate.toISOString().split('T')[0])
-      .where('date', '<=', endDate.toISOString().split('T')[0])
-      .orderBy('date')
+      .collection("metrics")
+      .where("date", ">=", startDate.toISOString().split("T")[0])
+      .where("date", "<=", endDate.toISOString().split("T")[0])
+      .orderBy("date")
       .get();
 
     const historicalData: MetricDataPoint[] = [];
@@ -296,13 +328,13 @@ export const generateForecast = functions.https.onCall(
       let value = 0;
 
       switch (metric) {
-        case 'revenue':
+        case "revenue":
           value = docData.revenue || 0;
           break;
-        case 'bookings':
+        case "bookings":
           value = docData.bookings || docData.conversions || 0;
           break;
-        case 'adSpend':
+        case "adSpend":
           value = docData.spend || docData.adSpend || 0;
           break;
       }
@@ -316,7 +348,8 @@ export const generateForecast = functions.https.onCall(
 
     // Calculate moving average
     const movingAvg =
-      values.slice(-movingAvgWindow).reduce((a, b) => a + b, 0) / movingAvgWindow;
+      values.slice(-movingAvgWindow).reduce((a, b) => a + b, 0) /
+      movingAvgWindow;
 
     // Calculate trend (linear regression slope)
     const n = values.length;
@@ -330,15 +363,17 @@ export const generateForecast = functions.https.onCall(
       sumXY += i * values[i];
       sumX2 += i * i;
     }
-    const slope = n > 1 ? (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) : 0;
+    const slope =
+      n > 1 ? (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX) : 0;
 
     // Calculate standard deviation for confidence intervals
     const mean = values.reduce((a, b) => a + b, 0) / n;
-    const variance = values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / n;
+    const variance =
+      values.reduce((sum, v) => sum + Math.pow(v - mean, 2), 0) / n;
     const stdDev = Math.sqrt(variance);
 
     // Generate predictions
-    const predictions: Forecast['predictions'] = [];
+    const predictions: Forecast["predictions"] = [];
 
     for (let i = 1; i <= horizon; i++) {
       const forecastDate = new Date(endDate);
@@ -348,35 +383,41 @@ export const generateForecast = functions.https.onCall(
       const uncertainty = stdDev * Math.sqrt(i) * 1.96; // 95% confidence
 
       predictions.push({
-        date: forecastDate.toISOString().split('T')[0],
+        date: forecastDate.toISOString().split("T")[0],
         predicted: Math.max(0, Math.round(predicted * 100) / 100),
-        lowerBound: Math.max(0, Math.round((predicted - uncertainty) * 100) / 100),
+        lowerBound: Math.max(
+          0,
+          Math.round((predicted - uncertainty) * 100) / 100,
+        ),
         upperBound: Math.round((predicted + uncertainty) * 100) / 100,
       });
     }
 
     // Calculate forecast confidence based on data quality
     const dataQualityScore = Math.min(100, (historicalData.length / 90) * 100);
-    const trendConsistencyScore = stdDev > 0 ? Math.max(0, 100 - (stdDev / mean) * 100) : 50;
-    const confidence = Math.round((dataQualityScore + trendConsistencyScore) / 2);
+    const trendConsistencyScore =
+      stdDev > 0 ? Math.max(0, 100 - (stdDev / mean) * 100) : 50;
+    const confidence = Math.round(
+      (dataQualityScore + trendConsistencyScore) / 2,
+    );
 
     const forecast: Forecast = {
       metric,
       horizon,
       predictions,
       confidence,
-      method: 'Moving Average with Linear Trend',
+      method: "Moving Average with Linear Trend",
     };
 
     // Store forecast
-    await db.collection('forecasts').add({
+    await db.collection("forecasts").add({
       ...forecast,
       historicalDataPoints: historicalData.length,
       generatedAt: admin.firestore.Timestamp.now(),
     });
 
     return forecast;
-  }
+  },
 );
 
 /**
@@ -387,22 +428,27 @@ export const exportDashboardData = functions.https.onCall(
     metrics: string[];
     startDate: string;
     endDate: string;
-    format: 'csv' | 'json';
+    format: "csv" | "json";
   }) => {
     const { metrics, startDate, endDate, format } = data;
 
-    functions.logger.info('Exporting dashboard data', { metrics, startDate, endDate, format });
+    functions.logger.info("Exporting dashboard data", {
+      metrics,
+      startDate,
+      endDate,
+      format,
+    });
 
     // Gather data from various collections
     const exportData: Record<string, any[]> = {};
 
     // Metrics data
-    if (metrics.includes('ads') || metrics.includes('all')) {
+    if (metrics.includes("ads") || metrics.includes("all")) {
       const adsSnapshot = await db
-        .collection('metrics')
-        .where('date', '>=', startDate)
-        .where('date', '<=', endDate)
-        .orderBy('date')
+        .collection("metrics")
+        .where("date", ">=", startDate)
+        .where("date", "<=", endDate)
+        .orderBy("date")
         .get();
 
       exportData.adsMetrics = adsSnapshot.docs.map((doc) => ({
@@ -412,12 +458,12 @@ export const exportDashboardData = functions.https.onCall(
     }
 
     // Trips data
-    if (metrics.includes('trips') || metrics.includes('all')) {
+    if (metrics.includes("trips") || metrics.includes("all")) {
       const tripsSnapshot = await db
-        .collection('trips')
-        .where('pickupTime', '>=', startDate)
-        .where('pickupTime', '<=', endDate)
-        .orderBy('pickupTime')
+        .collection("trips")
+        .where("pickupTime", ">=", startDate)
+        .where("pickupTime", "<=", endDate)
+        .orderBy("pickupTime")
         .get();
 
       exportData.trips = tripsSnapshot.docs.map((doc) => ({
@@ -427,8 +473,10 @@ export const exportDashboardData = functions.https.onCall(
     }
 
     // Content quality scores
-    if (metrics.includes('content') || metrics.includes('all')) {
-      const contentSnapshot = await db.collection('content_quality_scores').get();
+    if (metrics.includes("content") || metrics.includes("all")) {
+      const contentSnapshot = await db
+        .collection("content_quality_scores")
+        .get();
 
       exportData.contentScores = contentSnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -437,8 +485,10 @@ export const exportDashboardData = functions.https.onCall(
     }
 
     // Competitor analysis
-    if (metrics.includes('competitors') || metrics.includes('all')) {
-      const competitorSnapshot = await db.collection('competitor_analysis').get();
+    if (metrics.includes("competitors") || metrics.includes("all")) {
+      const competitorSnapshot = await db
+        .collection("competitor_analysis")
+        .get();
 
       exportData.competitorAnalysis = competitorSnapshot.docs.map((doc) => ({
         id: doc.id,
@@ -447,7 +497,7 @@ export const exportDashboardData = functions.https.onCall(
     }
 
     // Format output
-    if (format === 'csv') {
+    if (format === "csv") {
       const csvParts: string[] = [];
 
       for (const [collection, data] of Object.entries(exportData)) {
@@ -455,37 +505,40 @@ export const exportDashboardData = functions.https.onCall(
 
         // Get all keys
         const allKeys = new Set<string>();
-        data.forEach((row) => Object.keys(row).forEach((key) => allKeys.add(key)));
+        data.forEach((row) =>
+          Object.keys(row).forEach((key) => allKeys.add(key)),
+        );
         const headers = Array.from(allKeys);
 
         csvParts.push(`# ${collection}`);
-        csvParts.push(headers.join(','));
+        csvParts.push(headers.join(","));
 
         for (const row of data) {
           const values = headers.map((h) => {
             const val = row[h];
-            if (typeof val === 'object') return JSON.stringify(val).replace(/,/g, ';');
-            return String(val || '').replace(/,/g, ';');
+            if (typeof val === "object")
+              return JSON.stringify(val).replace(/,/g, ";");
+            return String(val || "").replace(/,/g, ";");
           });
-          csvParts.push(values.join(','));
+          csvParts.push(values.join(","));
         }
 
-        csvParts.push('');
+        csvParts.push("");
       }
 
       return {
-        format: 'csv',
-        content: csvParts.join('\n'),
+        format: "csv",
+        content: csvParts.join("\n"),
         filename: `dashboard_export_${startDate}_${endDate}.csv`,
       };
     } else {
       return {
-        format: 'json',
+        format: "json",
         content: JSON.stringify(exportData, null, 2),
         filename: `dashboard_export_${startDate}_${endDate}.json`,
       };
     }
-  }
+  },
 );
 
 /**
@@ -495,22 +548,24 @@ export const getDateRangeSummary = functions.https.onCall(
   async (data: { startDate: string; endDate: string }) => {
     const { startDate, endDate } = data;
 
-    functions.logger.info('Getting date range summary', { startDate, endDate });
+    functions.logger.info("Getting date range summary", { startDate, endDate });
 
     // Parallel queries for efficiency
-    const [metricsSnapshot, tripsSnapshot, contentSnapshot] = await Promise.all([
-      db
-        .collection('metrics')
-        .where('date', '>=', startDate)
-        .where('date', '<=', endDate)
-        .get(),
-      db
-        .collection('trips')
-        .where('pickupTime', '>=', startDate)
-        .where('pickupTime', '<=', endDate)
-        .get(),
-      db.collection('content_quality_scores').get(),
-    ]);
+    const [metricsSnapshot, tripsSnapshot, contentSnapshot] = await Promise.all(
+      [
+        db
+          .collection("metrics")
+          .where("date", ">=", startDate)
+          .where("date", "<=", endDate)
+          .get(),
+        db
+          .collection("trips")
+          .where("pickupTime", ">=", startDate)
+          .where("pickupTime", "<=", endDate)
+          .get(),
+        db.collection("content_quality_scores").get(),
+      ],
+    );
 
     // Aggregate metrics
     let totalRevenue = 0;
@@ -529,7 +584,7 @@ export const getDateRangeSummary = functions.https.onCall(
     }
 
     // Aggregate trips
-    let totalTrips = tripsSnapshot.size;
+    const totalTrips = tripsSnapshot.size;
     let totalFare = 0;
 
     for (const doc of tripsSnapshot.docs) {
@@ -538,20 +593,22 @@ export const getDateRangeSummary = functions.https.onCall(
     }
 
     // Aggregate content
-    let totalContent = contentSnapshot.size;
+    const totalContent = contentSnapshot.size;
     let avgQualityScore = 0;
 
     if (totalContent > 0) {
       const totalScore = contentSnapshot.docs.reduce(
         (sum, doc) => sum + (doc.data().overallScore || 0),
-        0
+        0,
       );
       avgQualityScore = totalScore / totalContent;
     }
 
     // Calculate derived metrics
-    const ctr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
-    const conversionRate = totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
+    const ctr =
+      totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+    const conversionRate =
+      totalClicks > 0 ? (totalConversions / totalClicks) * 100 : 0;
     const roas = totalSpend > 0 ? totalRevenue / totalSpend : 0;
     const cpa = totalConversions > 0 ? totalSpend / totalConversions : 0;
 
@@ -571,37 +628,45 @@ export const getDateRangeSummary = functions.https.onCall(
         roas: Math.round(roas * 100) / 100,
         totalTrips,
         totalFare: Math.round(totalFare * 100) / 100,
-        avgFare: totalTrips > 0 ? Math.round((totalFare / totalTrips) * 100) / 100 : 0,
+        avgFare:
+          totalTrips > 0 ? Math.round((totalFare / totalTrips) * 100) / 100 : 0,
       },
       content: {
         totalContent,
         avgQualityScore: Math.round(avgQualityScore * 100) / 100,
       },
     };
-  }
+  },
 );
 
 // Helper functions
-function getAggregationKey(date: string, granularity: 'day' | 'week' | 'month'): string {
+function getAggregationKey(
+  date: string,
+  granularity: "day" | "week" | "month",
+): string {
   const d = new Date(date);
 
   switch (granularity) {
-    case 'month':
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
-    case 'week':
+    case "month":
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    case "week":
       const startOfWeek = new Date(d);
       startOfWeek.setDate(d.getDate() - d.getDay());
-      return startOfWeek.toISOString().split('T')[0];
-    case 'day':
+      return startOfWeek.toISOString().split("T")[0];
+    case "day":
     default:
       return date.substring(0, 10);
   }
 }
 
-function addPeriods(dateStr: string, periods: number, type: 'monthly' | 'weekly'): string {
-  const date = new Date(dateStr + '-01');
+function addPeriods(
+  dateStr: string,
+  periods: number,
+  type: "monthly" | "weekly",
+): string {
+  const date = new Date(dateStr + "-01");
 
-  if (type === 'monthly') {
+  if (type === "monthly") {
     date.setMonth(date.getMonth() + periods);
     return date.toISOString().substring(0, 7);
   } else {

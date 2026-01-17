@@ -1,4 +1,5 @@
 # Royal Carriage - Revised Strategic Plan
+
 ## Comprehensive System Architecture & Implementation Roadmap
 
 **Document Version:** 2.0 (Revised Scope)
@@ -10,6 +11,7 @@
 ## Executive Summary
 
 Royal Carriage is transforming from a basic driver management system into a comprehensive multi-tenant platform that integrates:
+
 - Moovs booking data
 - Google Analytics & Ads
 - AI-powered content generation
@@ -17,6 +19,7 @@ Royal Carriage is transforming from a basic driver management system into a comp
 - Financial analytics & reporting
 
 The system serves three primary user types:
+
 1. **Partners** (vehicle owners) - track earnings, payouts, performance
 2. **Admins** (central control) - manage fleet, analytics, AI generation, finances
 3. **Public Users** - book via 4 public websites with SEO-optimized content
@@ -57,6 +60,7 @@ OpenAI GPT+DALL-E────────────────────▶
 ### 1.2 Architecture Components
 
 #### A. Moovs Integration Engine
+
 - **CSV Import Pipeline**: Idempotent import from Moovs exports
 - **Real-time API Sync**: Hourly polling for new bookings
 - **Data Mapping**: Booking data → Internal database schema
@@ -64,6 +68,7 @@ OpenAI GPT+DALL-E────────────────────▶
 - **Customer Sync**: Customer data from Moovs → Firestore
 
 #### B. Financial Analytics System
+
 - **Vehicle Profitability**: Revenue calculation per vehicle
 - **Partner Revenue Sharing**: Commission/split calculation per partner
 - **Driver Cost Analysis**: Hourly rates, per-booking costs, weekly costs
@@ -73,6 +78,7 @@ OpenAI GPT+DALL-E────────────────────▶
 - **Profit Margin Analysis**: Gross and net margins
 
 #### C. AI Content Generation System
+
 - **Data Ingestion**: GA4 and Google Ads API integration
 - **Behavioral Analysis**: Customer journey, interests, keywords
 - **Content Generation**: Blog posts, service pages, ad copy, product descriptions
@@ -81,6 +87,7 @@ OpenAI GPT+DALL-E────────────────────▶
 - **Content Management**: Version control, approval workflows
 
 #### D. Public Websites (4 Domains)
+
 - **Dynamic Pages**: AI-generated service pages, blog posts
 - **Static Pages**: Homepage, pricing, about, contact
 - **Blog System**: AI-generated posts with manual override capability
@@ -89,6 +96,7 @@ OpenAI GPT+DALL-E────────────────────▶
 - **SEO Optimization**: Structured data (Schema.org), sitemap, robots.txt
 
 #### E. Admin Dashboard (Central Control)
+
 - **Real-time Metrics**: Live bookings, revenue, costs
 - **Financial Reporting**: P&L statements, expense breakdowns
 - **Vehicle Management**: Fleet overview, profitability by vehicle
@@ -99,6 +107,7 @@ OpenAI GPT+DALL-E────────────────────▶
 - **Affiliate Management**: Earnings, payment status, commission rules
 
 #### F. Partner Portal
+
 - **Vehicle Dashboard**: Specific vehicle earnings and costs
 - **Revenue Sharing**: Detailed breakdown of commissions/splits
 - **Payout History**: Payment records and bank details
@@ -172,6 +181,7 @@ EXTERNAL DATA SOURCES
 ### 2.2 Business Process Flows
 
 #### Booking to Revenue Flow
+
 ```
 Moovs → CSV/API → Parse Booking Data
                         │
@@ -195,6 +205,7 @@ Moovs → CSV/API → Parse Booking Data
 ```
 
 #### Content Generation Flow
+
 ```
 GA4 Data + Ads Data
         │
@@ -229,6 +240,7 @@ Push to Public Websites
 **Purpose:** Seamlessly integrate booking and customer data from Moovs into the Royal Carriage system
 
 **Key Features:**
+
 - CSV Import with idempotency (duplicate detection)
 - Real-time API sync (hourly polling)
 - Data transformation and validation
@@ -236,12 +248,14 @@ Push to Public Websites
 - Booking status tracking
 
 **Technical Stack:**
+
 - Cloud Functions (Node.js)
 - Firestore
 - Google Cloud Storage (for CSV staging)
 - Moovs API client library
 
 **Data Flow:**
+
 ```
 CSV File Upload
     ↓
@@ -259,12 +273,14 @@ Update Partner Dashboard
 ```
 
 **Endpoints:**
+
 - `POST /api/moovs/import-csv` - Upload and process CSV
 - `POST /api/moovs/sync-api` - Trigger real-time API sync
 - `GET /api/moovs/import-status/{jobId}` - Check import status
 - `GET /api/moovs/sync-history` - View sync history
 
 **Error Handling:**
+
 - Duplicate detection (by Moovs booking ID)
 - Validation failures logged with details
 - Automatic retry with exponential backoff
@@ -277,6 +293,7 @@ Update Partner Dashboard
 **Purpose:** Deep analysis of profitability, costs, and revenue distribution
 
 **Key Features:**
+
 - Real-time revenue tracking per booking
 - Vehicle-level profitability analysis
 - Partner revenue sharing calculations
@@ -288,6 +305,7 @@ Update Partner Dashboard
 - Cost breakdown (drivers, fuel, maintenance, commissions)
 
 **Technical Stack:**
+
 - Firestore (for data storage)
 - Cloud Functions (for calculations)
 - Firebase Analytics (for reporting)
@@ -296,6 +314,7 @@ Update Partner Dashboard
 **Key Collections:**
 
 **vehicles**
+
 ```json
 {
   "vehicleId": "string",
@@ -313,6 +332,7 @@ Update Partner Dashboard
 ```
 
 **revenue** (per booking)
+
 ```json
 {
   "bookingId": "string",
@@ -329,6 +349,7 @@ Update Partner Dashboard
 ```
 
 **partners_revenue** (aggregated)
+
 ```json
 {
   "partnerId": "string",
@@ -347,6 +368,7 @@ Update Partner Dashboard
 ```
 
 **affiliate_earnings**
+
 ```json
 {
   "affiliateId": "string",
@@ -362,6 +384,7 @@ Update Partner Dashboard
 ```
 
 **Dashboards & Reports:**
+
 - Vehicle Profitability Dashboard: Ranking by profit, utilization
 - Partner Revenue Tracker: Real-time earnings per partner
 - Driver Cost Analysis: Cost per booking, weekly trends
@@ -370,6 +393,7 @@ Update Partner Dashboard
 - Financial Summary: P&L, cash flow, receivables
 
 **Calculations:**
+
 ```
 Partner Revenue = Gross Revenue - Platform Commission
 Net Profit = Partner Revenue - Driver Costs - Vehicle Costs
@@ -385,6 +409,7 @@ Driver Cost Per Booking = (Hourly Rate * Duration) / 60
 **Purpose:** Automatically generate SEO-optimized content based on market data and user behavior
 
 **Key Features:**
+
 - GA4 integration (traffic, conversions, user flow)
 - Google Ads integration (keywords, CTR, conversions)
 - AI content generation (blog posts, service pages, ad copy)
@@ -394,6 +419,7 @@ Driver Cost Per Booking = (Hourly Rate * Duration) / 60
 - A/B testing capabilities
 
 **Technical Stack:**
+
 - OpenAI API (GPT-4 for text, DALL-E for images)
 - Google Analytics API (GA4)
 - Google Ads API
@@ -404,6 +430,7 @@ Driver Cost Per Booking = (Hourly Rate * Duration) / 60
 **Data Integration:**
 
 **GA4 Data Ingestion:**
+
 ```
 Query Endpoints:
 - Page views by URL
@@ -418,6 +445,7 @@ Updated: Daily batch process
 ```
 
 **Google Ads Data Ingestion:**
+
 ```
 Query Endpoints:
 - Campaign performance (impressions, clicks, conversions)
@@ -545,6 +573,7 @@ Updated: Daily batch process
    - Usage: Blog headers, service page hero images, galleries
 
 **ai_content Collection Schema:**
+
 ```json
 {
   "contentId": "uuid",
@@ -593,6 +622,7 @@ Updated: Daily batch process
 **Purpose:** Multi-domain presence with SEO-optimized, dynamic content driven by AI
 
 **Architecture:**
+
 - Single React SPA backend (shared infrastructure)
 - 4 separate domain configurations
 - Dynamic page rendering from /ai_content collection
@@ -623,6 +653,7 @@ Updated: Daily batch process
 **Website Features:**
 
 **Static Pages:**
+
 - Homepage (brand, value prop, CTA)
 - Services overview (vehicle types)
 - Pricing page
@@ -632,6 +663,7 @@ Updated: Daily batch process
 - Privacy policy, Terms
 
 **Dynamic Pages:**
+
 - Service detail pages (generated from AI)
 - Blog post pages (AI-generated content)
 - Vehicle gallery (AI-generated images)
@@ -639,6 +671,7 @@ Updated: Daily batch process
 - Case studies
 
 **Content Management:**
+
 - CMS interface in Admin Dashboard
 - Drag-and-drop page builder
 - Template system
@@ -646,6 +679,7 @@ Updated: Daily batch process
 - Version control (publish/revert)
 
 **Blog System:**
+
 - AI-generated posts
 - Manual posts
 - Categories and tags
@@ -655,6 +689,7 @@ Updated: Daily batch process
 - SEO optimization per post
 
 **Lead Capture:**
+
 - Contact forms (variations per page)
 - Quote request forms
 - Newsletter signup
@@ -663,6 +698,7 @@ Updated: Daily batch process
 - CRM integration (Salesforce/HubSpot)
 
 **SEO Optimization:**
+
 ```
 On-Page:
 - Meta titles (60 chars)
@@ -690,6 +726,7 @@ Link Building:
 ```
 
 **SEO Schema Examples:**
+
 ```json
 {
   "@context": "https://schema.org",
@@ -714,6 +751,7 @@ Link Building:
 ```
 
 **Performance Requirements:**
+
 - Page load time: < 2 seconds
 - Lighthouse score: > 90
 - Mobile responsiveness: 100% coverage
@@ -728,6 +766,7 @@ Link Building:
 **Key Features:**
 
 **Dashboard Home:**
+
 - Real-time KPIs (bookings today, revenue, costs)
 - 7-day/30-day trends
 - Top performing vehicles
@@ -737,6 +776,7 @@ Link Building:
 **Sections:**
 
 **1. Analytics & Reporting**
+
 - Revenue trends (daily, weekly, monthly)
 - Booking volume analysis
 - Cost analysis by category
@@ -747,6 +787,7 @@ Link Building:
 - Export to CSV/PDF
 
 **2. Financial Management**
+
 - P&L statement (monthly/quarterly)
 - Cash flow forecast
 - Expense tracking
@@ -756,6 +797,7 @@ Link Building:
 - Tax summary
 
 **3. Vehicle Management**
+
 - Fleet overview (status, utilization)
 - Individual vehicle details
 - Performance metrics per vehicle
@@ -764,6 +806,7 @@ Link Building:
 - Partner ownership assignments
 
 **4. Partner Management**
+
 - Partner directory
 - Revenue sharing details
 - Payout history and status
@@ -773,6 +816,7 @@ Link Building:
 - Partnership agreements
 
 **5. Driver Management**
+
 - Driver directory
 - Hourly rates
 - Certification/license tracking
@@ -782,6 +826,7 @@ Link Building:
 - Scheduling (if applicable)
 
 **6. AI Content Management**
+
 - Content generation interface
 - Trigger manual generation
 - Queue of pending generation
@@ -792,6 +837,7 @@ Link Building:
 - Manage prompts/templates
 
 **7. Data Integration**
+
 - Google Analytics 4 dashboard
   - Traffic by device, location, source
   - Conversion funnel
@@ -804,6 +850,7 @@ Link Building:
   - Cost per conversion
 
 **8. Affiliate Program**
+
 - Affiliate directory
 - Commission structure management
 - Earnings tracking
@@ -812,6 +859,7 @@ Link Building:
 - Commission rules configuration
 
 **9. Settings & Configuration**
+
 - Business settings
 - Payment method configuration
 - Email notifications
@@ -821,6 +869,7 @@ Link Building:
 - Branding customization
 
 **10. Reports & Exports**
+
 - Standard reports (P&L, Revenue Summary)
 - Custom report builder
 - Scheduled report delivery
@@ -828,6 +877,7 @@ Link Building:
 - API for external tools
 
 **Dashboard Technical Stack:**
+
 - React SPA
 - Material-UI or Chakra UI
 - Charts: Chart.js or Recharts
@@ -1723,6 +1773,7 @@ Link Building:
 ```
 
 **Key Configuration Items:**
+
 - platform_commission_rate: 15% (default)
 - minimum_partner_payout: $100
 - payout_schedule: "monthly"
@@ -1806,6 +1857,7 @@ Total Timeline: 8 weeks
 **Week 1:**
 
 **Day 1-2: Design Integration Architecture**
+
 - Document Moovs API endpoints
 - Design data transformation schema
 - Plan error handling and retry logic
@@ -1813,6 +1865,7 @@ Total Timeline: 8 weeks
 - Create integration flowcharts
 
 **Day 3-4: Build CSV Import Pipeline**
+
 - Cloud Function for CSV parsing
 - Firestore write operations
 - Duplicate detection algorithm
@@ -1821,6 +1874,7 @@ Total Timeline: 8 weeks
 - Testing with sample data
 
 **Day 5: Build Real-time API Sync**
+
 - Implement Moovs API client
 - Hourly sync Cloud Function
 - Polling mechanism with state tracking
@@ -1831,6 +1885,7 @@ Total Timeline: 8 weeks
 **Week 2:**
 
 **Day 1-2: Revenue Mapping**
+
 - Link bookings to vehicles
 - Calculate revenue splits
 - Allocate to partners
@@ -1839,6 +1894,7 @@ Total Timeline: 8 weeks
 - Trigger analytics calculations
 
 **Day 3-4: Integration Testing**
+
 - Test CSV import with real data
 - Test API sync with real bookings
 - Test data consistency
@@ -1847,6 +1903,7 @@ Total Timeline: 8 weeks
 - Performance optimization
 
 **Day 5: Documentation & Deployment**
+
 - API documentation
 - Admin user guide
 - Deployment procedures
@@ -1854,6 +1911,7 @@ Total Timeline: 8 weeks
 - Alert configuration
 
 **Deliverables:**
+
 - CSV import endpoint working
 - Real-time API sync operational
 - /bookings collection populated
@@ -1867,6 +1925,7 @@ Total Timeline: 8 weeks
 **Week 3:**
 
 **Day 1-2: GA4 Integration**
+
 - Set up Google Analytics API
 - Create GA query functions
 - Extract traffic data
@@ -1876,6 +1935,7 @@ Total Timeline: 8 weeks
 - Implement daily sync
 
 **Day 3-4: Google Ads Integration**
+
 - Set up Google Ads API
 - Create Ads query functions
 - Extract campaign performance
@@ -1885,6 +1945,7 @@ Total Timeline: 8 weeks
 - Implement daily sync
 
 **Day 5: Data Analysis Engine**
+
 - Analyze top-performing keywords
 - Identify user behavior patterns
 - Detect content gaps
@@ -1894,6 +1955,7 @@ Total Timeline: 8 weeks
 **Week 4:**
 
 **Day 1-2: GPT-4 Content Generation**
+
 - OpenAI API setup
 - Prompt engineering for blog posts
 - Prompt engineering for service pages
@@ -1902,6 +1964,7 @@ Total Timeline: 8 weeks
 - Store in /ai_content collection
 
 **Day 3: DALL-E Image Generation**
+
 - Image prompt creation
 - DALL-E integration
 - Image storage in Cloud Storage
@@ -1909,6 +1972,7 @@ Total Timeline: 8 weeks
 - Fallback mechanisms
 
 **Day 4: SEO Optimization**
+
 - Meta tag generation
 - Schema.org markup creation
 - Internal linking strategy
@@ -1916,6 +1980,7 @@ Total Timeline: 8 weeks
 - Alt text generation
 
 **Day 5: Content Management Interface**
+
 - Admin dashboard for content generation
 - Approval workflow UI
 - Version control UI
@@ -1923,6 +1988,7 @@ Total Timeline: 8 weeks
 - Scheduling interface
 
 **Deliverables:**
+
 - GA4 sync operational
 - Ads API sync operational
 - GPT-4 generating quality content
@@ -1936,6 +2002,7 @@ Total Timeline: 8 weeks
 **Week 4:**
 
 **Day 1-2: Vehicle Profitability Dashboard**
+
 - Query /revenue collection
 - Calculate profit per vehicle
 - Rank vehicles by profitability
@@ -1944,6 +2011,7 @@ Total Timeline: 8 weeks
 - Export functionality
 
 **Day 3: Partner Revenue Tracking**
+
 - Aggregate revenue by partner
 - Calculate commissions
 - Track payouts
@@ -1952,6 +2020,7 @@ Total Timeline: 8 weeks
 - Payment method management
 
 **Day 4: Driver Cost Analysis**
+
 - Calculate cost per booking
 - Calculate cost per hour
 - Weekly cost trends
@@ -1959,6 +2028,7 @@ Total Timeline: 8 weeks
 - Payroll integration
 
 **Day 5: Fleet Utilization**
+
 - Calculate utilization rate per vehicle
 - Identify underutilized vehicles
 - Identify peak usage times
@@ -1968,6 +2038,7 @@ Total Timeline: 8 weeks
 **Week 5:**
 
 **Day 1-2: Affiliate Program**
+
 - Affiliate directory
 - Earnings tracking per affiliate
 - Commission rules engine
@@ -1975,6 +2046,7 @@ Total Timeline: 8 weeks
 - Payment processing
 
 **Day 3: Receivables Dashboard**
+
 - Track amounts owed to partners
 - Track amounts owed by customers
 - Aging analysis
@@ -1982,6 +2054,7 @@ Total Timeline: 8 weeks
 - Collections management
 
 **Day 4: P&L Reporting**
+
 - Create P&L statement template
 - Monthly reporting
 - Quarterly reporting
@@ -1989,6 +2062,7 @@ Total Timeline: 8 weeks
 - Export to CSV/PDF
 
 **Day 5: Financial Dashboards**
+
 - Real-time KPI dashboard
 - Revenue trends
 - Cost analysis
@@ -1996,6 +2070,7 @@ Total Timeline: 8 weeks
 - Cash flow forecasting
 
 **Deliverables:**
+
 - All financial dashboards functional
 - Accurate calculations
 - Real-time data updates
@@ -2009,6 +2084,7 @@ Total Timeline: 8 weeks
 **Week 6:**
 
 **Day 1-2: Multi-domain Setup**
+
 - Domain configuration
 - SSL certificates
 - DNS setup
@@ -2016,6 +2092,7 @@ Total Timeline: 8 weeks
 - Domain 1-4 infrastructure
 
 **Day 3-4: Website Framework**
+
 - React SPA for websites
 - Dynamic page routing
 - Template system
@@ -2023,6 +2100,7 @@ Total Timeline: 8 weeks
 - Performance optimization
 
 **Day 5: Static Pages**
+
 - Homepage design
 - Services overview
 - Pricing page
@@ -2033,6 +2111,7 @@ Total Timeline: 8 weeks
 **Week 7:**
 
 **Day 1-2: Dynamic Content Integration**
+
 - Fetch from /ai_content
 - Blog post rendering
 - Service page rendering
@@ -2040,6 +2119,7 @@ Total Timeline: 8 weeks
 - Auto-update on new content
 
 **Day 3: Lead Capture**
+
 - Contact forms (multiple variants)
 - Quote request forms
 - Newsletter signup
@@ -2047,6 +2127,7 @@ Total Timeline: 8 weeks
 - CRM integration
 
 **Day 4: SEO Optimization**
+
 - Sitemap generation
 - Robots.txt
 - Schema.org markup
@@ -2054,6 +2135,7 @@ Total Timeline: 8 weeks
 - Structured data implementation
 
 **Day 5: Testing & Launch**
+
 - Performance testing (Lighthouse > 90)
 - Mobile testing
 - Cross-browser testing
@@ -2062,6 +2144,7 @@ Total Timeline: 8 weeks
 - Go-live
 
 **Deliverables:**
+
 - 4 public websites live
 - Dynamic content working
 - SEO optimized
@@ -2075,6 +2158,7 @@ Total Timeline: 8 weeks
 **Week 7-8:**
 
 **Day 1-2: Partner Dashboard**
+
 - Authentication
 - Vehicle-specific earnings display
 - Revenue breakdown
@@ -2082,12 +2166,14 @@ Total Timeline: 8 weeks
 - Booking history
 
 **Day 3: Payout Management**
+
 - Payout history display
 - Bank account management
 - Payout scheduling
 - Payment method configuration
 
 **Day 4: Performance Metrics**
+
 - Booking volume
 - Utilization rate
 - Average revenue per booking
@@ -2095,6 +2181,7 @@ Total Timeline: 8 weeks
 - Trend analysis
 
 **Day 5: Notifications & Support**
+
 - Email notifications
 - Payment notifications
 - Performance alerts
@@ -2102,6 +2189,7 @@ Total Timeline: 8 weeks
 - Knowledge base
 
 **Deliverables:**
+
 - Partner portal fully functional
 - Real-time earnings display
 - Payout system working
@@ -2112,6 +2200,7 @@ Total Timeline: 8 weeks
 #### Phase 7: Deployment & Launch (Week 8)
 
 **Day 1-2: Production Setup**
+
 - Production Firestore configuration
 - Production API keys
 - Production API rate limits
@@ -2119,6 +2208,7 @@ Total Timeline: 8 weeks
 - Production logging
 
 **Day 3: Performance & Security**
+
 - Load testing
 - Security audit
 - Penetration testing
@@ -2126,6 +2216,7 @@ Total Timeline: 8 weeks
 - Database optimization
 
 **Day 4: User Training**
+
 - Admin training
 - Partner training
 - Driver training
@@ -2133,6 +2224,7 @@ Total Timeline: 8 weeks
 - Support setup
 
 **Day 5: Go-Live**
+
 - Data migration (if needed)
 - Cutover plan
 - Monitoring during launch
@@ -2140,6 +2232,7 @@ Total Timeline: 8 weeks
 - Post-launch adjustments
 
 **Deliverables:**
+
 - Production system running
 - All users trained
 - Monitoring and alerts operational
@@ -2153,26 +2246,26 @@ Total Timeline: 8 weeks
 
 **Cloud Services (Monthly):**
 
-| Service | Cost | Notes |
-|---------|------|-------|
-| Firebase (Firestore) | $100-300 | Depends on read/write volume |
-| Google Cloud Functions | $50-150 | Pricing based on invocations |
-| Google Cloud Storage | $20-50 | For images, CSV files |
-| Cloud Run (optional) | $0-100 | For web services |
-| **Subtotal** | **$170-600** | **Per month** |
+| Service                | Cost         | Notes                        |
+| ---------------------- | ------------ | ---------------------------- |
+| Firebase (Firestore)   | $100-300     | Depends on read/write volume |
+| Google Cloud Functions | $50-150      | Pricing based on invocations |
+| Google Cloud Storage   | $20-50       | For images, CSV files        |
+| Cloud Run (optional)   | $0-100       | For web services             |
+| **Subtotal**           | **$170-600** | **Per month**                |
 
 ### 6.2 Third-Party API Costs
 
 **Recurring Monthly Costs:**
 
-| Service | Pricing | Estimated Cost |
-|---------|---------|-----------------|
-| OpenAI API (GPT-4 + DALL-E) | Variable | $200-500 |
-| Google Analytics 4 | Free | $0 |
-| Google Ads API | Free (client pays for ads) | $0 |
-| Moovs API | Part of existing contract | $0 |
-| Sendgrid (Email) | 100/month free, then $10+ | $0-50 |
-| **Subtotal** | | **$200-550** |
+| Service                     | Pricing                    | Estimated Cost |
+| --------------------------- | -------------------------- | -------------- |
+| OpenAI API (GPT-4 + DALL-E) | Variable                   | $200-500       |
+| Google Analytics 4          | Free                       | $0             |
+| Google Ads API              | Free (client pays for ads) | $0             |
+| Moovs API                   | Part of existing contract  | $0             |
+| Sendgrid (Email)            | 100/month free, then $10+  | $0-50          |
+| **Subtotal**                |                            | **$200-550**   |
 
 ### 6.3 Total Monthly Operating Costs
 
@@ -2276,6 +2369,7 @@ Partner Profit Margin: 40%
 ### 7.2 Partner Payout Schedule
 
 **Payout Frequency Options:**
+
 - Weekly: For high-volume partners
 - Bi-weekly: Standard option
 - Monthly: Default option
@@ -2299,6 +2393,7 @@ Day 29-30: Payment processing
 ### 7.3 Partner Dashboard Features
 
 **Real-time Visibility:**
+
 - Today's earnings
 - This week's earnings
 - This month's earnings
@@ -2308,6 +2403,7 @@ Day 29-30: Payment processing
 - Upcoming payouts
 
 **Performance Metrics:**
+
 - Vehicle utilization rate
 - Average revenue per booking
 - Top booking times
@@ -2316,6 +2412,7 @@ Day 29-30: Payment processing
 - Competitive benchmark (vs other partners)
 
 **Management Tools:**
+
 - Bank account management
 - Payment preferences
 - Notification settings
@@ -2347,6 +2444,7 @@ Tier 2: Premium Affiliates (>$1,000/month referrals)
 ### 8.2 Affiliate Tracking
 
 **Tracking Mechanism:**
+
 ```
 Affiliate Links:
 → royalcarriage.com/?aff=partner_id
@@ -2362,6 +2460,7 @@ Tracking via:
 ```
 
 **Affiliate Dashboard:**
+
 ```
 Summary:
 - Total referrals: 150
@@ -2388,6 +2487,7 @@ Top Performing Referrals:
 ### 8.3 Affiliate Support
 
 **Marketing Materials:**
+
 - Banner ads (300x250, 728x90, etc.)
 - Pre-written email templates
 - Social media graphics
@@ -2396,12 +2496,12 @@ Top Performing Referrals:
 
 **Affiliate Tiers & Benefits:**
 
-| Tier | Referrals/Month | Commission | Bonus | Support |
-|------|-----------------|-----------|-------|---------|
-| Bronze | 0-20 | 10% | None | Email |
-| Silver | 21-50 | 12% | $50/month | Email + Phone |
-| Gold | 51-100 | 15% | $150/month | 1-on-1 support |
-| Platinum | 100+ | 20% | $300/month | Dedicated manager |
+| Tier     | Referrals/Month | Commission | Bonus      | Support           |
+| -------- | --------------- | ---------- | ---------- | ----------------- |
+| Bronze   | 0-20            | 10%        | None       | Email             |
+| Silver   | 21-50           | 12%        | $50/month  | Email + Phone     |
+| Gold     | 51-100          | 15%        | $150/month | 1-on-1 support    |
+| Platinum | 100+            | 20%        | $300/month | Dedicated manager |
 
 ---
 
@@ -2569,109 +2669,110 @@ Content Improvements:
 
 **Monthly Targets:**
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Gross Revenue | $50,000+ | From Moovs bookings |
-| Platform Revenue | $7,500+ | 15% commission |
-| Partner Payouts | $42,500+ | 85% to partners |
-| Partner Satisfaction | 4.5+/5 | Survey score |
-| Average Booking Value | $85+ | Per transaction |
-| Monthly Active Partners | 50+ | Active sellers |
-| Monthly Bookings | 750+ | Total transactions |
+| Metric                  | Target   | Measurement         |
+| ----------------------- | -------- | ------------------- |
+| Gross Revenue           | $50,000+ | From Moovs bookings |
+| Platform Revenue        | $7,500+  | 15% commission      |
+| Partner Payouts         | $42,500+ | 85% to partners     |
+| Partner Satisfaction    | 4.5+/5   | Survey score        |
+| Average Booking Value   | $85+     | Per transaction     |
+| Monthly Active Partners | 50+      | Active sellers      |
+| Monthly Bookings        | 750+     | Total transactions  |
 
 ### 10.2 Profitability Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Gross Profit Margin | 40%+ | After vehicle costs |
-| Net Profit Margin | 15%+ | After all expenses |
-| Customer Acquisition Cost | <$15 | Per booking |
-| Customer Lifetime Value | $500+ | Per customer |
-| Return on Ad Spend | 3:1 | Ad spend to revenue |
-| Operating Efficiency | 60%+ | Revenue per team member |
+| Metric                    | Target | Measurement             |
+| ------------------------- | ------ | ----------------------- |
+| Gross Profit Margin       | 40%+   | After vehicle costs     |
+| Net Profit Margin         | 15%+   | After all expenses      |
+| Customer Acquisition Cost | <$15   | Per booking             |
+| Customer Lifetime Value   | $500+  | Per customer            |
+| Return on Ad Spend        | 3:1    | Ad spend to revenue     |
+| Operating Efficiency      | 60%+   | Revenue per team member |
 
 ### 10.3 Website & SEO Metrics
 
 **Website Performance (Per Domain):**
 
-| Metric | Target | Tool |
-|--------|--------|------|
-| Monthly Traffic | 5,000+/domain | GA4 |
-| Organic Traffic | 3,000+/domain | GA4 |
-| Conversion Rate | 3%+ | GA4 |
-| Page Load Time | <2 sec | Lighthouse |
-| Mobile Score | 90+ | Lighthouse |
-| SEO Score | 90+ | Lighthouse |
-| Domain Authority | 40+ | SEMrush |
-| Keyword Rankings (Top 20) | 50+ keywords/domain | SEMrush |
+| Metric                    | Target              | Tool       |
+| ------------------------- | ------------------- | ---------- |
+| Monthly Traffic           | 5,000+/domain       | GA4        |
+| Organic Traffic           | 3,000+/domain       | GA4        |
+| Conversion Rate           | 3%+                 | GA4        |
+| Page Load Time            | <2 sec              | Lighthouse |
+| Mobile Score              | 90+                 | Lighthouse |
+| SEO Score                 | 90+                 | Lighthouse |
+| Domain Authority          | 40+                 | SEMrush    |
+| Keyword Rankings (Top 20) | 50+ keywords/domain | SEMrush    |
 
 **Blog Performance:**
 
-| Metric | Target |
-|--------|--------|
+| Metric               | Target        |
+| -------------------- | ------------- |
 | Monthly blog traffic | 2,000+/domain |
-| Avg time on blog | 3:00+ |
-| Blog conversion rate | 2%+ |
-| Share rate | 5%+ |
-| Return visitor rate | 20%+ |
+| Avg time on blog     | 3:00+         |
+| Blog conversion rate | 2%+           |
+| Share rate           | 5%+           |
+| Return visitor rate  | 20%+          |
 
 ### 10.4 AI Content Metrics
 
-| Metric | Target | Notes |
-|--------|--------|-------|
+| Metric                  | Target      | Notes                      |
+| ----------------------- | ----------- | -------------------------- |
 | Content generated/month | 100+ pieces | Blog, service, ads, images |
-| Admin approval rate | 80%+ | Before publishing |
-| AI generation cost/item | <$2 | Including API costs |
-| Content engagement rate | 3%+ | Clicks/impressions |
-| Content conversion rate | 1.5%+ | Visitors to conversions |
+| Admin approval rate     | 80%+        | Before publishing          |
+| AI generation cost/item | <$2         | Including API costs        |
+| Content engagement rate | 3%+         | Clicks/impressions         |
+| Content conversion rate | 1.5%+       | Visitors to conversions    |
 
 ### 10.5 Partner & Driver Metrics
 
 **Partner Metrics:**
 
-| Metric | Target |
-|--------|--------|
-| Partner retention | 90%+/year |
-| Average partner earnings/month | $3,000+ |
-| Partner satisfaction | 4.5+/5 |
-| Payout on-time rate | 100% |
-| Partner churn rate | <2%/month |
+| Metric                         | Target    |
+| ------------------------------ | --------- |
+| Partner retention              | 90%+/year |
+| Average partner earnings/month | $3,000+   |
+| Partner satisfaction           | 4.5+/5    |
+| Payout on-time rate            | 100%      |
+| Partner churn rate             | <2%/month |
 
 **Driver Metrics:**
 
-| Metric | Target |
-|--------|--------|
-| Driver retention | 85%+/year |
-| Average driver earnings/month | $2,500+ |
-| Driver satisfaction | 4.3+/5 |
-| Customer rating of driver | 4.7+/5 |
-| Driver utilization | 70%+ |
+| Metric                        | Target    |
+| ----------------------------- | --------- |
+| Driver retention              | 85%+/year |
+| Average driver earnings/month | $2,500+   |
+| Driver satisfaction           | 4.3+/5    |
+| Customer rating of driver     | 4.7+/5    |
+| Driver utilization            | 70%+      |
 
 ### 10.6 Affiliate Program Metrics
 
-| Metric | Target |
-|--------|--------|
-| Number of affiliates | 100+ |
-| Active affiliate rate | 40%+ |
-| Average affiliate earnings | $500/month |
-| Affiliate conversion rate | 5%+ |
-| Affiliate retention | 75%+ |
-| Affiliate-sourced revenue | 10%+ of total |
+| Metric                     | Target        |
+| -------------------------- | ------------- |
+| Number of affiliates       | 100+          |
+| Active affiliate rate      | 40%+          |
+| Average affiliate earnings | $500/month    |
+| Affiliate conversion rate  | 5%+           |
+| Affiliate retention        | 75%+          |
+| Affiliate-sourced revenue  | 10%+ of total |
 
 ### 10.7 System Health Metrics
 
-| Metric | Target |
-|--------|--------|
-| Platform uptime | 99.9%+ |
-| Page load time | <2 seconds |
-| Mobile conversion | 40%+ of total |
-| Customer satisfaction | 4.6+/5 |
-| Support ticket resolution | <24 hours |
-| Bug resolution time | <48 hours |
+| Metric                    | Target        |
+| ------------------------- | ------------- |
+| Platform uptime           | 99.9%+        |
+| Page load time            | <2 seconds    |
+| Mobile conversion         | 40%+ of total |
+| Customer satisfaction     | 4.6+/5        |
+| Support ticket resolution | <24 hours     |
+| Bug resolution time       | <48 hours     |
 
 ### 10.8 Quarterly Goals (First Year)
 
 **Q1 (Months 1-3):**
+
 - Platform foundation: 100% complete
 - Moovs integration: Operational
 - AI system: Beta launch
@@ -2679,6 +2780,7 @@ Content Improvements:
 - 20 active partners
 
 **Q2 (Months 4-6):**
+
 - Public websites: All 4 live
 - Partner portal: Launched
 - 1,500 bookings, $127,500 revenue
@@ -2686,6 +2788,7 @@ Content Improvements:
 - Organic SEO established
 
 **Q3 (Months 7-9):**
+
 - Affiliate program: 50+ affiliates
 - Advanced analytics: Fully operational
 - 2,500 bookings, $212,500 revenue
@@ -2693,6 +2796,7 @@ Content Improvements:
 - Strong organic traffic
 
 **Q4 (Months 10-12):**
+
 - Full optimization
 - Expansion planning
 - 3,500+ bookings, $297,500 revenue
@@ -2700,6 +2804,7 @@ Content Improvements:
 - Profitability target reached
 
 **Year 1 Target:**
+
 - Total bookings: 8,000+
 - Total revenue: $680,000+
 - Active partners: 75+
@@ -2712,30 +2817,30 @@ Content Improvements:
 
 ### 11.1 Technical Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|-----------|
-| Moovs API changes | High | Low | Monitor API, maintain changelog |
-| Data inconsistency | High | Medium | Implement transactions, validation |
-| AI content quality issues | Medium | Medium | Human review, feedback loop |
-| Website outage | High | Low | 99.9% uptime SLA, backup systems |
-| Security breach | Critical | Low | Encryption, regular audits |
+| Risk                      | Impact   | Probability | Mitigation                         |
+| ------------------------- | -------- | ----------- | ---------------------------------- |
+| Moovs API changes         | High     | Low         | Monitor API, maintain changelog    |
+| Data inconsistency        | High     | Medium      | Implement transactions, validation |
+| AI content quality issues | Medium   | Medium      | Human review, feedback loop        |
+| Website outage            | High     | Low         | 99.9% uptime SLA, backup systems   |
+| Security breach           | Critical | Low         | Encryption, regular audits         |
 
 ### 11.2 Business Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|-----------|
-| Partner churn | High | Medium | Better payouts, transparency |
-| Low booking volume | High | Medium | Aggressive marketing, partnerships |
-| Competition | Medium | High | Better tech, better support |
-| Regulatory changes | Medium | Low | Legal review, compliance tracking |
+| Risk               | Impact | Probability | Mitigation                         |
+| ------------------ | ------ | ----------- | ---------------------------------- |
+| Partner churn      | High   | Medium      | Better payouts, transparency       |
+| Low booking volume | High   | Medium      | Aggressive marketing, partnerships |
+| Competition        | Medium | High        | Better tech, better support        |
+| Regulatory changes | Medium | Low         | Legal review, compliance tracking  |
 
 ### 11.3 Operational Risks
 
-| Risk | Impact | Probability | Mitigation |
-|------|--------|-------------|-----------|
-| Team turnover | Medium | Medium | Competitive pay, culture |
-| Scaling challenges | High | Medium | Modular architecture, planning |
-| Customer support overload | Medium | High | Self-service, automation |
+| Risk                      | Impact | Probability | Mitigation                     |
+| ------------------------- | ------ | ----------- | ------------------------------ |
+| Team turnover             | Medium | Medium      | Competitive pay, culture       |
+| Scaling challenges        | High   | Medium      | Modular architecture, planning |
+| Customer support overload | Medium | High        | Self-service, automation       |
 
 ---
 
@@ -2744,6 +2849,7 @@ Content Improvements:
 ### 12.1 Phase Completion Checklist
 
 **Phase 2: Moovs Integration ✓**
+
 - [ ] CSV import working
 - [ ] Real-time sync operational
 - [ ] Data accuracy verified
@@ -2751,6 +2857,7 @@ Content Improvements:
 - [ ] Documentation complete
 
 **Phase 3: AI System ✓**
+
 - [ ] GA4 sync working
 - [ ] Ads API sync working
 - [ ] Content generation tested
@@ -2758,6 +2865,7 @@ Content Improvements:
 - [ ] Admin interface functional
 
 **Phase 4: Financial Analytics ✓**
+
 - [ ] All dashboards built
 - [ ] Calculations verified
 - [ ] Real-time updates working
@@ -2765,6 +2873,7 @@ Content Improvements:
 - [ ] Export functionality tested
 
 **Phase 5: Public Websites ✓**
+
 - [ ] All 4 domains live
 - [ ] Content rendering correctly
 - [ ] SEO optimized
@@ -2772,12 +2881,14 @@ Content Improvements:
 - [ ] Performance > 90 Lighthouse
 
 **Phase 6: Partner Portal ✓**
+
 - [ ] Dashboard complete
 - [ ] Real-time earnings display
 - [ ] Payout system working
 - [ ] Partner feedback positive
 
 **Phase 7: Launch ✓**
+
 - [ ] Production ready
 - [ ] All systems tested
 - [ ] Users trained
@@ -2787,18 +2898,21 @@ Content Improvements:
 ### 12.2 Launch Readiness Assessment
 
 **Technical Readiness: 95%**
+
 - All systems functional
 - Performance optimized
 - Security verified
 - Monitoring in place
 
 **Operational Readiness: 90%**
+
 - Team trained
 - Processes documented
 - Support staffed
 - Communication ready
 
 **Business Readiness: 85%**
+
 - Financial projections complete
 - Partner agreements signed
 - Marketing materials prepared
@@ -2819,6 +2933,7 @@ Royal Carriage is positioned to become a market leader in transportation platfor
 The 8-week implementation roadmap is achievable with proper resource allocation and execution discipline. Monthly profitability targets of $7,500+ are realistic given the partner commission model and operational efficiency.
 
 **Key Success Factors:**
+
 - Flawless Moovs data integration
 - High-quality AI content generation
 - Partner satisfaction and retention

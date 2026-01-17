@@ -1,5 +1,5 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 // ============ INTERFACES ============
 
@@ -86,46 +86,56 @@ export const getPerformanceMetrics = functions.https.onCall(
     data: {
       websiteId?: string;
       locationId?: string;
-      dateRange?: '7d' | '30d' | '90d' | '365d';
+      dateRange?: "7d" | "30d" | "90d" | "365d";
       limit?: number;
     },
-    context
+    context,
   ) => {
     // Verify authentication
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
-    const userDoc = await db.collection('users').doc(context.auth.uid).get();
+    const userDoc = await db.collection("users").doc(context.auth.uid).get();
     const userRole = userDoc.data()?.role;
 
-    if (userRole !== 'admin' && userRole !== 'superadmin' && userRole !== 'viewer') {
-      throw new functions.https.HttpsError('permission-denied', 'Insufficient permissions');
+    if (
+      userRole !== "admin" &&
+      userRole !== "superadmin" &&
+      userRole !== "viewer"
+    ) {
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Insufficient permissions",
+      );
     }
 
-    const { websiteId, locationId, dateRange = '30d', limit = 20 } = data;
+    const { websiteId, locationId, dateRange = "30d", limit = 20 } = data;
 
     try {
       // Calculate date range
       const now = new Date();
       const daysMap: Record<string, number> = {
-        '7d': 7,
-        '30d': 30,
-        '90d': 90,
-        '365d': 365,
+        "7d": 7,
+        "30d": 30,
+        "90d": 90,
+        "365d": 365,
       };
       const days = daysMap[dateRange] || 30;
       const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
       // Build query
-      let query: FirebaseFirestore.Query = db.collection('performance_metrics');
+      let query: FirebaseFirestore.Query = db.collection("performance_metrics");
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
       if (locationId) {
-        query = query.where('locationId', '==', locationId);
+        query = query.where("locationId", "==", locationId);
       }
 
       const snapshot = await query.get();
@@ -164,17 +174,31 @@ export const getPerformanceMetrics = functions.https.onCall(
       }
 
       // Calculate summary statistics
-      const totalImpressions = metrics.reduce((sum, m) => sum + (m.search?.impressions || 0), 0);
-      const totalClicks = metrics.reduce((sum, m) => sum + (m.search?.clicks || 0), 0);
-      const avgCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+      const totalImpressions = metrics.reduce(
+        (sum, m) => sum + (m.search?.impressions || 0),
+        0,
+      );
+      const totalClicks = metrics.reduce(
+        (sum, m) => sum + (m.search?.clicks || 0),
+        0,
+      );
+      const avgCtr =
+        totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
       const avgPosition =
-        metrics.reduce((sum, m) => sum + (m.search?.avgPosition || 0), 0) / metrics.length;
-      const totalPageViews = metrics.reduce((sum, m) => sum + (m.engagement?.pageViews || 0), 0);
-      const avgBounceRate =
-        metrics.reduce((sum, m) => sum + (m.engagement?.bounceRate || 0), 0) / metrics.length;
-      const avgSessionDuration =
-        metrics.reduce((sum, m) => sum + (m.engagement?.avgSessionDuration || 0), 0) /
+        metrics.reduce((sum, m) => sum + (m.search?.avgPosition || 0), 0) /
         metrics.length;
+      const totalPageViews = metrics.reduce(
+        (sum, m) => sum + (m.engagement?.pageViews || 0),
+        0,
+      );
+      const avgBounceRate =
+        metrics.reduce((sum, m) => sum + (m.engagement?.bounceRate || 0), 0) /
+        metrics.length;
+      const avgSessionDuration =
+        metrics.reduce(
+          (sum, m) => sum + (m.engagement?.avgSessionDuration || 0),
+          0,
+        ) / metrics.length;
 
       // Top performers (by clicks)
       const topPerformers = [...metrics]
@@ -200,9 +224,11 @@ export const getPerformanceMetrics = functions.https.onCall(
         .filter(
           (m) =>
             ((m.search?.impressions || 0) > 100 && (m.search?.ctr || 0) < 1) ||
-            (m.engagement?.bounceRate || 0) > 70
+            (m.engagement?.bounceRate || 0) > 70,
         )
-        .sort((a, b) => (b.search?.impressions || 0) - (a.search?.impressions || 0))
+        .sort(
+          (a, b) => (b.search?.impressions || 0) - (a.search?.impressions || 0),
+        )
         .slice(0, limit)
         .map((m) => ({
           contentId: m.contentId,
@@ -217,29 +243,38 @@ export const getPerformanceMetrics = functions.https.onCall(
           bounceRate: m.engagement?.bounceRate || 0,
           issue:
             (m.search?.ctr || 0) < 1
-              ? 'Low CTR - improve title/meta description'
-              : 'High bounce rate - improve content quality',
+              ? "Low CTR - improve title/meta description"
+              : "High bounce rate - improve content quality",
         }));
 
       // Ranking distribution
       const rankingDistribution = {
-        top10: metrics.filter((m) => (m.search?.avgPosition || 100) <= 10).length,
+        top10: metrics.filter((m) => (m.search?.avgPosition || 100) <= 10)
+          .length,
         top20: metrics.filter(
-          (m) => (m.search?.avgPosition || 100) > 10 && (m.search?.avgPosition || 100) <= 20
+          (m) =>
+            (m.search?.avgPosition || 100) > 10 &&
+            (m.search?.avgPosition || 100) <= 20,
         ).length,
         top50: metrics.filter(
-          (m) => (m.search?.avgPosition || 100) > 20 && (m.search?.avgPosition || 100) <= 50
+          (m) =>
+            (m.search?.avgPosition || 100) > 20 &&
+            (m.search?.avgPosition || 100) <= 50,
         ).length,
-        beyond50: metrics.filter((m) => (m.search?.avgPosition || 100) > 50).length,
+        beyond50: metrics.filter((m) => (m.search?.avgPosition || 100) > 50)
+          .length,
       };
 
       // Content age analysis
-      const contentAgeSnapshot = await db.collection('content_age_tracking').get();
+      const contentAgeSnapshot = await db
+        .collection("content_age_tracking")
+        .get();
       const contentAges = contentAgeSnapshot.docs.map((doc) => doc.data());
       const contentAgeAnalysis = {
         fresh: contentAges.filter((c) => (c.ageInDays || 0) <= 30).length,
-        aging: contentAges.filter((c) => (c.ageInDays || 0) > 30 && (c.ageInDays || 0) <= 90)
-          .length,
+        aging: contentAges.filter(
+          (c) => (c.ageInDays || 0) > 30 && (c.ageInDays || 0) <= 90,
+        ).length,
         stale: contentAges.filter((c) => (c.ageInDays || 0) > 90).length,
       };
 
@@ -261,10 +296,10 @@ export const getPerformanceMetrics = functions.https.onCall(
         contentAgeAnalysis,
       };
     } catch (error: any) {
-      console.error('Error fetching performance metrics:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Error fetching performance metrics:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -276,41 +311,52 @@ export const getTrafficAnalytics = functions.https.onCall(
       websiteId?: string;
       locationId?: string;
       serviceId?: string;
-      dateRange?: '7d' | '30d' | '90d' | '365d';
-      groupBy?: 'day' | 'week' | 'month';
+      dateRange?: "7d" | "30d" | "90d" | "365d";
+      groupBy?: "day" | "week" | "month";
     },
-    context
+    context,
   ) => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
-    const { websiteId, locationId, serviceId, dateRange = '30d', groupBy = 'day' } = data;
+    const {
+      websiteId,
+      locationId,
+      serviceId,
+      dateRange = "30d",
+      groupBy = "day",
+    } = data;
 
     try {
       // Calculate date range
       const now = new Date();
       const daysMap: Record<string, number> = {
-        '7d': 7,
-        '30d': 30,
-        '90d': 90,
-        '365d': 365,
+        "7d": 7,
+        "30d": 30,
+        "90d": 90,
+        "365d": 365,
       };
       const days = daysMap[dateRange] || 30;
       const startDate = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
 
       // Build query for daily traffic data
-      let query: FirebaseFirestore.Query = db.collection('daily_traffic_metrics');
+      let query: FirebaseFirestore.Query = db.collection(
+        "daily_traffic_metrics",
+      );
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
       if (locationId) {
-        query = query.where('locationId', '==', locationId);
+        query = query.where("locationId", "==", locationId);
       }
       if (serviceId) {
-        query = query.where('serviceId', '==', serviceId);
+        query = query.where("serviceId", "==", serviceId);
       }
 
       const snapshot = await query.get();
@@ -328,7 +374,11 @@ export const getTrafficAnalytics = functions.https.onCall(
       const trafficByWebsite = await calculateTrafficByWebsite(db, startDate);
 
       // Calculate traffic by location (top 10)
-      const trafficByLocation = await calculateTrafficByLocation(db, startDate, 10);
+      const trafficByLocation = await calculateTrafficByLocation(
+        db,
+        startDate,
+        10,
+      );
 
       // Calculate traffic by service type
       const trafficByService = await calculateTrafficByService(db, startDate);
@@ -345,10 +395,10 @@ export const getTrafficAnalytics = functions.https.onCall(
         endDate: now.toISOString(),
       };
     } catch (error: any) {
-      console.error('Error fetching traffic analytics:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Error fetching traffic analytics:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -358,30 +408,33 @@ export const getKeywordRankings = functions.https.onCall(
   async (
     data: {
       websiteId?: string;
-      positionFilter?: 'top10' | 'top20' | 'top50' | 'all';
-      sortBy?: 'position' | 'impressions' | 'clicks' | 'change';
+      positionFilter?: "top10" | "top20" | "top50" | "all";
+      sortBy?: "position" | "impressions" | "clicks" | "change";
       limit?: number;
     },
-    context
+    context,
   ) => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
     const {
       websiteId,
-      positionFilter = 'all',
-      sortBy = 'impressions',
+      positionFilter = "all",
+      sortBy = "impressions",
       limit = 100,
     } = data;
 
     try {
       // Build query
-      let query: FirebaseFirestore.Query = db.collection('keyword_rankings');
+      let query: FirebaseFirestore.Query = db.collection("keyword_rankings");
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
 
       const snapshot = await query.get();
@@ -391,7 +444,7 @@ export const getKeywordRankings = functions.https.onCall(
       })) as (KeywordRanking & { id: string })[];
 
       // Filter by position
-      if (positionFilter !== 'all') {
+      if (positionFilter !== "all") {
         const positionLimits: Record<string, number> = {
           top10: 10,
           top20: 20,
@@ -402,7 +455,10 @@ export const getKeywordRankings = functions.https.onCall(
       }
 
       // Sort rankings
-      const sortFunctions: Record<string, (a: KeywordRanking, b: KeywordRanking) => number> = {
+      const sortFunctions: Record<
+        string,
+        (a: KeywordRanking, b: KeywordRanking) => number
+      > = {
         position: (a, b) => a.position - b.position,
         impressions: (a, b) => b.impressions - a.impressions,
         clicks: (a, b) => b.clicks - a.clicks,
@@ -417,8 +473,10 @@ export const getKeywordRankings = functions.https.onCall(
       const positionDistribution = {
         top3: rankings.filter((r) => r.position <= 3).length,
         top10: rankings.filter((r) => r.position <= 10).length,
-        top20: rankings.filter((r) => r.position > 10 && r.position <= 20).length,
-        top50: rankings.filter((r) => r.position > 20 && r.position <= 50).length,
+        top20: rankings.filter((r) => r.position > 10 && r.position <= 20)
+          .length,
+        top50: rankings.filter((r) => r.position > 20 && r.position <= 50)
+          .length,
         beyond50: rankings.filter((r) => r.position > 50).length,
       };
 
@@ -434,7 +492,9 @@ export const getKeywordRankings = functions.https.onCall(
         .slice(0, 10);
 
       // New rankings (position was 0 or null before)
-      const newRankings = rankings.filter((r) => r.previousPosition === 0 || !r.previousPosition);
+      const newRankings = rankings.filter(
+        (r) => r.previousPosition === 0 || !r.previousPosition,
+      );
 
       return {
         success: true,
@@ -448,7 +508,7 @@ export const getKeywordRankings = functions.https.onCall(
           clicks: r.clicks,
           ctr: r.ctr,
           searchVolume: r.searchVolume,
-          trend: r.change > 0 ? 'up' : r.change < 0 ? 'down' : 'stable',
+          trend: r.change > 0 ? "up" : r.change < 0 ? "down" : "stable",
         })),
         totalKeywords: rankings.length,
         positionDistribution,
@@ -459,10 +519,10 @@ export const getKeywordRankings = functions.https.onCall(
         newRankings: newRankings.slice(0, 10),
       };
     } catch (error: any) {
-      console.error('Error fetching keyword rankings:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Error fetching keyword rankings:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -472,24 +532,37 @@ export const getPerformanceTrends = functions.https.onCall(
   async (
     data: {
       websiteId?: string;
-      metric?: 'impressions' | 'clicks' | 'ctr' | 'position' | 'pageViews' | 'bounceRate';
-      compareWith?: 'previous_period' | 'previous_year';
+      metric?:
+        | "impressions"
+        | "clicks"
+        | "ctr"
+        | "position"
+        | "pageViews"
+        | "bounceRate";
+      compareWith?: "previous_period" | "previous_year";
     },
-    context
+    context,
   ) => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
-    const { websiteId, metric = 'impressions', compareWith = 'previous_period' } = data;
+    const {
+      websiteId,
+      metric = "impressions",
+      compareWith = "previous_period",
+    } = data;
 
     try {
       // Get trend snapshots
-      let query: FirebaseFirestore.Query = db.collection('performance_trends');
+      let query: FirebaseFirestore.Query = db.collection("performance_trends");
 
       if (websiteId) {
-        query = query.where('websiteId', '==', websiteId);
+        query = query.where("websiteId", "==", websiteId);
       }
 
       const snapshot = await query.get();
@@ -513,17 +586,17 @@ export const getPerformanceTrends = functions.https.onCall(
       // Calculate percent changes
       const trends: TrendData[] = [
         {
-          period: '7 days',
+          period: "7 days",
           metrics: last7Days,
           change: calculatePercentChange(last7Days, previous7Days),
         },
         {
-          period: '30 days',
+          period: "30 days",
           metrics: last30Days,
           change: calculatePercentChange(last30Days, previous30Days),
         },
         {
-          period: '90 days',
+          period: "90 days",
           metrics: last90Days,
           change: calculatePercentChange(last90Days, previous90Days),
         },
@@ -543,19 +616,19 @@ export const getPerformanceTrends = functions.https.onCall(
         summary: {
           overallTrend:
             trends[1].change.impressions > 0
-              ? 'improving'
+              ? "improving"
               : trends[1].change.impressions < 0
-              ? 'declining'
-              : 'stable',
+                ? "declining"
+                : "stable",
           strongestMetric: findStrongestMetric(trends[1].change),
           weakestMetric: findWeakestMetric(trends[1].change),
         },
       };
     } catch (error: any) {
-      console.error('Error fetching performance trends:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Error fetching performance trends:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -563,10 +636,10 @@ export const getPerformanceTrends = functions.https.onCall(
  * Scheduled to run daily
  */
 export const syncPerformanceMetrics = functions.pubsub
-  .schedule('0 3 * * *')
-  .timeZone('America/Chicago')
+  .schedule("0 3 * * *")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Starting daily performance metrics sync...');
+    functions.logger.info("Starting daily performance metrics sync...");
 
     const db = admin.firestore();
 
@@ -580,10 +653,10 @@ export const syncPerformanceMetrics = functions.pubsub
       // For now, we'll create a framework that simulates the sync
 
       // Get all content items to track
-      const contentSnapshot = await db.collection('service_content').get();
+      const contentSnapshot = await db.collection("service_content").get();
 
       if (contentSnapshot.empty) {
-        functions.logger.info('No content to sync metrics for');
+        functions.logger.info("No content to sync metrics for");
         return null;
       }
 
@@ -595,7 +668,7 @@ export const syncPerformanceMetrics = functions.pubsub
 
         // In production, fetch real metrics from APIs
         // For now, create placeholder metrics structure
-        const metricsRef = db.collection('performance_metrics').doc(doc.id);
+        const metricsRef = db.collection("performance_metrics").doc(doc.id);
 
         batch.set(
           metricsRef,
@@ -604,7 +677,9 @@ export const syncPerformanceMetrics = functions.pubsub
             websiteId: content.websiteId,
             locationId: content.locationId,
             serviceId: content.serviceId,
-            url: content.url || `/services/${content.locationId}/${content.serviceId}`,
+            url:
+              content.url ||
+              `/services/${content.locationId}/${content.serviceId}`,
             title: content.title,
             metricsDate: timestamp,
             search: {
@@ -625,19 +700,19 @@ export const syncPerformanceMetrics = functions.pubsub
             opportunityScore: 0,
             lastSyncedAt: timestamp,
           },
-          { merge: true }
+          { merge: true },
         );
       }
 
       await batch.commit();
 
-      functions.logger.info('Performance metrics sync completed', {
+      functions.logger.info("Performance metrics sync completed", {
         totalItems: contentSnapshot.size,
       });
 
       return null;
     } catch (error) {
-      functions.logger.error('Performance metrics sync failed:', error);
+      functions.logger.error("Performance metrics sync failed:", error);
       throw error;
     }
   });
@@ -649,28 +724,35 @@ export const generatePerformanceReport = functions.https.onCall(
   async (
     data: {
       websiteId?: string;
-      dateRange: '7d' | '30d' | '90d';
+      dateRange: "7d" | "30d" | "90d";
       includeRecommendations?: boolean;
     },
-    context
+    context,
   ) => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
-    const userDoc = await db.collection('users').doc(context.auth.uid).get();
+    const userDoc = await db.collection("users").doc(context.auth.uid).get();
     const userRole = userDoc.data()?.role;
 
-    if (userRole !== 'admin' && userRole !== 'superadmin') {
-      throw new functions.https.HttpsError('permission-denied', 'Admins only');
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      throw new functions.https.HttpsError("permission-denied", "Admins only");
     }
 
     const { websiteId, dateRange, includeRecommendations = true } = data;
 
     try {
       // Fetch all required data
-      const metricsResult = await getPerformanceMetricsInternal(db, websiteId, dateRange);
+      const metricsResult = await getPerformanceMetricsInternal(
+        db,
+        websiteId,
+        dateRange,
+      );
       const keywordsResult = await getKeywordRankingsInternal(db, websiteId);
       const trendsResult = await getPerformanceTrendsInternal(db, websiteId);
 
@@ -679,7 +761,7 @@ export const generatePerformanceReport = functions.https.onCall(
         reportId: `perf-report-${Date.now()}`,
         generatedAt: new Date(),
         dateRange,
-        websiteId: websiteId || 'all',
+        websiteId: websiteId || "all",
 
         summary: metricsResult.summary,
 
@@ -697,29 +779,36 @@ export const generatePerformanceReport = functions.https.onCall(
         trends: trendsResult.trends,
 
         recommendations: includeRecommendations
-          ? generateComprehensiveRecommendations(metricsResult, keywordsResult, trendsResult)
+          ? generateComprehensiveRecommendations(
+              metricsResult,
+              keywordsResult,
+              trendsResult,
+            )
           : [],
       };
 
       // Save report
-      await db.collection('performance_reports').doc(report.reportId).set(report);
+      await db
+        .collection("performance_reports")
+        .doc(report.reportId)
+        .set(report);
 
       return {
         success: true,
         report,
       };
     } catch (error: any) {
-      console.error('Error generating performance report:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Error generating performance report:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 // ============ HELPER FUNCTIONS ============
 
 function groupTrafficData(
   rawData: any[],
-  groupBy: 'day' | 'week' | 'month'
+  groupBy: "day" | "week" | "month",
 ): TrafficData[] {
   const grouped = new Map<string, TrafficData>();
 
@@ -728,16 +817,16 @@ function groupTrafficData(
     let key: string;
 
     switch (groupBy) {
-      case 'week':
+      case "week":
         const weekStart = new Date(date);
         weekStart.setDate(date.getDate() - date.getDay());
-        key = weekStart.toISOString().split('T')[0];
+        key = weekStart.toISOString().split("T")[0];
         break;
-      case 'month':
-        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+      case "month":
+        key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
         break;
       default:
-        key = date.toISOString().split('T')[0];
+        key = date.toISOString().split("T")[0];
     }
 
     if (!grouped.has(key)) {
@@ -766,26 +855,37 @@ function groupTrafficData(
     }
   });
 
-  return Array.from(grouped.values()).sort((a, b) => a.date.localeCompare(b.date));
+  return Array.from(grouped.values()).sort((a, b) =>
+    a.date.localeCompare(b.date),
+  );
 }
 
 async function calculateTrafficByWebsite(
   db: FirebaseFirestore.Firestore,
-  startDate: Date
+  startDate: Date,
 ): Promise<any[]> {
-  const websites = ['airport', 'corporate', 'wedding', 'partyBus'];
+  const websites = ["airport", "corporate", "wedding", "partyBus"];
   const results: any[] = [];
 
   for (const websiteId of websites) {
     const snapshot = await db
-      .collection('performance_metrics')
-      .where('websiteId', '==', websiteId)
+      .collection("performance_metrics")
+      .where("websiteId", "==", websiteId)
       .get();
 
     const metrics = snapshot.docs.map((doc) => doc.data());
-    const totalImpressions = metrics.reduce((sum, m) => sum + (m.search?.impressions || 0), 0);
-    const totalClicks = metrics.reduce((sum, m) => sum + (m.search?.clicks || 0), 0);
-    const totalPageViews = metrics.reduce((sum, m) => sum + (m.engagement?.pageViews || 0), 0);
+    const totalImpressions = metrics.reduce(
+      (sum, m) => sum + (m.search?.impressions || 0),
+      0,
+    );
+    const totalClicks = metrics.reduce(
+      (sum, m) => sum + (m.search?.clicks || 0),
+      0,
+    );
+    const totalPageViews = metrics.reduce(
+      (sum, m) => sum + (m.engagement?.pageViews || 0),
+      0,
+    );
 
     results.push({
       websiteId,
@@ -803,9 +903,9 @@ async function calculateTrafficByWebsite(
 async function calculateTrafficByLocation(
   db: FirebaseFirestore.Firestore,
   startDate: Date,
-  limit: number
+  limit: number,
 ): Promise<any[]> {
-  const snapshot = await db.collection('performance_metrics').get();
+  const snapshot = await db.collection("performance_metrics").get();
   const locationMap = new Map<string, any>();
 
   snapshot.docs.forEach((doc) => {
@@ -840,9 +940,9 @@ async function calculateTrafficByLocation(
 
 async function calculateTrafficByService(
   db: FirebaseFirestore.Firestore,
-  startDate: Date
+  startDate: Date,
 ): Promise<any[]> {
-  const snapshot = await db.collection('performance_metrics').get();
+  const snapshot = await db.collection("performance_metrics").get();
   const serviceMap = new Map<string, any>();
 
   snapshot.docs.forEach((doc) => {
@@ -874,10 +974,16 @@ async function calculateTrafficByService(
     .sort((a, b) => b.impressions - a.impressions);
 }
 
-function calculatePeriodMetrics(trendData: any[], daysBack: number, offsetDays: number = 0): any {
+function calculatePeriodMetrics(
+  trendData: any[],
+  daysBack: number,
+  offsetDays: number = 0,
+): any {
   const now = new Date();
   const endDate = new Date(now.getTime() - offsetDays * 24 * 60 * 60 * 1000);
-  const startDate = new Date(endDate.getTime() - daysBack * 24 * 60 * 60 * 1000);
+  const startDate = new Date(
+    endDate.getTime() - daysBack * 24 * 60 * 60 * 1000,
+  );
 
   const filtered = trendData.filter((d) => {
     const date = d.date?.toDate?.() || new Date(d.date);
@@ -895,7 +1001,10 @@ function calculatePeriodMetrics(trendData: any[], daysBack: number, offsetDays: 
     };
   }
 
-  const impressions = filtered.reduce((sum, d) => sum + (d.impressions || 0), 0);
+  const impressions = filtered.reduce(
+    (sum, d) => sum + (d.impressions || 0),
+    0,
+  );
   const clicks = filtered.reduce((sum, d) => sum + (d.clicks || 0), 0);
   const pageViews = filtered.reduce((sum, d) => sum + (d.pageViews || 0), 0);
 
@@ -903,11 +1012,13 @@ function calculatePeriodMetrics(trendData: any[], daysBack: number, offsetDays: 
     impressions,
     clicks,
     avgPosition:
-      filtered.reduce((sum, d) => sum + (d.avgPosition || 0), 0) / filtered.length,
+      filtered.reduce((sum, d) => sum + (d.avgPosition || 0), 0) /
+      filtered.length,
     ctr: impressions > 0 ? (clicks / impressions) * 100 : 0,
     pageViews,
     bounceRate:
-      filtered.reduce((sum, d) => sum + (d.bounceRate || 0), 0) / filtered.length,
+      filtered.reduce((sum, d) => sum + (d.bounceRate || 0), 0) /
+      filtered.length,
   };
 }
 
@@ -918,9 +1029,13 @@ function calculatePercentChange(current: any, previous: any): any {
   };
 
   return {
-    impressions: Math.round(calcChange(current.impressions, previous.impressions)),
+    impressions: Math.round(
+      calcChange(current.impressions, previous.impressions),
+    ),
     clicks: Math.round(calcChange(current.clicks, previous.clicks)),
-    avgPosition: Math.round(calcChange(previous.avgPosition, current.avgPosition)), // Inverted: lower is better
+    avgPosition: Math.round(
+      calcChange(previous.avgPosition, current.avgPosition),
+    ), // Inverted: lower is better
     ctr: Math.round(calcChange(current.ctr, previous.ctr) * 10) / 10,
     pageViews: Math.round(calcChange(current.pageViews, previous.pageViews)),
     bounceRate: Math.round(calcChange(previous.bounceRate, current.bounceRate)), // Inverted: lower is better
@@ -930,14 +1045,14 @@ function calculatePercentChange(current: any, previous: any): any {
 async function getDailyTrendData(
   db: FirebaseFirestore.Firestore,
   websiteId: string | undefined,
-  days: number
+  days: number,
 ): Promise<any[]> {
   const startDate = new Date();
   startDate.setDate(startDate.getDate() - days);
 
-  let query: FirebaseFirestore.Query = db.collection('daily_traffic_metrics');
+  let query: FirebaseFirestore.Query = db.collection("daily_traffic_metrics");
   if (websiteId) {
-    query = query.where('websiteId', '==', websiteId);
+    query = query.where("websiteId", "==", websiteId);
   }
 
   const snapshot = await query.get();
@@ -949,7 +1064,9 @@ async function getDailyTrendData(
       return date >= startDate;
     })
     .map((d) => ({
-      date: (d.date?.toDate?.() || new Date(d.date)).toISOString().split('T')[0],
+      date: (d.date?.toDate?.() || new Date(d.date))
+        .toISOString()
+        .split("T")[0],
       impressions: d.impressions || 0,
       clicks: d.clicks || 0,
       pageViews: d.pageViews || 0,
@@ -959,49 +1076,54 @@ async function getDailyTrendData(
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-function generateTrendRecommendations(trends: TrendData[], dailyTrends: any[]): string[] {
+function generateTrendRecommendations(
+  trends: TrendData[],
+  dailyTrends: any[],
+): string[] {
   const recommendations: string[] = [];
-  const last30Days = trends.find((t) => t.period === '30 days');
+  const last30Days = trends.find((t) => t.period === "30 days");
 
   if (!last30Days) return recommendations;
 
   // Impressions declining
   if (last30Days.change.impressions < -10) {
     recommendations.push(
-      'Impressions are declining. Consider expanding content coverage or improving keyword targeting.'
+      "Impressions are declining. Consider expanding content coverage or improving keyword targeting.",
     );
   }
 
   // CTR declining
   if (last30Days.change.ctr < -5) {
     recommendations.push(
-      'Click-through rate is declining. Review and improve meta titles and descriptions.'
+      "Click-through rate is declining. Review and improve meta titles and descriptions.",
     );
   }
 
   // Position declining (going up = worse)
   if (last30Days.change.avgPosition < -5) {
     recommendations.push(
-      'Average ranking position is declining. Focus on content quality and backlink building.'
+      "Average ranking position is declining. Focus on content quality and backlink building.",
     );
   }
 
   // Bounce rate increasing
   if (last30Days.change.bounceRate < -10) {
     recommendations.push(
-      'Bounce rate is increasing. Improve page load speed and content relevance.'
+      "Bounce rate is increasing. Improve page load speed and content relevance.",
     );
   }
 
   // Positive trends
   if (last30Days.change.impressions > 20) {
     recommendations.push(
-      'Great progress! Impressions are up significantly. Continue current content strategy.'
+      "Great progress! Impressions are up significantly. Continue current content strategy.",
     );
   }
 
   if (last30Days.change.clicks > 20) {
-    recommendations.push('Clicks are growing well. Consider optimizing for conversions.');
+    recommendations.push(
+      "Clicks are growing well. Consider optimizing for conversions.",
+    );
   }
 
   return recommendations;
@@ -1023,18 +1145,24 @@ function findWeakestMetric(changes: any): string {
 async function getPerformanceMetricsInternal(
   db: FirebaseFirestore.Firestore,
   websiteId: string | undefined,
-  dateRange: string
+  dateRange: string,
 ): Promise<any> {
-  let query: FirebaseFirestore.Query = db.collection('performance_metrics');
+  let query: FirebaseFirestore.Query = db.collection("performance_metrics");
   if (websiteId) {
-    query = query.where('websiteId', '==', websiteId);
+    query = query.where("websiteId", "==", websiteId);
   }
 
   const snapshot = await query.get();
   const metrics = snapshot.docs.map((doc) => doc.data());
 
-  const totalImpressions = metrics.reduce((sum, m) => sum + (m.search?.impressions || 0), 0);
-  const totalClicks = metrics.reduce((sum, m) => sum + (m.search?.clicks || 0), 0);
+  const totalImpressions = metrics.reduce(
+    (sum, m) => sum + (m.search?.impressions || 0),
+    0,
+  );
+  const totalClicks = metrics.reduce(
+    (sum, m) => sum + (m.search?.clicks || 0),
+    0,
+  );
 
   return {
     summary: {
@@ -1043,7 +1171,8 @@ async function getPerformanceMetricsInternal(
       avgCtr: totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0,
       avgPosition:
         metrics.length > 0
-          ? metrics.reduce((sum, m) => sum + (m.search?.avgPosition || 0), 0) / metrics.length
+          ? metrics.reduce((sum, m) => sum + (m.search?.avgPosition || 0), 0) /
+            metrics.length
           : 0,
       totalPages: metrics.length,
     },
@@ -1051,18 +1180,20 @@ async function getPerformanceMetricsInternal(
       .sort((a, b) => (b.search?.clicks || 0) - (a.search?.clicks || 0))
       .slice(0, 20),
     needsImprovement: [...metrics]
-      .filter((m) => (m.search?.ctr || 0) < 1 || (m.engagement?.bounceRate || 0) > 70)
+      .filter(
+        (m) => (m.search?.ctr || 0) < 1 || (m.engagement?.bounceRate || 0) > 70,
+      )
       .slice(0, 20),
   };
 }
 
 async function getKeywordRankingsInternal(
   db: FirebaseFirestore.Firestore,
-  websiteId: string | undefined
+  websiteId: string | undefined,
 ): Promise<any> {
-  let query: FirebaseFirestore.Query = db.collection('keyword_rankings');
+  let query: FirebaseFirestore.Query = db.collection("keyword_rankings");
   if (websiteId) {
-    query = query.where('websiteId', '==', websiteId);
+    query = query.where("websiteId", "==", websiteId);
   }
 
   const snapshot = await query.get();
@@ -1075,19 +1206,23 @@ async function getKeywordRankingsInternal(
       top20: rankings.filter((r) => r.position > 10 && r.position <= 20).length,
     },
     movers: {
-      up: [...rankings].filter((r) => r.change > 0).sort((a, b) => b.change - a.change),
-      down: [...rankings].filter((r) => r.change < 0).sort((a, b) => a.change - b.change),
+      up: [...rankings]
+        .filter((r) => r.change > 0)
+        .sort((a, b) => b.change - a.change),
+      down: [...rankings]
+        .filter((r) => r.change < 0)
+        .sort((a, b) => a.change - b.change),
     },
   };
 }
 
 async function getPerformanceTrendsInternal(
   db: FirebaseFirestore.Firestore,
-  websiteId: string | undefined
+  websiteId: string | undefined,
 ): Promise<any> {
-  let query: FirebaseFirestore.Query = db.collection('performance_trends');
+  let query: FirebaseFirestore.Query = db.collection("performance_trends");
   if (websiteId) {
-    query = query.where('websiteId', '==', websiteId);
+    query = query.where("websiteId", "==", websiteId);
   }
 
   const snapshot = await query.get();
@@ -1099,7 +1234,7 @@ async function getPerformanceTrendsInternal(
   return {
     trends: [
       {
-        period: '30 days',
+        period: "30 days",
         metrics: last30Days,
         change: calculatePercentChange(last30Days, previous30Days),
       },
@@ -1110,41 +1245,43 @@ async function getPerformanceTrendsInternal(
 function generateComprehensiveRecommendations(
   metricsResult: any,
   keywordsResult: any,
-  trendsResult: any
+  trendsResult: any,
 ): string[] {
   const recommendations: string[] = [];
 
   // Based on metrics
   if (metricsResult.summary.avgCtr < 2) {
     recommendations.push(
-      'Average CTR is below 2%. Improve meta titles and descriptions to increase click-through rates.'
+      "Average CTR is below 2%. Improve meta titles and descriptions to increase click-through rates.",
     );
   }
 
   if (metricsResult.needsImprovement.length > 10) {
     recommendations.push(
-      `${metricsResult.needsImprovement.length} pages need improvement. Prioritize high-impression, low-CTR pages.`
+      `${metricsResult.needsImprovement.length} pages need improvement. Prioritize high-impression, low-CTR pages.`,
     );
   }
 
   // Based on keywords
   if (keywordsResult.positionDistribution.top10 < 50) {
     recommendations.push(
-      'Less than 50 keywords in top 10. Focus on content optimization and link building.'
+      "Less than 50 keywords in top 10. Focus on content optimization and link building.",
     );
   }
 
   if (keywordsResult.movers.down.length > keywordsResult.movers.up.length) {
     recommendations.push(
-      'More keywords declining than improving. Audit content freshness and competitor activity.'
+      "More keywords declining than improving. Audit content freshness and competitor activity.",
     );
   }
 
   // Based on trends
-  const trend30d = trendsResult.trends.find((t: TrendData) => t.period === '30 days');
+  const trend30d = trendsResult.trends.find(
+    (t: TrendData) => t.period === "30 days",
+  );
   if (trend30d && trend30d.change.impressions < 0) {
     recommendations.push(
-      'Search impressions declining. Consider expanding keyword coverage and publishing more content.'
+      "Search impressions declining. Consider expanding keyword coverage and publishing more content.",
     );
   }
 

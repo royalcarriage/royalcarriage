@@ -5,6 +5,7 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function getStaticPaths() {
   try {
+    // Check if db is initialized
     if (!db) {
       console.warn('[Astro Build] Firebase not initialized, returning empty paths');
       return [];
@@ -34,6 +35,7 @@ export async function getStaticPaths() {
     });
   } catch (error) {
     console.warn('[Astro Build] Could not fetch service content:', error);
+    // Return empty paths - pages will be generated at runtime or via ISR
     return [];
   }
 }
@@ -69,6 +71,7 @@ const { location, service } = Astro.params;
 
 // Sanitize HTML content
 const sanitizeHtml = (html: string) => {
+  // Remove script tags and other potentially dangerous content
   return html
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
     .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
@@ -112,6 +115,7 @@ const metaTags = {
           {content.metaDescription}
         </p>
 
+        {/* Main Content Body */}
         <div
           class="prose-p:text-gray-700 mb-8 text-gray-800"
           set:html={sanitizeHtml(content.content)}
@@ -119,11 +123,11 @@ const metaTags = {
 
         {/* Keywords Section */}
         {content.keywords && content.keywords.length > 0 && (
-          <div class="my-8 rounded-lg bg-pink-50 p-6">
+          <div class="my-8 rounded-lg bg-gray-50 p-6">
             <h3 class="mb-3 text-lg font-semibold text-gray-900">Related Keywords</h3>
             <div class="flex flex-wrap gap-2">
               {content.keywords.slice(0, 15).map((keyword) => (
-                <span class="inline-block rounded-full bg-pink-100 px-3 py-1 text-sm text-pink-800">
+                <span class="inline-block rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800">
                   {keyword}
                 </span>
               ))}
@@ -133,36 +137,36 @@ const metaTags = {
 
         {/* Recommended Vehicles */}
         {content.recommendedVehicles && content.recommendedVehicles.length > 0 && (
-          <div class="my-8 rounded-lg bg-rose-50 p-6">
-            <h3 class="mb-4 text-lg font-semibold text-gray-900">Recommended Wedding Vehicles</h3>
+          <div class="my-8 rounded-lg bg-blue-50 p-6">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Recommended Vehicles for This Service</h3>
             <div class="grid gap-3 sm:grid-cols-3">
               {content.recommendedVehicles.map((vehicle) => (
                 <a href="/fleet" class="flex items-center gap-2 rounded-lg bg-white p-3 shadow-sm hover:shadow-md transition">
-                  <span class="text-rose-600 text-xl">🚗</span>
+                  <span class="text-blue-600 text-xl">🚗</span>
                   <span class="font-medium text-gray-800">{vehicle}</span>
                 </a>
               ))}
             </div>
             <p class="mt-3 text-sm text-gray-600">
-              <a href="/fleet" class="text-rose-600 hover:underline">View our complete wedding fleet</a> for your special day.
+              <a href="/fleet" class="text-blue-600 hover:underline">View our complete fleet</a> to find the perfect vehicle for your needs.
             </p>
           </div>
         )}
 
         {/* Call-to-Action */}
-        <div class="my-8 rounded-lg border-2 border-rose-600 bg-rose-50 p-6 text-center">
-          <h3 class="mb-2 text-2xl font-bold text-rose-900">Make Your Wedding Day Perfect</h3>
-          <p class="mb-4 text-rose-800">Elegant wedding transportation in Chicago and suburbs</p>
+        <div class="my-8 rounded-lg border-2 border-blue-600 bg-blue-50 p-6 text-center">
+          <h3 class="mb-2 text-2xl font-bold text-blue-900">Ready to Book?</h3>
+          <p class="mb-4 text-blue-800">Get premium airport transportation in Chicago</p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/booking"
-              class="inline-block rounded-lg bg-rose-600 px-8 py-3 font-semibold text-white hover:bg-rose-700"
+              class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
             >
-              Book Your Wedding Transportation
+              Book Online
             </a>
             <a
               href="tel:+12248013090"
-              class="inline-block rounded-lg border-2 border-rose-600 px-8 py-3 font-semibold text-rose-600 hover:bg-rose-100"
+              class="inline-block rounded-lg border-2 border-blue-600 px-8 py-3 font-semibold text-blue-600 hover:bg-blue-100"
             >
               Call (224) 801-3090
             </a>
@@ -172,32 +176,32 @@ const metaTags = {
         {/* Cross-Sell Other Services */}
         {content.crossSellWebsites && content.crossSellWebsites.length > 0 && (
           <div class="my-8 rounded-lg border border-gray-200 bg-white p-6">
-            <h3 class="mb-4 text-lg font-semibold text-gray-900">Related Services for Your Wedding</h3>
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Explore Our Other Services</h3>
             <div class="grid gap-4 sm:grid-cols-2">
-              {content.crossSellWebsites.includes('chicago-partybus') && (
-                <a href="https://chicago-partybus.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
-                  <span class="text-2xl">🎉</span>
-                  <div>
-                    <h4 class="font-semibold text-gray-900">Party Bus Rentals</h4>
-                    <p class="text-sm text-gray-600">Perfect for bachelor/bachelorette parties!</p>
-                  </div>
-                </a>
-              )}
-              {content.crossSellWebsites.includes('chicagoairportblackcar') && (
-                <a href="https://chicagoairportblackcar.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
-                  <span class="text-2xl">✈️</span>
-                  <div>
-                    <h4 class="font-semibold text-gray-900">Airport Transfers</h4>
-                    <p class="text-sm text-gray-600">Transportation for out-of-town wedding guests</p>
-                  </div>
-                </a>
-              )}
               {content.crossSellWebsites.includes('chicagoexecutivecarservice') && (
                 <a href="https://chicagoexecutivecarservice.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
                   <span class="text-2xl">💼</span>
                   <div>
                     <h4 class="font-semibold text-gray-900">Executive Car Service</h4>
-                    <p class="text-sm text-gray-600">Professional transport for rehearsal dinners</p>
+                    <p class="text-sm text-gray-600">Corporate transportation for business professionals</p>
+                  </div>
+                </a>
+              )}
+              {content.crossSellWebsites.includes('chicago-partybus') && (
+                <a href="https://chicago-partybus.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
+                  <span class="text-2xl">🎉</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900">Party Bus Rentals</h4>
+                    <p class="text-sm text-gray-600">Group celebration transportation for any occasion</p>
+                  </div>
+                </a>
+              )}
+              {content.crossSellWebsites.includes('chicagoweddingtransportation') && (
+                <a href="https://chicagoweddingtransportation.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
+                  <span class="text-2xl">💒</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900">Wedding Transportation</h4>
+                    <p class="text-sm text-gray-600">Elegant limousine service for your special day</p>
                   </div>
                 </a>
               )}
@@ -208,14 +212,14 @@ const metaTags = {
         {/* Internal Links Section */}
         {content.internalLinks && content.internalLinks.length > 0 && (
           <div class="my-8 rounded-lg bg-gray-100 p-6">
-            <h3 class="mb-4 text-lg font-semibold text-gray-900">Other Wedding Services</h3>
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Related Services</h3>
             <div class="grid gap-4 md:grid-cols-2">
               {content.internalLinks.slice(0, 6).map((link) => (
                 <a
                   href={link.url}
                   class="block rounded-lg bg-white p-4 hover:shadow-lg transition"
                 >
-                  <h4 class="font-semibold text-pink-600 hover:underline">{link.title}</h4>
+                  <h4 class="font-semibold text-blue-600 hover:underline">{link.title}</h4>
                   <p class="mt-1 text-sm text-gray-600">{link.context}</p>
                 </a>
               ))}
@@ -231,3 +235,9 @@ const metaTags = {
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  :global(body) {
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+</style>

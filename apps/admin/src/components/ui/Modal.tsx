@@ -9,7 +9,13 @@ interface ModalProps {
   primaryAction?: { label: string; onClick: () => void; loading?: boolean };
 }
 
-export function Modal({ open, title, children, onClose, primaryAction }: ModalProps) {
+export function Modal({
+  open,
+  title,
+  children,
+  onClose,
+  primaryAction,
+}: ModalProps) {
   if (!open) return null;
 
   return (
@@ -31,7 +37,10 @@ export function Modal({ open, title, children, onClose, primaryAction }: ModalPr
             Cancel
           </PillButton>
           {primaryAction && (
-            <PillButton onClick={primaryAction.onClick} loading={primaryAction.loading}>
+            <PillButton
+              onClick={primaryAction.onClick}
+              loading={primaryAction.loading}
+            >
               {primaryAction.label}
             </PillButton>
           )}

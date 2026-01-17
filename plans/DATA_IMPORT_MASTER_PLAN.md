@@ -11,6 +11,7 @@
 ## 📊 CSV Data Structure Analysis
 
 ### File Overview
+
 - **Total Columns**: 120+
 - **Total Rows**: 1,660 booking records
 - **Data Quality**: HIGH (complete, well-formatted)
@@ -19,6 +20,7 @@
 ### Key Data Categories
 
 #### 1. Trip Information
+
 ```
 ✅ Trip Type: One-way, Round-trip Pickup, Hourly, Quote
 ✅ Trip Duration: Minutes (39-510 min range)
@@ -32,6 +34,7 @@
 ```
 
 #### 2. Financial Data
+
 ```
 ✅ Base Rate: $139-$1,080
 ✅ Additional Charges:
@@ -49,6 +52,7 @@
 ```
 
 #### 3. Payment Information
+
 ```
 ✅ Payment Status: Paid, Not Paid
 ✅ Payment Method: card (single/multiple)
@@ -58,6 +62,7 @@
 ```
 
 #### 4. Driver Information
+
 ```
 ✅ Driver Name: Full names
 ✅ Driver ID: Unique identifiers (UUID)
@@ -74,6 +79,7 @@
 ```
 
 #### 5. Passenger Information
+
 ```
 ✅ Passenger Full Name
 ✅ Phone Number
@@ -85,6 +91,7 @@
 ```
 
 #### 6. Vehicle Information
+
 ```
 ✅ Vehicle Type: suv, shuttle-van, party-bus, party-van, limousine
 ✅ Vehicle: Specific names (Black SUV, Party Bus, Sprinter Limo, etc.)
@@ -96,6 +103,7 @@
 ```
 
 #### 7. Booking & Order Information
+
 ```
 ✅ Reservation Conf (Order No): Unique codes (G9ZF, ZL71, etc.)
 ✅ Order Type: special-occasion, birthday, night-out, concert
@@ -107,6 +115,7 @@
 ```
 
 #### 8. UTM & Analytics Data
+
 ```
 ✅ Req Source: direct, google_ads
 ✅ Utm Source: Empty, google_ads
@@ -123,6 +132,7 @@
 ```
 
 #### 9. Operational Data
+
 ```
 ✅ Pickup Date/Time: Local timestamps
 ✅ Dropoff Time Local: Local timestamps
@@ -138,6 +148,7 @@
 ```
 
 #### 10. Integration Data
+
 ```
 ✅ Griddnet Provider Reservation No
 ✅ Griddnet Json: Complex dispute data
@@ -152,6 +163,7 @@
 ## 💾 Firestore Collection Mapping
 
 ### 1. **bookings** Collection
+
 ```firestore
 /bookings/{bookingId}
 ├── reservationId: "G9ZF"
@@ -177,6 +189,7 @@
 ```
 
 ### 2. **payments** Collection
+
 ```firestore
 /payments/{paymentId}
 ├── bookingId: string
@@ -202,6 +215,7 @@
 ```
 
 ### 3. **payroll** Collection
+
 ```firestore
 /payroll/{payrollId}
 ├── driverId: string
@@ -223,6 +237,7 @@
 ```
 
 ### 4. **trips** Collection
+
 ```firestore
 /trips/{tripId}
 ├── bookingId: string
@@ -247,6 +262,7 @@
 ```
 
 ### 5. **drivers** Collection (Enhanced)
+
 ```firestore
 /drivers/{driverId}
 ├── name: string
@@ -269,6 +285,7 @@
 ```
 
 ### 6. **customers** Collection (Enhanced)
+
 ```firestore
 /customers/{customerId}
 ├── name: string
@@ -287,6 +304,7 @@
 ```
 
 ### 7. **vehicles** Collection (Enhanced)
+
 ```firestore
 /vehicles/{vehicleId}
 ├── name: string
@@ -309,6 +327,7 @@
 ```
 
 ### 8. **analytics** Collection
+
 ```firestore
 /analytics/{analyticsId}
 ├── companyId: string
@@ -340,6 +359,7 @@
 ```
 
 ### 9. **googleAds** Collection
+
 ```firestore
 /googleAds/{analyticsId}
 ├── companyId: string
@@ -360,6 +380,7 @@
 ```
 
 ### 10. **ga4Events** Collection
+
 ```firestore
 /ga4Events/{eventId}
 ├── companyId: string
@@ -378,6 +399,7 @@
 ## 🔧 Import Process & Cloud Functions
 
 ### Function 1: `importCSVData`
+
 ```typescript
 Purpose: Parse CSV and trigger import pipeline
 Input: CSV file
@@ -391,6 +413,7 @@ Output: Import report with stats
 ```
 
 ### Function 2: `createBooking`
+
 ```typescript
 Purpose: Create booking from CSV row
 Input: Booking data object
@@ -407,6 +430,7 @@ Output: Booking ID
 ```
 
 ### Function 3: `processPayment`
+
 ```typescript
 Purpose: Process and record payment
 Input: Payment data
@@ -421,6 +445,7 @@ Output: Payment confirmation
 ```
 
 ### Function 4: `calculatePayroll`
+
 ```typescript
 Purpose: Calculate driver payroll from trips
 Input: Driver ID, date range
@@ -436,6 +461,7 @@ Output: Payroll record
 ```
 
 ### Function 5: `aggregateAnalytics`
+
 ```typescript
 Purpose: Create daily/monthly analytics
 Input: Date, company ID
@@ -450,6 +476,7 @@ Output: Analytics record
 ```
 
 ### Function 6: `syncGoogleAds`
+
 ```typescript
 Purpose: Sync Google Ads data with bookings
 Input: Date range
@@ -463,6 +490,7 @@ Output: Ads analytics
 ```
 
 ### Function 7: `syncGA4Events`
+
 ```typescript
 Purpose: Create GA4 event records from bookings
 Input: Date range
@@ -480,6 +508,7 @@ Output: Event records
 ## 📈 Dashboard Data Requirements
 
 ### 1. **Revenue Dashboard**
+
 ```
 Data Needed:
 ✅ Total Revenue (from payments collection)
@@ -492,6 +521,7 @@ Data Needed:
 ```
 
 ### 2. **Operations Dashboard**
+
 ```
 Data Needed:
 ✅ Active Trips (from trips collection)
@@ -504,6 +534,7 @@ Data Needed:
 ```
 
 ### 3. **Driver Analytics**
+
 ```
 Data Needed:
 ✅ Active Drivers
@@ -516,6 +547,7 @@ Data Needed:
 ```
 
 ### 4. **Customer Analytics**
+
 ```
 Data Needed:
 ✅ Total Customers
@@ -527,6 +559,7 @@ Data Needed:
 ```
 
 ### 5. **Financial Reports**
+
 ```
 Data Needed:
 ✅ Gross Revenue
@@ -539,6 +572,7 @@ Data Needed:
 ```
 
 ### 6. **Google Ads Performance**
+
 ```
 Data Needed:
 ✅ Bookings from Google Ads
@@ -551,6 +585,7 @@ Data Needed:
 ```
 
 ### 7. **Google Analytics (GA4)**
+
 ```
 Data Needed:
 ✅ Page Views
@@ -563,6 +598,7 @@ Data Needed:
 ```
 
 ### 8. **Payroll Dashboard**
+
 ```
 Data Needed:
 ✅ Total Payroll by Period
@@ -579,6 +615,7 @@ Data Needed:
 ## 🔄 Weekly Data Update Process
 
 ### Automated Weekly Import Schedule
+
 ```
 Every Monday 2:00 AM (UTC):
 1. Download latest CSV from source
@@ -592,6 +629,7 @@ Every Monday 2:00 AM (UTC):
 ```
 
 ### Manual Steps
+
 ```
 1. Export CSV from Moovs/source system
 2. Save to Desktop: ~/Desktop/reservations-YYYY-MM-DD.csv
@@ -606,6 +644,7 @@ Every Monday 2:00 AM (UTC):
 ## 🎯 Implementation Steps
 
 ### Phase 1: Data Validation & Schema Mapping (Day 1)
+
 - [ ] Load CSV file
 - [ ] Validate all 1,660 records
 - [ ] Map columns to Firestore schema
@@ -614,6 +653,7 @@ Every Monday 2:00 AM (UTC):
 - [ ] Generate validation report
 
 ### Phase 2: Create Import Functions (Day 1-2)
+
 - [ ] `importCSVData` - Main import function
 - [ ] `createBooking` - Booking creation
 - [ ] `processPayment` - Payment processing
@@ -623,12 +663,14 @@ Every Monday 2:00 AM (UTC):
 - [ ] `syncGA4Events` - GA4 event creation
 
 ### Phase 3: Deploy Functions (Day 2)
+
 - [ ] Deploy all 7 functions to Firebase
 - [ ] Test each function individually
 - [ ] Test integration flows
 - [ ] Monitor for errors
 
 ### Phase 4: Run Initial Import (Day 2)
+
 - [ ] Execute importCSVData with full CSV
 - [ ] Monitor progress
 - [ ] Verify record counts
@@ -636,6 +678,7 @@ Every Monday 2:00 AM (UTC):
 - [ ] Generate import report
 
 ### Phase 5: Populate Dashboard (Day 2-3)
+
 - [ ] Create dashboard components
 - [ ] Connect to Firestore collections
 - [ ] Display real data from CSV
@@ -643,6 +686,7 @@ Every Monday 2:00 AM (UTC):
 - [ ] Test all dashboard features
 
 ### Phase 6: Setup Integrations (Day 3)
+
 - [ ] Configure Google Ads integration
 - [ ] Setup GA4 event tracking
 - [ ] Connect Stripe (if using)
@@ -650,6 +694,7 @@ Every Monday 2:00 AM (UTC):
 - [ ] Verify analytics tracking
 
 ### Phase 7: Full System Audit (Day 3)
+
 - [ ] Test all import functions
 - [ ] Verify data accuracy
 - [ ] Test dashboard displays
@@ -660,6 +705,7 @@ Every Monday 2:00 AM (UTC):
 - [ ] Security review
 
 ### Phase 8: Documentation & Training (Day 3)
+
 - [ ] Create import user guide
 - [ ] Document weekly process
 - [ ] Create troubleshooting guide
@@ -671,6 +717,7 @@ Every Monday 2:00 AM (UTC):
 ## 📊 Expected Results After Import
 
 ### Data Population
+
 ```
 ✅ 1,660 Booking Records Loaded
 ✅ 1,660 Trip Records Created
@@ -685,6 +732,7 @@ Every Monday 2:00 AM (UTC):
 ```
 
 ### Financial Summary (from CSV data)
+
 ```
 Total Revenue: ~$420,000+ (estimated from sample)
 Total Trips: 1,660
@@ -696,6 +744,7 @@ Average Booking Value: ~$250
 ```
 
 ### Dashboard Metrics
+
 ```
 ✅ Revenue Dashboard: Full month of data
 ✅ Operations Dashboard: Complete trip data
@@ -712,6 +761,7 @@ Average Booking Value: ~$250
 ## 🔐 Data Quality & Validation
 
 ### Validation Rules
+
 ```
 ✅ All numeric fields: Positive numbers
 ✅ Dates: Valid timestamp format
@@ -724,6 +774,7 @@ Average Booking Value: ~$250
 ```
 
 ### Error Handling
+
 ```
 ✅ Skip invalid records (log errors)
 ✅ Validate required fields
@@ -739,6 +790,7 @@ Average Booking Value: ~$250
 ## 🚀 Success Metrics
 
 ### Import Success
+
 - [ ] All 1,660 records imported
 - [ ] 0 duplicate records
 - [ ] 0 data validation errors
@@ -746,6 +798,7 @@ Average Booking Value: ~$250
 - [ ] Import completion time < 5 minutes
 
 ### Dashboard Success
+
 - [ ] All 9 dashboards showing data
 - [ ] Real-time data updates
 - [ ] Correct calculations
@@ -753,6 +806,7 @@ Average Booking Value: ~$250
 - [ ] All features functional
 
 ### Integration Success
+
 - [ ] Google Ads data synced
 - [ ] GA4 events tracked
 - [ ] Payment processing working
@@ -760,6 +814,7 @@ Average Booking Value: ~$250
 - [ ] Analytics accurate
 
 ### User Success
+
 - [ ] Team trained on system
 - [ ] Weekly import process documented
 - [ ] No data loss

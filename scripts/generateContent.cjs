@@ -3,29 +3,29 @@
  * Generates SEO content for location-service combinations using Vertex AI (Gemini)
  */
 
-const admin = require('firebase-admin');
-const { VertexAI } = require('@google-cloud/vertexai');
+const admin = require("firebase-admin");
+const { VertexAI } = require("@google-cloud/vertexai");
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
-  admin.initializeApp({ projectId: 'royalcarriagelimoseo' });
+  admin.initializeApp({ projectId: "royalcarriagelimoseo" });
 }
 
 const db = admin.firestore();
 
 // Initialize Vertex AI
 const vertexAI = new VertexAI({
-  project: 'royalcarriagelimoseo',
-  location: 'us-central1',
+  project: "royalcarriagelimoseo",
+  location: "us-central1",
 });
 
-const model = vertexAI.getGenerativeModel({ model: 'gemini-2.0-flash-001' });
+const model = vertexAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
 
 async function generateContentForLocation(locationId, serviceId) {
   // Get location and service data
   const [locationDoc, serviceDoc] = await Promise.all([
-    db.collection('locations').doc(locationId).get(),
-    db.collection('services').doc(serviceId).get(),
+    db.collection("locations").doc(locationId).get(),
+    db.collection("services").doc(serviceId).get(),
   ]);
 
   if (!locationDoc.exists || !serviceDoc.exists) {
@@ -41,7 +41,7 @@ async function generateContentForLocation(locationId, serviceId) {
 Location: ${location.name}, Chicago area
 Service: ${service.name}
 Service Description: ${service.description}
-Target Keywords: ${(service.keywords || []).join(', ')}
+Target Keywords: ${(service.keywords || []).join(", ")}
 
 Create the following content in JSON format:
 {
@@ -76,13 +76,13 @@ Make the content specific to ${location.name} and the Chicago metropolitan area.
 
     // Store in Firestore
     const contentId = `${locationId}_${serviceId}`;
-    await db.collection('service_content').doc(contentId).set({
+    await db.collection("service_content").doc(contentId).set({
       locationId,
       serviceId,
       websiteId: service.website,
       content,
-      status: 'generated',
-      approvalStatus: 'pending',
+      status: "generated",
+      approvalStatus: "pending",
       generatedAt: admin.firestore.Timestamp.now(),
       createdAt: admin.firestore.Timestamp.now(),
       updatedAt: admin.firestore.Timestamp.now(),
@@ -96,12 +96,12 @@ Make the content specific to ${location.name} and the Chicago metropolitan area.
 }
 
 async function main() {
-  console.log('Starting Content Generation with Vertex AI (Gemini)\n');
+  console.log("Starting Content Generation with Vertex AI (Gemini)\n");
 
   // Get pending queue items
   const queueSnapshot = await db
-    .collection('regeneration_queue')
-    .where('status', '==', 'pending')
+    .collection("regeneration_queue")
+    .where("status", "==", "pending")
     .limit(12)
     .get();
 
@@ -114,36 +114,39 @@ async function main() {
     const item = doc.data();
     console.log(`Processing: ${item.locationId} + ${item.serviceId}`);
 
-    const content = await generateContentForLocation(item.locationId, item.serviceId);
+    const content = await generateContentForLocation(
+      item.locationId,
+      item.serviceId,
+    );
 
     if (content) {
       // Update queue status
       await doc.ref.update({
-        status: 'completed',
+        status: "completed",
         completedAt: admin.firestore.Timestamp.now(),
       });
       generated++;
       console.log(`  Generated: "${content.title}"`);
     } else {
       await doc.ref.update({
-        status: 'failed',
+        status: "failed",
         retries: (item.retries || 0) + 1,
       });
       failed++;
     }
 
     // Small delay to avoid rate limiting
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 1500));
   }
 
-  console.log('\n=== CONTENT GENERATION COMPLETE ===');
+  console.log("\n=== CONTENT GENERATION COMPLETE ===");
   console.log(`Generated: ${generated}`);
   console.log(`Failed: ${failed}`);
 
   process.exit(0);
 }
 
-main().catch(err => {
-  console.error('Fatal error:', err);
+main().catch((err) => {
+  console.error("Fatal error:", err);
   process.exit(1);
 });

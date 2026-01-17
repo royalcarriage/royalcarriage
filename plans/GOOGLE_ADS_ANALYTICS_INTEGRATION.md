@@ -1,9 +1,11 @@
 # Google Ads & Analytics Integration Plan
 
 ## Overview
+
 This document outlines the integration setup for Google Ads and Google Analytics with the Royal Carriage SEO system.
 
 ## Current Status
+
 - Google Ads API: **Enabled**
 - BigQuery API: **Enabled**
 - Analytics Hub: **Enabled**
@@ -12,27 +14,31 @@ This document outlines the integration setup for Google Ads and Google Analytics
 ## Required Configurations
 
 ### 1. Google Analytics 4 (GA4) Setup
+
 ```
 Property ID: [To be configured]
 Measurement ID: G-CC67CH86JR (configured in .env)
 ```
 
 #### Websites to Track:
-| Site | URL | GA4 Stream |
-|------|-----|------------|
-| Admin | royalcarriagelimoseo.web.app | Dashboard analytics |
-| Airport | chicagoairportblackcar.web.app | Public site tracking |
-| Corporate | chicagoexecutivecarservice.web.app | Public site tracking |
-| Wedding | chicagoweddingtransportation.web.app | Public site tracking |
-| Party Bus | chicago-partybus.web.app | Public site tracking |
+
+| Site      | URL                                  | GA4 Stream           |
+| --------- | ------------------------------------ | -------------------- |
+| Admin     | royalcarriagelimoseo.web.app         | Dashboard analytics  |
+| Airport   | chicagoairportblackcar.web.app       | Public site tracking |
+| Corporate | chicagoexecutivecarservice.web.app   | Public site tracking |
+| Wedding   | chicagoweddingtransportation.web.app | Public site tracking |
+| Party Bus | chicago-partybus.web.app             | Public site tracking |
 
 ### 2. Google Ads Configuration
+
 ```
 Customer ID: [To be configured]
 Manager Account: [If applicable]
 ```
 
 #### Required Scopes:
+
 - `https://www.googleapis.com/auth/adwords`
 - Read campaign performance
 - Read conversion data
@@ -40,12 +46,14 @@ Manager Account: [If applicable]
 ### 3. BigQuery Data Export
 
 #### GA4 to BigQuery Export (Recommended):
+
 1. Go to GA4 Property > Admin > BigQuery Links
 2. Link to project: `royalcarriagelimoseo`
 3. Dataset: `analytics_export`
 4. Enable streaming export for real-time data
 
 #### Google Ads to BigQuery Transfer:
+
 1. Go to BigQuery > Data Transfer
 2. Create transfer: Google Ads
 3. Customer ID: [Google Ads Customer ID]
@@ -55,16 +63,18 @@ Manager Account: [If applicable]
 ### 4. Cloud Functions for Data Pull
 
 #### Existing Functions:
+
 - `importAdsCSV` - Manual CSV import
 - `getMetricTrends` - Analytics data retrieval
 - `getROIAnalysis` - ROI calculations
 
 #### Planned Functions for Next Phase:
+
 ```typescript
 // Auto-sync Google Ads data
 export const syncGoogleAdsData = functions.pubsub
-  .schedule('0 5 * * *') // Daily at 5 AM
-  .timeZone('America/Chicago')
+  .schedule("0 5 * * *") // Daily at 5 AM
+  .timeZone("America/Chicago")
   .onRun(async () => {
     // Fetch from BigQuery or Ads API
     // Store in Firestore metrics collection
@@ -72,8 +82,8 @@ export const syncGoogleAdsData = functions.pubsub
 
 // Auto-sync GA4 data
 export const syncGA4Data = functions.pubsub
-  .schedule('0 6 * * *') // Daily at 6 AM
-  .timeZone('America/Chicago')
+  .schedule("0 6 * * *") // Daily at 6 AM
+  .timeZone("America/Chicago")
   .onRun(async () => {
     // Fetch from GA4 API or BigQuery
     // Calculate key metrics
@@ -84,6 +94,7 @@ export const syncGA4Data = functions.pubsub
 ### 5. Service Account Permissions
 
 Required roles for service account `royalcarriagelimoseo@appspot.gserviceaccount.com`:
+
 - [x] `roles/aiplatform.user` - Vertex AI access
 - [x] `roles/cloudfunctions.developer` - Deploy functions
 - [ ] `roles/bigquery.dataViewer` - Read BigQuery data
@@ -92,6 +103,7 @@ Required roles for service account `royalcarriagelimoseo@appspot.gserviceaccount
 ### 6. Environment Variables Needed
 
 Add to `.env`:
+
 ```
 # Google Analytics
 GA4_PROPERTY_ID=<property_id>
@@ -110,16 +122,19 @@ BIGQUERY_DATASET_ADS=google_ads_export
 ## Implementation Phases
 
 ### Phase 1 (Current) - Manual Import
+
 - CSV import for Moovs data ✅
 - CSV import for Ads data ✅
 - Manual data entry in admin dashboard ✅
 
 ### Phase 2 (Next) - BigQuery Integration
+
 - [ ] Set up GA4 to BigQuery export
 - [ ] Set up Google Ads to BigQuery transfer
 - [ ] Create scheduled functions to sync data
 
 ### Phase 3 (Future) - Real-time Dashboard
+
 - [ ] Implement real-time GA4 data streaming
 - [ ] Create ROI dashboard with live data
 - [ ] Add campaign performance alerts
@@ -127,6 +142,7 @@ BIGQUERY_DATASET_ADS=google_ads_export
 ## API Endpoints for Data Access
 
 ### Current:
+
 ```
 GET /api/metrics/trends - Time series data
 GET /api/metrics/roi - ROI analysis
@@ -135,6 +151,7 @@ POST /api/imports/moovs - Manual CSV import
 ```
 
 ### Planned:
+
 ```
 GET /api/analytics/ga4/realtime - Real-time visitor data
 GET /api/analytics/ads/campaigns - Campaign performance
@@ -157,5 +174,5 @@ POST /api/analytics/sync - Trigger manual sync
 
 ---
 
-*Document created: 2026-01-17*
-*For CLI integration with Gemini*
+_Document created: 2026-01-17_
+_For CLI integration with Gemini_

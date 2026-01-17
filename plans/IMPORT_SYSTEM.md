@@ -20,17 +20,20 @@ Check   Validate           Rules    Duplicates   to DB    Results
 ## Step 1: File Upload
 
 ### Input
+
 - CSV file (max 100MB)
 - Source system selection (Moovs, QuickBooks, Manual)
 - Record type (rides, customers, drivers, payments)
 
 ### Validation
+
 - File exists and is readable
 - File size < 100MB
 - Content-Type: text/csv
 - Encoding: UTF-8
 
 ### Output
+
 - Upload ID (UUID)
 - File stored in Cloud Storage: `/imports/moovs/{uploadId}.csv`
 - Import record created with status: "validating"
@@ -40,11 +43,13 @@ Check   Validate           Rules    Duplicates   to DB    Results
 ## Step 2: Schema Validation
 
 ### Column Detection
+
 - Read first row for headers
 - Detect column data types (string, number, date, boolean)
 - Match against expected schema
 
 ### Schema Rules (Example: Rides)
+
 ```yaml
 rides:
   required_columns:
@@ -65,8 +70,9 @@ rides:
 ```
 
 ### Validation Results
+
 - ✅ All required columns present
-- ⚠️  Extra columns ignored
+- ⚠️ Extra columns ignored
 - ❌ Missing required column → Reject
 
 ---
@@ -74,10 +80,12 @@ rides:
 ## Step 3: Column Mapping
 
 ### Auto-Mapping
+
 - If headers match expected names exactly → auto-map
 - If partial match (e.g., "booking_date" vs "bookingDate") → offer suggestions
 
 ### Manual Mapping
+
 - If auto-mapping fails, show UI:
   ```
   CSV Column          → Target Field
@@ -88,6 +96,7 @@ rides:
   ```
 
 ### Output
+
 - Column mapping config stored
 - Applied to all rows
 
@@ -96,6 +105,7 @@ rides:
 ## Step 4: Data Transformation
 
 ### Transform Rules
+
 ```javascript
 {
   // Field transformations
@@ -114,12 +124,14 @@ rides:
 ```
 
 ### Validation During Transform
+
 - Data type correctness
 - Value range checks (e.g., 0 <= rating <= 5)
 - Referential integrity (driver must exist)
 - Business rule compliance
 
 ### Error Handling
+
 - Record-level errors collected
 - Error messages with row number and field
 - Option to skip error rows or abort
@@ -131,6 +143,7 @@ rides:
 ### Detection Methods
 
 #### 1. Exact Match
+
 ```sql
 SELECT * FROM rides
 WHERE ride_id = 'moovs-12345'
@@ -138,6 +151,7 @@ WHERE ride_id = 'moovs-12345'
 ```
 
 #### 2. Fuzzy Match (Similar rides)
+
 ```javascript
 {
   pickup: "123 Main St, Chicago, IL",
@@ -149,6 +163,7 @@ WHERE ride_id = 'moovs-12345'
 ```
 
 #### 3. Import ID Tracking
+
 ```firestore
 import_logs: {
   importId_123: {
@@ -160,11 +175,13 @@ import_logs: {
 ```
 
 ### Actions
+
 - **Found Exact Duplicate**: Skip (idempotent re-import safety)
 - **Found Fuzzy Duplicate**: Warn admin, option to skip/replace
 - **New Record**: Proceed to import
 
 ### Output
+
 - Deduplication report
 - New records: N, Skipped duplicates: M, Updated records: K
 
@@ -173,24 +190,26 @@ import_logs: {
 ## Step 6: Database Import (Transactional)
 
 ### Transaction Batching
+
 - Group records into batches of 100
 - Batch transaction (all-or-nothing)
 - Rollback on any failure
 
 ### Import Logic
+
 ```javascript
 async function importBatch(records, importId) {
   const batch = db.batch();
 
   for (const record of records) {
-    const docRef = db.collection('rides').doc(record.id);
+    const docRef = db.collection("rides").doc(record.id);
 
     // Add import tracking
     const data = {
       ...record,
       import_id: importId,
       import_timestamp: serverTimestamp(),
-      import_source: 'moovs_csv'
+      import_source: "moovs_csv",
     };
 
     batch.set(docRef, data);
@@ -201,6 +220,7 @@ async function importBatch(records, importId) {
 ```
 
 ### Atomic Updates
+
 - All-or-nothing per batch
 - Prevents partial imports
 - Rollback on failure
@@ -210,6 +230,7 @@ async function importBatch(records, importId) {
 ## Step 7: Verification
 
 ### Post-Import Checks
+
 ```javascript
 {
   total_records: 1000,
@@ -231,6 +252,7 @@ async function importBatch(records, importId) {
 ```
 
 ### Validation
+
 - Row count matches
 - No partial imports
 - Data consistency verified
@@ -241,6 +263,7 @@ async function importBatch(records, importId) {
 ## Step 8: Archive & Audit Trail
 
 ### Archive Storage
+
 ```
 /imports/moovs/{importId}/
   ├── original.csv (original file)
@@ -251,6 +274,7 @@ async function importBatch(records, importId) {
 ```
 
 ### Audit Log Entry
+
 ```firestore
 /imports/{importId}: {
   id: "import_abc123",
@@ -287,9 +311,11 @@ async function importBatch(records, importId) {
 ## Idempotency Strategy
 
 ### Problem
+
 User uploads same file twice → Don't create duplicates
 
 ### Solution
+
 ```javascript
 async function importCSV(file, sourceSystem) {
   // 1. Calculate file hash (MD5/SHA256)
@@ -297,8 +323,8 @@ async function importCSV(file, sourceSystem) {
 
   // 2. Check if this file was already imported
   const existingImport = await db
-    .collection('imports')
-    .where('file_hash', '==', fileHash)
+    .collection("imports")
+    .where("file_hash", "==", fileHash)
     .limit(1)
     .get();
 
@@ -307,7 +333,7 @@ async function importCSV(file, sourceSystem) {
       status: "duplicate",
       message: "This file was already imported",
       importId: existingImport.docs[0].id,
-      timestamp: existingImport.docs[0].data().timestamp
+      timestamp: existingImport.docs[0].data().timestamp,
     };
   }
 
@@ -317,6 +343,7 @@ async function importCSV(file, sourceSystem) {
 ```
 
 ### Benefits
+
 - Can re-run import safely
 - No manual deduplication needed
 - Track which file version was imported
@@ -326,18 +353,19 @@ async function importCSV(file, sourceSystem) {
 ## Week-Close Process
 
 ### Automatic Week-Close
+
 ```javascript
 async function weekClose(weekNumber, tenantId) {
   // 1. Verify all rides for week are imported
   const weekRides = await db
-    .collection('rides')
-    .where('tenant_id', '==', tenantId)
-    .where('week', '==', weekNumber)
+    .collection("rides")
+    .where("tenant_id", "==", tenantId)
+    .where("week", "==", weekNumber)
     .get();
 
   // 2. Lock rides (prevent modifications)
   const batch = db.batch();
-  weekRides.docs.forEach(doc => {
+  weekRides.docs.forEach((doc) => {
     batch.update(doc.ref, { locked: true });
   });
   await batch.commit();
@@ -350,6 +378,7 @@ async function weekClose(weekNumber, tenantId) {
 ```
 
 ### Week Close Checklist
+
 - ✅ All rides imported for week
 - ✅ No pending exceptions
 - ✅ Reconciliation complete
@@ -362,15 +391,16 @@ async function weekClose(weekNumber, tenantId) {
 
 ### Error Types & Recovery
 
-| Error Type | Example | Action |
-|-----------|---------|--------|
-| Schema | Missing column | Abort import, show schema |
-| Data Type | "abc" as fare_amount | Skip record or convert |
-| Business Rule | driver_id "xyz" not found | Skip record, warn |
-| Duplicate | Exact match found | Skip (idempotent) |
-| Storage | GCS write failed | Retry 3x, then abort |
+| Error Type    | Example                   | Action                    |
+| ------------- | ------------------------- | ------------------------- |
+| Schema        | Missing column            | Abort import, show schema |
+| Data Type     | "abc" as fare_amount      | Skip record or convert    |
+| Business Rule | driver_id "xyz" not found | Skip record, warn         |
+| Duplicate     | Exact match found         | Skip (idempotent)         |
+| Storage       | GCS write failed          | Retry 3x, then abort      |
 
 ### User-Facing Messages
+
 ```
 ❌ Import Failed: 15 errors found
    Row 42: driver_id "invalid123" not found
@@ -385,6 +415,7 @@ async function weekClose(weekNumber, tenantId) {
 ## UI Workflow
 
 ### Step 1: Upload Screen
+
 ```
 ┌─────────────────────────────────┐
 │ Upload Moovs CSV Export         │
@@ -398,6 +429,7 @@ async function weekClose(weekNumber, tenantId) {
 ```
 
 ### Step 2: Validation Screen
+
 ```
 ┌─────────────────────────────────┐
 │ Validating...                   │
@@ -410,6 +442,7 @@ async function weekClose(weekNumber, tenantId) {
 ```
 
 ### Step 3: Mapping Screen
+
 ```
 CSV Column → Target Field
 [ride_id] → [Ride ID]
@@ -423,6 +456,7 @@ CSV Column → Target Field
 ```
 
 ### Step 4: Review & Confirm
+
 ```
 ┌─────────────────────────────────┐
 │ Ready to Import                 │
@@ -437,6 +471,7 @@ CSV Column → Target Field
 ```
 
 ### Step 5: Progress Screen
+
 ```
 Importing... [████████████░░░░] 60%
 Processing records 601-650
@@ -444,6 +479,7 @@ Time remaining: 2 minutes
 ```
 
 ### Step 6: Summary Screen
+
 ```
 ✅ Import Complete
 ├─ Total Processed: 1000
@@ -460,6 +496,7 @@ Time remaining: 2 minutes
 ## Scheduled Imports
 
 ### Daily Auto-Import (Optional)
+
 ```javascript
 // Cloud Scheduler job (daily at 2 AM)
 async function scheduledMoovsImport() {
@@ -471,6 +508,7 @@ async function scheduledMoovsImport() {
 ```
 
 ### Configuration
+
 ```firestore
 /settings/imports: {
   moovs: {

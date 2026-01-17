@@ -1,5 +1,5 @@
-import React from 'react';
-import { useRouter } from 'next/router';
+import React from "react";
+import { useRouter } from "next/router";
 
 /**
  * Login page - redirects to index for authentication
@@ -10,7 +10,7 @@ export default function LoginPage() {
 
   React.useEffect(() => {
     // Redirect to index page which handles authentication
-    router.replace('/');
+    router.replace("/");
   }, [router]);
 
   return (

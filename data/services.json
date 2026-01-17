@@ -9,9 +9,23 @@
       "longDescription": "Our O'Hare airport transfer service ensures stress-free travel to Chicago's largest airport. We monitor flight schedules to provide timely pickups, ensuring you never miss your departure. From the moment we collect you, every detail is handled professionally - luggage assistance, vehicle comfort, and route optimization for minimal travel time.",
       "basePrice": 75,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "escalade-suv", "sprinter-14"],
-      "relatedServices": ["midway-airport-transfer", "airport-downtown-hotel", "airport-business-meeting"],
-      "keywords": ["O'Hare airport limo", "Chicago O'Hare transportation", "O'Hare limousine service", "ORD airport transfer"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "escalade-suv",
+        "sprinter-14"
+      ],
+      "relatedServices": [
+        "midway-airport-transfer",
+        "airport-downtown-hotel",
+        "airport-business-meeting"
+      ],
+      "keywords": [
+        "O'Hare airport limo",
+        "Chicago O'Hare transportation",
+        "O'Hare limousine service",
+        "ORD airport transfer"
+      ],
       "searchVolume": 2200,
       "difficulty": "high"
     },
@@ -24,9 +38,23 @@
       "longDescription": "Midway airport service from Royal Carriage features express routing through optimized highways and real-time flight tracking. Our experienced drivers know the best routes to avoid congestion and get you to the airport efficiently. Premium vehicle options ensure your arrival is as comfortable as your destination.",
       "basePrice": 65,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "escalade-suv", "sprinter-14"],
-      "relatedServices": ["ohare-airport-transfer", "airport-downtown-hotel", "airport-suburban-hotel"],
-      "keywords": ["Midway airport limo", "Chicago Midway transportation", "Midway limousine", "MDW airport service"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "escalade-suv",
+        "sprinter-14"
+      ],
+      "relatedServices": [
+        "ohare-airport-transfer",
+        "airport-downtown-hotel",
+        "airport-suburban-hotel"
+      ],
+      "keywords": [
+        "Midway airport limo",
+        "Chicago Midway transportation",
+        "Midway limousine",
+        "MDW airport service"
+      ],
       "searchVolume": 1600,
       "difficulty": "high"
     },
@@ -39,9 +67,21 @@
       "longDescription": "For private jet travelers, our Executive Airport service provides premium transportation with white-glove treatment. We coordinate directly with Fixed Base Operators (FBOs) for seamless transitions between ground and air travel.",
       "basePrice": 85,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["mercedes-s-class", "bmw-7-series", "escalade-suv"],
-      "relatedServices": ["airport-ohare-transfer", "business-meeting-transport"],
-      "keywords": ["private aviation Chicago", "Executive airport transfer", "Meigs Field service", "private jet transportation"],
+      "applicableVehicles": [
+        "mercedes-s-class",
+        "bmw-7-series",
+        "escalade-suv"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "business-meeting-transport"
+      ],
+      "keywords": [
+        "private aviation Chicago",
+        "Executive airport transfer",
+        "Meigs Field service",
+        "private jet transportation"
+      ],
       "searchVolume": 280,
       "difficulty": "medium-high"
     },
@@ -54,9 +94,22 @@
       "longDescription": "Whether arriving at O'Hare or Midway, our suburban hotel shuttle ensures you reach your accommodation refreshed and on time. We service all major hotel chains in Chicago suburbs with professional, courteous service.",
       "basePrice": 85,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive"],
-      "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel", "airport-business-meeting"],
-      "keywords": ["airport hotel shuttle", "Naperville airport service", "suburban hotel transfer", "airport accommodation"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-downtown-hotel",
+        "airport-business-meeting"
+      ],
+      "keywords": [
+        "airport hotel shuttle",
+        "Naperville airport service",
+        "suburban hotel transfer",
+        "airport accommodation"
+      ],
       "searchVolume": 890,
       "difficulty": "medium"
     },
@@ -69,9 +122,23 @@
       "longDescription": "Our premium airport-to-downtown service connects Chicago's major airports with your hotel in the business and entertainment districts. Luxury vehicles, professional drivers, and smooth routing ensure you arrive relaxed and ready.",
       "basePrice": 55,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "escalade-suv", "mercedes-s-class"],
-      "relatedServices": ["airport-ohare-transfer", "airport-suburban-hotel", "downtown-business-meeting"],
-      "keywords": ["airport hotel Chicago downtown", "Loop hotel transfer", "downtown airport service", "River North airport"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "escalade-suv",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-suburban-hotel",
+        "downtown-business-meeting"
+      ],
+      "keywords": [
+        "airport hotel Chicago downtown",
+        "Loop hotel transfer",
+        "downtown airport service",
+        "River North airport"
+      ],
       "searchVolume": 1200,
       "difficulty": "high"
     },
@@ -84,9 +151,23 @@
       "longDescription": "Arrive at your business meeting refreshed and prepared. Our airport business transport features vehicles with mobile office amenities - Wi-Fi, phone charging, and comfortable seating for last-minute preparation.",
       "basePrice": 70,
       "pricingModel": "variable",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "mercedes-s-class", "bmw-7-series"],
-      "relatedServices": ["airport-ohare-transfer", "downtown-business-meeting", "corporate-executive-commute"],
-      "keywords": ["business travel Chicago", "airport to meeting", "corporate car service", "executive airport transport"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "mercedes-s-class",
+        "bmw-7-series"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "downtown-business-meeting",
+        "corporate-executive-commute"
+      ],
+      "keywords": [
+        "business travel Chicago",
+        "airport to meeting",
+        "corporate car service",
+        "executive airport transport"
+      ],
       "searchVolume": 980,
       "difficulty": "medium-high"
     },
@@ -99,9 +180,18 @@
       "longDescription": "From McCormick Place to Navy Pier, from concert venues to sporting events, we provide reliable airport-to-event transportation. Drop-off coordination and timing optimization included.",
       "basePrice": 65,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive"
+      ],
       "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel"],
-      "keywords": ["airport to event Chicago", "conference transportation", "airport to McCormick Place", "event transport"],
+      "keywords": [
+        "airport to event Chicago",
+        "conference transportation",
+        "airport to McCormick Place",
+        "event transport"
+      ],
       "searchVolume": 650,
       "difficulty": "medium"
     },
@@ -114,9 +204,23 @@
       "longDescription": "Celebrate special occasions with style. We coordinate airport transportation to the finest restaurants in Chicago - from Michelin-starred establishments to exclusive private dining venues. Complete concierge service included.",
       "basePrice": 60,
       "pricingModel": "variable",
-      "applicableVehicles": ["mercury-grand-marquis", "cadillac-xts", "stretch-limo", "escalade-suv"],
-      "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel", "wedding-guest-transportation"],
-      "keywords": ["airport fine dining Chicago", "luxury dining transport", "restaurant transportation", "special occasion dining"],
+      "applicableVehicles": [
+        "mercury-grand-marquis",
+        "cadillac-xts",
+        "stretch-limo",
+        "escalade-suv"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-downtown-hotel",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "airport fine dining Chicago",
+        "luxury dining transport",
+        "restaurant transportation",
+        "special occasion dining"
+      ],
       "searchVolume": 450,
       "difficulty": "medium"
     },
@@ -129,9 +233,18 @@
       "longDescription": "Manage large corporate travel with our group coordination service. Multiple vehicles synchronized for simultaneous pickup/dropoff, manifest tracking, and billing coordination.",
       "basePrice": 1200,
       "pricingModel": "variable",
-      "applicableVehicles": ["sprinter-14", "sprinter-executive", "motor-coach"],
+      "applicableVehicles": [
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
       "relatedServices": ["airport-ohare-transfer", "airport-business-meeting"],
-      "keywords": ["corporate group transport", "airport shuttle service", "business group transportation", "employee airport service"],
+      "keywords": [
+        "corporate group transport",
+        "airport shuttle service",
+        "business group transportation",
+        "employee airport service"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -144,9 +257,23 @@
       "longDescription": "Welcome your wedding guests with professional transportation. We coordinate vehicles for multiple guests arriving throughout the day, managing luggage, timing, and hotel coordination.",
       "basePrice": 95,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel", "airport-suburban-hotel"],
-      "keywords": ["wedding guest transportation", "destination wedding shuttle", "guest airport service", "wedding arrival coordination"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-downtown-hotel",
+        "airport-suburban-hotel"
+      ],
+      "keywords": [
+        "wedding guest transportation",
+        "destination wedding shuttle",
+        "guest airport service",
+        "wedding arrival coordination"
+      ],
       "searchVolume": 520,
       "difficulty": "medium-high"
     },
@@ -159,9 +286,22 @@
       "longDescription": "Coordinate large family group airport transportation with professional scheduling and multi-vehicle management. Perfect for reunions, holidays, and family events.",
       "basePrice": 85,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive"],
-      "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel", "airport-suburban-hotel"],
-      "keywords": ["family airport shuttle", "group airport transport", "family reunion transportation", "large group pickup"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-downtown-hotel",
+        "airport-suburban-hotel"
+      ],
+      "keywords": [
+        "family airport shuttle",
+        "group airport transport",
+        "family reunion transportation",
+        "large group pickup"
+      ],
       "searchVolume": 620,
       "difficulty": "medium"
     },
@@ -176,7 +316,12 @@
       "pricingModel": "flat-rate",
       "applicableVehicles": ["all"],
       "relatedServices": ["airport-ohare-transfer", "airport-midway-transfer"],
-      "keywords": ["airport meet and greet", "luggage assistance service", "VIP airport service", "airport concierge"],
+      "keywords": [
+        "airport meet and greet",
+        "luggage assistance service",
+        "VIP airport service",
+        "airport concierge"
+      ],
       "searchVolume": 890,
       "difficulty": "low-medium"
     },
@@ -191,7 +336,12 @@
       "pricingModel": "flat-rate",
       "applicableVehicles": ["all"],
       "relatedServices": ["airport-ohare-transfer", "airport-midway-transfer"],
-      "keywords": ["airport parking service", "park and fly Chicago", "parking facility transport", "long-term parking"],
+      "keywords": [
+        "airport parking service",
+        "park and fly Chicago",
+        "parking facility transport",
+        "long-term parking"
+      ],
       "searchVolume": 540,
       "difficulty": "low"
     },
@@ -204,9 +354,18 @@
       "longDescription": "Manage tight layovers with our connecting flight service. We monitor departure times and coordinate ground transportation with built-in buffer time.",
       "basePrice": 65,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "escalade-suv"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "escalade-suv"
+      ],
       "relatedServices": ["airport-ohare-transfer", "airport-midway-transfer"],
-      "keywords": ["connecting flight transport", "airport layover service", "flight coordination", "inter-airport transfer"],
+      "keywords": [
+        "connecting flight transport",
+        "airport layover service",
+        "flight coordination",
+        "inter-airport transfer"
+      ],
       "searchVolume": 420,
       "difficulty": "medium"
     },
@@ -221,7 +380,12 @@
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "sprinter-executive"],
       "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel"],
-      "keywords": ["Chicago city tour", "airport tour package", "arrival tour service", "Chicago sightseeing"],
+      "keywords": [
+        "Chicago city tour",
+        "airport tour package",
+        "arrival tour service",
+        "Chicago sightseeing"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -234,9 +398,22 @@
       "longDescription": "Maximize your first day in Chicago. Our all-day service handles airport pickup, accommodates business meetings or leisure activities, and ensures smooth hotel drop-off.",
       "basePrice": 350,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "stretch-limo"],
-      "relatedServices": ["airport-ohare-transfer", "airport-downtown-hotel", "airport-business-meeting"],
-      "keywords": ["all-day car service", "full-day airport service", "day-long transportation", "airport flexibility"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-downtown-hotel",
+        "airport-business-meeting"
+      ],
+      "keywords": [
+        "all-day car service",
+        "full-day airport service",
+        "day-long transportation",
+        "airport flexibility"
+      ],
       "searchVolume": 290,
       "difficulty": "medium-high"
     },
@@ -250,8 +427,17 @@
       "basePrice": 0,
       "pricingModel": "subscription",
       "applicableVehicles": ["all"],
-      "relatedServices": ["airport-ohare-transfer", "airport-business-meeting", "corporate-executive-commute"],
-      "keywords": ["frequent flyer program", "airport loyalty service", "business traveler rewards", "priority car service"],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "airport-business-meeting",
+        "corporate-executive-commute"
+      ],
+      "keywords": [
+        "frequent flyer program",
+        "airport loyalty service",
+        "business traveler rewards",
+        "priority car service"
+      ],
       "searchVolume": 220,
       "difficulty": "low"
     },
@@ -266,7 +452,12 @@
       "pricingModel": "hourly",
       "applicableVehicles": ["all"],
       "relatedServices": ["airport-ohare-transfer", "airport-midway-transfer"],
-      "keywords": ["airport waiting service", "standby car service", "hourly airport transportation", "flight delay service"],
+      "keywords": [
+        "airport waiting service",
+        "standby car service",
+        "hourly airport transportation",
+        "flight delay service"
+      ],
       "searchVolume": 310,
       "difficulty": "low"
     },
@@ -279,9 +470,22 @@
       "longDescription": "Welcome international guests with specialized service. We provide guidance on customs procedures, ground transportation coordination, and concierge support.",
       "basePrice": 85,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "stretch-limo"],
-      "relatedServices": ["airport-ohare-transfer", "meet-and-greet-service", "airport-downtown-hotel"],
-      "keywords": ["international airport service", "customs assistance", "international visitor transportation", "immigration support"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "airport-ohare-transfer",
+        "meet-and-greet-service",
+        "airport-downtown-hotel"
+      ],
+      "keywords": [
+        "international airport service",
+        "customs assistance",
+        "international visitor transportation",
+        "immigration support"
+      ],
       "searchVolume": 280,
       "difficulty": "medium"
     },
@@ -294,9 +498,22 @@
       "longDescription": "Eliminate commute stress with our daily subscription service. Consistent pickup/dropoff, professional environment, and monthly billing.",
       "basePrice": 2500,
       "pricingModel": "monthly-subscription",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "mercedes-s-class"],
-      "relatedServices": ["airport-business-meeting", "business-meeting-transport", "executive-suite-hourly"],
-      "keywords": ["executive commute service", "daily car service", "commute subscription", "business transportation"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "business-meeting-transport",
+        "executive-suite-hourly"
+      ],
+      "keywords": [
+        "executive commute service",
+        "daily car service",
+        "commute subscription",
+        "business transportation"
+      ],
       "searchVolume": 890,
       "difficulty": "medium"
     },
@@ -309,9 +526,23 @@
       "longDescription": "Coordinate inter-office and client meeting transportation. Our service ensures you arrive on time, fresh, and ready to engage.",
       "basePrice": 60,
       "pricingModel": "variable",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "escalade-suv", "mercedes-s-class"],
-      "relatedServices": ["airport-business-meeting", "downtown-business-meeting", "client-entertainment"],
-      "keywords": ["business meeting transport", "downtown transportation", "inter-office shuttle", "meeting coordination"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "escalade-suv",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "downtown-business-meeting",
+        "client-entertainment"
+      ],
+      "keywords": [
+        "business meeting transport",
+        "downtown transportation",
+        "inter-office shuttle",
+        "meeting coordination"
+      ],
       "searchVolume": 1100,
       "difficulty": "medium-high"
     },
@@ -324,9 +555,22 @@
       "longDescription": "Board members and C-suite executives deserve white-glove treatment. Discreet, professional service with privacy-first approach and premium vehicle options.",
       "basePrice": 120,
       "pricingModel": "variable",
-      "applicableVehicles": ["mercedes-s-class", "bmw-7-series", "escalade-suv"],
-      "relatedServices": ["airport-business-meeting", "business-meeting-transport", "corporate-event-transport"],
-      "keywords": ["board member transportation", "C-suite car service", "executive VIP service", "private executive travel"],
+      "applicableVehicles": [
+        "mercedes-s-class",
+        "bmw-7-series",
+        "escalade-suv"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "business-meeting-transport",
+        "corporate-event-transport"
+      ],
+      "keywords": [
+        "board member transportation",
+        "C-suite car service",
+        "executive VIP service",
+        "private executive travel"
+      ],
       "searchVolume": 180,
       "difficulty": "high"
     },
@@ -339,9 +583,22 @@
       "longDescription": "Impress clients with seamless transportation to fine dining and entertainment venues. Concierge coordination for reservations and timing.",
       "basePrice": 75,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "stretch-limo", "mercedes-s-class"],
-      "relatedServices": ["business-meeting-transport", "board-member-travel", "corporate-event-transport"],
-      "keywords": ["client entertainment transport", "business dining service", "venue transportation", "executive entertaining"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "stretch-limo",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "business-meeting-transport",
+        "board-member-travel",
+        "corporate-event-transport"
+      ],
+      "keywords": [
+        "client entertainment transport",
+        "business dining service",
+        "venue transportation",
+        "executive entertaining"
+      ],
       "searchVolume": 520,
       "difficulty": "medium"
     },
@@ -354,9 +611,21 @@
       "longDescription": "Manage multi-site sales team transportation with route optimization and timing coordination for back-to-back client visits.",
       "basePrice": 85,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive"],
-      "relatedServices": ["business-meeting-transport", "airport-business-meeting"],
-      "keywords": ["sales team transportation", "multi-location service", "team business transport", "sales call coordination"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "business-meeting-transport",
+        "airport-business-meeting"
+      ],
+      "keywords": [
+        "sales team transportation",
+        "multi-location service",
+        "team business transport",
+        "sales call coordination"
+      ],
       "searchVolume": 420,
       "difficulty": "medium"
     },
@@ -369,9 +638,18 @@
       "longDescription": "Manage large-scale conference transportation with vehicle coordination, timing management, and seamless attendee experience.",
       "basePrice": 95,
       "pricingModel": "variable",
-      "applicableVehicles": ["sprinter-14", "sprinter-executive", "motor-coach"],
+      "applicableVehicles": [
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
       "relatedServices": ["airport-event-transport", "corporate-group-airport"],
-      "keywords": ["conference transportation", "McCormick Place service", "convention shuttle", "conference logistics"],
+      "keywords": [
+        "conference transportation",
+        "McCormick Place service",
+        "convention shuttle",
+        "conference logistics"
+      ],
       "searchVolume": 680,
       "difficulty": "medium-high"
     },
@@ -384,9 +662,21 @@
       "longDescription": "Need flexible transportation? Book by the hour with no minimum. Perfect for unpredictable schedules and last-minute changes.",
       "basePrice": 85,
       "pricingModel": "hourly",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "stretch-limo"],
-      "relatedServices": ["airport-business-meeting", "business-meeting-transport"],
-      "keywords": ["hourly car rental", "executive car service", "flexible transportation", "hourly limo rental"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "business-meeting-transport"
+      ],
+      "keywords": [
+        "hourly car rental",
+        "executive car service",
+        "flexible transportation",
+        "hourly limo rental"
+      ],
       "searchVolume": 540,
       "difficulty": "low-medium"
     },
@@ -399,9 +689,22 @@
       "longDescription": "Complex business trips require seamless coordination. We manage all ground transportation logistics for multi-day, multi-leg business travel.",
       "basePrice": 150,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "stretch-limo"],
-      "relatedServices": ["airport-business-meeting", "business-meeting-transport", "all-day-airport-service"],
-      "keywords": ["multi-city business travel", "business trip coordination", "complex itinerary transport", "executive travel management"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "business-meeting-transport",
+        "all-day-airport-service"
+      ],
+      "keywords": [
+        "multi-city business travel",
+        "business trip coordination",
+        "complex itinerary transport",
+        "executive travel management"
+      ],
       "searchVolume": 290,
       "difficulty": "high"
     },
@@ -414,9 +717,18 @@
       "longDescription": "M&A transactions demand discretion and reliability. Confidential transportation with privacy-first service and direct billing to corporate.",
       "basePrice": 120,
       "pricingModel": "variable",
-      "applicableVehicles": ["mercedes-s-class", "bmw-7-series", "escalade-suv"],
+      "applicableVehicles": [
+        "mercedes-s-class",
+        "bmw-7-series",
+        "escalade-suv"
+      ],
       "relatedServices": ["business-meeting-transport", "board-member-travel"],
-      "keywords": ["M&A transportation", "confidential business transport", "sensitive deal transport", "executive privacy service"],
+      "keywords": [
+        "M&A transportation",
+        "confidential business transport",
+        "sensitive deal transport",
+        "executive privacy service"
+      ],
       "searchVolume": 140,
       "difficulty": "high"
     },
@@ -429,9 +741,18 @@
       "longDescription": "Manage large-scale trade show logistics with coordinated vehicle shuttle between hotels, convention centers, and parking.",
       "basePrice": 1200,
       "pricingModel": "variable",
-      "applicableVehicles": ["sprinter-14", "sprinter-executive", "motor-coach"],
+      "applicableVehicles": [
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
       "relatedServices": ["conference-transport", "corporate-group-airport"],
-      "keywords": ["trade show shuttle", "expo transportation", "convention logistics", "event shuttle service"],
+      "keywords": [
+        "trade show shuttle",
+        "expo transportation",
+        "convention logistics",
+        "event shuttle service"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -446,7 +767,12 @@
       "pricingModel": "daily",
       "applicableVehicles": ["all"],
       "relatedServices": ["airport-parking-service", "executive-suite-hourly"],
-      "keywords": ["executive parking service", "park and ride service", "valet parking", "vehicle management"],
+      "keywords": [
+        "executive parking service",
+        "park and ride service",
+        "valet parking",
+        "vehicle management"
+      ],
       "searchVolume": 420,
       "difficulty": "low"
     },
@@ -459,9 +785,22 @@
       "longDescription": "Make the right first impression. Our service ensures you arrive refreshed, on-time, and ready to succeed.",
       "basePrice": 70,
       "pricingModel": "variable",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "mercedes-s-class"],
-      "relatedServices": ["business-meeting-transport", "board-member-travel", "client-entertainment"],
-      "keywords": ["professional car service", "business meeting transport", "executive arrival service", "corporate image"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "business-meeting-transport",
+        "board-member-travel",
+        "client-entertainment"
+      ],
+      "keywords": [
+        "professional car service",
+        "business meeting transport",
+        "executive arrival service",
+        "corporate image"
+      ],
       "searchVolume": 310,
       "difficulty": "medium"
     },
@@ -474,9 +813,22 @@
       "longDescription": "Visiting executives from major corporations receive our highest level of service - premium vehicles, experienced drivers, and complete concierge coordination.",
       "basePrice": 140,
       "pricingModel": "variable",
-      "applicableVehicles": ["mercedes-s-class", "bmw-7-series", "stretch-limo"],
-      "relatedServices": ["airport-business-meeting", "board-member-travel", "business-trip-coordination"],
-      "keywords": ["Fortune 500 transportation", "VIP executive service", "corporate visitor service", "premium business travel"],
+      "applicableVehicles": [
+        "mercedes-s-class",
+        "bmw-7-series",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "board-member-travel",
+        "business-trip-coordination"
+      ],
+      "keywords": [
+        "Fortune 500 transportation",
+        "VIP executive service",
+        "corporate visitor service",
+        "premium business travel"
+      ],
       "searchVolume": 160,
       "difficulty": "high"
     },
@@ -489,9 +841,23 @@
       "longDescription": "Manage transportation logistics for major corporate events with coordinated multi-vehicle service and concierge coordination.",
       "basePrice": 850,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "stretch-limo", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["conference-transport", "client-entertainment", "board-member-travel"],
-      "keywords": ["corporate event transportation", "gala transportation", "awards ceremony transport", "corporate celebration"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "stretch-limo",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "conference-transport",
+        "client-entertainment",
+        "board-member-travel"
+      ],
+      "keywords": [
+        "corporate event transportation",
+        "gala transportation",
+        "awards ceremony transport",
+        "corporate celebration"
+      ],
       "searchVolume": 480,
       "difficulty": "medium-high"
     },
@@ -504,9 +870,22 @@
       "longDescription": "Investor relations professionals receive dedicated service coordinating complex transportation for major shareholder events and investor presentations.",
       "basePrice": 125,
       "pricingModel": "variable",
-      "applicableVehicles": ["mercedes-s-class", "bmw-7-series", "escalade-suv"],
-      "relatedServices": ["business-meeting-transport", "board-member-travel", "corporate-event-transport"],
-      "keywords": ["investor relations transport", "shareholder meeting service", "investor event transportation", "financial executive service"],
+      "applicableVehicles": [
+        "mercedes-s-class",
+        "bmw-7-series",
+        "escalade-suv"
+      ],
+      "relatedServices": [
+        "business-meeting-transport",
+        "board-member-travel",
+        "corporate-event-transport"
+      ],
+      "keywords": [
+        "investor relations transport",
+        "shareholder meeting service",
+        "investor event transportation",
+        "financial executive service"
+      ],
       "searchVolume": 120,
       "difficulty": "high"
     },
@@ -519,9 +898,22 @@
       "longDescription": "Law firms trust Royal Carriage for discreet, professional transportation coordinating complex schedules and confidential client matters.",
       "basePrice": 80,
       "pricingModel": "variable",
-      "applicableVehicles": ["lincoln-continental", "cadillac-xts", "mercedes-s-class"],
-      "relatedServices": ["business-meeting-transport", "ma-team-transport", "client-entertainment"],
-      "keywords": ["attorney transportation", "law firm car service", "legal professional transport", "confidential business transport"],
+      "applicableVehicles": [
+        "lincoln-continental",
+        "cadillac-xts",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "business-meeting-transport",
+        "ma-team-transport",
+        "client-entertainment"
+      ],
+      "keywords": [
+        "attorney transportation",
+        "law firm car service",
+        "legal professional transport",
+        "confidential business transport"
+      ],
       "searchVolume": 350,
       "difficulty": "medium"
     },
@@ -534,9 +926,18 @@
       "longDescription": "Medical professionals managing demanding schedules receive coordinated transportation between hospitals, clinics, and professional events.",
       "basePrice": 75,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "lincoln-continental", "cadillac-xts"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "lincoln-continental",
+        "cadillac-xts"
+      ],
       "relatedServices": ["executive-commute", "business-trip-coordination"],
-      "keywords": ["doctor transportation", "medical professional service", "healthcare executive transport", "specialist coordination"],
+      "keywords": [
+        "doctor transportation",
+        "medical professional service",
+        "healthcare executive transport",
+        "specialist coordination"
+      ],
       "searchVolume": 220,
       "difficulty": "medium"
     },
@@ -549,9 +950,22 @@
       "longDescription": "Tech executives demand innovation and efficiency. Our service provides modern vehicles with tech amenities and schedule flexibility.",
       "basePrice": 85,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "tesla-models"],
-      "relatedServices": ["airport-business-meeting", "business-meeting-transport", "startup-funding-transport"],
-      "keywords": ["tech executive transport", "startup transportation", "tech company car service", "innovation-focused travel"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "tesla-models"
+      ],
+      "relatedServices": [
+        "airport-business-meeting",
+        "business-meeting-transport",
+        "startup-funding-transport"
+      ],
+      "keywords": [
+        "tech executive transport",
+        "startup transportation",
+        "tech company car service",
+        "innovation-focused travel"
+      ],
       "searchVolume": 280,
       "difficulty": "medium"
     },
@@ -564,9 +978,22 @@
       "longDescription": "International delegations receive specialized service with multilingual coordination and cultural sensitivity.",
       "basePrice": 95,
       "pricingModel": "variable",
-      "applicableVehicles": ["sprinter-14", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["international-arrivals-service", "conference-transport", "business-trip-coordination"],
-      "keywords": ["international delegation", "trade mission transport", "business delegation service", "global business transport"],
+      "applicableVehicles": [
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "international-arrivals-service",
+        "conference-transport",
+        "business-trip-coordination"
+      ],
+      "keywords": [
+        "international delegation",
+        "trade mission transport",
+        "business delegation service",
+        "global business transport"
+      ],
       "searchVolume": 160,
       "difficulty": "high"
     },
@@ -579,9 +1006,22 @@
       "longDescription": "Your wedding day should be stress-free. Our bride service includes getting-ready location transport, photo shoots, ceremony delivery, and complete timing coordination.",
       "basePrice": 200,
       "pricingModel": "day-rate",
-      "applicableVehicles": ["stretch-limo", "escalade-suv", "lincoln-continental"],
-      "relatedServices": ["groom-groomsmen-shuttle", "bridal-party-travel", "wedding-guest-transportation"],
-      "keywords": ["bride transportation", "wedding bride limo", "bridal transportation", "wedding day transport"],
+      "applicableVehicles": [
+        "stretch-limo",
+        "escalade-suv",
+        "lincoln-continental"
+      ],
+      "relatedServices": [
+        "groom-groomsmen-shuttle",
+        "bridal-party-travel",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "bride transportation",
+        "wedding bride limo",
+        "bridal transportation",
+        "wedding day transport"
+      ],
       "searchVolume": 1400,
       "difficulty": "high"
     },
@@ -594,9 +1034,22 @@
       "longDescription": "Keep the groom's party coordinated with pre-ceremony transport, photo timing, and ceremony delivery. Group transportation handled professionally.",
       "basePrice": 180,
       "pricingModel": "day-rate",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "stretch-limo"],
-      "relatedServices": ["bride-transportation", "bridal-party-travel", "wedding-guest-transportation"],
-      "keywords": ["groom transportation", "groomsmen shuttle", "wedding party limo", "bachelor party transport"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "stretch-limo"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "bridal-party-travel",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "groom transportation",
+        "groomsmen shuttle",
+        "wedding party limo",
+        "bachelor party transport"
+      ],
       "searchVolume": 980,
       "difficulty": "high"
     },
@@ -610,8 +1063,17 @@
       "basePrice": 200,
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "sprinter-14", "stretch-limo"],
-      "relatedServices": ["bride-transportation", "groom-groomsmen-shuttle", "wedding-day-coordination"],
-      "keywords": ["bridal party transportation", "bridesmaids limo", "wedding party shuttle", "bride entourage service"],
+      "relatedServices": [
+        "bride-transportation",
+        "groom-groomsmen-shuttle",
+        "wedding-day-coordination"
+      ],
+      "keywords": [
+        "bridal party transportation",
+        "bridesmaids limo",
+        "wedding party shuttle",
+        "bride entourage service"
+      ],
       "searchVolume": 1100,
       "difficulty": "high"
     },
@@ -624,9 +1086,23 @@
       "longDescription": "Ensure all guests arrive safely and on time. Our wedding guest shuttle handles multiple pickups, timing coordination, and comfortable transport.",
       "basePrice": 95,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["bride-transportation", "groom-groomsmen-shuttle", "airport-wedding-guest-shuttle"],
-      "keywords": ["wedding guest transportation", "guest shuttle service", "wedding day shuttle", "guest airport transfer"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "groom-groomsmen-shuttle",
+        "airport-wedding-guest-shuttle"
+      ],
+      "keywords": [
+        "wedding guest transportation",
+        "guest shuttle service",
+        "wedding day shuttle",
+        "guest airport transfer"
+      ],
       "searchVolume": 1500,
       "difficulty": "high"
     },
@@ -639,9 +1115,22 @@
       "longDescription": "Get the wedding day off to a perfect start with coordinated rehearsal dinner transportation for the wedding party and family.",
       "basePrice": 120,
       "pricingModel": "day-rate",
-      "applicableVehicles": ["escalade-suv", "stretch-limo", "sprinter-executive"],
-      "relatedServices": ["bride-transportation", "groom-groomsmen-shuttle", "wedding-guest-transportation"],
-      "keywords": ["rehearsal dinner transport", "pre-wedding transportation", "rehearsal limo service", "dinner party shuttle"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "stretch-limo",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "groom-groomsmen-shuttle",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "rehearsal dinner transport",
+        "pre-wedding transportation",
+        "rehearsal limo service",
+        "dinner party shuttle"
+      ],
       "searchVolume": 620,
       "difficulty": "medium-high"
     },
@@ -655,8 +1144,17 @@
       "basePrice": 150,
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "stretch-limo", "cadillac-xts"],
-      "relatedServices": ["bride-transportation", "bridal-party-travel", "pre-wedding-photo-transport"],
-      "keywords": ["getting ready transport", "salon transportation", "makeup location shuttle", "preparation transport"],
+      "relatedServices": [
+        "bride-transportation",
+        "bridal-party-travel",
+        "pre-wedding-photo-transport"
+      ],
+      "keywords": [
+        "getting ready transport",
+        "salon transportation",
+        "makeup location shuttle",
+        "preparation transport"
+      ],
       "searchVolume": 520,
       "difficulty": "medium"
     },
@@ -669,9 +1167,22 @@
       "longDescription": "Scenic photo locations deserve scenic transportation. We coordinate transport to Chicago's most beautiful backdrops for wedding photography.",
       "basePrice": 140,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "stretch-limo", "sprinter-executive"],
-      "relatedServices": ["bride-transportation", "groom-groomsmen-shuttle", "city-tour-wedding-package"],
-      "keywords": ["wedding photo location", "scenic transportation", "photo shoot transport", "destination photo service"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "stretch-limo",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "groom-groomsmen-shuttle",
+        "city-tour-wedding-package"
+      ],
+      "keywords": [
+        "wedding photo location",
+        "scenic transportation",
+        "photo shoot transport",
+        "destination photo service"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -684,9 +1195,22 @@
       "longDescription": "Multi-venue weddings require seamless transportation coordination. We manage timing, vehicle flow, and guest comfort between locations.",
       "basePrice": 160,
       "pricingModel": "day-rate",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["bride-transportation", "wedding-guest-transportation", "multi-venue-wedding"],
-      "keywords": ["ceremony to reception shuttle", "multi-venue wedding transport", "location coordination", "wedding logistics"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "wedding-guest-transportation",
+        "multi-venue-wedding"
+      ],
+      "keywords": [
+        "ceremony to reception shuttle",
+        "multi-venue wedding transport",
+        "location coordination",
+        "wedding logistics"
+      ],
       "searchVolume": 420,
       "difficulty": "medium-high"
     },
@@ -700,8 +1224,17 @@
       "basePrice": 85,
       "pricingModel": "flat-rate",
       "applicableVehicles": ["stretch-limo", "escalade-suv"],
-      "relatedServices": ["bride-transportation", "groom-groomsmen-shuttle", "reception-entertainment"],
-      "keywords": ["grand entrance limo", "reception entrance", "dramatic arrival transport", "wedding entrance service"],
+      "relatedServices": [
+        "bride-transportation",
+        "groom-groomsmen-shuttle",
+        "reception-entertainment"
+      ],
+      "keywords": [
+        "grand entrance limo",
+        "reception entrance",
+        "dramatic arrival transport",
+        "wedding entrance service"
+      ],
       "searchVolume": 280,
       "difficulty": "medium"
     },
@@ -715,8 +1248,16 @@
       "basePrice": 120,
       "pricingModel": "variable",
       "applicableVehicles": ["stretch-limo", "escalade-suv"],
-      "relatedServices": ["bride-transportation", "pre-wedding-photo-transport"],
-      "keywords": ["newlywed celebration drive", "post-ceremony celebration", "wedding photo drive", "celebration transportation"],
+      "relatedServices": [
+        "bride-transportation",
+        "pre-wedding-photo-transport"
+      ],
+      "keywords": [
+        "newlywed celebration drive",
+        "post-ceremony celebration",
+        "wedding photo drive",
+        "celebration transportation"
+      ],
       "searchVolume": 340,
       "difficulty": "medium"
     },
@@ -729,9 +1270,23 @@
       "longDescription": "Destination weddings with multiple events, hotels, and venues require seamless coordination. We manage all ground transportation logistics.",
       "basePrice": 500,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["ceremony-location-shuttle", "wedding-guest-transportation", "airport-wedding-guest-shuttle"],
-      "keywords": ["destination wedding transport", "multi-venue wedding", "wedding logistics coordination", "complex wedding planning"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "ceremony-location-shuttle",
+        "wedding-guest-transportation",
+        "airport-wedding-guest-shuttle"
+      ],
+      "keywords": [
+        "destination wedding transport",
+        "multi-venue wedding",
+        "wedding logistics coordination",
+        "complex wedding planning"
+      ],
       "searchVolume": 520,
       "difficulty": "high"
     },
@@ -744,9 +1299,22 @@
       "longDescription": "Send off newlyweds in style. Romantic airport transport with special touches and accommodations.",
       "basePrice": 85,
       "pricingModel": "flat-rate",
-      "applicableVehicles": ["stretch-limo", "escalade-suv", "mercedes-s-class"],
-      "relatedServices": ["bride-transportation", "airport-ohare-transfer", "airport-fine-dining"],
-      "keywords": ["honeymoon airport transfer", "romantic airport service", "newlywed airport transport", "special occasion transfer"],
+      "applicableVehicles": [
+        "stretch-limo",
+        "escalade-suv",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "airport-ohare-transfer",
+        "airport-fine-dining"
+      ],
+      "keywords": [
+        "honeymoon airport transfer",
+        "romantic airport service",
+        "newlywed airport transport",
+        "special occasion transfer"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -760,8 +1328,17 @@
       "basePrice": 95,
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "sprinter-executive"],
-      "relatedServices": ["bride-transportation", "ceremony-location-shuttle", "wedding-guest-transportation"],
-      "keywords": ["wedding vendor transport", "coordinator transportation", "wedding planner service", "photographer shuttle"],
+      "relatedServices": [
+        "bride-transportation",
+        "ceremony-location-shuttle",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "wedding vendor transport",
+        "coordinator transportation",
+        "wedding planner service",
+        "photographer shuttle"
+      ],
       "searchVolume": 220,
       "difficulty": "medium"
     },
@@ -775,8 +1352,16 @@
       "basePrice": 75,
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "sprinter-executive"],
-      "relatedServices": ["wedding-guest-transportation", "ceremony-location-shuttle"],
-      "keywords": ["cocktail hour service", "guest transition service", "location flow management", "guest coordination"],
+      "relatedServices": [
+        "wedding-guest-transportation",
+        "ceremony-location-shuttle"
+      ],
+      "keywords": [
+        "cocktail hour service",
+        "guest transition service",
+        "location flow management",
+        "guest coordination"
+      ],
       "searchVolume": 160,
       "difficulty": "low-medium"
     },
@@ -789,9 +1374,21 @@
       "longDescription": "Safely transport guests at night's end. Ensure everyone gets home or to their hotel safely.",
       "basePrice": 85,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["wedding-guest-transportation", "late-night-airport-transport"],
-      "keywords": ["late-night wedding transport", "farewell service", "end-of-night shuttle", "safe ride home"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "wedding-guest-transportation",
+        "late-night-airport-transport"
+      ],
+      "keywords": [
+        "late-night wedding transport",
+        "farewell service",
+        "end-of-night shuttle",
+        "safe ride home"
+      ],
       "searchVolume": 280,
       "difficulty": "low-medium"
     },
@@ -804,9 +1401,21 @@
       "longDescription": "Guests flying in for your wedding receive coordinated transportation from airports to their hotels.",
       "basePrice": 95,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive"],
-      "relatedServices": ["airport-wedding-guest-shuttle", "wedding-guest-transportation"],
-      "keywords": ["guest airport shuttle", "visitor transportation", "out-of-town guest service", "guest accommodation transport"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive"
+      ],
+      "relatedServices": [
+        "airport-wedding-guest-shuttle",
+        "wedding-guest-transportation"
+      ],
+      "keywords": [
+        "guest airport shuttle",
+        "visitor transportation",
+        "out-of-town guest service",
+        "guest accommodation transport"
+      ],
       "searchVolume": 420,
       "difficulty": "medium"
     },
@@ -819,9 +1428,23 @@
       "longDescription": "Weekend-long wedding celebrations require coordinated transportation across multiple events, locations, and timings.",
       "basePrice": 350,
       "pricingModel": "variable",
-      "applicableVehicles": ["escalade-suv", "sprinter-14", "sprinter-executive", "motor-coach"],
-      "relatedServices": ["multi-venue-wedding", "airport-wedding-guest-shuttle", "out-of-town-hotel-shuttle"],
-      "keywords": ["weekend wedding package", "multi-event wedding transport", "wedding weekend coordination", "extended wedding service"],
+      "applicableVehicles": [
+        "escalade-suv",
+        "sprinter-14",
+        "sprinter-executive",
+        "motor-coach"
+      ],
+      "relatedServices": [
+        "multi-venue-wedding",
+        "airport-wedding-guest-shuttle",
+        "out-of-town-hotel-shuttle"
+      ],
+      "keywords": [
+        "weekend wedding package",
+        "multi-event wedding transport",
+        "wedding weekend coordination",
+        "extended wedding service"
+      ],
       "searchVolume": 420,
       "difficulty": "high"
     },
@@ -835,8 +1458,17 @@
       "basePrice": 85,
       "pricingModel": "variable",
       "applicableVehicles": ["escalade-suv", "sprinter-executive"],
-      "relatedServices": ["airport-wedding-guest-shuttle", "out-of-town-hotel-shuttle", "wedding-weekend-itinerary"],
-      "keywords": ["overnight guest transport", "pre-wedding accommodation", "day-before shuttle", "early arrival service"],
+      "relatedServices": [
+        "airport-wedding-guest-shuttle",
+        "out-of-town-hotel-shuttle",
+        "wedding-weekend-itinerary"
+      ],
+      "keywords": [
+        "overnight guest transport",
+        "pre-wedding accommodation",
+        "day-before shuttle",
+        "early arrival service"
+      ],
       "searchVolume": 220,
       "difficulty": "medium"
     },
@@ -850,8 +1482,16 @@
       "basePrice": 65,
       "pricingModel": "flat-rate",
       "applicableVehicles": ["lincoln-continental", "cadillac-xts"],
-      "relatedServices": ["bride-transportation", "wedding-coordinator-transport"],
-      "keywords": ["clergy transportation", "officiant service", "judge transportation", "minister shuttle"],
+      "relatedServices": [
+        "bride-transportation",
+        "wedding-coordinator-transport"
+      ],
+      "keywords": [
+        "clergy transportation",
+        "officiant service",
+        "judge transportation",
+        "minister shuttle"
+      ],
       "searchVolume": 140,
       "difficulty": "low"
     },
@@ -864,9 +1504,22 @@
       "longDescription": "Celebrate decades together with the same luxury service you enjoyed on your wedding day.",
       "basePrice": 120,
       "pricingModel": "day-rate",
-      "applicableVehicles": ["stretch-limo", "escalade-suv", "mercedes-s-class"],
-      "relatedServices": ["bride-transportation", "fine-dining-transport", "romantic-evening-service"],
-      "keywords": ["anniversary celebration", "renewal of vows", "milestone anniversary", "celebration transport"],
+      "applicableVehicles": [
+        "stretch-limo",
+        "escalade-suv",
+        "mercedes-s-class"
+      ],
+      "relatedServices": [
+        "bride-transportation",
+        "fine-dining-transport",
+        "romantic-evening-service"
+      ],
+      "keywords": [
+        "anniversary celebration",
+        "renewal of vows",
+        "milestone anniversary",
+        "celebration transport"
+      ],
       "searchVolume": 260,
       "difficulty": "medium"
     },
@@ -880,8 +1533,17 @@
       "basePrice": 450,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["bachelorette-celebration", "nightclub-crawl-transport", "brewery-tour-bus"],
-      "keywords": ["bachelor party Chicago", "bachelor party limo", "groom night out", "party bus rental"],
+      "relatedServices": [
+        "bachelorette-celebration",
+        "nightclub-crawl-transport",
+        "brewery-tour-bus"
+      ],
+      "keywords": [
+        "bachelor party Chicago",
+        "bachelor party limo",
+        "groom night out",
+        "party bus rental"
+      ],
       "searchVolume": 1800,
       "difficulty": "high"
     },
@@ -895,8 +1557,17 @@
       "basePrice": 450,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["bachelor-party-chicago", "nightclub-crawl-transport", "spa-day-shuttle"],
-      "keywords": ["bachelorette party Chicago", "bachelorette party bus", "girls night limo", "bride celebration"],
+      "relatedServices": [
+        "bachelor-party-chicago",
+        "nightclub-crawl-transport",
+        "spa-day-shuttle"
+      ],
+      "keywords": [
+        "bachelorette party Chicago",
+        "bachelorette party bus",
+        "girls night limo",
+        "bride celebration"
+      ],
       "searchVolume": 1700,
       "difficulty": "high"
     },
@@ -910,8 +1581,17 @@
       "basePrice": 400,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["bachelor-party-chicago", "nightclub-crawl-transport", "group-celebration-package"],
-      "keywords": ["birthday party bus", "birthday limo rental", "birthday celebration transport", "birthday night out"],
+      "relatedServices": [
+        "bachelor-party-chicago",
+        "nightclub-crawl-transport",
+        "group-celebration-package"
+      ],
+      "keywords": [
+        "birthday party bus",
+        "birthday limo rental",
+        "birthday celebration transport",
+        "birthday night out"
+      ],
       "searchVolume": 1400,
       "difficulty": "medium-high"
     },
@@ -925,8 +1605,16 @@
       "basePrice": 500,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["corporate-event-transport", "nightclub-crawl-transport"],
-      "keywords": ["corporate party bus", "team celebration", "company outing", "employee celebration"],
+      "relatedServices": [
+        "corporate-event-transport",
+        "nightclub-crawl-transport"
+      ],
+      "keywords": [
+        "corporate party bus",
+        "team celebration",
+        "company outing",
+        "employee celebration"
+      ],
       "searchVolume": 520,
       "difficulty": "medium"
     },
@@ -941,7 +1629,12 @@
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-24", "sprinter-executive"],
       "relatedServices": ["birthday-party-bus", "prom-night-party"],
-      "keywords": ["graduation party bus", "grad celebration transportation", "class outing", "graduation night limo"],
+      "keywords": [
+        "graduation party bus",
+        "grad celebration transportation",
+        "class outing",
+        "graduation night limo"
+      ],
       "searchVolume": 980,
       "difficulty": "medium"
     },
@@ -956,7 +1649,12 @@
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-24", "stretch-limo"],
       "relatedServices": ["graduation-party", "nightclub-crawl-transport"],
-      "keywords": ["prom night limo", "prom transportation", "prom night party bus", "high school prom"],
+      "keywords": [
+        "prom night limo",
+        "prom transportation",
+        "prom night party bus",
+        "high school prom"
+      ],
       "searchVolume": 1200,
       "difficulty": "medium-high"
     },
@@ -970,8 +1668,17 @@
       "basePrice": 600,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["nightclub-crawl-transport", "concert-transport", "bar-hopping-service"],
-      "keywords": ["New Year's Eve party bus", "NYE limo rental", "New Year's celebration", "countdown party transport"],
+      "relatedServices": [
+        "nightclub-crawl-transport",
+        "concert-transport",
+        "bar-hopping-service"
+      ],
+      "keywords": [
+        "New Year's Eve party bus",
+        "NYE limo rental",
+        "New Year's celebration",
+        "countdown party transport"
+      ],
       "searchVolume": 1900,
       "difficulty": "high"
     },
@@ -985,8 +1692,16 @@
       "basePrice": 450,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["bachelor-party-chicago", "nightclub-crawl-transport"],
-      "keywords": ["Halloween party bus", "Halloween limo rental", "Halloween celebration", "costume party transport"],
+      "relatedServices": [
+        "bachelor-party-chicago",
+        "nightclub-crawl-transport"
+      ],
+      "keywords": [
+        "Halloween party bus",
+        "Halloween limo rental",
+        "Halloween celebration",
+        "costume party transport"
+      ],
       "searchVolume": 680,
       "difficulty": "medium"
     },
@@ -1000,8 +1715,17 @@
       "basePrice": 400,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["concert-transport", "outdoor-festival-shuttle", "beach-day-transport"],
-      "keywords": ["summer party bus", "festival transportation", "summer celebration", "outdoor event party bus"],
+      "relatedServices": [
+        "concert-transport",
+        "outdoor-festival-shuttle",
+        "beach-day-transport"
+      ],
+      "keywords": [
+        "summer party bus",
+        "festival transportation",
+        "summer celebration",
+        "outdoor event party bus"
+      ],
       "searchVolume": 540,
       "difficulty": "medium"
     },
@@ -1015,8 +1739,17 @@
       "basePrice": 1200,
       "pricingModel": "weekend-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24", "motor-coach"],
-      "relatedServices": ["bachelorette-celebration", "hotel-to-venue-shuttle", "airport-party-bus-service"],
-      "keywords": ["bachelorette weekend", "girls weekend transportation", "bachelorette itinerary", "multi-day celebration"],
+      "relatedServices": [
+        "bachelorette-celebration",
+        "hotel-to-venue-shuttle",
+        "airport-party-bus-service"
+      ],
+      "keywords": [
+        "bachelorette weekend",
+        "girls weekend transportation",
+        "bachelorette itinerary",
+        "multi-day celebration"
+      ],
       "searchVolume": 620,
       "difficulty": "high"
     },
@@ -1030,8 +1763,17 @@
       "basePrice": 500,
       "pricingModel": "day-rate",
       "applicableVehicles": ["party-bus-24", "sprinter-executive"],
-      "relatedServices": ["wine-tour-bus", "food-tour-transport", "tour-experience-service"],
-      "keywords": ["brewery tour Chicago", "craft brewery tour", "brewery party bus", "brewery hopping service"],
+      "relatedServices": [
+        "wine-tour-bus",
+        "food-tour-transport",
+        "tour-experience-service"
+      ],
+      "keywords": [
+        "brewery tour Chicago",
+        "craft brewery tour",
+        "brewery party bus",
+        "brewery hopping service"
+      ],
       "searchVolume": 780,
       "difficulty": "medium"
     },
@@ -1045,8 +1787,17 @@
       "basePrice": 400,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-24", "stretch-limo"],
-      "relatedServices": ["bachelor-party-chicago", "bachelorette-celebration", "rehearsal-dinner-transport"],
-      "keywords": ["rehearsal party", "pre-wedding celebration", "rehearsal party bus", "wedding party celebration"],
+      "relatedServices": [
+        "bachelor-party-chicago",
+        "bachelorette-celebration",
+        "rehearsal-dinner-transport"
+      ],
+      "keywords": [
+        "rehearsal party",
+        "pre-wedding celebration",
+        "rehearsal party bus",
+        "wedding party celebration"
+      ],
       "searchVolume": 420,
       "difficulty": "medium"
     },
@@ -1061,7 +1812,12 @@
       "pricingModel": "event-rate",
       "applicableVehicles": ["party-bus-24", "sprinter-executive"],
       "relatedServices": ["concert-transport", "arena-event-shuttle"],
-      "keywords": ["sports event party bus", "game day transportation", "tailgate party", "stadium shuttle"],
+      "keywords": [
+        "sports event party bus",
+        "game day transportation",
+        "tailgate party",
+        "stadium shuttle"
+      ],
       "searchVolume": 920,
       "difficulty": "medium"
     },
@@ -1076,7 +1832,12 @@
       "pricingModel": "event-rate",
       "applicableVehicles": ["party-bus-24", "sprinter-executive"],
       "relatedServices": ["nightclub-crawl-transport", "sports-event-party"],
-      "keywords": ["concert party bus", "concert transportation", "venue shuttle", "event party transport"],
+      "keywords": [
+        "concert party bus",
+        "concert transportation",
+        "venue shuttle",
+        "event party transport"
+      ],
       "searchVolume": 1100,
       "difficulty": "medium"
     },
@@ -1091,7 +1852,12 @@
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
       "relatedServices": ["nightclub-crawl-transport", "dinner-party-bus"],
-      "keywords": ["casino night party", "gaming event transportation", "casino bus rental", "night out party"],
+      "keywords": [
+        "casino night party",
+        "gaming event transportation",
+        "casino bus rental",
+        "night out party"
+      ],
       "searchVolume": 380,
       "difficulty": "medium"
     },
@@ -1105,8 +1871,17 @@
       "basePrice": 450,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "party-bus-24"],
-      "relatedServices": ["bar-hopping-service", "premium-nightlife-experience", "concert-transport"],
-      "keywords": ["nightclub crawl", "bar hopping limo", "club hopping party bus", "nightclub transportation"],
+      "relatedServices": [
+        "bar-hopping-service",
+        "premium-nightlife-experience",
+        "concert-transport"
+      ],
+      "keywords": [
+        "nightclub crawl",
+        "bar hopping limo",
+        "club hopping party bus",
+        "nightclub transportation"
+      ],
       "searchVolume": 1300,
       "difficulty": "high"
     },
@@ -1121,7 +1896,12 @@
       "pricingModel": "experience-rate",
       "applicableVehicles": ["party-bus-36", "sprinter-executive"],
       "relatedServices": ["fine-dining-transport", "romantic-evening-service"],
-      "keywords": ["dinner party bus", "mobile dining experience", "dining limo", "romantic dinner transport"],
+      "keywords": [
+        "dinner party bus",
+        "mobile dining experience",
+        "dining limo",
+        "romantic dinner transport"
+      ],
       "searchVolume": 420,
       "difficulty": "medium-high"
     },
@@ -1136,7 +1916,12 @@
       "pricingModel": "weekend-rate",
       "applicableVehicles": ["party-bus-36", "motor-coach"],
       "relatedServices": ["bachelorette-weekend", "casino-night-party"],
-      "keywords": ["casino trip transportation", "resort weekend party bus", "gaming getaway", "multi-city party bus"],
+      "keywords": [
+        "casino trip transportation",
+        "resort weekend party bus",
+        "gaming getaway",
+        "multi-city party bus"
+      ],
       "searchVolume": 480,
       "difficulty": "high"
     },
@@ -1150,8 +1935,17 @@
       "basePrice": 750,
       "pricingModel": "night-rate",
       "applicableVehicles": ["party-bus-36", "stretch-limo"],
-      "relatedServices": ["premium-nightlife-experience", "concert-transport", "nightclub-crawl"],
-      "keywords": ["VIP nightlife Chicago", "exclusive nightlife experience", "VIP club access", "premium night out"],
+      "relatedServices": [
+        "premium-nightlife-experience",
+        "concert-transport",
+        "nightclub-crawl"
+      ],
+      "keywords": [
+        "VIP nightlife Chicago",
+        "exclusive nightlife experience",
+        "VIP club access",
+        "premium night out"
+      ],
       "searchVolume": 340,
       "difficulty": "high"
     },
@@ -1164,9 +1958,18 @@
       "longDescription": "Your vision, our execution. Customizable party bus experiences tailored to your group's unique celebration.",
       "basePrice": 400,
       "pricingModel": "variable",
-      "applicableVehicles": ["party-bus-36", "party-bus-24", "sprinter-executive"],
+      "applicableVehicles": [
+        "party-bus-36",
+        "party-bus-24",
+        "sprinter-executive"
+      ],
       "relatedServices": ["all"],
-      "keywords": ["custom party bus", "personalized celebration", "group celebration", "bespoke party service"],
+      "keywords": [
+        "custom party bus",
+        "personalized celebration",
+        "group celebration",
+        "bespoke party service"
+      ],
       "searchVolume": 560,
       "difficulty": "high"
     }

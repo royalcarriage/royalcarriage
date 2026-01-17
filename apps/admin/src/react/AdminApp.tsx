@@ -141,7 +141,10 @@ function Overview({
       </div>
       <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
         <div className="flex flex-wrap items-center gap-2">
-          <PillButton variant="secondary" onClick={() => onQuickAction("moovs")}>
+          <PillButton
+            variant="secondary"
+            onClick={() => onQuickAction("moovs")}
+          >
             Import Moovs
           </PillButton>
           <PillButton variant="secondary" onClick={() => onQuickAction("ads")}>
@@ -231,7 +234,11 @@ function ImportsPage({
           { key: "fileName", label: "File" },
           { key: "status", label: "Status" },
           { key: "rows", label: "Rows" },
-          { key: "warnings", label: "Warnings", render: (row) => row.warnings?.join("; ") },
+          {
+            key: "warnings",
+            label: "Warnings",
+            render: (row) => row.warnings?.join("; "),
+          },
           {
             key: "createdAt",
             label: "Imported At",
@@ -243,8 +250,8 @@ function ImportsPage({
       />
       {type === "moovs" && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          Missing payout/tax check: ensure columns `payout` and `tax` are populated before
-          approving the import.
+          Missing payout/tax check: ensure columns `payout` and `tax` are
+          populated before approving the import.
         </div>
       )}
     </div>
@@ -264,7 +271,9 @@ function ROIPage({ metrics }: { metrics?: MetricRollup }) {
     <div className="space-y-4">
       <div className="grid gap-3 md:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900">Revenue by Type</h3>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Revenue by Type
+          </h3>
           <ul className="mt-2 space-y-1 text-sm text-slate-700">
             <li>Airport: $18,900</li>
             <li>Corporate: $12,300</li>
@@ -273,8 +282,12 @@ function ROIPage({ metrics }: { metrics?: MetricRollup }) {
           </ul>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-          <h3 className="text-sm font-semibold text-slate-900">Spend vs Revenue</h3>
-          <p className="text-sm text-slate-600">Positive gap driven by airport conversions.</p>
+          <h3 className="text-sm font-semibold text-slate-900">
+            Spend vs Revenue
+          </h3>
+          <p className="text-sm text-slate-600">
+            Positive gap driven by airport conversions.
+          </p>
         </div>
       </div>
       <Table
@@ -289,7 +302,9 @@ function ROIPage({ metrics }: { metrics?: MetricRollup }) {
         data={rows as any}
       />
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <h3 className="text-sm font-semibold text-slate-900">Top Keyword Clusters</h3>
+        <h3 className="text-sm font-semibold text-slate-900">
+          Top Keyword Clusters
+        </h3>
         <ul className="mt-2 space-y-1 text-sm text-slate-700">
           <li>SCALE: airport limo chicago, midway car service</li>
           <li>FIX: corporate limo chicago loop, wedding shuttle suburbs</li>
@@ -304,11 +319,31 @@ function SiteHealthPage({ sites }: { sites: SiteHealth[] }) {
     <Table
       columns={[
         { key: "site", label: "Site" },
-        { key: "sitemapOk", label: "Sitemap", render: (r) => (r.sitemapOk ? "OK" : "Fail") },
-        { key: "robotsOk", label: "Robots", render: (r) => (r.robotsOk ? "OK" : "Fail") },
-        { key: "canonicalOk", label: "Canonical", render: (r) => (r.canonicalOk ? "OK" : "Fail") },
-        { key: "trackingOk", label: "Tracking", render: (r) => (r.trackingOk ? "OK" : "Fail") },
-        { key: "ctaOk", label: "CTA", render: (r) => (r.ctaOk ? "OK" : "Fail") },
+        {
+          key: "sitemapOk",
+          label: "Sitemap",
+          render: (r) => (r.sitemapOk ? "OK" : "Fail"),
+        },
+        {
+          key: "robotsOk",
+          label: "Robots",
+          render: (r) => (r.robotsOk ? "OK" : "Fail"),
+        },
+        {
+          key: "canonicalOk",
+          label: "Canonical",
+          render: (r) => (r.canonicalOk ? "OK" : "Fail"),
+        },
+        {
+          key: "trackingOk",
+          label: "Tracking",
+          render: (r) => (r.trackingOk ? "OK" : "Fail"),
+        },
+        {
+          key: "ctaOk",
+          label: "CTA",
+          render: (r) => (r.ctaOk ? "OK" : "Fail"),
+        },
         {
           key: "lastDeploy",
           label: "Last Deploy",
@@ -359,7 +394,11 @@ function SeoPage({
           { key: "page", label: "Page" },
           { key: "intent", label: "Intent" },
           { key: "status", label: "Status" },
-          { key: "createdAt", label: "Created", render: (r) => new Date(r.createdAt).toLocaleString() },
+          {
+            key: "createdAt",
+            label: "Created",
+            render: (r) => new Date(r.createdAt).toLocaleString(),
+          },
         ]}
         data={queue}
         empty="Queue empty"
@@ -369,7 +408,11 @@ function SeoPage({
           { key: "topic", label: "Draft" },
           { key: "status", label: "Status" },
           { key: "site", label: "Site" },
-          { key: "updatedAt", label: "Updated", render: (r) => new Date(r.updatedAt).toLocaleString() },
+          {
+            key: "updatedAt",
+            label: "Updated",
+            render: (r) => new Date(r.updatedAt).toLocaleString(),
+          },
         ]}
         data={drafts}
         empty="No drafts yet"
@@ -379,7 +422,11 @@ function SeoPage({
           { key: "topic", label: "Gate" },
           { key: "result", label: "Result" },
           { key: "summary", label: "Summary" },
-          { key: "createdAt", label: "Created", render: (r) => new Date(r.createdAt).toLocaleString() },
+          {
+            key: "createdAt",
+            label: "Created",
+            render: (r) => new Date(r.createdAt).toLocaleString(),
+          },
         ]}
         data={reports}
         empty="No gate reports"
@@ -402,8 +449,12 @@ function ImagesPage({
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">Image Library</h3>
-            <p className="text-sm text-slate-600">Upload and tag images by site/entity.</p>
+            <h3 className="text-lg font-semibold text-slate-900">
+              Image Library
+            </h3>
+            <p className="text-sm text-slate-600">
+              Upload and tag images by site/entity.
+            </p>
           </div>
           <label className="cursor-pointer rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-700 hover:border-indigo-400 hover:bg-indigo-50">
             Upload
@@ -421,7 +472,15 @@ function ImagesPage({
       </div>
       <Table
         columns={[
-          { key: "url", label: "Preview", render: (r) => <a className="text-indigo-600" href={r.url}>Link</a> },
+          {
+            key: "url",
+            label: "Preview",
+            render: (r) => (
+              <a className="text-indigo-600" href={r.url}>
+                Link
+              </a>
+            ),
+          },
           { key: "site", label: "Site" },
           { key: "entity", label: "Entity" },
           { key: "tags", label: "Tags", render: (r) => r.tags.join(", ") },
@@ -456,7 +515,11 @@ function DeployPage({
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
         {targets.map((t) => (
-          <PillButton key={t.id} onClick={() => onDeploy(t.id)} disabled={!canDeploy}>
+          <PillButton
+            key={t.id}
+            onClick={() => onDeploy(t.id)}
+            disabled={!canDeploy}
+          >
             Deploy {t.label}
           </PillButton>
         ))}
@@ -471,7 +534,11 @@ function DeployPage({
           { key: "target", label: "Target" },
           { key: "status", label: "Status" },
           { key: "message", label: "Message" },
-          { key: "createdAt", label: "Created", render: (r) => new Date(r.createdAt).toLocaleString() },
+          {
+            key: "createdAt",
+            label: "Created",
+            render: (r) => new Date(r.createdAt).toLocaleString(),
+          },
         ]}
         data={logs}
         empty="No deployment logs yet"
@@ -489,11 +556,16 @@ function UsersPage({
   role: Role;
   onUpdate: (uid: string, role: Role) => void;
 }) {
-  const canManage = ROLE_ORDER.indexOf(role) === ROLE_ORDER.indexOf("superadmin");
+  const canManage =
+    ROLE_ORDER.indexOf(role) === ROLE_ORDER.indexOf("superadmin");
   return (
     <Table
       columns={[
-        { key: "displayName", label: "User", render: (r) => r.displayName || r.email },
+        {
+          key: "displayName",
+          label: "User",
+          render: (r) => r.displayName || r.email,
+        },
         { key: "email", label: "Email" },
         {
           key: "role",
@@ -574,7 +646,9 @@ function SettingsPage({
             className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm"
             value={form.publishLimit}
             disabled={!canEdit}
-            onChange={(e) => setForm({ ...form, publishLimit: Number(e.target.value) })}
+            onChange={(e) =>
+              setForm({ ...form, publishLimit: Number(e.target.value) })
+            }
           />
         </label>
         <label className="text-sm font-semibold text-slate-700">
@@ -604,7 +678,13 @@ function SettingsPage({
   );
 }
 
-function SelfAuditPage({ onRun, results }: { onRun: () => void; results: any[] }) {
+function SelfAuditPage({
+  onRun,
+  results,
+}: {
+  onRun: () => void;
+  results: any[];
+}) {
   return (
     <div className="space-y-3">
       <PillButton onClick={onRun}>Run Self Audit</PillButton>
@@ -624,7 +704,8 @@ function SelfAuditPage({ onRun, results }: { onRun: () => void; results: any[] }
 function MissingPage({ title }: { title: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-700 shadow-sm">
-      {title} view is placeholder only; content is tracked via datasets and queue above.
+      {title} view is placeholder only; content is tracked via datasets and
+      queue above.
     </div>
   );
 }
@@ -648,19 +729,38 @@ function ContentGrid({
 }) {
   const pageLabel = pageKey.replace("-", " ");
   // Basic filtering: show queue items and drafts that mention the pageKey or all if none
-  const filteredQueue = queue.filter((q) => q.page?.includes(pageKey) || q.site === "all" || q.page?.includes(pageLabel));
-  const filteredDrafts = drafts.filter((d) => (d.topic || "").toLowerCase().includes(pageKey) || d.site === "all");
+  const filteredQueue = queue.filter(
+    (q) =>
+      q.page?.includes(pageKey) ||
+      q.site === "all" ||
+      q.page?.includes(pageLabel),
+  );
+  const filteredDrafts = drafts.filter(
+    (d) => (d.topic || "").toLowerCase().includes(pageKey) || d.site === "all",
+  );
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">Content — {pageLabel}</h3>
-          <p className="text-sm text-slate-600">Content items are sourced from the queue and drafts datasets.</p>
+          <h3 className="text-lg font-semibold text-slate-900">
+            Content — {pageLabel}
+          </h3>
+          <p className="text-sm text-slate-600">
+            Content items are sourced from the queue and drafts datasets.
+          </p>
         </div>
         <div className="flex gap-2">
-          <PillButton onClick={onQueue} disabled={!canQueue}>Propose to Queue</PillButton>
-          <PillButton variant="secondary" onClick={onDraft} disabled={!canDraft}>Create Draft</PillButton>
+          <PillButton onClick={onQueue} disabled={!canQueue}>
+            Propose to Queue
+          </PillButton>
+          <PillButton
+            variant="secondary"
+            onClick={onDraft}
+            disabled={!canDraft}
+          >
+            Create Draft
+          </PillButton>
         </div>
       </div>
 
@@ -669,7 +769,11 @@ function ContentGrid({
           { key: "page", label: "Page" },
           { key: "intent", label: "Intent" },
           { key: "status", label: "Status" },
-          { key: "createdAt", label: "Created", render: (r) => new Date(r.createdAt).toLocaleString() },
+          {
+            key: "createdAt",
+            label: "Created",
+            render: (r) => new Date(r.createdAt).toLocaleString(),
+          },
         ]}
         data={filteredQueue}
         empty="No queued content"
@@ -680,7 +784,11 @@ function ContentGrid({
           { key: "topic", label: "Draft" },
           { key: "status", label: "Status" },
           { key: "site", label: "Site" },
-          { key: "updatedAt", label: "Updated", render: (r) => new Date(r.updatedAt).toLocaleString() },
+          {
+            key: "updatedAt",
+            label: "Updated",
+            render: (r) => new Date(r.updatedAt).toLocaleString(),
+          },
         ]}
         data={filteredDrafts}
         empty="No drafts yet"
@@ -756,22 +864,50 @@ function EmailAuthForm({
 
       <div className="flex items-center justify-between gap-2">
         <PillButton type="submit" disabled={loading}>
-          {mode === "signin" ? "Sign in" : mode === "register" ? "Create account" : "Send reset"}
+          {mode === "signin"
+            ? "Sign in"
+            : mode === "register"
+              ? "Create account"
+              : "Send reset"}
         </PillButton>
         <div className="text-sm text-slate-500">
           {mode === "signin" ? (
             <>
-              <button type="button" className="underline" onClick={() => setMode("reset")}>Forgot?</button>
+              <button
+                type="button"
+                className="underline"
+                onClick={() => setMode("reset")}
+              >
+                Forgot?
+              </button>
               <span className="px-2">·</span>
-              <button type="button" className="underline" onClick={() => setMode("register")}>Register</button>
+              <button
+                type="button"
+                className="underline"
+                onClick={() => setMode("register")}
+              >
+                Register
+              </button>
             </>
           ) : mode === "reset" ? (
             <>
-              <button type="button" className="underline" onClick={() => setMode("signin")}>Back</button>
+              <button
+                type="button"
+                className="underline"
+                onClick={() => setMode("signin")}
+              >
+                Back
+              </button>
             </>
           ) : (
             <>
-              <button type="button" className="underline" onClick={() => setMode("signin")}>Back to sign in</button>
+              <button
+                type="button"
+                className="underline"
+                onClick={() => setMode("signin")}
+              >
+                Back to sign in
+              </button>
             </>
           )}
         </div>
@@ -781,7 +917,18 @@ function EmailAuthForm({
 }
 
 function AdminAppInner({ activePage }: { activePage: PageKey }) {
-  const { user, role, site, setSite, signInWithGoogle, signInWithEmail, registerWithEmail, resetPassword, ready, signOut } = useAuth();
+  const {
+    user,
+    role,
+    site,
+    setSite,
+    signInWithGoogle,
+    signInWithEmail,
+    registerWithEmail,
+    resetPassword,
+    ready,
+    signOut,
+  } = useAuth();
   const { push } = useToast();
   const can = useRoleGate(role);
   const canEditor = can("editor");
@@ -801,7 +948,9 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
   const [missingImages, setMissingImages] = useState<ImageMeta[]>([]);
   const [deploys, setDeploys] = useState<DeployLog[]>([]);
   const [users, setUsers] = useState<any[]>([]);
-  const [settings, setSettings] = useState<SettingsPayload | undefined>(undefined);
+  const [settings, setSettings] = useState<SettingsPayload | undefined>(
+    undefined,
+  );
   const [auditResults, setAuditResults] = useState<any[]>([]);
   const [showDeployModal, setShowDeployModal] = useState(false);
 
@@ -839,21 +988,27 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
       const rows = csvData.split("\n").filter(Boolean).length - 1;
 
       // Call Cloud Functions API
-      const endpoint = type === "moovs" ? "/api/imports/moovs" : "/api/imports/ads";
+      const endpoint =
+        type === "moovs" ? "/api/imports/moovs" : "/api/imports/ads";
       const authClient = getConfiguredAuth();
-      const idToken = authClient?.currentUser ? await authClient.currentUser.getIdToken() : undefined;
+      const idToken = authClient?.currentUser
+        ? await authClient.currentUser.getIdToken()
+        : undefined;
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || ""}${endpoint}`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL || ""}${endpoint}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(idToken ? { Authorization: `Bearer ${idToken}` } : {}),
+          },
+          body: JSON.stringify({
+            csvData,
+            fileName: file.name,
+          }),
         },
-        body: JSON.stringify({
-          csvData,
-          fileName: file.name,
-        }),
-      });
+      );
 
       if (!response.ok) {
         const error = await response.json();
@@ -868,8 +1023,12 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         fileName: file.name,
         rows: Math.max(rows, 1),
         warnings: [
-          ...(result.errors.length > 0 ? [`${result.errors.length} validation errors`] : []),
-          ...(result.duplicates.length > 0 ? [`${result.duplicates.length} duplicates skipped`] : []),
+          ...(result.errors.length > 0
+            ? [`${result.errors.length} validation errors`]
+            : []),
+          ...(result.duplicates.length > 0
+            ? [`${result.duplicates.length} duplicates skipped`]
+            : []),
           ...(rows < 2 ? ["Low row count"] : []),
         ],
         status: "completed",
@@ -892,14 +1051,17 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
           });
         }, 500);
       } else if (result.errors.length > 5) {
-        push(`${result.errors.length} validation errors. Check console for details.`, "error");
+        push(
+          `${result.errors.length} validation errors. Check console for details.`,
+          "error",
+        );
         console.error("Import errors:", result.errors);
       }
     } catch (error) {
       console.error("Import error:", error);
       push(
         `Import failed: ${error instanceof Error ? error.message : String(error)}`,
-        "error"
+        "error",
       );
     }
   };
@@ -949,7 +1111,12 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
 
   const handleImageUpload = async (file: File) => {
     const url = URL.createObjectURL(file);
-    const meta = await addImage({ url, site, tags: ["upload"], entity: "general" });
+    const meta = await addImage({
+      url,
+      site,
+      tags: ["upload"],
+      entity: "general",
+    });
     setImages((prev) => [meta, ...prev]);
     push("Image added", "success");
   };
@@ -984,7 +1151,9 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
       return;
     }
     await updateUserRole(uid, nextRole);
-    setUsers((prev) => prev.map((u) => (u.uid === uid ? { ...u, role: nextRole } : u)));
+    setUsers((prev) =>
+      prev.map((u) => (u.uid === uid ? { ...u, role: nextRole } : u)),
+    );
     push("Role updated", "success");
   };
 
@@ -1024,15 +1193,20 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
     push(`${action.toUpperCase()} quick import logged`, "success");
   };
 
-  if (!ready) return <div className="p-6 text-sm text-slate-700">Loading auth…</div>;
+  if (!ready)
+    return <div className="p-6 text-sm text-slate-700">Loading auth…</div>;
   if (!user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
         <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-slate-900">Admin Login</h1>
-              <p className="mt-1 text-sm text-slate-600">Sign in to access the admin dashboard.</p>
+              <h1 className="text-2xl font-semibold text-slate-900">
+                Admin Login
+              </h1>
+              <p className="mt-1 text-sm text-slate-600">
+                Sign in to access the admin dashboard.
+              </p>
             </div>
             <div className="text-sm text-slate-400">royalcarriage</div>
           </div>
@@ -1133,7 +1307,12 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
             canDraft={canEditor}
           />
         )}
-        {["seo-queue", "seo-drafts", "seo-gate-reports", "seo-publish"].includes(activePage) && (
+        {[
+          "seo-queue",
+          "seo-drafts",
+          "seo-gate-reports",
+          "seo-publish",
+        ].includes(activePage) && (
           <SeoPage
             queue={queue}
             drafts={drafts}
@@ -1147,16 +1326,28 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
           />
         )}
         {["images-library", "images-missing"].includes(activePage) && (
-          <ImagesPage images={images} missing={missingImages} onUpload={handleImageUpload} />
+          <ImagesPage
+            images={images}
+            missing={missingImages}
+            onUpload={handleImageUpload}
+          />
         )}
         {activePage === "deploy-logs" && (
-          <DeployPage logs={deploys} onDeploy={handleDeploy} canDeploy={canAdmin} />
+          <DeployPage
+            logs={deploys}
+            onDeploy={handleDeploy}
+            canDeploy={canAdmin}
+          />
         )}
         {activePage === "users" && (
           <UsersPage users={users} role={role} onUpdate={handleUserRole} />
         )}
         {activePage === "settings" && (
-          <SettingsPage settings={settings} onSave={handleSettingsSave} canEdit={canAdmin} />
+          <SettingsPage
+            settings={settings}
+            onSave={handleSettingsSave}
+            canEdit={canAdmin}
+          />
         )}
         {activePage === "self-audit" && (
           <SelfAuditPage onRun={handleSelfAudit} results={auditResults} />
@@ -1220,10 +1411,16 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         open={showDeployModal}
         onClose={() => setShowDeployModal(false)}
         title="Deploy Command"
-        primaryAction={{ label: "Close", onClick: () => setShowDeployModal(false) }}
+        primaryAction={{
+          label: "Close",
+          onClick: () => setShowDeployModal(false),
+        }}
       >
         <p className="text-sm text-slate-700">
-          Run safe deploy via CLI: <code className="rounded bg-slate-100 px-2 py-1">firebase deploy --only hosting:admin</code>
+          Run safe deploy via CLI:{" "}
+          <code className="rounded bg-slate-100 px-2 py-1">
+            firebase deploy --only hosting:admin
+          </code>
         </p>
       </Modal>
     </>

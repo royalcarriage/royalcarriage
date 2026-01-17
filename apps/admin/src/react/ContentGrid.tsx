@@ -34,7 +34,12 @@ export default function ContentGrid({
 
   const filteredQueue = queue.filter((q) => {
     if (!q.page && !q.intent) return false;
-    return q.page === "all" || q.site === "all" || matches(q.page) || matches(q.intent);
+    return (
+      q.page === "all" ||
+      q.site === "all" ||
+      matches(q.page) ||
+      matches(q.intent)
+    );
   });
 
   const filteredDrafts = drafts.filter((d) => {
@@ -46,12 +51,24 @@ export default function ContentGrid({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-slate-900">Content — {pageKey}</h3>
-          <p className="text-sm text-slate-600">Content items are sourced from the queue and drafts datasets.</p>
+          <h3 className="text-lg font-semibold text-slate-900">
+            Content — {pageKey}
+          </h3>
+          <p className="text-sm text-slate-600">
+            Content items are sourced from the queue and drafts datasets.
+          </p>
         </div>
         <div className="flex gap-2">
-          <PillButton onClick={onQueue} disabled={!canQueue}>Propose to Queue</PillButton>
-          <PillButton variant="secondary" onClick={onDraft} disabled={!canDraft}>Create Draft</PillButton>
+          <PillButton onClick={onQueue} disabled={!canQueue}>
+            Propose to Queue
+          </PillButton>
+          <PillButton
+            variant="secondary"
+            onClick={onDraft}
+            disabled={!canDraft}
+          >
+            Create Draft
+          </PillButton>
         </div>
       </div>
 
@@ -60,7 +77,11 @@ export default function ContentGrid({
           { key: "page", label: "Page" },
           { key: "intent", label: "Intent" },
           { key: "status", label: "Status" },
-          { key: "createdAt", label: "Created", render: (r: any) => new Date(r.createdAt).toLocaleString() },
+          {
+            key: "createdAt",
+            label: "Created",
+            render: (r: any) => new Date(r.createdAt).toLocaleString(),
+          },
         ]}
         data={filteredQueue}
         empty="No queued content"
@@ -71,7 +92,11 @@ export default function ContentGrid({
           { key: "topic", label: "Draft" },
           { key: "status", label: "Status" },
           { key: "site", label: "Site" },
-          { key: "updatedAt", label: "Updated", render: (r: any) => new Date(r.updatedAt).toLocaleString() },
+          {
+            key: "updatedAt",
+            label: "Updated",
+            render: (r: any) => new Date(r.updatedAt).toLocaleString(),
+          },
         ]}
         data={filteredDrafts}
         empty="No drafts yet"

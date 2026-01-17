@@ -1,4 +1,10 @@
-import { type User, type InsertUser, UserRole, type UserRoleType, users } from "@shared/schema";
+import {
+  type User,
+  type InsertUser,
+  UserRole,
+  type UserRoleType,
+  users,
+} from "@shared/schema";
 import { randomUUID } from "crypto";
 import { eq } from "drizzle-orm";
 import { db } from "./database";
@@ -48,7 +54,10 @@ export class MemStorage implements IStorage {
     return user;
   }
 
-  async updateUserRole(id: string, role: UserRoleType): Promise<User | undefined> {
+  async updateUserRole(
+    id: string,
+    role: UserRoleType,
+  ): Promise<User | undefined> {
     const user = this.users.get(id);
     if (!user) return undefined;
     const updated = { ...user, role };
@@ -64,7 +73,10 @@ export class MemStorage implements IStorage {
     return this.users.delete(id);
   }
 
-  async verifyPassword(username: string, password: string): Promise<User | null> {
+  async verifyPassword(
+    username: string,
+    password: string,
+  ): Promise<User | null> {
     const user = await this.getUserByUsername(username);
     if (!user) return null;
     const isValid = await bcrypt.compare(password, user.password);
@@ -81,7 +93,7 @@ export class DatabaseStorage implements IStorage {
       });
       return result;
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error("Error fetching user:", error);
       return undefined;
     }
   }
@@ -93,7 +105,7 @@ export class DatabaseStorage implements IStorage {
       });
       return result;
     } catch (error) {
-      console.error('Error fetching user by username:', error);
+      console.error("Error fetching user by username:", error);
       return undefined;
     }
   }
@@ -102,24 +114,31 @@ export class DatabaseStorage implements IStorage {
     // Hash password before storing
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
 
-    const [newUser] = await db.insert(users).values({
-      username: insertUser.username,
-      password: hashedPassword,
-      role: UserRole.USER,
-    }).returning();
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        username: insertUser.username,
+        password: hashedPassword,
+        role: UserRole.USER,
+      })
+      .returning();
 
     return newUser;
   }
 
-  async updateUserRole(id: string, role: UserRoleType): Promise<User | undefined> {
+  async updateUserRole(
+    id: string,
+    role: UserRoleType,
+  ): Promise<User | undefined> {
     try {
-      const [updated] = await db.update(users)
+      const [updated] = await db
+        .update(users)
         .set({ role })
         .where(eq(users.id, id))
         .returning();
       return updated;
     } catch (error) {
-      console.error('Error updating user role:', error);
+      console.error("Error updating user role:", error);
       return undefined;
     }
   }
@@ -128,7 +147,7 @@ export class DatabaseStorage implements IStorage {
     try {
       return await db.query.users.findMany();
     } catch (error) {
-      console.error('Error fetching all users:', error);
+      console.error("Error fetching all users:", error);
       return [];
     }
   }
@@ -138,12 +157,15 @@ export class DatabaseStorage implements IStorage {
       await db.delete(users).where(eq(users.id, id));
       return true;
     } catch (error) {
-      console.error('Error deleting user:', error);
+      console.error("Error deleting user:", error);
       return false;
     }
   }
 
-  async verifyPassword(username: string, password: string): Promise<User | null> {
+  async verifyPassword(
+    username: string,
+    password: string,
+  ): Promise<User | null> {
     const user = await this.getUserByUsername(username);
     if (!user) return null;
 
@@ -159,4 +181,4 @@ export const storage: IStorage = USE_DATABASE
   ? new DatabaseStorage()
   : new MemStorage();
 
-console.log(`Using ${USE_DATABASE ? 'Database' : 'Memory'} storage backend`);
+console.log(`Using ${USE_DATABASE ? "Database" : "Memory"} storage backend`);

@@ -9,7 +9,7 @@
  * - Switch between organizations to view their data
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from "react";
 import {
   Building2,
   Plus,
@@ -39,10 +39,10 @@ import {
   UserPlus,
   Power,
   PowerOff,
-} from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
-import { useAuth } from '../state/AuthProvider';
+} from "lucide-react";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
+import { useAuth } from "../state/AuthProvider";
 
 // ============================================
 // Types
@@ -93,8 +93,8 @@ function StatusBadge({ isActive }: { isActive: boolean }) {
     <span
       className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
         isActive
-          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-          : 'bg-red-500/10 text-red-400 border border-red-500/20'
+          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+          : "bg-red-500/10 text-red-400 border border-red-500/20"
       }`}
     >
       {isActive ? (
@@ -114,17 +114,17 @@ function StatusBadge({ isActive }: { isActive: boolean }) {
 
 function RoleBadge({ role }: { role: string }) {
   const roleColors: Record<string, string> = {
-    dispatcher: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    accountant: 'bg-green-500/10 text-green-400 border-green-500/20',
-    fleet_manager: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    admin: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    saas_admin: 'bg-red-500/10 text-red-400 border-red-500/20',
+    dispatcher: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+    accountant: "bg-green-500/10 text-green-400 border-green-500/20",
+    fleet_manager: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    admin: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+    saas_admin: "bg-red-500/10 text-red-400 border-red-500/20",
   };
 
   return (
     <span
       className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-xs font-medium border ${
-        roleColors[role] || 'bg-slate-500/10 text-slate-400 border-slate-500/20'
+        roleColors[role] || "bg-slate-500/10 text-slate-400 border-slate-500/20"
       }`}
     >
       <Shield className="w-3 h-3" />
@@ -155,7 +155,7 @@ function OrganizationCard({
   return (
     <div
       className={`bg-slate-800/50 border rounded-xl p-4 hover:border-slate-600 transition-colors cursor-pointer ${
-        isSelected ? 'border-amber-500/50 bg-amber-500/5' : 'border-slate-700'
+        isSelected ? "border-amber-500/50 bg-amber-500/5" : "border-slate-700"
       }`}
       onClick={onSelect}
     >
@@ -164,13 +164,13 @@ function OrganizationCard({
           <div
             className={`w-12 h-12 rounded-xl flex items-center justify-center ${
               organization.isActive
-                ? 'bg-gradient-to-br from-amber-500/20 to-orange-500/20'
-                : 'bg-slate-700/50'
+                ? "bg-gradient-to-br from-amber-500/20 to-orange-500/20"
+                : "bg-slate-700/50"
             }`}
           >
             <Building2
               className={`w-6 h-6 ${
-                organization.isActive ? 'text-amber-400' : 'text-slate-500'
+                organization.isActive ? "text-amber-400" : "text-slate-500"
               }`}
             />
           </div>
@@ -298,7 +298,7 @@ function UserListItem({ user }: { user: UserData }) {
         </div>
         <div>
           <p className="text-sm font-medium text-white">
-            {user.displayName || 'Unnamed User'}
+            {user.displayName || "Unnamed User"}
           </p>
           <p className="text-xs text-slate-400">{user.email}</p>
         </div>
@@ -307,7 +307,7 @@ function UserListItem({ user }: { user: UserData }) {
         <RoleBadge role={user.role} />
         <span
           className={`w-2 h-2 rounded-full ${
-            user.isActive ? 'bg-emerald-500' : 'bg-red-500'
+            user.isActive ? "bg-emerald-500" : "bg-red-500"
           }`}
         />
       </div>
@@ -327,10 +327,10 @@ function CreateOrganizationModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<CreateOrganizationFormData>({
-    name: '',
-    adminEmail: '',
-    adminPassword: '',
-    adminDisplayName: '',
+    name: "",
+    adminEmail: "",
+    adminPassword: "",
+    adminDisplayName: "",
   });
   const [createAdmin, setCreateAdmin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -340,7 +340,7 @@ function CreateOrganizationModal({
     const newErrors: Record<string, string> = {};
 
     if (!formData.name || formData.name.trim().length < 2) {
-      newErrors.name = 'Organization name is required (min 2 characters)';
+      newErrors.name = "Organization name is required (min 2 characters)";
     }
 
     if (createAdmin) {
@@ -348,16 +348,16 @@ function CreateOrganizationModal({
         !formData.adminEmail ||
         !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.adminEmail)
       ) {
-        newErrors.adminEmail = 'Valid admin email is required';
+        newErrors.adminEmail = "Valid admin email is required";
       }
       if (!formData.adminPassword || formData.adminPassword.length < 8) {
-        newErrors.adminPassword = 'Password must be at least 8 characters';
+        newErrors.adminPassword = "Password must be at least 8 characters";
       }
       if (
         !formData.adminDisplayName ||
         formData.adminDisplayName.trim().length < 2
       ) {
-        newErrors.adminDisplayName = 'Admin display name is required';
+        newErrors.adminDisplayName = "Admin display name is required";
       }
     }
 
@@ -384,10 +384,10 @@ function CreateOrganizationModal({
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        name: '',
-        adminEmail: '',
-        adminPassword: '',
-        adminDisplayName: '',
+        name: "",
+        adminEmail: "",
+        adminPassword: "",
+        adminDisplayName: "",
       });
       setCreateAdmin(false);
       setErrors({});
@@ -425,7 +425,7 @@ function CreateOrganizationModal({
                 setFormData({ ...formData, name: e.target.value })
               }
               className={`w-full px-4 py-2.5 bg-slate-900 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                errors.name ? 'border-red-500' : 'border-slate-700'
+                errors.name ? "border-red-500" : "border-slate-700"
               }`}
               placeholder="Royal Carriage Limousine"
             />
@@ -471,10 +471,15 @@ function CreateOrganizationModal({
                   type="text"
                   value={formData.adminDisplayName}
                   onChange={(e) =>
-                    setFormData({ ...formData, adminDisplayName: e.target.value })
+                    setFormData({
+                      ...formData,
+                      adminDisplayName: e.target.value,
+                    })
                   }
                   className={`w-full px-4 py-2.5 bg-slate-800 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                    errors.adminDisplayName ? 'border-red-500' : 'border-slate-700'
+                    errors.adminDisplayName
+                      ? "border-red-500"
+                      : "border-slate-700"
                   }`}
                   placeholder="John Doe"
                 />
@@ -497,12 +502,14 @@ function CreateOrganizationModal({
                     setFormData({ ...formData, adminEmail: e.target.value })
                   }
                   className={`w-full px-4 py-2.5 bg-slate-800 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                    errors.adminEmail ? 'border-red-500' : 'border-slate-700'
+                    errors.adminEmail ? "border-red-500" : "border-slate-700"
                   }`}
                   placeholder="admin@organization.com"
                 />
                 {errors.adminEmail && (
-                  <p className="mt-1 text-xs text-red-400">{errors.adminEmail}</p>
+                  <p className="mt-1 text-xs text-red-400">
+                    {errors.adminEmail}
+                  </p>
                 )}
               </div>
 
@@ -513,13 +520,18 @@ function CreateOrganizationModal({
                 </label>
                 <div className="relative">
                   <input
-                    type={showPassword ? 'text' : 'password'}
+                    type={showPassword ? "text" : "password"}
                     value={formData.adminPassword}
                     onChange={(e) =>
-                      setFormData({ ...formData, adminPassword: e.target.value })
+                      setFormData({
+                        ...formData,
+                        adminPassword: e.target.value,
+                      })
                     }
                     className={`w-full px-4 py-2.5 pr-10 bg-slate-800 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                      errors.adminPassword ? 'border-red-500' : 'border-slate-700'
+                      errors.adminPassword
+                        ? "border-red-500"
+                        : "border-slate-700"
                     }`}
                     placeholder="Min. 8 characters"
                   />
@@ -589,8 +601,8 @@ function EditOrganizationModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<EditOrganizationFormData>({
-    organizationId: '',
-    name: '',
+    organizationId: "",
+    name: "",
     isActive: true,
   });
 
@@ -655,8 +667,8 @@ function EditOrganizationModal({
                 onClick={() => setFormData({ ...formData, isActive: true })}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-colors ${
                   formData.isActive
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                    : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
                 }`}
               >
                 <Power className="w-4 h-4" />
@@ -667,8 +679,8 @@ function EditOrganizationModal({
                 onClick={() => setFormData({ ...formData, isActive: false })}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-colors ${
                   !formData.isActive
-                    ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
+                    ? "bg-red-500/10 border-red-500/30 text-red-400"
+                    : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
                 }`}
               >
                 <PowerOff className="w-4 h-4" />
@@ -681,11 +693,15 @@ function EditOrganizationModal({
           <div className="p-4 bg-slate-900/50 rounded-xl space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Organization ID</span>
-              <span className="text-slate-300 font-mono">{organization.id}</span>
+              <span className="text-slate-300 font-mono">
+                {organization.id}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Users</span>
-              <span className="text-slate-300">{organization.userCount || 0}</span>
+              <span className="text-slate-300">
+                {organization.userCount || 0}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-slate-400">Created</span>
@@ -751,7 +767,7 @@ function ViewUsersModal({
               Users in {organization.name}
             </h3>
             <p className="text-sm text-slate-400 mt-1">
-              {users.length} {users.length === 1 ? 'user' : 'users'} total
+              {users.length} {users.length === 1 ? "user" : "users"} total
             </p>
           </div>
           <button
@@ -822,7 +838,7 @@ function DeleteConfirmModal({
             Delete Organization?
           </h3>
           <p className="text-slate-400 mb-4">
-            Are you sure you want to delete{' '}
+            Are you sure you want to delete{" "}
             <span className="text-white font-medium">{organization.name}</span>?
           </p>
 
@@ -876,7 +892,7 @@ function DeleteConfirmModal({
             ) : (
               <>
                 <Trash2 className="w-4 h-4" />
-                {hardDelete ? 'Delete Permanently' : 'Deactivate'}
+                {hardDelete ? "Delete Permanently" : "Deactivate"}
               </>
             )}
           </button>
@@ -897,8 +913,8 @@ export default function OrganizationManagementPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUsersLoading, setIsUsersLoading] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [selectedOrg, setSelectedOrg] = useState<OrganizationData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -911,7 +927,7 @@ export default function OrganizationManagementPage() {
 
   // Check if user is SaaS admin
   // `role` may be a narrow union type; cast to string for custom admin checks
-  const isSaasAdmin = ['superadmin', 'saas_admin'].includes(role as string);
+  const isSaasAdmin = ["superadmin", "saas_admin"].includes(role as string);
 
   // Load organizations
   const loadOrganizations = async () => {
@@ -920,20 +936,20 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
       const listOrganizations = httpsCallable<
         { includeInactive?: boolean },
         { organizations: OrganizationData[]; count: number }
-      >(functions, 'listOrganizations');
+      >(functions, "listOrganizations");
 
       const result = await listOrganizations({ includeInactive: true });
       setOrganizations(result.data.organizations);
     } catch (err: unknown) {
-      console.error('Error loading organizations:', err);
+      console.error("Error loading organizations:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to load organizations'
+        err instanceof Error ? err.message : "Failed to load organizations",
       );
     } finally {
       setIsLoading(false);
@@ -946,13 +962,13 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
       const getOrganizationUsers = httpsCallable<
         { organizationId: string; includeInactive?: boolean },
         { users: UserData[] }
-      >(functions, 'getOrganizationUsers');
+      >(functions, "getOrganizationUsers");
 
       const result = await getOrganizationUsers({
         organizationId,
@@ -961,7 +977,7 @@ export default function OrganizationManagementPage() {
 
       setOrganizationUsers(result.data.users);
     } catch (err: unknown) {
-      console.error('Error loading organization users:', err);
+      console.error("Error loading organization users:", err);
       setOrganizationUsers([]);
     } finally {
       setIsUsersLoading(false);
@@ -987,10 +1003,10 @@ export default function OrganizationManagementPage() {
         }
       }
 
-      if (statusFilter === 'active' && !org.isActive) {
+      if (statusFilter === "active" && !org.isActive) {
         return false;
       }
-      if (statusFilter === 'inactive' && org.isActive) {
+      if (statusFilter === "inactive" && org.isActive) {
         return false;
       }
 
@@ -1005,21 +1021,21 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const createOrganization = httpsCallable(functions, 'createOrganization');
+      const createOrganization = httpsCallable(functions, "createOrganization");
 
       await createOrganization(data);
 
       setShowCreateModal(false);
-      setSuccessMessage('Organization created successfully');
+      setSuccessMessage("Organization created successfully");
       setTimeout(() => setSuccessMessage(null), 3000);
       loadOrganizations();
     } catch (err: unknown) {
-      console.error('Error creating organization:', err);
+      console.error("Error creating organization:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to create organization'
+        err instanceof Error ? err.message : "Failed to create organization",
       );
     } finally {
       setIsActionLoading(false);
@@ -1033,22 +1049,22 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const updateOrganization = httpsCallable(functions, 'updateOrganization');
+      const updateOrganization = httpsCallable(functions, "updateOrganization");
 
       await updateOrganization(data);
 
       setShowEditModal(false);
       setSelectedOrg(null);
-      setSuccessMessage('Organization updated successfully');
+      setSuccessMessage("Organization updated successfully");
       setTimeout(() => setSuccessMessage(null), 3000);
       loadOrganizations();
     } catch (err: unknown) {
-      console.error('Error updating organization:', err);
+      console.error("Error updating organization:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to update organization'
+        err instanceof Error ? err.message : "Failed to update organization",
       );
     } finally {
       setIsActionLoading(false);
@@ -1064,10 +1080,10 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const deleteOrganization = httpsCallable(functions, 'deleteOrganization');
+      const deleteOrganization = httpsCallable(functions, "deleteOrganization");
 
       await deleteOrganization({
         organizationId: selectedOrg.id,
@@ -1078,15 +1094,15 @@ export default function OrganizationManagementPage() {
       setSelectedOrg(null);
       setSuccessMessage(
         hardDelete
-          ? 'Organization deleted permanently'
-          : 'Organization deactivated successfully'
+          ? "Organization deleted permanently"
+          : "Organization deactivated successfully",
       );
       setTimeout(() => setSuccessMessage(null), 3000);
       loadOrganizations();
     } catch (err: unknown) {
-      console.error('Error deleting organization:', err);
+      console.error("Error deleting organization:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to delete organization'
+        err instanceof Error ? err.message : "Failed to delete organization",
       );
     } finally {
       setIsActionLoading(false);
@@ -1100,10 +1116,10 @@ export default function OrganizationManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const updateOrganization = httpsCallable(functions, 'updateOrganization');
+      const updateOrganization = httpsCallable(functions, "updateOrganization");
 
       await updateOrganization({
         organizationId: org.id,
@@ -1111,16 +1127,16 @@ export default function OrganizationManagementPage() {
       });
 
       setSuccessMessage(
-        `Organization ${org.isActive ? 'deactivated' : 'activated'} successfully`
+        `Organization ${org.isActive ? "deactivated" : "activated"} successfully`,
       );
       setTimeout(() => setSuccessMessage(null), 3000);
       loadOrganizations();
     } catch (err: unknown) {
-      console.error('Error toggling organization status:', err);
+      console.error("Error toggling organization status:", err);
       setError(
         err instanceof Error
           ? err.message
-          : 'Failed to update organization status'
+          : "Failed to update organization status",
       );
     } finally {
       setIsActionLoading(false);
@@ -1290,7 +1306,7 @@ export default function OrganizationManagementPage() {
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm text-white transition-colors"
           >
             <RefreshCw
-              className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
             />
             Refresh
           </button>
@@ -1309,9 +1325,9 @@ export default function OrganizationManagementPage() {
             No organizations found
           </h3>
           <p className="text-slate-400 max-w-md">
-            {searchQuery || statusFilter !== 'all'
-              ? 'Try adjusting your search or filters'
-              : 'Get started by creating your first organization'}
+            {searchQuery || statusFilter !== "all"
+              ? "Try adjusting your search or filters"
+              : "Get started by creating your first organization"}
           </p>
         </div>
       ) : (

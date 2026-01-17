@@ -3,7 +3,7 @@
  * Generic CSV parsing and validation utilities
  */
 
-import { parse } from 'csv-parse/sync';
+import { parse } from "csv-parse/sync";
 
 export interface CsvParseOptions {
   delimiter?: string;
@@ -23,22 +23,22 @@ export interface ParsedCsvResult<T> {
  * Auto-detect CSV delimiter
  */
 export function detectDelimiter(csvContent: string): string {
-  const delimiters = [',', ';', '\t', '|'];
-  const firstLine = csvContent.split('\n')[0];
+  const delimiters = [",", ";", "\t", "|"];
+  const firstLine = csvContent.split("\n")[0];
 
   if (!firstLine) {
-    return ','; // Default to comma
+    return ","; // Default to comma
   }
 
   // Count occurrences of each delimiter
   const counts = delimiters.map((delimiter) => ({
     delimiter,
-    count: (firstLine.match(new RegExp(`\\${delimiter}`, 'g')) || []).length,
+    count: (firstLine.match(new RegExp(`\\${delimiter}`, "g")) || []).length,
   }));
 
   // Return delimiter with highest count (must have at least 1)
   const best = counts.reduce((a, b) => (b.count > a.count ? b : a));
-  return best.count > 0 ? best.delimiter : ',';
+  return best.count > 0 ? best.delimiter : ",";
 }
 
 /**
@@ -46,10 +46,10 @@ export function detectDelimiter(csvContent: string): string {
  */
 export function parseCsv<T = any>(
   csvContent: string,
-  options: CsvParseOptions = {}
+  options: CsvParseOptions = {},
 ): ParsedCsvResult<T> {
   const {
-    delimiter = options.autoDetectDelimiter ? detectDelimiter(csvContent) : ',',
+    delimiter = options.autoDetectDelimiter ? detectDelimiter(csvContent) : ",",
     skipEmptyLines = true,
     trim = true,
     columns = true,
@@ -66,9 +66,8 @@ export function parseCsv<T = any>(
     });
 
     // Extract headers from first record if columns=true
-    const headers = columns === true && records.length > 0
-      ? Object.keys(records[0])
-      : [];
+    const headers =
+      columns === true && records.length > 0 ? Object.keys(records[0]) : [];
 
     return {
       data: records as T[],
@@ -77,7 +76,7 @@ export function parseCsv<T = any>(
     };
   } catch (error) {
     throw new Error(
-      `Failed to parse CSV: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to parse CSV: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -87,17 +86,22 @@ export function parseCsv<T = any>(
  */
 export function mapCsvRow<T>(
   row: { [key: string]: any },
-  columnMap: { [key: string]: keyof T }
+  columnMap: { [key: string]: keyof T },
 ): Partial<T> {
   const mapped: Partial<T> = {};
 
   for (const [csvColumn, schemaField] of Object.entries(columnMap)) {
     // Check if the CSV has this column (case-insensitive)
     const csvKey = Object.keys(row).find(
-      (key) => key.toLowerCase() === csvColumn.toLowerCase()
+      (key) => key.toLowerCase() === csvColumn.toLowerCase(),
     );
 
-    if (csvKey && row[csvKey] !== undefined && row[csvKey] !== null && row[csvKey] !== '') {
+    if (
+      csvKey &&
+      row[csvKey] !== undefined &&
+      row[csvKey] !== null &&
+      row[csvKey] !== ""
+    ) {
       (mapped as any)[schemaField] = row[csvKey];
     }
   }
@@ -110,11 +114,11 @@ export function mapCsvRow<T>(
  */
 export function validateCsvHeaders(
   headers: string[],
-  requiredFields: string[]
+  requiredFields: string[],
 ): { valid: boolean; missingFields: string[] } {
   const lowerHeaders = headers.map((h) => h.toLowerCase());
   const missingFields = requiredFields.filter(
-    (field) => !lowerHeaders.includes(field.toLowerCase())
+    (field) => !lowerHeaders.includes(field.toLowerCase()),
   );
 
   return {
@@ -159,7 +163,7 @@ export function finalizeImportStats(stats: ImportStats): ImportStats {
  */
 export async function* processCsvInBatches<T>(
   records: T[],
-  batchSize: number = 500
+  batchSize: number = 500,
 ): AsyncGenerator<T[], void, unknown> {
   for (let i = 0; i < records.length; i += batchSize) {
     yield records.slice(i, i + batchSize);
@@ -174,8 +178,8 @@ export interface ImportAuditRecord {
   fileName: string;
   fileSize: number;
   rowCount: number;
-  importType: 'moovs' | 'ads' | 'other';
-  status: 'in_progress' | 'completed' | 'failed';
+  importType: "moovs" | "ads" | "other";
+  status: "in_progress" | "completed" | "failed";
   stats: ImportStats;
   errors: Array<{
     row: number;
@@ -192,7 +196,7 @@ export function createImportAudit(
   fileName: string,
   fileSize: number,
   rowCount: number,
-  importType: 'moovs' | 'ads' | 'other'
+  importType: "moovs" | "ads" | "other",
 ): ImportAuditRecord {
   return {
     importId: `${importType}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
@@ -200,7 +204,7 @@ export function createImportAudit(
     fileSize,
     rowCount,
     importType,
-    status: 'in_progress',
+    status: "in_progress",
     stats: createImportStats(),
     errors: [],
     duplicates: [],

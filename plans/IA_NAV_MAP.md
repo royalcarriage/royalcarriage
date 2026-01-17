@@ -764,18 +764,21 @@ PUBLIC WEBSITES (5 Domains)
 ## 5. Navigation Element States
 
 ### Desktop Navigation (Admin)
+
 - Sidebar: Always visible (collapsible)
 - Top bar: Logo, Search, Notifications, User Menu
 - Breadcrumbs: Show current page path
 - Help icon: Contextual help
 
 ### Mobile Navigation (Driver / Customer)
+
 - Bottom tab bar: 4-5 main sections
 - Hamburger menu: Secondary options
 - Quick actions: Floating action buttons
 - Back navigation: Clear path
 
 ### Responsive Breakpoints
+
 ```
 - Mobile: < 640px (bottom navigation)
 - Tablet: 640px - 1024px (mixed layout)
@@ -787,16 +790,19 @@ PUBLIC WEBSITES (5 Domains)
 ## 6. Key User Flows
 
 ### Booking Flow
+
 ```
 Home → Book Now → Select Location → Select Vehicle → Enter Details → Confirm Price → Pay → Confirmation
 ```
 
 ### Ride Completion Flow
+
 ```
 Dispatch → Driver Accepts → En Route to Pickup → Arrived → Customer Boards → En Route to Dropoff → Arrived → Complete → Payment → Rating
 ```
 
 ### Financial Close Flow
+
 ```
 View Pay Period → Review Earnings → Approve Pay → Process Payment → Payment Confirmation → Pay Stub Generation
 ```

@@ -6,82 +6,82 @@
 
 ```typescript
 interface Tenant {
-  id: string // Auto-generated
-  name: string // Company name
-  slug: string // URL-safe identifier (royalcarriage, acme-limo, etc.)
+  id: string; // Auto-generated
+  name: string; // Company name
+  slug: string; // URL-safe identifier (royalcarriage, acme-limo, etc.)
   domains: {
-    admin?: string // admin.company.com
-    airport?: string // airport.company.com
-    corporate?: string // corporate.company.com
-    wedding?: string // wedding.company.com
-    partybus?: string // partybus.company.com
-  }
+    admin?: string; // admin.company.com
+    airport?: string; // airport.company.com
+    corporate?: string; // corporate.company.com
+    wedding?: string; // wedding.company.com
+    partybus?: string; // partybus.company.com
+  };
   branding: {
-    logo: string // Cloud Storage path
-    favicon: string // Cloud Storage path
+    logo: string; // Cloud Storage path
+    favicon: string; // Cloud Storage path
     colors: {
-      primary: string // #FFFFFF
-      secondary: string // #000000
-      accent: string // #FF0000
-    }
+      primary: string; // #FFFFFF
+      secondary: string; // #000000
+      accent: string; // #FF0000
+    };
     fonts: {
-      heading: string // Font family
-      body: string // Font family
-    }
+      heading: string; // Font family
+      body: string; // Font family
+    };
     companyInfo: {
-      name: string
-      phone: string
-      email: string
-      address: string
-      city: string
-      state: string
-      zip: string
-    }
+      name: string;
+      phone: string;
+      email: string;
+      address: string;
+      city: string;
+      state: string;
+      zip: string;
+    };
     socialLinks: {
-      facebook?: string
-      instagram?: string
-      twitter?: string
-      linkedin?: string
-    }
-  }
+      facebook?: string;
+      instagram?: string;
+      twitter?: string;
+      linkedin?: string;
+    };
+  };
   subscription: {
-    plan: 'free' | 'starter' | 'pro' | 'enterprise'
-    status: 'active' | 'suspended' | 'cancelled' | 'trial'
-    billingCycle: 'monthly' | 'annual'
-    startDate: Timestamp
-    renewalDate: Timestamp
-    price: number
-    currency: 'USD' | 'EUR'
-  }
+    plan: "free" | "starter" | "pro" | "enterprise";
+    status: "active" | "suspended" | "cancelled" | "trial";
+    billingCycle: "monthly" | "annual";
+    startDate: Timestamp;
+    renewalDate: Timestamp;
+    price: number;
+    currency: "USD" | "EUR";
+  };
   settings: {
-    timezone: string // 'America/Chicago'
-    currency: string // 'USD'
-    language: string // 'en'
-    dateFormat: string // 'MM/DD/YYYY'
-    timeFormat: '12h' | '24h'
-  }
+    timezone: string; // 'America/Chicago'
+    currency: string; // 'USD'
+    language: string; // 'en'
+    dateFormat: string; // 'MM/DD/YYYY'
+    timeFormat: "12h" | "24h";
+  };
   features: {
-    dispatchSystem: boolean
-    fleetManagement: boolean
-    driverPayroll: boolean
-    affiliateSystem: boolean
-    accounting: boolean
-    customerPortal: boolean
-    blogSystem: boolean
-    mobileApp: boolean
-    smsNotifications: boolean
-    aiCopilots: boolean
-  }
+    dispatchSystem: boolean;
+    fleetManagement: boolean;
+    driverPayroll: boolean;
+    affiliateSystem: boolean;
+    accounting: boolean;
+    customerPortal: boolean;
+    blogSystem: boolean;
+    mobileApp: boolean;
+    smsNotifications: boolean;
+    aiCopilots: boolean;
+  };
   limits: {
-    maxUsers: number
-    maxDrivers: number
-    maxVehicles: number
-    maxBookingsPerMonth: number
-    storageGB: number
-  }
-  created: Timestamp
-  updated: Timestamp
-  deletedAt: Timestamp | null
+    maxUsers: number;
+    maxDrivers: number;
+    maxVehicles: number;
+    maxBookingsPerMonth: number;
+    storageGB: number;
+  };
+  created: Timestamp;
+  updated: Timestamp;
+  deletedAt: Timestamp | null;
 }
 ```
 
@@ -89,59 +89,67 @@ interface Tenant {
 
 ```typescript
 interface User {
-  id: string // Firebase UID
-  tenantId: string // Reference to tenant
-  email: string
-  displayName: string
-  phone: string
-  photoUrl: string
-  role: 'super_admin' | 'tenant_admin' | 'dispatcher' | 'fleet_manager' | 'accountant' | 'driver' | 'affiliate' | 'customer'
+  id: string; // Firebase UID
+  tenantId: string; // Reference to tenant
+  email: string;
+  displayName: string;
+  phone: string;
+  photoUrl: string;
+  role:
+    | "super_admin"
+    | "tenant_admin"
+    | "dispatcher"
+    | "fleet_manager"
+    | "accountant"
+    | "driver"
+    | "affiliate"
+    | "customer";
 
   // Profile details
   profile: {
-    firstName: string
-    lastName: string
-    dateOfBirth: Timestamp
-    gender: 'M' | 'F' | 'Other'
-    ssn: string // Encrypted
+    firstName: string;
+    lastName: string;
+    dateOfBirth: Timestamp;
+    gender: "M" | "F" | "Other";
+    ssn: string; // Encrypted
     address: {
-      street: string
-      city: string
-      state: string
-      zip: string
-      country: string
-    }
+      street: string;
+      city: string;
+      state: string;
+      zip: string;
+      country: string;
+    };
     emergencyContacts: {
-      name: string
-      relationship: string
-      phone: string
-    }[]
-  }
+      name: string;
+      relationship: string;
+      phone: string;
+    }[];
+  };
 
   // Authentication
   auth: {
-    passwordHash: string
-    mfaEnabled: boolean
-    mfaPhoneNumber: string
-    lastLoginAt: Timestamp
-    lastLoginIP: string
-    accountLockedUntil: Timestamp | null
-    failedLoginAttempts: number
-  }
+    passwordHash: string;
+    mfaEnabled: boolean;
+    mfaPhoneNumber: string;
+    lastLoginAt: Timestamp;
+    lastLoginIP: string;
+    accountLockedUntil: Timestamp | null;
+    failedLoginAttempts: number;
+  };
 
   // Permissions
   permissions: {
-    resourceType: string // 'bookings', 'drivers', 'vehicles', etc.
-    actions: ('create' | 'read' | 'update' | 'delete' | 'export')[]
-  }[]
+    resourceType: string; // 'bookings', 'drivers', 'vehicles', etc.
+    actions: ("create" | "read" | "update" | "delete" | "export")[];
+  }[];
 
   // Status
-  status: 'active' | 'inactive' | 'suspended' | 'deleted'
-  statusReason: string
+  status: "active" | "inactive" | "suspended" | "deleted";
+  statusReason: string;
 
-  created: Timestamp
-  updated: Timestamp
-  deletedAt: Timestamp | null
+  created: Timestamp;
+  updated: Timestamp;
+  deletedAt: Timestamp | null;
 }
 ```
 
@@ -248,90 +256,90 @@ interface Driver {
 
 ```typescript
 interface Vehicle {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   basicInfo: {
-    make: string // Toyota
-    model: string // Camry
-    year: number
-    color: string
-    vin: string
-    licensePlate: string
-    licensePlateState: string
-  }
+    make: string; // Toyota
+    model: string; // Camry
+    year: number;
+    color: string;
+    vin: string;
+    licensePlate: string;
+    licensePlateState: string;
+  };
 
   classification: {
-    type: 'sedan' | 'suv' | 'stretch_limo' | 'party_bus' | 'minivan' | 'van'
-    passengerCapacity: number
-    luggageCapacity: string // 'Large', 'Medium', 'Small'
-    specialFeatures: string[] // 'WiFi', 'Bar', 'Sound System', 'Sunroof'
-  }
+    type: "sedan" | "suv" | "stretch_limo" | "party_bus" | "minivan" | "van";
+    passengerCapacity: number;
+    luggageCapacity: string; // 'Large', 'Medium', 'Small'
+    specialFeatures: string[]; // 'WiFi', 'Bar', 'Sound System', 'Sunroof'
+  };
 
   registration: {
-    registrationNumber: string
-    registrationExpiration: Timestamp
-    ownershipType: 'owned' | 'leased'
-    leaseExpirationDate: Timestamp | null
-  }
+    registrationNumber: string;
+    registrationExpiration: Timestamp;
+    ownershipType: "owned" | "leased";
+    leaseExpirationDate: Timestamp | null;
+  };
 
   insurance: {
-    provider: string
-    policyNumber: string
-    expirationDate: Timestamp
-    coverageType: 'liability' | 'comprehensive' | 'full'
-    limitsLiability: string // '$100,000'
-    policyCopy: string // Cloud Storage path
-  }
+    provider: string;
+    policyNumber: string;
+    expirationDate: Timestamp;
+    coverageType: "liability" | "comprehensive" | "full";
+    limitsLiability: string; // '$100,000'
+    policyCopy: string; // Cloud Storage path
+  };
 
   maintenance: {
-    lastServiceDate: Timestamp
-    nextServiceDate: Timestamp
-    odometer: number
-    fuelType: 'gasoline' | 'diesel' | 'electric' | 'hybrid'
+    lastServiceDate: Timestamp;
+    nextServiceDate: Timestamp;
+    odometer: number;
+    fuelType: "gasoline" | "diesel" | "electric" | "hybrid";
     maintenanceSchedule: {
-      serviceType: string // 'Oil Change', 'Tire Rotation', 'Inspection'
-      intervalMiles: number
-      intervalMonths: number
-      nextDueDate: Timestamp
-    }[]
+      serviceType: string; // 'Oil Change', 'Tire Rotation', 'Inspection'
+      intervalMiles: number;
+      intervalMonths: number;
+      nextDueDate: Timestamp;
+    }[];
     serviceHistory: {
-      date: Timestamp
-      type: string
-      cost: number
-      provider: string
-      notes: string
-    }[]
-  }
+      date: Timestamp;
+      type: string;
+      cost: number;
+      provider: string;
+      notes: string;
+    }[];
+  };
 
   pricing: {
-    baseRate: number // Per mile or per hour
-    surgeMultiplier: number // 1.5 during peak hours
-    minimumRide: number
-    cancellationFee: number
+    baseRate: number; // Per mile or per hour
+    surgeMultiplier: number; // 1.5 during peak hours
+    minimumRide: number;
+    cancellationFee: number;
     specialServiceRates: {
-      airportTransfer: number
-      hourlyCharter: number
-      eveningService: number
-    }
-  }
+      airportTransfer: number;
+      hourlyCharter: number;
+      eveningService: number;
+    };
+  };
 
   images: {
-    mainImage: string // Cloud Storage path
-    thumbnailImage: string // Cloud Storage path
-    galleryImages: string[]
-  }
+    mainImage: string; // Cloud Storage path
+    thumbnailImage: string; // Cloud Storage path
+    galleryImages: string[];
+  };
 
-  status: 'active' | 'maintenance' | 'out_of_service' | 'retired'
-  assignedDriverIds: string[]
+  status: "active" | "maintenance" | "out_of_service" | "retired";
+  assignedDriverIds: string[];
   currentLocation: {
-    latitude: number
-    longitude: number
-    timestamp: Timestamp
-  }
+    latitude: number;
+    longitude: number;
+    timestamp: Timestamp;
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -339,89 +347,107 @@ interface Vehicle {
 
 ```typescript
 interface Booking {
-  id: string
-  tenantId: string
-  customerId: string
+  id: string;
+  tenantId: string;
+  customerId: string;
 
   bookingDetails: {
-    bookingType: 'asap' | 'scheduled' | 'recurring' | 'charter' | 'airport' | 'event'
-    status: 'pending' | 'confirmed' | 'accepted' | 'en_route' | 'in_progress' | 'completed' | 'cancelled'
-    bookingTime: Timestamp
-    pickupTime: Timestamp
-    dropoffTime: Timestamp | null
-  }
+    bookingType:
+      | "asap"
+      | "scheduled"
+      | "recurring"
+      | "charter"
+      | "airport"
+      | "event";
+    status:
+      | "pending"
+      | "confirmed"
+      | "accepted"
+      | "en_route"
+      | "in_progress"
+      | "completed"
+      | "cancelled";
+    bookingTime: Timestamp;
+    pickupTime: Timestamp;
+    dropoffTime: Timestamp | null;
+  };
 
   locations: {
     pickup: {
-      address: string
-      latitude: number
-      longitude: number
-      instructions: string // Gate code, etc.
-    }
+      address: string;
+      latitude: number;
+      longitude: number;
+      instructions: string; // Gate code, etc.
+    };
     dropoff: {
-      address: string
-      latitude: number
-      longitude: number
-      instructions: string
-    }
-  }
+      address: string;
+      latitude: number;
+      longitude: number;
+      instructions: string;
+    };
+  };
 
   passengers: {
-    count: number
-    specialRequests: string // "Booster seat needed"
-    accessibility: string // "Wheelchair accessible"
-  }
+    count: number;
+    specialRequests: string; // "Booster seat needed"
+    accessibility: string; // "Wheelchair accessible"
+  };
 
   vehicle: {
-    requestedType: 'sedan' | 'suv' | 'stretch_limo' | 'party_bus'
-    assignedVehicleId: string | null
-    assignedDriverId: string | null
-  }
+    requestedType: "sedan" | "suv" | "stretch_limo" | "party_bus";
+    assignedVehicleId: string | null;
+    assignedDriverId: string | null;
+  };
 
   pricing: {
-    estimatedDistance: number // miles
-    estimatedDuration: number // minutes
-    estimatedFare: number
-    finalFare: number
-    baseFare: number
-    distanceFare: number
-    timeFare: number
-    surgeFare: number
-    discount: number
-    tip: number
-    tax: number
-    total: number
-  }
+    estimatedDistance: number; // miles
+    estimatedDuration: number; // minutes
+    estimatedFare: number;
+    finalFare: number;
+    baseFare: number;
+    distanceFare: number;
+    timeFare: number;
+    surgeFare: number;
+    discount: number;
+    tip: number;
+    tax: number;
+    total: number;
+  };
 
   payment: {
-    method: 'credit_card' | 'cash' | 'corporate_account' | 'wallet'
-    paymentStatus: 'pending' | 'authorized' | 'captured' | 'failed' | 'refunded'
-    transactionId: string
-    receiptUrl: string // Cloud Storage path
-  }
+    method: "credit_card" | "cash" | "corporate_account" | "wallet";
+    paymentStatus:
+      | "pending"
+      | "authorized"
+      | "captured"
+      | "failed"
+      | "refunded";
+    transactionId: string;
+    receiptUrl: string; // Cloud Storage path
+  };
 
   customer: {
-    name: string
-    email: string
-    phone: string
-    previousRideCount: number
-  }
+    name: string;
+    email: string;
+    phone: string;
+    previousRideCount: number;
+  };
 
   specialRequests: {
-    musicPreference: string
-    temperature: string // 'cool', 'warm'
-    route: string // "Avoid highways"
-    languages: string[]
-  }[]
+    musicPreference: string;
+    temperature: string; // 'cool', 'warm'
+    route: string; // "Avoid highways"
+    languages: string[];
+  }[];
 
   ratings: {
-    driverRating: number | null // 1-5
-    vehicleRating: number | null // 1-5
-    comments: string
-  }
+    driverRating: number | null; // 1-5
+    vehicleRating: number | null; // 1-5
+    comments: string;
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -429,43 +455,49 @@ interface Booking {
 
 ```typescript
 interface Ride {
-  id: string
-  tenantId: string
-  bookingId: string // Reference to booking
-  driverId: string
-  vehicleId: string
+  id: string;
+  tenantId: string;
+  bookingId: string; // Reference to booking
+  driverId: string;
+  vehicleId: string;
 
   details: {
-    status: 'waiting_pickup' | 'en_route_to_pickup' | 'arrived_pickup' | 'in_progress' | 'completed' | 'cancelled'
-    startTime: Timestamp
-    pickupTime: Timestamp | null
-    completionTime: Timestamp | null
-  }
+    status:
+      | "waiting_pickup"
+      | "en_route_to_pickup"
+      | "arrived_pickup"
+      | "in_progress"
+      | "completed"
+      | "cancelled";
+    startTime: Timestamp;
+    pickupTime: Timestamp | null;
+    completionTime: Timestamp | null;
+  };
 
   tracking: {
-    pickupLocation: { lat: number, lng: number, timestamp: Timestamp }
-    currentLocation: { lat: number, lng: number, timestamp: Timestamp }
-    dropoffLocation: { lat: number, lng: number, timestamp: Timestamp }
-    locationHistory: { lat: number, lng: number, timestamp: Timestamp }[]
-    estimatedArrival: Timestamp
-    actualArrival: Timestamp | null
-  }
+    pickupLocation: { lat: number; lng: number; timestamp: Timestamp };
+    currentLocation: { lat: number; lng: number; timestamp: Timestamp };
+    dropoffLocation: { lat: number; lng: number; timestamp: Timestamp };
+    locationHistory: { lat: number; lng: number; timestamp: Timestamp }[];
+    estimatedArrival: Timestamp;
+    actualArrival: Timestamp | null;
+  };
 
   mileage: {
-    estimatedDistance: number
-    actualDistance: number
-    actualDuration: number // minutes
-  }
+    estimatedDistance: number;
+    actualDistance: number;
+    actualDuration: number; // minutes
+  };
 
   incidents: {
-    type: string // 'accident', 'traffic', 'customer_complaint'
-    timestamp: Timestamp
-    description: string
-    photosUrls: string[]
-  }[]
+    type: string; // 'accident', 'traffic', 'customer_complaint'
+    timestamp: Timestamp;
+    description: string;
+    photosUrls: string[];
+  }[];
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -473,80 +505,80 @@ interface Ride {
 
 ```typescript
 interface Customer {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   personalInfo: {
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-    dateOfBirth: Timestamp | null
-  }
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth: Timestamp | null;
+  };
 
   address: {
-    street: string
-    city: string
-    state: string
-    zip: string
-    country: string
-  }
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
 
   savedAddresses: {
-    name: string // "Home", "Work", "Airport"
-    address: string
-    latitude: number
-    longitude: number
-    isDefault: boolean
-  }[]
+    name: string; // "Home", "Work", "Airport"
+    address: string;
+    latitude: number;
+    longitude: number;
+    isDefault: boolean;
+  }[];
 
   payment: {
     savedPaymentMethods: {
-      type: 'credit_card' | 'debit_card' | 'wallet'
-      cardLast4: string
-      expirationDate: string
-      isDefault: boolean
-    }[]
-    preferredPaymentMethod: string
-  }
+      type: "credit_card" | "debit_card" | "wallet";
+      cardLast4: string;
+      expirationDate: string;
+      isDefault: boolean;
+    }[];
+    preferredPaymentMethod: string;
+  };
 
   preferences: {
-    vehicleType: 'sedan' | 'suv' | 'stretch_limo'
-    driverPreferences: string // "Quiet driver", "Conversational"
-    temperaturePreference: 'cool' | 'warm' | 'moderate'
-    musicPreference: string
-    languages: string[]
-  }
+    vehicleType: "sedan" | "suv" | "stretch_limo";
+    driverPreferences: string; // "Quiet driver", "Conversational"
+    temperaturePreference: "cool" | "warm" | "moderate";
+    musicPreference: string;
+    languages: string[];
+  };
 
   loyalty: {
-    memberSince: Timestamp
-    totalRides: number
-    totalSpent: number
-    loyaltyPoints: number
-    memberTier: 'bronze' | 'silver' | 'gold' | 'platinum'
-  }
+    memberSince: Timestamp;
+    totalRides: number;
+    totalSpent: number;
+    loyaltyPoints: number;
+    memberTier: "bronze" | "silver" | "gold" | "platinum";
+  };
 
   communication: {
-    email_notifications: boolean
-    sms_notifications: boolean
-    push_notifications: boolean
-    marketing_emails: boolean
-    optOutReasons: string[]
-  }
+    email_notifications: boolean;
+    sms_notifications: boolean;
+    push_notifications: boolean;
+    marketing_emails: boolean;
+    optOutReasons: string[];
+  };
 
   rideHistory: {
-    bookingId: string
-    date: Timestamp
-    pickup: string
-    dropoff: string
-    amount: number
-    driverRating: number
-    riderRating: number
-  }[]
+    bookingId: string;
+    date: Timestamp;
+    pickup: string;
+    dropoff: string;
+    amount: number;
+    driverRating: number;
+    riderRating: number;
+  }[];
 
-  status: 'active' | 'inactive' | 'suspended'
-  created: Timestamp
-  updated: Timestamp
+  status: "active" | "inactive" | "suspended";
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -554,57 +586,61 @@ interface Customer {
 
 ```typescript
 interface Affiliate {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   companyInfo: {
-    name: string
-    website: string
-    contactEmail: string
-    contactPhone: string
+    name: string;
+    website: string;
+    contactEmail: string;
+    contactPhone: string;
     address: {
-      street: string
-      city: string
-      state: string
-      zip: string
-    }
-  }
+      street: string;
+      city: string;
+      state: string;
+      zip: string;
+    };
+  };
 
   businessRelationship: {
-    affiliateType: 'referral_partner' | 'vehicle_provider' | 'driver_provider' | 'reseller'
-    relationshipStartDate: Timestamp
+    affiliateType:
+      | "referral_partner"
+      | "vehicle_provider"
+      | "driver_provider"
+      | "reseller";
+    relationshipStartDate: Timestamp;
     commissionStructure: {
-      type: 'percentage' | 'flat_fee'
-      percentage: number // 10%
-      minimumCommission: number
-      maximumCommission: number
+      type: "percentage" | "flat_fee";
+      percentage: number; // 10%
+      minimumCommission: number;
+      maximumCommission: number;
       tieringStructure: {
-        minRides: number
-        maxRides: number
-        commissionRate: number
-      }[]
-    }
-    paymentTerms: 'weekly' | 'bi_weekly' | 'monthly'
-    paymentMethod: 'direct_deposit' | 'check' | 'wire_transfer'
-  }
+        minRides: number;
+        maxRides: number;
+        commissionRate: number;
+      }[];
+    };
+    paymentTerms: "weekly" | "bi_weekly" | "monthly";
+    paymentMethod: "direct_deposit" | "check" | "wire_transfer";
+  };
 
   bankAccount: {
-    bankName: string
-    accountType: 'checking' | 'savings'
-    routingNumber: string // Encrypted
-    accountNumber: string // Encrypted
-  }
+    bankName: string;
+    accountType: "checking" | "savings";
+    routingNumber: string; // Encrypted
+    accountNumber: string; // Encrypted
+  };
 
   performance: {
-    totalRideReferences: number
-    totalCommissionEarned: number
-    averageOrderValue: number
-    customerRetentionRate: number // 0-100%
-  }
+    totalRideReferences: number;
+    totalCommissionEarned: number;
+    averageOrderValue: number;
+    customerRetentionRate: number; // 0-100%
+  };
 
-  status: 'active' | 'inactive' | 'suspended'
-  created: Timestamp
-  updated: Timestamp
+  status: "active" | "inactive" | "suspended";
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -612,59 +648,64 @@ interface Affiliate {
 
 ```typescript
 interface Payment {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   transactionDetails: {
-    type: 'charge' | 'refund' | 'payout'
-    bookingId: string // Reference to booking
-    amount: number
-    currency: 'USD'
-    status: 'pending' | 'authorized' | 'captured' | 'failed' | 'refunded'
-    timestamp: Timestamp
-  }
+    type: "charge" | "refund" | "payout";
+    bookingId: string; // Reference to booking
+    amount: number;
+    currency: "USD";
+    status: "pending" | "authorized" | "captured" | "failed" | "refunded";
+    timestamp: Timestamp;
+  };
 
   payer: {
-    type: 'customer' | 'corporate_account'
-    id: string
-    name: string
-    email: string
-  }
+    type: "customer" | "corporate_account";
+    id: string;
+    name: string;
+    email: string;
+  };
 
   method: {
-    type: 'credit_card' | 'debit_card' | 'cash' | 'wallet' | 'corporate_account'
-    cardLast4: string | null
-    processor: 'stripe' | 'square' | 'manual'
-    processorTransactionId: string
-  }
+    type:
+      | "credit_card"
+      | "debit_card"
+      | "cash"
+      | "wallet"
+      | "corporate_account";
+    cardLast4: string | null;
+    processor: "stripe" | "square" | "manual";
+    processorTransactionId: string;
+  };
 
   breakdown: {
-    baseFare: number
-    distanceFare: number
-    timeFare: number
-    surgeFare: number
-    discount: number
-    tip: number
-    tax: number
-  }
+    baseFare: number;
+    distanceFare: number;
+    timeFare: number;
+    surgeFare: number;
+    discount: number;
+    tip: number;
+    tax: number;
+  };
 
   settlement: {
-    settledAt: Timestamp | null
-    bankDepositDate: Timestamp | null
+    settledAt: Timestamp | null;
+    bankDepositDate: Timestamp | null;
     bankAccount: {
-      bankName: string
-      accountLast4: string
-    }
-  }
+      bankName: string;
+      accountLast4: string;
+    };
+  };
 
   receipt: {
-    receiptUrl: string // Cloud Storage path
-    emailedTo: string
-    emailedAt: Timestamp
-  }
+    receiptUrl: string; // Cloud Storage path
+    emailedTo: string;
+    emailedAt: Timestamp;
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -672,63 +713,63 @@ interface Payment {
 
 ```typescript
 interface Invoice {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   basics: {
-    invoiceNumber: string
-    type: 'customer_invoice' | 'driver_invoice' | 'affiliate_invoice'
-    status: 'draft' | 'sent' | 'viewed' | 'paid' | 'overdue' | 'cancelled'
-    issueDate: Timestamp
-    dueDate: Timestamp
-    paidDate: Timestamp | null
-  }
+    invoiceNumber: string;
+    type: "customer_invoice" | "driver_invoice" | "affiliate_invoice";
+    status: "draft" | "sent" | "viewed" | "paid" | "overdue" | "cancelled";
+    issueDate: Timestamp;
+    dueDate: Timestamp;
+    paidDate: Timestamp | null;
+  };
 
   from: {
-    companyName: string
-    address: string
-    email: string
-    phone: string
-    taxId: string
-  }
+    companyName: string;
+    address: string;
+    email: string;
+    phone: string;
+    taxId: string;
+  };
 
   to: {
-    type: 'customer' | 'driver' | 'affiliate'
-    name: string
-    email: string
-    address: string
-    taxId: string
-  }
+    type: "customer" | "driver" | "affiliate";
+    name: string;
+    email: string;
+    address: string;
+    taxId: string;
+  };
 
   lineItems: {
-    description: string
-    quantity: number
-    unitPrice: number
-    amount: number
-    serviceDate: Timestamp
-  }[]
+    description: string;
+    quantity: number;
+    unitPrice: number;
+    amount: number;
+    serviceDate: Timestamp;
+  }[];
 
   totals: {
-    subtotal: number
-    tax: number
-    total: number
-  }
+    subtotal: number;
+    tax: number;
+    total: number;
+  };
 
   payment: {
-    method: 'credit_card' | 'direct_deposit' | 'check' | 'ach_transfer'
-    paymentReceivedAmount: number
-    outstandingBalance: number
-  }
+    method: "credit_card" | "direct_deposit" | "check" | "ach_transfer";
+    paymentReceivedAmount: number;
+    outstandingBalance: number;
+  };
 
   notes: {
-    internalNotes: string
-    customerNotes: string
-    termsAndConditions: string
-  }
+    internalNotes: string;
+    customerNotes: string;
+    termsAndConditions: string;
+  };
 
-  pdfUrl: string // Cloud Storage path
-  created: Timestamp
-  updated: Timestamp
+  pdfUrl: string; // Cloud Storage path
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -736,63 +777,63 @@ interface Invoice {
 
 ```typescript
 interface DriverPayrollEntry {
-  id: string
-  tenantId: string
-  driverId: string
+  id: string;
+  tenantId: string;
+  driverId: string;
 
   payPeriod: {
-    startDate: Timestamp
-    endDate: Timestamp
-    payDate: Timestamp
-  }
+    startDate: Timestamp;
+    endDate: Timestamp;
+    payDate: Timestamp;
+  };
 
   earnings: {
-    totalRides: number
-    earnedAmount: number // From rides
-    bonus: number
-    incentives: number
-    totalEarnings: number
-  }
+    totalRides: number;
+    earnedAmount: number; // From rides
+    bonus: number;
+    incentives: number;
+    totalEarnings: number;
+  };
 
   deductions: {
-    vehicleRent: number
-    fuelCharge: number
-    damageDeduction: number
-    insuranceDeduction: number
+    vehicleRent: number;
+    fuelCharge: number;
+    damageDeduction: number;
+    insuranceDeduction: number;
     otherDeductions: {
-      reason: string
-      amount: number
-    }[]
-    totalDeductions: number
-  }
+      reason: string;
+      amount: number;
+    }[];
+    totalDeductions: number;
+  };
 
   taxes: {
-    federalWithholding: number
-    stateWithholding: number
-    socialSecurityTax: number
-    medicareWithholding: number
-    totalTaxes: number
-  }
+    federalWithholding: number;
+    stateWithholding: number;
+    socialSecurityTax: number;
+    medicareWithholding: number;
+    totalTaxes: number;
+  };
 
   summary: {
-    grossPay: number
-    totalDeductions: number
-    totalTaxes: number
-    netPay: number
-  }
+    grossPay: number;
+    totalDeductions: number;
+    totalTaxes: number;
+    netPay: number;
+  };
 
   payment: {
-    paymentMethod: 'direct_deposit' | 'check'
-    status: 'pending' | 'processed' | 'paid'
-    paidDate: Timestamp | null
+    paymentMethod: "direct_deposit" | "check";
+    status: "pending" | "processed" | "paid";
+    paidDate: Timestamp | null;
     bankAccount: {
-      bankName: string
-      accountLast4: string
-    }
-  }
+      bankName: string;
+      accountLast4: string;
+    };
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -800,38 +841,38 @@ interface DriverPayrollEntry {
 
 ```typescript
 interface AffiliatePayrollEntry {
-  id: string
-  tenantId: string
-  affiliateId: string
+  id: string;
+  tenantId: string;
+  affiliateId: string;
 
   payPeriod: {
-    startDate: Timestamp
-    endDate: Timestamp
-    payDate: Timestamp
-  }
+    startDate: Timestamp;
+    endDate: Timestamp;
+    payDate: Timestamp;
+  };
 
   earnings: {
-    totalRideReferences: number
-    commissionRate: number
-    totalCommission: number
-    bonusCommission: number
-    totalEarnings: number
-  }
+    totalRideReferences: number;
+    commissionRate: number;
+    totalCommission: number;
+    bonusCommission: number;
+    totalEarnings: number;
+  };
 
   summary: {
-    grossCommission: number
-    deductions: number
-    netCommission: number
-  }
+    grossCommission: number;
+    deductions: number;
+    netCommission: number;
+  };
 
   payment: {
-    paymentMethod: 'direct_deposit' | 'check' | 'wire_transfer'
-    status: 'pending' | 'processed' | 'paid'
-    paidDate: Timestamp | null
-  }
+    paymentMethod: "direct_deposit" | "check" | "wire_transfer";
+    status: "pending" | "processed" | "paid";
+    paidDate: Timestamp | null;
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -839,51 +880,58 @@ interface AffiliatePayrollEntry {
 
 ```typescript
 interface SiteContentPage {
-  id: string
-  tenantId: string
-  siteId: string // 'airport', 'corporate', 'wedding', 'partybus'
+  id: string;
+  tenantId: string;
+  siteId: string; // 'airport', 'corporate', 'wedding', 'partybus'
 
   metadata: {
-    slug: string // 'services', 'fleet', 'pricing'
-    title: string
-    metaDescription: string
-    metaKeywords: string[]
-    ogTitle: string
-    ogDescription: string
-    ogImage: string // Cloud Storage path
-    canonicalUrl: string
-  }
+    slug: string; // 'services', 'fleet', 'pricing'
+    title: string;
+    metaDescription: string;
+    metaKeywords: string[];
+    ogTitle: string;
+    ogDescription: string;
+    ogImage: string; // Cloud Storage path
+    canonicalUrl: string;
+  };
 
   content: {
-    sectionType: 'hero' | 'services' | 'fleet' | 'testimonials' | 'pricing' | 'faq' | 'cta'
-    heading: string
-    subheading: string
-    bodyText: string // Markdown or HTML
+    sectionType:
+      | "hero"
+      | "services"
+      | "fleet"
+      | "testimonials"
+      | "pricing"
+      | "faq"
+      | "cta";
+    heading: string;
+    subheading: string;
+    bodyText: string; // Markdown or HTML
     images: {
-      url: string // Cloud Storage path
-      altText: string
-      caption: string
-    }[]
+      url: string; // Cloud Storage path
+      altText: string;
+      caption: string;
+    }[];
     ctaButton: {
-      text: string
-      url: string
-      style: 'primary' | 'secondary'
-    }
-  }[]
+      text: string;
+      url: string;
+      style: "primary" | "secondary";
+    };
+  }[];
 
   seo: {
-    h1: string
-    focusKeyword: string
-    readabilityScore: number
-    seoScore: number
-  }
+    h1: string;
+    focusKeyword: string;
+    readabilityScore: number;
+    seoScore: number;
+  };
 
-  status: 'draft' | 'scheduled' | 'published' | 'archived'
-  publishedAt: Timestamp | null
-  scheduledAt: Timestamp | null
+  status: "draft" | "scheduled" | "published" | "archived";
+  publishedAt: Timestamp | null;
+  scheduledAt: Timestamp | null;
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -891,63 +939,63 @@ interface SiteContentPage {
 
 ```typescript
 interface BlogPost {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   metadata: {
-    slug: string // 'tips-for-airport-transfers'
-    title: string
-    excerpt: string
-    metaDescription: string
-    metaKeywords: string[]
-    ogImage: string // Cloud Storage path
-    author: string
-  }
+    slug: string; // 'tips-for-airport-transfers'
+    title: string;
+    excerpt: string;
+    metaDescription: string;
+    metaKeywords: string[];
+    ogImage: string; // Cloud Storage path
+    author: string;
+  };
 
   content: {
-    bodyHtml: string // Rich HTML content
-    wordCount: number
-    estimatedReadTime: number // minutes
-  }
+    bodyHtml: string; // Rich HTML content
+    wordCount: number;
+    estimatedReadTime: number; // minutes
+  };
 
   images: {
-    featuredImage: string // Cloud Storage path
-    thumbnailImage: string // Cloud Storage path
-    inlineImages: string[]
-  }
+    featuredImage: string; // Cloud Storage path
+    thumbnailImage: string; // Cloud Storage path
+    inlineImages: string[];
+  };
 
   categorization: {
-    categories: string[] // 'tips', 'news', 'fleet'
-    tags: string[] // 'airport', 'corporate', 'safety'
-    relatedPostIds: string[]
-  }
+    categories: string[]; // 'tips', 'news', 'fleet'
+    tags: string[]; // 'airport', 'corporate', 'safety'
+    relatedPostIds: string[];
+  };
 
   seo: {
-    h1: string
-    focusKeyword: string
-    readabilityScore: number
-    seoScore: number
-  }
+    h1: string;
+    focusKeyword: string;
+    readabilityScore: number;
+    seoScore: number;
+  };
 
   publishing: {
-    status: 'draft' | 'scheduled' | 'published' | 'archived'
-    publishedAt: Timestamp | null
-    scheduledAt: Timestamp | null
+    status: "draft" | "scheduled" | "published" | "archived";
+    publishedAt: Timestamp | null;
+    scheduledAt: Timestamp | null;
     schedule: {
-      autoRepublish: boolean
-      republishDates: Timestamp[]
-    }
-  }
+      autoRepublish: boolean;
+      republishDates: Timestamp[];
+    };
+  };
 
   engagement: {
-    viewCount: number
-    shareCount: number
-    commentCount: number
-    readingTime: number // minutes
-  }
+    viewCount: number;
+    shareCount: number;
+    commentCount: number;
+    readingTime: number; // minutes
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -955,51 +1003,51 @@ interface BlogPost {
 
 ```typescript
 interface ImageAsset {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   metadata: {
-    originalFileName: string
-    uploadedBy: string // userId
-    uploadDate: Timestamp
-    fileSize: number // bytes
-    mimeType: string // 'image/jpeg'
+    originalFileName: string;
+    uploadedBy: string; // userId
+    uploadDate: Timestamp;
+    fileSize: number; // bytes
+    mimeType: string; // 'image/jpeg'
     dimensions: {
-      width: number
-      height: number
-    }
-  }
+      width: number;
+      height: number;
+    };
+  };
 
   storage: {
-    originalImageUrl: string // Cloud Storage path
-    thumbnailUrl: string // Cloud Storage path (200px)
-    mediumUrl: string // Cloud Storage path (600px)
-    largeUrl: string // Cloud Storage path (1200px)
-  }
+    originalImageUrl: string; // Cloud Storage path
+    thumbnailUrl: string; // Cloud Storage path (200px)
+    mediumUrl: string; // Cloud Storage path (600px)
+    largeUrl: string; // Cloud Storage path (1200px)
+  };
 
   seo: {
-    altText: string
-    title: string
-    caption: string
-    keywords: string[]
-  }
+    altText: string;
+    title: string;
+    caption: string;
+    keywords: string[];
+  };
 
   usage: {
-    entityType: 'vehicle' | 'driver' | 'blog' | 'site_content' | 'marketing'
-    entityId: string
-    usageCount: number
-    lastUsedAt: Timestamp
-  }
+    entityType: "vehicle" | "driver" | "blog" | "site_content" | "marketing";
+    entityId: string;
+    usageCount: number;
+    lastUsedAt: Timestamp;
+  };
 
   ai: {
-    generatedByAI: boolean
-    generationPrompt: string
-    model: string // 'dall-e-3'
-  }
+    generatedByAI: boolean;
+    generationPrompt: string;
+    model: string; // 'dall-e-3'
+  };
 
-  status: 'active' | 'archived' | 'flagged'
-  created: Timestamp
-  updated: Timestamp
+  status: "active" | "archived" | "flagged";
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -1007,65 +1055,65 @@ interface ImageAsset {
 
 ```typescript
 interface DataImport {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
   fileInfo: {
-    originalFileName: string
-    fileSize: number
-    fileType: 'csv' | 'json' | 'xlsx'
-    uploadedBy: string // userId
-    uploadDate: Timestamp
-    sourceSystem: 'moovs' | 'quickbooks' | 'manual'
-  }
+    originalFileName: string;
+    fileSize: number;
+    fileType: "csv" | "json" | "xlsx";
+    uploadedBy: string; // userId
+    uploadDate: Timestamp;
+    sourceSystem: "moovs" | "quickbooks" | "manual";
+  };
 
   importDetails: {
-    recordType: 'rides' | 'customers' | 'drivers' | 'vehicles' | 'payments'
-    totalRecords: number
-    successfulRecords: number
-    failedRecords: number
-    skippedRecords: number // Duplicates
-    status: 'pending' | 'processing' | 'completed' | 'failed'
-  }
+    recordType: "rides" | "customers" | "drivers" | "vehicles" | "payments";
+    totalRecords: number;
+    successfulRecords: number;
+    failedRecords: number;
+    skippedRecords: number; // Duplicates
+    status: "pending" | "processing" | "completed" | "failed";
+  };
 
   validation: {
     validationErrors: {
-      rowNumber: number
-      field: string
-      error: string
-      value: string
-    }[]
+      rowNumber: number;
+      field: string;
+      error: string;
+      value: string;
+    }[];
     duplicatesFound: {
-      field: string
-      value: string
-      existingRecordId: string
-    }[]
-  }
+      field: string;
+      value: string;
+      existingRecordId: string;
+    }[];
+  };
 
   mapping: {
-    sourceColumns: string[]
-    targetColumns: string[]
+    sourceColumns: string[];
+    targetColumns: string[];
     transformationRules: {
-      sourceColumn: string
-      targetColumn: string
-      transformation: string // 'uppercase', 'date_parse', etc.
-    }[]
-  }
+      sourceColumn: string;
+      targetColumn: string;
+      transformation: string; // 'uppercase', 'date_parse', etc.
+    }[];
+  };
 
   execution: {
-    startTime: Timestamp
-    endTime: Timestamp | null
-    duration: number // milliseconds
-    processedAt: Timestamp | null
-  }
+    startTime: Timestamp;
+    endTime: Timestamp | null;
+    duration: number; // milliseconds
+    processedAt: Timestamp | null;
+  };
 
   archive: {
-    fileUrl: string // Cloud Storage path - original file
-    reportUrl: string // Cloud Storage path - summary report
-  }
+    fileUrl: string; // Cloud Storage path - original file
+    reportUrl: string; // Cloud Storage path - summary report
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -1073,57 +1121,57 @@ interface DataImport {
 
 ```typescript
 interface AnalyticsMetric {
-  id: string
-  tenantId: string
+  id: string;
+  tenantId: string;
 
-  date: Timestamp
-  period: 'daily' | 'weekly' | 'monthly'
+  date: Timestamp;
+  period: "daily" | "weekly" | "monthly";
 
   rides: {
-    totalRides: number
-    completedRides: number
-    cancelledRides: number
-    averageDistance: number
-    averageEarnings: number
-  }
+    totalRides: number;
+    completedRides: number;
+    cancelledRides: number;
+    averageDistance: number;
+    averageEarnings: number;
+  };
 
   revenue: {
-    totalRevenue: number
-    avgRevPerRide: number
+    totalRevenue: number;
+    avgRevPerRide: number;
     revByVehicleType: {
-      vehicleType: string
-      revenue: number
-    }[]
+      vehicleType: string;
+      revenue: number;
+    }[];
     revBySource: {
-      source: 'website' | 'phone' | 'app' | 'affiliate'
-      revenue: number
-    }[]
-  }
+      source: "website" | "phone" | "app" | "affiliate";
+      revenue: number;
+    }[];
+  };
 
   customers: {
-    newCustomers: number
-    repeatCustomers: number
-    totalCustomers: number
-    customerRetentionRate: number // 0-100%
-    avgCustomerLTV: number
-  }
+    newCustomers: number;
+    repeatCustomers: number;
+    totalCustomers: number;
+    customerRetentionRate: number; // 0-100%
+    avgCustomerLTV: number;
+  };
 
   drivers: {
-    activeDrivers: number
-    totalEarnings: number
-    avgEarningsPerDriver: number
-    driverRetentionRate: number
-  }
+    activeDrivers: number;
+    totalEarnings: number;
+    avgEarningsPerDriver: number;
+    driverRetentionRate: number;
+  };
 
   vehicles: {
-    totalVehicles: number
-    activeVehicles: number
-    utilizationRate: number // 0-100%
-    avgRidesPerVehicle: number
-  }
+    totalVehicles: number;
+    activeVehicles: number;
+    utilizationRate: number; // 0-100%
+    avgRidesPerVehicle: number;
+  };
 
-  created: Timestamp
-  updated: Timestamp
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
@@ -1135,26 +1183,31 @@ interface AnalyticsMetric {
 
 ```typescript
 interface LiveRide {
-  status: 'waiting_pickup' | 'en_route_to_pickup' | 'arrived_pickup' | 'in_progress' | 'completed'
-  driverId: string
-  vehicleId: string
-  customerId: string
+  status:
+    | "waiting_pickup"
+    | "en_route_to_pickup"
+    | "arrived_pickup"
+    | "in_progress"
+    | "completed";
+  driverId: string;
+  vehicleId: string;
+  customerId: string;
 
   currentLocation: {
-    latitude: number
-    longitude: number
-    accuracy: number
-    heading: number // 0-360 degrees
-    timestamp: number // Unix timestamp
-  }
+    latitude: number;
+    longitude: number;
+    accuracy: number;
+    heading: number; // 0-360 degrees
+    timestamp: number; // Unix timestamp
+  };
 
-  eta: number // Unix timestamp
-  estimatedFare: number
+  eta: number; // Unix timestamp
+  estimatedFare: number;
   rideProgress: {
-    distanceTraveled: number // miles
-    timeElapsed: number // seconds
-    distanceRemaining: number // miles
-  }
+    distanceTraveled: number; // miles
+    timeElapsed: number; // seconds
+    distanceRemaining: number; // miles
+  };
 }
 ```
 
@@ -1162,16 +1215,16 @@ interface LiveRide {
 
 ```typescript
 interface DriverStatus {
-  online: boolean
-  currentRideId: string | null
+  online: boolean;
+  currentRideId: string | null;
   currentLocation: {
-    latitude: number
-    longitude: number
-    timestamp: number
-  }
-  lastUpdate: number // Unix timestamp
-  acceptanceRate: number // Last 30 days
-  currentEarningsToday: number
+    latitude: number;
+    longitude: number;
+    timestamp: number;
+  };
+  lastUpdate: number; // Unix timestamp
+  acceptanceRate: number; // Last 30 days
+  currentEarningsToday: number;
 }
 ```
 
@@ -1179,10 +1232,10 @@ interface DriverStatus {
 
 ```typescript
 interface DispatchBoard {
-  pendingRideIds: string[] // Rides waiting for driver assignment
-  availableDriverIds: string[] // Drivers online and available
-  activeRideIds: string[] // Rides in progress
-  lastUpdate: number // Unix timestamp
+  pendingRideIds: string[]; // Rides waiting for driver assignment
+  availableDriverIds: string[]; // Drivers online and available
+  activeRideIds: string[]; // Rides in progress
+  lastUpdate: number; // Unix timestamp
 }
 ```
 
@@ -1190,17 +1243,23 @@ interface DispatchBoard {
 
 ```typescript
 interface Notification {
-  type: 'booking_confirmation' | 'driver_assigned' | 'ride_started' | 'arrival_soon' | 'ride_completed' | 'payment_received'
-  title: string
-  message: string
+  type:
+    | "booking_confirmation"
+    | "driver_assigned"
+    | "ride_started"
+    | "arrival_soon"
+    | "ride_completed"
+    | "payment_received";
+  title: string;
+  message: string;
   data: {
-    rideId?: string
-    bookingId?: string
-    amount?: number
-  }
-  read: boolean
-  timestamp: number // Unix timestamp
-  expiresAt: number // Auto-delete after 30 days
+    rideId?: string;
+    bookingId?: string;
+    amount?: number;
+  };
+  read: boolean;
+  timestamp: number; // Unix timestamp
+  expiresAt: number; // Auto-delete after 30 days
 }
 ```
 
@@ -1284,46 +1343,46 @@ interface Notification {
 // Composite indexes for complex queries
 [
   {
-    collection: 'bookings',
+    collection: "bookings",
     fields: [
-      { field: 'tenantId', direction: 'asc' },
-      { field: 'status', direction: 'asc' },
-      { field: 'createdAt', direction: 'desc' }
-    ]
+      { field: "tenantId", direction: "asc" },
+      { field: "status", direction: "asc" },
+      { field: "createdAt", direction: "desc" },
+    ],
   },
   {
-    collection: 'rides',
+    collection: "rides",
     fields: [
-      { field: 'tenantId', direction: 'asc' },
-      { field: 'driverId', direction: 'asc' },
-      { field: 'startTime', direction: 'desc' }
-    ]
+      { field: "tenantId", direction: "asc" },
+      { field: "driverId", direction: "asc" },
+      { field: "startTime", direction: "desc" },
+    ],
   },
   {
-    collection: 'payments',
+    collection: "payments",
     fields: [
-      { field: 'tenantId', direction: 'asc' },
-      { field: 'status', direction: 'asc' },
-      { field: 'timestamp', direction: 'desc' }
-    ]
+      { field: "tenantId", direction: "asc" },
+      { field: "status", direction: "asc" },
+      { field: "timestamp", direction: "desc" },
+    ],
   },
   {
-    collection: 'drivers',
+    collection: "drivers",
     fields: [
-      { field: 'tenantId', direction: 'asc' },
-      { field: 'status', direction: 'asc' },
-      { field: 'performance.averageRating', direction: 'desc' }
-    ]
+      { field: "tenantId", direction: "asc" },
+      { field: "status", direction: "asc" },
+      { field: "performance.averageRating", direction: "desc" },
+    ],
   },
   {
-    collection: 'blog',
+    collection: "blog",
     fields: [
-      { field: 'tenantId', direction: 'asc' },
-      { field: 'status', direction: 'asc' },
-      { field: 'publishedAt', direction: 'desc' }
-    ]
-  }
-]
+      { field: "tenantId", direction: "asc" },
+      { field: "status", direction: "asc" },
+      { field: "publishedAt", direction: "desc" },
+    ],
+  },
+];
 ```
 
 ---

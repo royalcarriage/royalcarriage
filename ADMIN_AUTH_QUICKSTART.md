@@ -1,6 +1,7 @@
 # ⚡ Admin Dashboard Firebase Auth - Quick Start
 
 ## Current Status
+
 - ✅ Google Popup Auth code: Ready
 - ✅ Dashboard redirect logic: Ready
 - ❌ Firebase credentials: **MISSING** ← This is what we're fixing
@@ -10,6 +11,7 @@
 ## 🎯 Your 5-Minute Setup
 
 ### Step 1: Get Firebase Web Config
+
 ```
 1. Go to: https://console.firebase.google.com/project/royalcarriagelimoseo/settings/general
 2. Scroll down to "Your apps" section
@@ -19,12 +21,15 @@
 ```
 
 ### Step 2: Create .env.local File
+
 Run this command to interactively set up:
+
 ```bash
 node scripts/setup-firebase-env.js
 ```
 
 OR manually create `/Users/admin/VSCODE/.env.local`:
+
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=AIza...
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=royalcarriagelimoseo.firebaseapp.com
@@ -36,19 +41,23 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=G-ABC...
 ```
 
 ### Step 3: Update Admin Email
+
 Edit: `/Users/admin/VSCODE/apps/admin/src/lib/dataStore.ts` line 208
 
 **Before:**
+
 ```typescript
 role: user.email === "info@royalcarriagelimo.com" ? "superadmin" : "viewer",
 ```
 
 **After (use YOUR email):**
+
 ```typescript
 role: user.email === "YOUR_EMAIL@example.com" ? "superadmin" : "viewer",
 ```
 
 ### Step 4: Add Google to Firebase Auth
+
 ```
 1. Go to: https://console.firebase.google.com/project/royalcarriagelimoseo/authentication/providers
 2. Click "Google" → Enable
@@ -58,6 +67,7 @@ role: user.email === "YOUR_EMAIL@example.com" ? "superadmin" : "viewer",
 ```
 
 ### Step 5: Test It
+
 ```bash
 cd /Users/admin/VSCODE/apps/admin
 npm run build
@@ -67,6 +77,7 @@ npm run dev
 Then visit: http://localhost:3000
 
 **Expected Flow:**
+
 1. See login page
 2. Click "Sign in with Google"
 3. Google popup appears
@@ -88,13 +99,13 @@ Then visit: http://localhost:3000
 
 ## ⚠️ Common Issues & Fixes
 
-| Issue | Fix |
-|-------|-----|
-| "Firebase config missing" | Add `.env.local` with credentials |
-| Google popup doesn't appear | Add domain to Firebase authorized domains |
-| Sign-in works but no redirect | Check browser console for errors |
-| Access denied after sign-in | Update admin email in `dataStore.ts` line 208 |
-| Can't see metrics on dashboard | Ensure Firestore is configured in Firebase |
+| Issue                          | Fix                                           |
+| ------------------------------ | --------------------------------------------- |
+| "Firebase config missing"      | Add `.env.local` with credentials             |
+| Google popup doesn't appear    | Add domain to Firebase authorized domains     |
+| Sign-in works but no redirect  | Check browser console for errors              |
+| Access denied after sign-in    | Update admin email in `dataStore.ts` line 208 |
+| Can't see metrics on dashboard | Ensure Firestore is configured in Firebase    |
 
 ---
 
@@ -126,6 +137,7 @@ If you get stuck:
 ## 🚀 After Setup
 
 Once authentication is working:
+
 1. Deploy admin app to production
 2. Connect custom domain: `admin.royalcarriagelimo.com`
 3. Monitor auth in Firebase Console

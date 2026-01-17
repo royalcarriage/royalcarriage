@@ -1,4 +1,16 @@
+# Royal Carriage Limousine - https://chicagoweddingtransportation.com
+# https://royalcarriagelimo.com
+
 User-agent: *
 Allow: /
 
-Sitemap: https://chicagoweddingtransportation.web.app/sitemap-index.xml
+# Sitemaps
+Sitemap: https://chicagoweddingtransportation.com/sitemap.xml
+
+# Crawl-delay (optional, for politeness)
+Crawl-delay: 1
+
+# Disallow admin and private paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/

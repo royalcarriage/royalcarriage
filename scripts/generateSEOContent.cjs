@@ -1,47 +1,72 @@
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 if (!admin.apps.length) {
-  admin.initializeApp({ projectId: 'royalcarriagelimoseo' });
+  admin.initializeApp({ projectId: "royalcarriagelimoseo" });
 }
 const db = admin.firestore();
 
 // Cross-selling configuration - what services to recommend on each website
 const CROSS_SELL_CONFIG = {
-  'chicagoairportblackcar': {
-    relatedWebsites: ['chicagoexecutivecarservice', 'chicago-partybus'],
-    vehicleTypes: ['sedan', 'suv', 'van', 'executive-van'],
+  chicagoairportblackcar: {
+    relatedWebsites: ["chicagoexecutivecarservice", "chicago-partybus"],
+    vehicleTypes: ["sedan", "suv", "van", "executive-van"],
     crossSellMessages: {
-      'chicagoexecutivecarservice': 'Need hourly corporate transportation? Check out our Executive Car Service for business meetings and corporate events.',
-      'chicago-partybus': 'Traveling with a large group? Our Party Bus service offers fun, spacious transportation for groups up to 36 passengers.',
-      'chicagoweddingtransportation': 'Planning a wedding? We offer elegant wedding limousine services for your special day.'
-    }
+      chicagoexecutivecarservice:
+        "Need hourly corporate transportation? Check out our Executive Car Service for business meetings and corporate events.",
+      "chicago-partybus":
+        "Traveling with a large group? Our Party Bus service offers fun, spacious transportation for groups up to 36 passengers.",
+      chicagoweddingtransportation:
+        "Planning a wedding? We offer elegant wedding limousine services for your special day.",
+    },
   },
-  'chicagoexecutivecarservice': {
-    relatedWebsites: ['chicagoairportblackcar', 'chicago-partybus'],
-    vehicleTypes: ['sedan', 'luxury-sedan', 'suv', 'luxury-suv', 'executive-van'],
+  chicagoexecutivecarservice: {
+    relatedWebsites: ["chicagoairportblackcar", "chicago-partybus"],
+    vehicleTypes: [
+      "sedan",
+      "luxury-sedan",
+      "suv",
+      "luxury-suv",
+      "executive-van",
+    ],
     crossSellMessages: {
-      'chicagoairportblackcar': 'Need airport transportation? Our Airport Black Car Service provides reliable O\'Hare and Midway transfers.',
-      'chicago-partybus': 'Planning a corporate team outing? Our Party Bus service is perfect for company events and team building.',
-      'chicagoweddingtransportation': 'Hosting VIP clients for a special event? Our Wedding Transportation service provides elegant vehicles.'
-    }
+      chicagoairportblackcar:
+        "Need airport transportation? Our Airport Black Car Service provides reliable O'Hare and Midway transfers.",
+      "chicago-partybus":
+        "Planning a corporate team outing? Our Party Bus service is perfect for company events and team building.",
+      chicagoweddingtransportation:
+        "Hosting VIP clients for a special event? Our Wedding Transportation service provides elegant vehicles.",
+    },
   },
-  'chicagoweddingtransportation': {
-    relatedWebsites: ['chicago-partybus', 'chicagoairportblackcar'],
-    vehicleTypes: ['stretch-limo', 'stretch', 'suv', 'luxury-suv', 'van', 'partyBus'],
+  chicagoweddingtransportation: {
+    relatedWebsites: ["chicago-partybus", "chicagoairportblackcar"],
+    vehicleTypes: [
+      "stretch-limo",
+      "stretch",
+      "suv",
+      "luxury-suv",
+      "van",
+      "partyBus",
+    ],
     crossSellMessages: {
-      'chicago-partybus': 'Planning a bachelor or bachelorette party? Our Party Bus service is perfect for pre-wedding celebrations!',
-      'chicagoairportblackcar': 'Out-of-town guests arriving by plane? Our Airport Service ensures they arrive in style.',
-      'chicagoexecutivecarservice': 'Need transportation for wedding vendors or rehearsal dinner? Our Executive Car Service provides professional transportation.'
-    }
+      "chicago-partybus":
+        "Planning a bachelor or bachelorette party? Our Party Bus service is perfect for pre-wedding celebrations!",
+      chicagoairportblackcar:
+        "Out-of-town guests arriving by plane? Our Airport Service ensures they arrive in style.",
+      chicagoexecutivecarservice:
+        "Need transportation for wedding vendors or rehearsal dinner? Our Executive Car Service provides professional transportation.",
+    },
   },
-  'chicago-partybus': {
-    relatedWebsites: ['chicagoweddingtransportation', 'chicagoairportblackcar'],
-    vehicleTypes: ['partyBus', 'stretch-limo', 'stretch', 'van'],
+  "chicago-partybus": {
+    relatedWebsites: ["chicagoweddingtransportation", "chicagoairportblackcar"],
+    vehicleTypes: ["partyBus", "stretch-limo", "stretch", "van"],
     crossSellMessages: {
-      'chicagoweddingtransportation': 'Getting married? Our Wedding Transportation service offers elegant limousines for your special day.',
-      'chicagoairportblackcar': 'Need airport transfers for your group? Our Airport Service handles groups of all sizes.',
-      'chicagoexecutivecarservice': 'Planning a corporate event? Our Executive Car Service provides professional transportation.'
-    }
-  }
+      chicagoweddingtransportation:
+        "Getting married? Our Wedding Transportation service offers elegant limousines for your special day.",
+      chicagoairportblackcar:
+        "Need airport transfers for your group? Our Airport Service handles groups of all sizes.",
+      chicagoexecutivecarservice:
+        "Planning a corporate event? Our Executive Car Service provides professional transportation.",
+    },
+  },
 };
 
 // High-value SEO content templates by service category
@@ -79,7 +104,7 @@ const SEO_CONTENT_TEMPLATES = {
           <p>Mercedes Sprinter accommodating 12-14 passengers. Perfect for corporate groups, sports teams, or large families.</p>
         </div>
       </div>
-    `
+    `,
   },
   corporate: {
     intro: (location, service) => `
@@ -114,7 +139,7 @@ const SEO_CONTENT_TEMPLATES = {
           <p>Spacious luxury for executive teams. Perfect for multi-person meetings on the move.</p>
         </div>
       </div>
-    `
+    `,
   },
   wedding: {
     intro: (location, service) => `
@@ -149,7 +174,7 @@ const SEO_CONTENT_TEMPLATES = {
           <p>For larger bridal parties. Dance floor, LED lighting, and room for the whole group to celebrate together.</p>
         </div>
       </div>
-    `
+    `,
   },
   partybus: {
     intro: (location, service) => `
@@ -184,52 +209,86 @@ const SEO_CONTENT_TEMPLATES = {
           <p>Classic party style for smaller groups. Up to 10 passengers in timeless luxury.</p>
         </div>
       </div>
-    `
-  }
+    `,
+  },
 };
 
 // Popular Chicago destinations and landmarks for SEO
 const CHICAGO_LANDMARKS = {
-  downtown: ['Willis Tower', 'Millennium Park', 'Navy Pier', 'Magnificent Mile', 'Art Institute', 'Chicago Riverwalk'],
-  airports: ["O'Hare International Airport (ORD)", "Midway International Airport (MDW)", "Chicago Executive Airport"],
-  venues: ['United Center', 'Soldier Field', 'Wrigley Field', 'Guaranteed Rate Field', 'McCormick Place'],
-  neighborhoods: ['River North', 'Gold Coast', 'Lincoln Park', 'Wicker Park', 'West Loop', 'Streeterville']
+  downtown: [
+    "Willis Tower",
+    "Millennium Park",
+    "Navy Pier",
+    "Magnificent Mile",
+    "Art Institute",
+    "Chicago Riverwalk",
+  ],
+  airports: [
+    "O'Hare International Airport (ORD)",
+    "Midway International Airport (MDW)",
+    "Chicago Executive Airport",
+  ],
+  venues: [
+    "United Center",
+    "Soldier Field",
+    "Wrigley Field",
+    "Guaranteed Rate Field",
+    "McCormick Place",
+  ],
+  neighborhoods: [
+    "River North",
+    "Gold Coast",
+    "Lincoln Park",
+    "Wicker Park",
+    "West Loop",
+    "Streeterville",
+  ],
 };
 
-async function generateContentForWebsite(websiteId, locations, services, vehicles) {
+async function generateContentForWebsite(
+  websiteId,
+  locations,
+  services,
+  vehicles,
+) {
   let contentCount = 0;
   let batch = db.batch();
   let batchCount = 0;
   const BATCH_LIMIT = 450; // Firestore batch limit is 500
 
   // Determine category prefix based on website
-  let categoryPrefix = 'airport';
-  if (websiteId.includes('corporate') || websiteId.includes('executive')) categoryPrefix = 'corporate';
-  if (websiteId.includes('wedding')) categoryPrefix = 'wedding';
-  if (websiteId.includes('partybus') || websiteId.includes('party')) categoryPrefix = 'partybus';
+  let categoryPrefix = "airport";
+  if (websiteId.includes("corporate") || websiteId.includes("executive"))
+    categoryPrefix = "corporate";
+  if (websiteId.includes("wedding")) categoryPrefix = "wedding";
+  if (websiteId.includes("partybus") || websiteId.includes("party"))
+    categoryPrefix = "partybus";
 
   // Get relevant services for this website (case-insensitive matching)
-  const relevantServices = services.filter(s => {
-    const cat = (s.category || '').toLowerCase();
+  const relevantServices = services.filter((s) => {
+    const cat = (s.category || "").toLowerCase();
     return cat.startsWith(categoryPrefix) || cat === categoryPrefix;
   });
 
-  console.log(`Generating content for ${websiteId}: ${relevantServices.length} services x priority locations`);
+  console.log(
+    `Generating content for ${websiteId}: ${relevantServices.length} services x priority locations`,
+  );
 
   // Get cross-sell config
   const crossSell = CROSS_SELL_CONFIG[websiteId] || {};
   const template = SEO_CONTENT_TEMPLATES[categoryPrefix];
 
   // Get relevant vehicles
-  const relevantVehicles = vehicles.filter(v =>
-    (crossSell.vehicleTypes || []).includes(v.type || v.category)
+  const relevantVehicles = vehicles.filter((v) =>
+    (crossSell.vehicleTypes || []).includes(v.type || v.category),
   );
 
   // Generate content for top locations (prioritize suburbs with high traffic)
   const priorityLocations = locations.slice(0, 50); // Top 50 locations
 
   for (const loc of priorityLocations) {
-    for (const svc of relevantServices.slice(0, 5)) { // Top 5 services per location
+    for (const svc of relevantServices.slice(0, 5)) {
+      // Top 5 services per location
       const contentId = `${websiteId}-${loc.slug || loc.id}-${svc.slug || svc.id}`;
 
       // Generate rich content
@@ -262,10 +321,12 @@ async function generateContentForWebsite(websiteId, locations, services, vehicle
         <ul>
       `;
 
-      for (const [site, message] of Object.entries(crossSell.crossSellMessages || {})) {
+      for (const [site, message] of Object.entries(
+        crossSell.crossSellMessages || {},
+      )) {
         content += `<li>${message}</li>`;
       }
-      content += '</ul>';
+      content += "</ul>";
 
       // Build internal links
       const internalLinks = [];
@@ -276,18 +337,20 @@ async function generateContentForWebsite(websiteId, locations, services, vehicle
           internalLinks.push({
             title: `${otherSvc.name} in ${loc.name}`,
             url: `/service/${loc.slug || loc.id}/${otherSvc.slug || otherSvc.id}`,
-            context: `Looking for ${otherSvc.name.toLowerCase()}? We offer this service in ${loc.name} too.`
+            context: `Looking for ${otherSvc.name.toLowerCase()}? We offer this service in ${loc.name} too.`,
           });
         }
       }
 
       // Link to nearby locations
-      const nearbyLocs = locations.filter(l => l.type === loc.type && l.slug !== loc.slug).slice(0, 2);
+      const nearbyLocs = locations
+        .filter((l) => l.type === loc.type && l.slug !== loc.slug)
+        .slice(0, 2);
       for (const nearLoc of nearbyLocs) {
         internalLinks.push({
           title: `${svc.name} in ${nearLoc.name}`,
           url: `/service/${nearLoc.slug || nearLoc.id}/${svc.slug || svc.id}`,
-          context: `We also serve ${nearLoc.name} with the same premium service.`
+          context: `We also serve ${nearLoc.name} with the same premium service.`,
         });
       }
 
@@ -300,54 +363,58 @@ async function generateContentForWebsite(websiteId, locations, services, vehicle
         `chicago ${categoryPrefix} transportation`,
         `${loc.name} airport limo`,
         `professional chauffeur ${loc.name}`,
-        `luxury car service ${loc.name} IL`
+        `luxury car service ${loc.name} IL`,
       ];
 
       // Schema markup
       const schema = {
         "@context": "https://schema.org",
         "@type": "Service",
-        "name": title,
-        "description": metaDescription,
-        "provider": {
+        name: title,
+        description: metaDescription,
+        provider: {
           "@type": "LocalBusiness",
-          "name": "Royal Carriage Limousine",
-          "telephone": "+1-224-801-3090",
-          "address": {
+          name: "Royal Carriage Limousine",
+          telephone: "+1-224-801-3090",
+          address: {
             "@type": "PostalAddress",
-            "addressLocality": "Chicago",
-            "addressRegion": "IL",
-            "addressCountry": "US"
-          }
+            addressLocality: "Chicago",
+            addressRegion: "IL",
+            addressCountry: "US",
+          },
         },
-        "areaServed": {
+        areaServed: {
           "@type": "City",
-          "name": loc.name
+          name: loc.name,
         },
-        "serviceType": svc.name
+        serviceType: svc.name,
       };
 
-      const docRef = db.collection('service_content').doc(contentId);
-      batch.set(docRef, {
-        id: contentId,
-        websiteId: websiteId,
-        locationId: loc.slug || loc.id,
-        serviceId: svc.slug || svc.id,
-        locationName: loc.name,
-        serviceName: svc.name,
-        title,
-        metaDescription,
-        content,
-        keywords,
-        internalLinks,
-        schema,
-        crossSellWebsites: crossSell.relatedWebsites || [],
-        recommendedVehicles: relevantVehicles.map(v => v.name).slice(0, 3),
-        approvalStatus: 'approved',
-        aiQualityScore: 0.92,
-        createdAt: admin.firestore.Timestamp.now(),
-        updatedAt: admin.firestore.Timestamp.now()
-      }, { merge: true });
+      const docRef = db.collection("service_content").doc(contentId);
+      batch.set(
+        docRef,
+        {
+          id: contentId,
+          websiteId: websiteId,
+          locationId: loc.slug || loc.id,
+          serviceId: svc.slug || svc.id,
+          locationName: loc.name,
+          serviceName: svc.name,
+          title,
+          metaDescription,
+          content,
+          keywords,
+          internalLinks,
+          schema,
+          crossSellWebsites: crossSell.relatedWebsites || [],
+          recommendedVehicles: relevantVehicles.map((v) => v.name).slice(0, 3),
+          approvalStatus: "approved",
+          aiQualityScore: 0.92,
+          createdAt: admin.firestore.Timestamp.now(),
+          updatedAt: admin.firestore.Timestamp.now(),
+        },
+        { merge: true },
+      );
 
       contentCount++;
       batchCount++;
@@ -372,35 +439,40 @@ async function generateContentForWebsite(websiteId, locations, services, vehicle
 }
 
 async function main() {
-  console.log('=== GENERATING HIGH-VALUE SEO CONTENT ===\n');
+  console.log("=== GENERATING HIGH-VALUE SEO CONTENT ===\n");
 
   // Fetch all locations
-  const locSnap = await db.collection('locations').get();
-  const locations = locSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const locSnap = await db.collection("locations").get();
+  const locations = locSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   console.log(`Loaded ${locations.length} locations`);
 
   // Fetch all services
-  const svcSnap = await db.collection('services').get();
-  const services = svcSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const svcSnap = await db.collection("services").get();
+  const services = svcSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   console.log(`Loaded ${services.length} services`);
 
   // Fetch fleet vehicles
-  const fleetSnap = await db.collection('fleet_vehicles').get();
-  const vehicles = fleetSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  const fleetSnap = await db.collection("fleet_vehicles").get();
+  const vehicles = fleetSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   console.log(`Loaded ${vehicles.length} vehicles`);
 
   // Generate content for each website
   const websites = [
-    'chicagoairportblackcar',
-    'chicagoexecutivecarservice',
-    'chicagoweddingtransportation',
-    'chicago-partybus'
+    "chicagoairportblackcar",
+    "chicagoexecutivecarservice",
+    "chicagoweddingtransportation",
+    "chicago-partybus",
   ];
 
   let totalContent = 0;
   for (const website of websites) {
     console.log(`\nProcessing ${website}...`);
-    const count = await generateContentForWebsite(website, locations, services, vehicles);
+    const count = await generateContentForWebsite(
+      website,
+      locations,
+      services,
+      vehicles,
+    );
     console.log(`  Generated ${count} content pieces`);
     totalContent += count;
   }
@@ -411,7 +483,7 @@ async function main() {
   process.exit(0);
 }
 
-main().catch(err => {
-  console.error('Error:', err);
+main().catch((err) => {
+  console.error("Error:", err);
   process.exit(1);
 });

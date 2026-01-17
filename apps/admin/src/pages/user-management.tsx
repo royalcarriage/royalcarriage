@@ -9,7 +9,7 @@
  * - Search and filter users
  */
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from "react";
 import {
   Users,
   Plus,
@@ -33,11 +33,11 @@ import {
   EyeOff,
   RefreshCw,
   MoreVertical,
-} from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
-import { useAuth } from '../state/AuthProvider';
-import { Modal } from '../components/ui/Modal';
+} from "lucide-react";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
+import { useAuth } from "../state/AuthProvider";
+import { Modal } from "../components/ui/Modal";
 
 // ============================================
 // Types
@@ -69,42 +69,52 @@ interface EditUserFormData {
   isActive: boolean;
 }
 
-type Role = 'dispatcher' | 'accountant' | 'fleet_manager' | 'admin' | 'saas_admin';
+type Role =
+  | "dispatcher"
+  | "accountant"
+  | "fleet_manager"
+  | "admin"
+  | "saas_admin";
 
 // ============================================
 // Constants
 // ============================================
 
-const ROLES: { value: Role; label: string; description: string; color: string }[] = [
+const ROLES: {
+  value: Role;
+  label: string;
+  description: string;
+  color: string;
+}[] = [
   {
-    value: 'dispatcher',
-    label: 'Dispatcher',
-    description: 'Vehicle scheduling and assignments',
-    color: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
+    value: "dispatcher",
+    label: "Dispatcher",
+    description: "Vehicle scheduling and assignments",
+    color: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   },
   {
-    value: 'accountant',
-    label: 'Accountant',
-    description: 'Financial records and receipts',
-    color: 'bg-green-500/10 text-green-400 border-green-500/20',
+    value: "accountant",
+    label: "Accountant",
+    description: "Financial records and receipts",
+    color: "bg-green-500/10 text-green-400 border-green-500/20",
   },
   {
-    value: 'fleet_manager',
-    label: 'Fleet Manager',
-    description: 'Vehicles, drivers, and maintenance',
-    color: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
+    value: "fleet_manager",
+    label: "Fleet Manager",
+    description: "Vehicles, drivers, and maintenance",
+    color: "bg-orange-500/10 text-orange-400 border-orange-500/20",
   },
   {
-    value: 'admin',
-    label: 'Administrator',
-    description: 'Full organization access',
-    color: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
+    value: "admin",
+    label: "Administrator",
+    description: "Full organization access",
+    color: "bg-purple-500/10 text-purple-400 border-purple-500/20",
   },
   {
-    value: 'saas_admin',
-    label: 'SaaS Admin',
-    description: 'Platform-wide access',
-    color: 'bg-red-500/10 text-red-400 border-red-500/20',
+    value: "saas_admin",
+    label: "SaaS Admin",
+    description: "Platform-wide access",
+    color: "bg-red-500/10 text-red-400 border-red-500/20",
   },
 ];
 
@@ -123,7 +133,7 @@ const ROLE_HIERARCHY: Record<Role, number> = {
 function RoleBadge({ role }: { role: string }) {
   const roleConfig = ROLES.find((r) => r.value === role) || {
     label: role,
-    color: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
+    color: "bg-slate-500/10 text-slate-400 border-slate-500/20",
   };
 
   return (
@@ -141,8 +151,8 @@ function StatusBadge({ isActive }: { isActive: boolean }) {
     <span
       className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-medium ${
         isActive
-          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-          : 'bg-red-500/10 text-red-400 border border-red-500/20'
+          ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+          : "bg-red-500/10 text-red-400 border border-red-500/20"
       }`}
     >
       {isActive ? (
@@ -175,7 +185,7 @@ function UserCard({
 }) {
   const [showMenu, setShowMenu] = useState(false);
   const canManage =
-    currentUserRole === 'saas_admin' ||
+    currentUserRole === "saas_admin" ||
     ROLE_HIERARCHY[currentUserRole] > ROLE_HIERARCHY[user.role as Role];
 
   return (
@@ -184,11 +194,13 @@ function UserCard({
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
             <span className="text-lg font-bold text-amber-400">
-              {user.displayName?.charAt(0) || user.email?.charAt(0) || '?'}
+              {user.displayName?.charAt(0) || user.email?.charAt(0) || "?"}
             </span>
           </div>
           <div>
-            <h3 className="text-white font-medium">{user.displayName || 'Unnamed User'}</h3>
+            <h3 className="text-white font-medium">
+              {user.displayName || "Unnamed User"}
+            </h3>
             <p className="text-sm text-slate-400 flex items-center gap-1">
               <Mail className="w-3 h-3" />
               {user.email}
@@ -300,10 +312,10 @@ function CreateUserModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<CreateUserFormData>({
-    email: '',
-    password: '',
-    displayName: '',
-    role: 'dispatcher',
+    email: "",
+    password: "",
+    displayName: "",
+    role: "dispatcher",
     organizationId: organizationId,
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -313,16 +325,16 @@ function CreateUserModal({
     const newErrors: Record<string, string> = {};
 
     if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Valid email is required';
+      newErrors.email = "Valid email is required";
     }
     if (!formData.password || formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
+      newErrors.password = "Password must be at least 8 characters";
     }
     if (!formData.displayName || formData.displayName.trim().length < 2) {
-      newErrors.displayName = 'Display name is required';
+      newErrors.displayName = "Display name is required";
     }
     if (!formData.role) {
-      newErrors.role = 'Role is required';
+      newErrors.role = "Role is required";
     }
 
     setErrors(newErrors);
@@ -338,10 +350,10 @@ function CreateUserModal({
   useEffect(() => {
     if (isOpen) {
       setFormData({
-        email: '',
-        password: '',
-        displayName: '',
-        role: 'dispatcher',
+        email: "",
+        password: "",
+        displayName: "",
+        role: "dispatcher",
         organizationId: organizationId,
       });
       setErrors({});
@@ -379,7 +391,7 @@ function CreateUserModal({
                 setFormData({ ...formData, displayName: e.target.value })
               }
               className={`w-full px-4 py-2.5 bg-slate-900 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                errors.displayName ? 'border-red-500' : 'border-slate-700'
+                errors.displayName ? "border-red-500" : "border-slate-700"
               }`}
               placeholder="John Doe"
             />
@@ -400,7 +412,7 @@ function CreateUserModal({
                 setFormData({ ...formData, email: e.target.value })
               }
               className={`w-full px-4 py-2.5 bg-slate-900 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                errors.email ? 'border-red-500' : 'border-slate-700'
+                errors.email ? "border-red-500" : "border-slate-700"
               }`}
               placeholder="john@example.com"
             />
@@ -416,13 +428,13 @@ function CreateUserModal({
             </label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 value={formData.password}
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
                 className={`w-full px-4 py-2.5 pr-10 bg-slate-900 border rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 ${
-                  errors.password ? 'border-red-500' : 'border-slate-700'
+                  errors.password ? "border-red-500" : "border-slate-700"
                 }`}
                 placeholder="Min. 8 characters"
               />
@@ -454,18 +466,20 @@ function CreateUserModal({
                   <button
                     key={role.value}
                     type="button"
-                    onClick={() => setFormData({ ...formData, role: role.value })}
+                    onClick={() =>
+                      setFormData({ ...formData, role: role.value })
+                    }
                     className={`flex items-start gap-3 p-3 rounded-xl border transition-colors text-left ${
                       formData.role === role.value
-                        ? 'bg-amber-500/10 border-amber-500/30'
-                        : 'bg-slate-900 border-slate-700 hover:border-slate-600'
+                        ? "bg-amber-500/10 border-amber-500/30"
+                        : "bg-slate-900 border-slate-700 hover:border-slate-600"
                     }`}
                   >
                     <div
                       className={`w-4 h-4 rounded-full border-2 flex items-center justify-center mt-0.5 ${
                         formData.role === role.value
-                          ? 'border-amber-500'
-                          : 'border-slate-600'
+                          ? "border-amber-500"
+                          : "border-slate-600"
                       }`}
                     >
                       {formData.role === role.value && (
@@ -481,7 +495,7 @@ function CreateUserModal({
                       </div>
                     </div>
                   </button>
-                )
+                ),
               )}
             </div>
           </div>
@@ -533,9 +547,9 @@ function EditUserModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<EditUserFormData>({
-    uid: '',
-    displayName: '',
-    email: '',
+    uid: "",
+    displayName: "",
+    email: "",
     isActive: true,
   });
 
@@ -615,8 +629,8 @@ function EditUserModal({
                 onClick={() => setFormData({ ...formData, isActive: true })}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-colors ${
                   formData.isActive
-                    ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
+                    ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400"
+                    : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
                 }`}
               >
                 <UserCheck className="w-4 h-4" />
@@ -627,8 +641,8 @@ function EditUserModal({
                 onClick={() => setFormData({ ...formData, isActive: false })}
                 className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border transition-colors ${
                   !formData.isActive
-                    ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                    : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600'
+                    ? "bg-red-500/10 border-red-500/30 text-red-400"
+                    : "bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-600"
                 }`}
               >
                 <UserX className="w-4 h-4" />
@@ -701,13 +715,16 @@ function DeleteConfirmModal({
           <div className="mx-auto w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4">
             <Trash2 className="w-8 h-8 text-red-400" />
           </div>
-          <h3 className="text-lg font-semibold text-white mb-2">Delete User?</h3>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            Delete User?
+          </h3>
           <p className="text-slate-400 mb-1">
-            Are you sure you want to delete{' '}
+            Are you sure you want to delete{" "}
             <span className="text-white font-medium">{user.displayName}</span>?
           </p>
           <p className="text-sm text-slate-500">
-            This will deactivate the user account. This action can be reversed by an administrator.
+            This will deactivate the user account. This action can be reversed
+            by an administrator.
           </p>
         </div>
 
@@ -750,9 +767,9 @@ export default function UserManagementPage() {
   const [users, setUsers] = useState<UserData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isActionLoading, setIsActionLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [roleFilter, setRoleFilter] = useState<string>('all');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [statusFilter, setStatusFilter] = useState<string>("all");
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
@@ -764,16 +781,16 @@ export default function UserManagementPage() {
 
   // Determine current user's role
   const currentUserRole: Role =
-    role === 'superadmin' ? 'saas_admin' : (role as Role) || 'dispatcher';
+    role === "superadmin" ? "saas_admin" : (role as Role) || "dispatcher";
 
   // Get available roles that current user can assign
   const availableRoles = useMemo(() => {
-    if (currentUserRole === 'saas_admin') {
+    if (currentUserRole === "saas_admin") {
       return ROLES.map((r) => r.value);
     }
     const currentLevel = ROLE_HIERARCHY[currentUserRole] || 0;
     return ROLES.filter((r) => ROLE_HIERARCHY[r.value] < currentLevel).map(
-      (r) => r.value
+      (r) => r.value,
     );
   }, [currentUserRole]);
 
@@ -784,13 +801,13 @@ export default function UserManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
       const getUsersByOrganization = httpsCallable<
         { organizationId?: string; includeInactive?: boolean },
         { users: UserData[]; count: number }
-      >(functions, 'getUsersByOrganization');
+      >(functions, "getUsersByOrganization");
 
       const result = await getUsersByOrganization({
         includeInactive: true,
@@ -798,8 +815,8 @@ export default function UserManagementPage() {
 
       setUsers(result.data.users);
     } catch (err: unknown) {
-      console.error('Error loading users:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load users');
+      console.error("Error loading users:", err);
+      setError(err instanceof Error ? err.message : "Failed to load users");
     } finally {
       setIsLoading(false);
     }
@@ -824,15 +841,15 @@ export default function UserManagementPage() {
       }
 
       // Role filter
-      if (roleFilter !== 'all' && user.role !== roleFilter) {
+      if (roleFilter !== "all" && user.role !== roleFilter) {
         return false;
       }
 
       // Status filter
-      if (statusFilter === 'active' && !user.isActive) {
+      if (statusFilter === "active" && !user.isActive) {
         return false;
       }
-      if (statusFilter === 'inactive' && user.isActive) {
+      if (statusFilter === "inactive" && user.isActive) {
         return false;
       }
 
@@ -847,20 +864,20 @@ export default function UserManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const createUser = httpsCallable(functions, 'createUser');
+      const createUser = httpsCallable(functions, "createUser");
 
       await createUser(data);
 
       setShowCreateModal(false);
-      setSuccessMessage('User created successfully');
+      setSuccessMessage("User created successfully");
       setTimeout(() => setSuccessMessage(null), 3000);
       loadUsers();
     } catch (err: unknown) {
-      console.error('Error creating user:', err);
-      setError(err instanceof Error ? err.message : 'Failed to create user');
+      console.error("Error creating user:", err);
+      setError(err instanceof Error ? err.message : "Failed to create user");
     } finally {
       setIsActionLoading(false);
     }
@@ -873,21 +890,21 @@ export default function UserManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const updateUser = httpsCallable(functions, 'updateUser');
+      const updateUser = httpsCallable(functions, "updateUser");
 
       await updateUser(data);
 
       setShowEditModal(false);
       setSelectedUser(null);
-      setSuccessMessage('User updated successfully');
+      setSuccessMessage("User updated successfully");
       setTimeout(() => setSuccessMessage(null), 3000);
       loadUsers();
     } catch (err: unknown) {
-      console.error('Error updating user:', err);
-      setError(err instanceof Error ? err.message : 'Failed to update user');
+      console.error("Error updating user:", err);
+      setError(err instanceof Error ? err.message : "Failed to update user");
     } finally {
       setIsActionLoading(false);
     }
@@ -902,21 +919,21 @@ export default function UserManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const deleteUser = httpsCallable(functions, 'deleteUser');
+      const deleteUser = httpsCallable(functions, "deleteUser");
 
       await deleteUser({ uid: selectedUser.uid });
 
       setShowDeleteModal(false);
       setSelectedUser(null);
-      setSuccessMessage('User deleted successfully');
+      setSuccessMessage("User deleted successfully");
       setTimeout(() => setSuccessMessage(null), 3000);
       loadUsers();
     } catch (err: unknown) {
-      console.error('Error deleting user:', err);
-      setError(err instanceof Error ? err.message : 'Failed to delete user');
+      console.error("Error deleting user:", err);
+      setError(err instanceof Error ? err.message : "Failed to delete user");
     } finally {
       setIsActionLoading(false);
     }
@@ -929,10 +946,10 @@ export default function UserManagementPage() {
 
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
-      const updateUser = httpsCallable(functions, 'updateUser');
+      const updateUser = httpsCallable(functions, "updateUser");
 
       await updateUser({
         uid: user.uid,
@@ -940,14 +957,14 @@ export default function UserManagementPage() {
       });
 
       setSuccessMessage(
-        `User ${user.isActive ? 'deactivated' : 'activated'} successfully`
+        `User ${user.isActive ? "deactivated" : "activated"} successfully`,
       );
       setTimeout(() => setSuccessMessage(null), 3000);
       loadUsers();
     } catch (err: unknown) {
-      console.error('Error toggling user status:', err);
+      console.error("Error toggling user status:", err);
       setError(
-        err instanceof Error ? err.message : 'Failed to update user status'
+        err instanceof Error ? err.message : "Failed to update user status",
       );
     } finally {
       setIsActionLoading(false);
@@ -956,7 +973,9 @@ export default function UserManagementPage() {
 
   // Check if user has permission to manage users
   const canManageUsers =
-    role === 'admin' || role === 'superadmin' || currentUserRole === 'saas_admin';
+    role === "admin" ||
+    role === "superadmin" ||
+    currentUserRole === "saas_admin";
 
   if (!canManageUsers) {
     return (
@@ -984,7 +1003,9 @@ export default function UserManagementPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">User Management</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">
+            User Management
+          </h1>
           <p className="text-slate-400">
             Manage users, roles, and permissions for your organization
           </p>
@@ -1065,7 +1086,7 @@ export default function UserManagementPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-white">
-                {users.filter((u) => u.role === 'admin').length}
+                {users.filter((u) => u.role === "admin").length}
               </p>
               <p className="text-sm text-slate-400">Administrators</p>
             </div>
@@ -1125,7 +1146,9 @@ export default function UserManagementPage() {
             disabled={isLoading}
             className="flex items-center gap-2 px-4 py-2.5 bg-slate-700 hover:bg-slate-600 rounded-xl text-sm text-white transition-colors"
           >
-            <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
+            <RefreshCw
+              className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </button>
         </div>
@@ -1139,11 +1162,13 @@ export default function UserManagementPage() {
       ) : filteredUsers.length === 0 ? (
         <div className="flex flex-col items-center justify-center h-64 text-center">
           <Users className="w-12 h-12 text-slate-600 mb-4" />
-          <h3 className="text-lg font-medium text-white mb-2">No users found</h3>
+          <h3 className="text-lg font-medium text-white mb-2">
+            No users found
+          </h3>
           <p className="text-slate-400 max-w-md">
-            {searchQuery || roleFilter !== 'all' || statusFilter !== 'all'
-              ? 'Try adjusting your search or filters'
-              : 'Get started by adding your first user'}
+            {searchQuery || roleFilter !== "all" || statusFilter !== "all"
+              ? "Try adjusting your search or filters"
+              : "Get started by adding your first user"}
           </p>
         </div>
       ) : (
@@ -1172,7 +1197,7 @@ export default function UserManagementPage() {
         isOpen={showCreateModal}
         onClose={() => setShowCreateModal(false)}
         onSubmit={handleCreateUser}
-        organizationId={authUser?.org || 'royalcarriage'}
+        organizationId={authUser?.org || "royalcarriage"}
         availableRoles={availableRoles}
         isLoading={isActionLoading}
       />

@@ -1,15 +1,21 @@
-import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldAlert } from 'lucide-react';
-import { useAuth } from '@/hooks/useAuth';
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { ShieldAlert } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Unauthorized() {
   const [, setLocation] = useLocation();
   const { logout } = useAuth();
 
   const handleGoBack = () => {
-    setLocation('/');
+    setLocation("/");
   };
 
   const handleLogout = async () => {
@@ -30,15 +36,12 @@ export default function Unauthorized() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-center text-sm text-slate-500">
-            This area requires elevated permissions. If you believe this is an error, please contact your administrator.
+            This area requires elevated permissions. If you believe this is an
+            error, please contact your administrator.
           </p>
 
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={handleGoBack}
-            >
+            <Button variant="outline" className="flex-1" onClick={handleGoBack}>
               Go Back
             </Button>
             <Button

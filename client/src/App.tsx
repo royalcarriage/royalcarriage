@@ -31,7 +31,10 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/ohare-airport-limo" component={OHareAirport} />
       <Route path="/midway-airport-limo" component={MidwayAirport} />
-      <Route path="/airport-limo-downtown-chicago" component={DowntownChicago} />
+      <Route
+        path="/airport-limo-downtown-chicago"
+        component={DowntownChicago}
+      />
       <Route path="/airport-limo-suburbs" component={SuburbsService} />
       <Route path="/city/:slug" component={CityPage} />
       <Route path="/fleet" component={Fleet} />

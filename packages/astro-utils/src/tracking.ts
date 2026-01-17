@@ -8,45 +8,58 @@ export interface TrackingEvent {
   [key: string]: any;
 }
 
-export function trackBookNowClick(target: string, location: string): TrackingEvent {
+export function trackBookNowClick(
+  target: string,
+  location: string,
+): TrackingEvent {
   return {
-    event: 'book_now_click',
-    eventCategory: 'Engagement',
-    eventAction: 'Click',
+    event: "book_now_click",
+    eventCategory: "Engagement",
+    eventAction: "Click",
     eventLabel: `${target} - ${location}`,
     button_location: location,
-    site_target: target
+    site_target: target,
   };
 }
 
-export function trackCallNowClick(target: string, location: string): TrackingEvent {
+export function trackCallNowClick(
+  target: string,
+  location: string,
+): TrackingEvent {
   return {
-    event: 'call_now_click',
-    eventCategory: 'Engagement',
-    eventAction: 'Click',
+    event: "call_now_click",
+    eventCategory: "Engagement",
+    eventAction: "Click",
     eventLabel: `${target} - ${location}`,
     button_location: location,
-    site_target: target
+    site_target: target,
   };
 }
 
-export function trackFormSubmit(target: string, formName: string): TrackingEvent {
+export function trackFormSubmit(
+  target: string,
+  formName: string,
+): TrackingEvent {
   return {
-    event: 'form_submit',
-    eventCategory: 'Form',
-    eventAction: 'Submit',
+    event: "form_submit",
+    eventCategory: "Form",
+    eventAction: "Submit",
     eventLabel: `${target} - ${formName}`,
     form_name: formName,
-    site_target: target
+    site_target: target,
   };
 }
 
-export function trackPageView(target: string, pagePath: string, pageTitle: string): TrackingEvent {
+export function trackPageView(
+  target: string,
+  pagePath: string,
+  pageTitle: string,
+): TrackingEvent {
   return {
-    event: 'page_view',
+    event: "page_view",
     page_path: pagePath,
     page_title: pageTitle,
-    site_target: target
+    site_target: target,
   };
 }
 

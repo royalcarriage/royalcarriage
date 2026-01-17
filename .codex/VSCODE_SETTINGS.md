@@ -14,6 +14,7 @@ Since `.vscode/settings.json` is gitignored, manually add these settings to your
 ```
 
 These settings ensure:
+
 - Copilot Chat reads instruction files from `.github/instructions/` and `.codex/`
 - Auto context is enabled for better agent awareness
 - Agent mode is set to auto for autonomous operations

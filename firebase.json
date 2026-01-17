@@ -3,14 +3,21 @@
     {
       "target": "admin",
       "public": "apps/admin/out",
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Robots-Tag", "value": "noindex, nofollow, noarchive" },
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "X-XSS-Protection", "value": "1; mode=block" }
+          ]
+        }
       ],
       "rewrites": [
         {
-          "source": "**",
+          "source": "!/@(robots.txt|favicon.ico|*.xml)",
           "destination": "/index.html"
         }
       ]
@@ -20,10 +27,22 @@
       "public": "apps/airport/dist",
       "cleanUrls": true,
       "trailingSlash": false,
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" },
+            { "key": "X-XSS-Protection", "value": "1; mode=block" }
+          ]
+        },
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+          ]
+        }
       ]
     },
     {
@@ -31,10 +50,21 @@
       "public": "apps/corporate/dist",
       "cleanUrls": true,
       "trailingSlash": false,
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" }
+          ]
+        },
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+          ]
+        }
       ]
     },
     {
@@ -42,10 +72,21 @@
       "public": "apps/wedding/dist",
       "cleanUrls": true,
       "trailingSlash": false,
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" }
+          ]
+        },
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+          ]
+        }
       ]
     },
     {
@@ -53,10 +94,21 @@
       "public": "apps/partybus/dist",
       "cleanUrls": true,
       "trailingSlash": false,
-      "ignore": [
-        "firebase.json",
-        "**/.*",
-        "**/node_modules/**"
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+      "headers": [
+        {
+          "source": "**",
+          "headers": [
+            { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+            { "key": "X-Content-Type-Options", "value": "nosniff" }
+          ]
+        },
+        {
+          "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico)",
+          "headers": [
+            { "key": "Cache-Control", "value": "max-age=31536000, immutable" }
+          ]
+        }
       ]
     }
   ],

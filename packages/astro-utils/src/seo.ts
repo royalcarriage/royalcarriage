@@ -13,16 +13,16 @@ export function generateMetaTags(props: SEOProps) {
     title,
     description,
     canonical,
-    ogImage = '/images/og-default.svg',
-    ogType = 'website',
+    ogImage = "/images/og-default.svg",
+    ogType = "website",
     noindex = false,
-    nofollow = false
+    nofollow = false,
   } = props;
 
   const robotsContent = [];
-  if (noindex) robotsContent.push('noindex');
-  if (nofollow) robotsContent.push('nofollow');
-  if (robotsContent.length === 0) robotsContent.push('index', 'follow');
+  if (noindex) robotsContent.push("noindex");
+  if (nofollow) robotsContent.push("nofollow");
+  if (robotsContent.length === 0) robotsContent.push("index", "follow");
 
   return {
     title,
@@ -30,7 +30,7 @@ export function generateMetaTags(props: SEOProps) {
     canonical,
     ogImage,
     ogType,
-    robots: robotsContent.join(', ')
+    robots: robotsContent.join(", "),
   };
 }
 
@@ -47,15 +47,18 @@ export interface BreadcrumbItem {
   url: string;
 }
 
-export function generateBreadcrumbSchema(items: BreadcrumbItem[], domain: string) {
+export function generateBreadcrumbSchema(
+  items: BreadcrumbItem[],
+  domain: string,
+) {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
     itemListElement: items.map((item, index) => ({
-      '@type': 'ListItem',
+      "@type": "ListItem",
       position: index + 1,
       name: item.name,
-      item: `${domain}${item.url}`
-    }))
+      item: `${domain}${item.url}`,
+    })),
   };
 }

@@ -21,9 +21,11 @@ functions/src/scripts/
 ## Cloud Function
 
 ### Function Name
+
 `initializeExpandedLocations`
 
 ### Configuration
+
 - **Runtime:** Node.js (Firebase Functions v1)
 - **Timeout:** 540 seconds (9 minutes)
 - **Memory:** 1GB
@@ -34,17 +36,20 @@ functions/src/scripts/
 ## Deployment
 
 ### 1. Build the Functions
+
 ```bash
 cd /Users/admin/VSCODE/functions
 npm run build
 ```
 
 ### 2. Deploy the Function
+
 ```bash
 firebase deploy --only functions:initializeExpandedLocations
 ```
 
 ### 3. Verify Deployment
+
 ```bash
 firebase functions:list | grep initializeExpandedLocations
 ```
@@ -64,6 +69,7 @@ curl -X POST https://us-central1-royalcarriagelimoseo.cloudfunctions.net/initial
 ```
 
 ### Option 2: Firebase Console
+
 1. Navigate to Firebase Console
 2. Go to **Functions** section
 3. Find `initializeExpandedLocations`
@@ -73,26 +79,28 @@ curl -X POST https://us-central1-royalcarriagelimoseo.cloudfunctions.net/initial
 ### Option 3: Node.js Script
 
 ```javascript
-const https = require('https');
+const https = require("https");
 
 const options = {
-  hostname: 'us-central1-royalcarriagelimoseo.cloudfunctions.net',
-  path: '/initializeExpandedLocations',
-  method: 'POST',
+  hostname: "us-central1-royalcarriagelimoseo.cloudfunctions.net",
+  path: "/initializeExpandedLocations",
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json'
-  }
+    "Content-Type": "application/json",
+  },
 };
 
 const req = https.request(options, (res) => {
-  let data = '';
-  res.on('data', (chunk) => { data += chunk; });
-  res.on('end', () => {
+  let data = "";
+  res.on("data", (chunk) => {
+    data += chunk;
+  });
+  res.on("end", () => {
     console.log(JSON.parse(data));
   });
 });
 
-req.on('error', (error) => console.error(error));
+req.on("error", (error) => console.error(error));
 req.end();
 ```
 
@@ -135,14 +143,17 @@ req.end();
 ## What Gets Created
 
 ### 1. Locations Collection
+
 - **205 location documents** in `locations` collection
 - Each with full metadata (coordinates, ZIP codes, airports, services)
 
 ### 2. Location-Service Subcollections
+
 - **~4,100 mapping documents** in `locations/{locationId}/services` subcollections
 - Maps each location to applicable services with relevance scores
 
 ### 3. Regeneration Queue
+
 - **~500 content generation tasks** in `regeneration_queue` collection
 - Prioritizes high-value locations (airport relevance ≥ 18)
 
@@ -215,28 +226,30 @@ firebase firestore:get locations/lincoln-park/services
 ### Query via Admin SDK
 
 ```javascript
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
 // Count all locations
-db.collection('locations').get().then(snapshot => {
-  console.log(`Total locations: ${snapshot.size}`);
-});
+db.collection("locations")
+  .get()
+  .then((snapshot) => {
+    console.log(`Total locations: ${snapshot.size}`);
+  });
 
 // Get locations by type
-db.collection('locations')
-  .where('type', '==', 'neighborhood')
+db.collection("locations")
+  .where("type", "==", "neighborhood")
   .get()
-  .then(snapshot => {
+  .then((snapshot) => {
     console.log(`Chicago neighborhoods: ${snapshot.size}`);
   });
 
 // Check queue
-db.collection('regeneration_queue')
-  .where('status', '==', 'pending')
+db.collection("regeneration_queue")
+  .where("status", "==", "pending")
   .get()
-  .then(snapshot => {
+  .then((snapshot) => {
     console.log(`Pending content tasks: ${snapshot.size}`);
   });
 ```
@@ -248,6 +261,7 @@ db.collection('regeneration_queue')
 ### Issue: Function Times Out
 
 **Solution:** Function is configured for 540 seconds (9 minutes). If it times out:
+
 1. Check Firestore write limits
 2. Verify network connectivity
 3. Review Firebase quota limits
@@ -255,6 +269,7 @@ db.collection('regeneration_queue')
 ### Issue: Partial Data Insertion
 
 **Solution:** The function uses batching. If interrupted:
+
 1. Check how many locations were inserted
 2. Manually delete partial data if needed
 3. Re-run the function
@@ -262,6 +277,7 @@ db.collection('regeneration_queue')
 ### Issue: Duplicate Locations
 
 **Solution:** The function uses `.set()` which overwrites existing data:
+
 1. Safe to re-run multiple times
 2. No duplicate documents will be created
 3. Existing locations will be updated
@@ -269,6 +285,7 @@ db.collection('regeneration_queue')
 ### Issue: Missing Service Mappings
 
 **Solution:** Mappings are created based on `applicableServices`:
+
 1. Verify service IDs exist in `services` collection
 2. Check that service mapping object is correct
 3. Review logs for specific errors
@@ -286,6 +303,7 @@ db.collection('regeneration_queue')
    - `SOUTHERN_SUBURBS`
 
 3. Rebuild and redeploy:
+
 ```bash
 npm run build
 firebase deploy --only functions:initializeExpandedLocations
@@ -309,17 +327,20 @@ firebase deploy --only functions:initializeExpandedLocations
 ## Performance Characteristics
 
 ### Batch Processing
+
 - **Batch Size:** 400 documents per batch
 - **Total Batches:** ~1 batch for locations, ~11 batches for mappings
 - **Write Operations:** ~4,305 writes total
 
 ### Execution Time
+
 - **Locations:** ~10 seconds
 - **Mappings:** ~50 seconds
 - **Queue:** ~5 seconds
 - **Total:** ~65-70 seconds
 
 ### Cost Estimation
+
 - **Firestore Writes:** 4,305 writes (~$0.02)
 - **Function Invocation:** 1 invocation (<$0.01)
 - **Function Runtime:** ~70 seconds (<$0.01)
@@ -330,17 +351,23 @@ firebase deploy --only functions:initializeExpandedLocations
 ## Integration with Existing System
 
 ### Content Generation
+
 The queued tasks will be processed by:
+
 - `processRegenerationQueue` (on-demand)
 - `scheduledDailyRegeneration` (daily at 2 AM CT)
 
 ### Page Building
+
 Generated content will be used by:
+
 - `buildStaticPages` (creates HTML files)
 - `publishPages` (deploys to Firebase Hosting)
 
 ### Quality Scoring
+
 Content will be scored by:
+
 - `calculateContentQuality` (7-metric system)
 - `bulkScoreContent` (batch processing)
 
@@ -351,15 +378,15 @@ Content will be scored by:
 ### Delete All Locations
 
 ```javascript
-const admin = require('firebase-admin');
+const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
 async function deleteAllLocations() {
   const batch = db.batch();
-  const snapshot = await db.collection('locations').get();
+  const snapshot = await db.collection("locations").get();
 
-  snapshot.docs.forEach(doc => {
+  snapshot.docs.forEach((doc) => {
     batch.delete(doc.ref);
   });
 
@@ -375,11 +402,12 @@ deleteAllLocations();
 ```javascript
 async function clearQueue() {
   const batch = db.batch();
-  const snapshot = await db.collection('regeneration_queue')
-    .where('status', '==', 'pending')
+  const snapshot = await db
+    .collection("regeneration_queue")
+    .where("status", "==", "pending")
     .get();
 
-  snapshot.docs.forEach(doc => {
+  snapshot.docs.forEach((doc) => {
     batch.delete(doc.ref);
   });
 
@@ -395,6 +423,7 @@ clearQueue();
 ## Support
 
 For issues or questions:
+
 1. Check `/Users/admin/VSCODE/LOCATION_EXPANSION_SUMMARY.md`
 2. Review Cloud Functions logs
 3. Verify Firestore data structure

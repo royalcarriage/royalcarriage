@@ -18,6 +18,7 @@ Complete audit of the Firebase ecosystem for the Royal Carriage admin dashboard.
 ### Functions Implemented (5/5)
 
 #### 1.1 Google OAuth Authentication
+
 ```typescript
 ✅ googleSignIn(auth: Auth): Promise<User>
    - Provider: GoogleAuthProvider
@@ -30,6 +31,7 @@ Complete audit of the Firebase ecosystem for the Royal Carriage admin dashboard.
 ```
 
 #### 1.2 Email & Password Authentication
+
 ```typescript
 ✅ emailSignIn(auth: Auth, email: string, password: string): Promise<User>
    - Method: signInWithEmailAndPassword
@@ -46,6 +48,7 @@ Complete audit of the Firebase ecosystem for the Royal Carriage admin dashboard.
 ```
 
 ### Authentication Flow
+
 ```
 User Login Attempt
     ↓
@@ -70,6 +73,7 @@ Profile synced to Firebase Auth custom claims
 ### Functions Inventory (31 functions)
 
 #### 2.1 User Profile Management (3)
+
 ```typescript
 ✅ ensureUserProfile(user: User): Promise<UserProfile>
    - Creates new user profile in Firestore
@@ -88,6 +92,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.2 Import Management (2)
+
 ```typescript
 ✅ recordImport(record: ImportRecord)
    - Logs Moovs/Ads imports
@@ -98,6 +103,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.3 Metrics & Reporting (2)
+
 ```typescript
 ✅ getMetrics(): Promise<MetricRollup>
    - Retrieves spend/revenue/profit/AOV data
@@ -111,6 +117,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.4 Alerts & Monitoring (2)
+
 ```typescript
 ✅ logAlert(alert: AlertItem)
    - Creates alert in Firestore
@@ -120,6 +127,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.5 Freshness & Health (2)
+
 ```typescript
 ✅ listFreshness(): Promise<FreshnessStatus[]>
    - Status of data sources (Ads, Moovs, GA4, GSC)
@@ -130,6 +138,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.6 SEO Operations (6)
+
 ```typescript
 ✅ addSeoQueue(item) / listSeoQueue()
    - Queue management for SEO tasks
@@ -142,6 +151,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.7 Image Management (3)
+
 ```typescript
 ✅ addImage(meta) / listImages()
    - Image metadata storage
@@ -151,12 +161,14 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.8 Deployment (2)
+
 ```typescript
 ✅ addDeployLog(log) / listDeploys()
    - Deployment history and status
 ```
 
 #### 2.9 Settings (1)
+
 ```typescript
 ✅ getSettings() / saveSettings(payload)
    - System configuration (phone, booking URL, GA4 ID, etc.)
@@ -164,6 +176,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 2.10 Utility Functions (2)
+
 ```typescript
 ✅ getSiteOptions(): SiteKey[]
    - Returns available sites: all, airport, partybus, corporate, wedding
@@ -187,6 +200,7 @@ Profile synced to Firebase Auth custom claims
 **File**: `apps/admin/src/state/AuthProvider.tsx`
 
 #### 3.1 Core Features
+
 ```typescript
 ✅ Authentication State Management
    - Listens to Firebase auth state changes
@@ -206,6 +220,7 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 3.2 Exported Methods
+
 ```typescript
 ✅ signInWithGoogle(): Promise<void>
    - Calls firebase googleSignIn
@@ -224,22 +239,24 @@ Profile synced to Firebase Auth custom claims
 ```
 
 #### 3.3 Context Value
+
 ```typescript
 interface AuthContextValue {
-  user?: UserProfile          // Current user profile
-  role: Role                  // User's role (superadmin|admin|editor|viewer)
-  site: SiteKey              // Selected site filter
-  setSite: (site) => void    // Change site filter
-  signInWithGoogle: () => Promise<void>
-  signInWithEmail: (email, password) => Promise<void>
-  registerWithEmail: (email, password) => Promise<void>
-  resetPassword: (email) => Promise<void>
-  signOut: () => Promise<void>
-  ready: boolean             // Auth initialization complete
+  user?: UserProfile; // Current user profile
+  role: Role; // User's role (superadmin|admin|editor|viewer)
+  site: SiteKey; // Selected site filter
+  setSite: (site) => void; // Change site filter
+  signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email, password) => Promise<void>;
+  registerWithEmail: (email, password) => Promise<void>;
+  resetPassword: (email) => Promise<void>;
+  signOut: () => Promise<void>;
+  ready: boolean; // Auth initialization complete
 }
 ```
 
 #### 3.4 Error Handling & Fallbacks
+
 ```
 ✅ Firestore unavailable? → Use memory store
 ✅ Profile creation times out? → Use basic user profile
@@ -254,6 +271,7 @@ interface AuthContextValue {
 ## 4. Firestore Database ✅
 
 ### Project Configuration
+
 ```
 Project ID: royalcarriagelimoseo
 Project Number: 910418192896
@@ -264,6 +282,7 @@ Database: Default Firestore database
 ### Collections & Security Rules
 
 #### 4.1 User Profiles Collection
+
 ```
 Collection: /users/{userId}
 Structure: {
@@ -284,6 +303,7 @@ Rules:
 ```
 
 #### 4.2 Settings Collection
+
 ```
 Collection: /settings/{orgId}
 Structure: {
@@ -302,6 +322,7 @@ Rules:
 ```
 
 #### 4.3 Import Records Collection
+
 ```
 Collection: /moovs_imports and /ads_imports
 Structure: {
@@ -319,6 +340,7 @@ Rules:
 ```
 
 #### 4.4 Metrics Collection
+
 ```
 Collection: /metrics_rollups
 Structure: {
@@ -335,6 +357,7 @@ Rules:
 ```
 
 #### 4.5 SEO Operations Collections
+
 ```
 /seo_topics (queue)
 /seo_drafts (drafts)
@@ -346,6 +369,7 @@ Rules:
 ```
 
 #### 4.6 Additional Collections
+
 ```
 ✅ /alerts - Alert logging (Read: viewers, Write: editors)
 ✅ /siteHealth - Site status tracking (Read: viewers, Write: admins)
@@ -355,6 +379,7 @@ Rules:
 ```
 
 ### Firestore Indexes (7 composite indexes)
+
 ```
 ✅ page_analyses (analyzedAt DESC, status ASC)
 ✅ content_suggestions (status ASC, createdAt DESC)
@@ -374,6 +399,7 @@ Rules:
 ### Firestore Rules File: `firestore.rules`
 
 #### 5.1 Role Hierarchy
+
 ```typescript
 ✅ isAuthenticated()
    → Returns: request.auth != null
@@ -391,6 +417,7 @@ Rules:
 ```
 
 #### 5.2 Fixed Role Names (Critical Fix Applied)
+
 ```
 BEFORE (Broken):
   hasRole('SuperAdmin')  ❌
@@ -414,6 +441,7 @@ AFTER (Fixed):
 ### Firebase Storage: `storage.rules`
 
 #### 6.1 Access Paths
+
 ```typescript
 ✅ /public/{allPaths}
    - Public read access
@@ -430,6 +458,7 @@ AFTER (Fixed):
 ```
 
 #### 6.2 Fixed Role Names (Critical Fix Applied)
+
 ```
 BEFORE (Broken):
   request.auth.token.role == 'Admin'      ❌
@@ -451,6 +480,7 @@ AFTER (Fixed):
 ### Functions: `functions/src/index.ts`
 
 #### 7.1 Scheduled Functions
+
 ```typescript
 ✅ dailyPageAnalysis
    - Schedule: Every day at 2:00 AM (Chicago time)
@@ -462,6 +492,7 @@ AFTER (Fixed):
 ```
 
 #### 7.2 Firestore Triggers
+
 ```typescript
 ✅ autoAnalyzeNewPage
    - Trigger: New document in /pages/{pageId}
@@ -475,6 +506,7 @@ AFTER (Fixed):
 ```
 
 #### 7.3 HTTP API
+
 ```typescript
 ✅ api = functions.https.onRequest(app)
    - Express.js HTTP endpoint
@@ -492,6 +524,7 @@ AFTER (Fixed):
 ### Hosting Configuration: `firebase.json`
 
 #### 8.1 Deployment Targets (5)
+
 ```
 ✅ admin
    - Public: apps/admin/out (Next.js static export)
@@ -516,6 +549,7 @@ AFTER (Fixed):
 ```
 
 #### 8.2 Hosting Configuration
+
 ```
 ✅ Admin (Next.js):
    - SPA rewrites enabled for client-side routing
@@ -533,6 +567,7 @@ AFTER (Fixed):
 ## 9. Environment Configuration ✅
 
 ### .env File: `apps/admin/.env`
+
 ```
 ✅ NEXT_PUBLIC_FIREBASE_API_KEY
    Value: AIzaSyB9raEGnph3fylqjxyAin_xF5iuIUXlbCg
@@ -557,6 +592,7 @@ AFTER (Fixed):
 ```
 
 ### Build Configuration: `apps/admin/next.config.js`
+
 ```typescript
 ✅ Environment variable injection (6/7 variables injected)
    - All Firebase config vars passed at build time
@@ -573,6 +609,7 @@ AFTER (Fixed):
 ## 10. Critical Issues Fixed 🔴→🟢
 
 ### Issue #1: Firestore Security Rules - Role Name Mismatch
+
 ```
 SEVERITY: 🔴 CRITICAL
 IMPACT: Prevented all Firestore data access
@@ -599,6 +636,7 @@ Date Fixed: 2026-01-16
 ```
 
 ### Issue #2: Firebase Storage Rules - Role Name Mismatch
+
 ```
 SEVERITY: 🔴 CRITICAL
 IMPACT: Prevented all Storage access control
@@ -673,6 +711,7 @@ Date Fixed: 2026-01-16
 ## 12. Deployment Status ✅
 
 ### Deployed Configurations
+
 ```
 ✅ Firestore Security Rules      (2026-01-16 - with role fix)
 ✅ Storage Rules                 (2026-01-16 - with role fix)
@@ -683,6 +722,7 @@ Date Fixed: 2026-01-16
 ```
 
 ### Build Status
+
 ```
 ✅ Admin app:        21 pages compiled successfully
 ✅ Airport site:     Deployed
@@ -711,6 +751,7 @@ TASK 1: Enable Google OAuth Provider
 ```
 
 ### Already Configured ✅
+
 ```
 ✅ Firestore Database initialized
 ✅ Authentication methods ready
@@ -726,6 +767,7 @@ TASK 1: Enable Google OAuth Provider
 ## 14. Testing Verification
 
 ### Security Rules Testing (Recommended)
+
 ```
 Test Case 1: Viewer can read alerts
   Expected: ✅ Allow
@@ -744,9 +786,11 @@ Test Case 5: Non-admin cannot access imports
 ```
 
 ### Firebase Studio Database
+
 **Access**: https://console.firebase.google.com/project/royalcarriagelimoseo/firestore
 
 Collections to verify:
+
 - ✅ /users (user profiles)
 - ✅ /settings (system configuration)
 - ✅ /moovs_imports (import history)
@@ -767,6 +811,7 @@ Collections to verify:
 ### ✅ System Status: FULLY OPERATIONAL
 
 **All Components Verified**:
+
 - ✅ 5 Firebase Auth functions (Google + Email + Password reset)
 - ✅ 31 Data operation functions (all Firestore + fallback)
 - ✅ AuthProvider with timeouts and fallbacks
@@ -779,10 +824,12 @@ Collections to verify:
 - ✅ Role-based access control (4 levels)
 
 **Critical Fixes Applied**:
+
 - 🔴→🟢 Firestore rules role names (superadmin vs SuperAdmin)
 - 🔴→🟢 Storage rules role names (admin vs Admin)
 
 **Next Steps for User**:
+
 1. Enable Google OAuth in Firebase Console (2 minutes)
 2. Test login with Google and email/password
 3. Create test user accounts
@@ -794,6 +841,7 @@ Collections to verify:
 ## Appendix: Quick Reference
 
 ### API Endpoints
+
 ```
 Admin Dashboard: https://admin.royalcarriagelimo.com
 Firestore: royalcarriagelimoseo (default database)
@@ -802,6 +850,7 @@ Auth Domain: royalcarriagelimoseo.firebaseapp.com
 ```
 
 ### Role Permissions Matrix
+
 ```
                     superadmin  admin  editor  viewer
 Read users          ✅          ✅      ✗       ✗
@@ -815,6 +864,7 @@ Read all data       ✅          ✅      ✅      ✅
 ```
 
 ### Important Files
+
 ```
 configs/firebase.json           - Hosting targets
 apps/admin/.env                 - Firebase credentials

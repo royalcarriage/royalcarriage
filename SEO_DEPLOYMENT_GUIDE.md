@@ -16,6 +16,7 @@ Successfully created a complete 4-site SEO network for Royal Carriage Limousine 
 ### 1. Shared Infrastructure
 
 #### Packages Created:
+
 - **@packages/astro-utils**: SEO utilities, schema generators, tracking functions
   - `/Users/admin/VSCODE/packages/astro-utils/src/config.ts` - Site configurations
   - `/Users/admin/VSCODE/packages/astro-utils/src/seo.ts` - SEO meta tag generators
@@ -32,12 +33,14 @@ Successfully created a complete 4-site SEO network for Royal Carriage Limousine 
 ### 2. Site Configurations
 
 Each app configured with:
+
 - Astro sitemap integration (`@astrojs/sitemap`)
 - Static build with `format: 'file'`
 - Proper site URLs for sitemap generation
 - robots.txt files for search engines
 
 #### Airport Site (9 pages)
+
 - `/` - Home page with services overview
 - `/ohare-airport-limo` - O'Hare specific service
 - `/midway-airport-limo` - Midway specific service
@@ -49,6 +52,7 @@ Each app configured with:
 - `/contact` - Contact information
 
 #### Corporate Site (6 pages)
+
 - `/` - Home page with corporate services
 - `/executive-transportation` - Executive black car service
 - `/corporate-black-car-service` - Corporate transportation
@@ -57,6 +61,7 @@ Each app configured with:
 - `/contact` - Contact information
 
 #### Wedding Site (5 pages)
+
 - `/` - Home page with wedding services
 - `/wedding-limo-service` - Wedding limo detail
 - `/bridal-party-transportation` - Bridal party service
@@ -64,6 +69,7 @@ Each app configured with:
 - `/contact` - Contact information
 
 #### Party Bus Site (6 pages)
+
 - `/` - Home page with party bus services
 - `/party-bus-rental` - Party bus detail
 - `/birthday-party-bus` - Birthday party buses
@@ -74,6 +80,7 @@ Each app configured with:
 ### 3. SEO Features
 
 Every page includes:
+
 - **Meta Tags**: Title, description, canonical, robots
 - **Open Graph**: Full OG tags for social sharing
 - **Twitter Cards**: Twitter-specific meta tags
@@ -86,6 +93,7 @@ Every page includes:
 ### 4. Firebase Configuration
 
 Updated `/Users/admin/VSCODE/firebase.json`:
+
 - Removed SPA rewrites (not needed for static Astro sites)
 - Added `cleanUrls: true` for clean URL paths
 - Added `trailingSlash: false` for consistent URLs
@@ -94,6 +102,7 @@ Updated `/Users/admin/VSCODE/firebase.json`:
 ### 5. Build & Deploy Scripts
 
 Updated `/Users/admin/VSCODE/package.json` with new scripts:
+
 ```json
 {
   "install:all": "pnpm install",
@@ -109,22 +118,26 @@ Updated `/Users/admin/VSCODE/package.json` with new scripts:
 ## How to Deploy
 
 ### Step 1: Install Dependencies
+
 ```bash
 cd /Users/admin/VSCODE
 pnpm install
 ```
 
 This will install all dependencies for:
+
 - Root workspace
 - All 4 Astro apps
 - Shared packages
 
 ### Step 2: Build All Sites
+
 ```bash
 pnpm run build:all-sites
 ```
 
 This builds all 4 Astro sites to their respective `dist` folders:
+
 - `apps/airport/dist`
 - `apps/corporate/dist`
 - `apps/wedding/dist`
@@ -133,11 +146,13 @@ This builds all 4 Astro sites to their respective `dist` folders:
 ### Step 3: Deploy to Firebase
 
 Deploy all sites at once:
+
 ```bash
 pnpm run deploy:all-sites
 ```
 
 Or deploy individually:
+
 ```bash
 pnpm run deploy:airport
 pnpm run deploy:corporate
@@ -148,12 +163,14 @@ pnpm run deploy:partybus
 ### Step 4: Verify Deployment
 
 After deployment, verify each site:
+
 - https://chicagoairportblackcar.web.app
 - https://chicagoexecutivecarservice.web.app
 - https://chicagoweddingtransportation.web.app
 - https://chicago-partybus.web.app
 
 Check:
+
 1. All pages load correctly
 2. Navigation works
 3. CTAs link to correct booking URL with UTM params
@@ -166,6 +183,7 @@ Check:
 ### 1. Google Search Console Setup
 
 For each domain:
+
 1. Add property in Google Search Console
 2. Verify ownership (HTML file or DNS)
 3. Submit sitemap: `https://[domain]/sitemap-index.xml`
@@ -187,6 +205,7 @@ Test JSON-LD schema with Google's Rich Results Test:
 https://search.google.com/test/rich-results
 
 Validate:
+
 - LocalBusiness schema on home pages
 - Service schema on service pages
 
@@ -204,6 +223,7 @@ When ready to use custom domains:
 ### 5. Content Optimization
 
 Consider adding:
+
 - Customer testimonials (more detail)
 - Service area pages (city-specific landing pages)
 - FAQ sections with FAQSchema
@@ -304,7 +324,7 @@ Consider adding:
 - **firebase.json**: Firebase hosting configuration for multi-site deployment
 - **.firebaserc**: Firebase project and target mappings
 - **package.json**: Root workspace with build/deploy scripts
-- **apps/*/astro.config.mjs**: Individual Astro site configurations
+- **apps/\*/astro.config.mjs**: Individual Astro site configurations
 
 ### Shared Utilities
 
@@ -332,6 +352,7 @@ Consider adding:
 ### UTM Parameters
 
 All booking links include:
+
 - `utm_source={target}` - airport, corporate, wedding, or partybus
 - `utm_medium=seo` - Traffic source
 - `utm_campaign=microsites` - Campaign identifier
@@ -369,6 +390,7 @@ Example: `https://customer.moovs.app/royal-carriage-limousine/new/info?utm_sourc
 ### Build Errors
 
 If builds fail:
+
 1. Check for import errors in components
 2. Verify all dependencies installed: `pnpm install`
 3. Check Astro version compatibility
@@ -377,6 +399,7 @@ If builds fail:
 ### Deployment Issues
 
 If deployment fails:
+
 1. Verify Firebase CLI is installed and logged in
 2. Check Firebase project permissions
 3. Ensure dist folders exist after build
@@ -385,6 +408,7 @@ If deployment fails:
 ### SEO Issues
 
 If pages not indexing:
+
 1. Check robots.txt is accessible
 2. Verify sitemap is generating correctly
 3. Submit sitemap to Google Search Console
@@ -394,6 +418,7 @@ If pages not indexing:
 ## Performance Optimization
 
 All sites use:
+
 - Static site generation (SSG) for fast loading
 - Astro for minimal JavaScript
 - Tailwind CSS for optimized styling

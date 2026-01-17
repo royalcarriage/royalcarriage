@@ -2,7 +2,7 @@
  * Custom hooks for fetching live Firestore data across dashboard components
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   collection,
   query,
@@ -15,16 +15,16 @@ import {
   Timestamp,
   type QueryConstraint,
   type DocumentData,
-} from 'firebase/firestore';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { db } from '../lib/firebase';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
+} from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { db } from "../lib/firebase";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
 
 // Generic hook for real-time collection data
 export function useCollection<T extends DocumentData>(
   collectionName: string,
   constraints: QueryConstraint[] = [],
-  options: { realtime?: boolean; limitCount?: number } = {}
+  options: { realtime?: boolean; limitCount?: number } = {},
 ) {
   const [data, setData] = useState<(T & { id: string })[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,7 +38,7 @@ export function useCollection<T extends DocumentData>(
     const q = query(
       collection(db, collectionName),
       ...constraints,
-      limit(limitCount)
+      limit(limitCount),
     );
 
     if (realtime) {
@@ -57,7 +57,7 @@ export function useCollection<T extends DocumentData>(
           console.error(`Error fetching ${collectionName}:`, err);
           setError(err);
           setLoading(false);
-        }
+        },
       );
 
       return () => unsubscribe();
@@ -85,7 +85,7 @@ export function useCollection<T extends DocumentData>(
 // Hook for collection count
 export function useCollectionCount(
   collectionName: string,
-  constraints: QueryConstraint[] = []
+  constraints: QueryConstraint[] = [],
 ) {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -125,15 +125,26 @@ export function useDashboardMetrics() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const [bookingsSnap, contentSnap, importsSnap, locationsSnap, servicesSnap, fleetSnap] =
-          await Promise.all([
-            getCountFromServer(collection(db, 'bookings')),
-            getCountFromServer(query(collection(db, 'content'), where('status', '==', 'published'))),
-            getCountFromServer(collection(db, 'imports')),
-            getCountFromServer(collection(db, 'locations')),
-            getCountFromServer(collection(db, 'services')),
-            getCountFromServer(collection(db, 'fleet_vehicles')),
-          ]);
+        const [
+          bookingsSnap,
+          contentSnap,
+          importsSnap,
+          locationsSnap,
+          servicesSnap,
+          fleetSnap,
+        ] = await Promise.all([
+          getCountFromServer(collection(db, "bookings")),
+          getCountFromServer(
+            query(
+              collection(db, "content"),
+              where("status", "==", "published"),
+            ),
+          ),
+          getCountFromServer(collection(db, "imports")),
+          getCountFromServer(collection(db, "locations")),
+          getCountFromServer(collection(db, "services")),
+          getCountFromServer(collection(db, "fleet_vehicles")),
+        ]);
 
         setMetrics({
           bookings: bookingsSnap.data().count,
@@ -145,7 +156,7 @@ export function useDashboardMetrics() {
           commandsToday: 0, // Will be set from activity log
         });
       } catch (err) {
-        console.error('Error fetching metrics:', err);
+        console.error("Error fetching metrics:", err);
       } finally {
         setLoading(false);
       }
@@ -173,9 +184,9 @@ export function useActivityLog(limitCount = 10) {
 
   useEffect(() => {
     const q = query(
-      collection(db, 'activity_log'),
-      orderBy('timestamp', 'desc'),
-      limit(limitCount)
+      collection(db, "activity_log"),
+      orderBy("timestamp", "desc"),
+      limit(limitCount),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -183,9 +194,9 @@ export function useActivityLog(limitCount = 10) {
         const data = doc.data();
         return {
           id: doc.id,
-          type: data.type || 'system',
-          message: data.message || '',
-          status: data.status || 'success',
+          type: data.type || "system",
+          message: data.message || "",
+          status: data.status || "success",
           userId: data.userId,
           timestamp: data.timestamp?.toDate?.() || new Date(),
         };
@@ -215,7 +226,7 @@ export function useSystemMetrics() {
   const refetch = useCallback(async () => {
     try {
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
       const getSystemMetrics = httpsCallable<
@@ -227,13 +238,13 @@ export function useSystemMetrics() {
           commandsLast24h: number;
           systems: Record<string, { status: string; latency: number }>;
         }
-      >(functions, 'getSystemMetrics');
+      >(functions, "getSystemMetrics");
 
       const result = await getSystemMetrics({});
       setMetrics(result.data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching system metrics:', err);
+      console.error("Error fetching system metrics:", err);
       setError(err as Error);
     } finally {
       setLoading(false);
@@ -264,13 +275,31 @@ export function useContentStats() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const [totalSnap, publishedSnap, draftSnap, pendingSnap, rejectedSnap] = await Promise.all([
-          getCountFromServer(collection(db, 'content')),
-          getCountFromServer(query(collection(db, 'content'), where('status', '==', 'published'))),
-          getCountFromServer(query(collection(db, 'content'), where('status', '==', 'draft'))),
-          getCountFromServer(query(collection(db, 'content'), where('status', '==', 'pending'))),
-          getCountFromServer(query(collection(db, 'content'), where('status', '==', 'rejected'))),
-        ]);
+        const [totalSnap, publishedSnap, draftSnap, pendingSnap, rejectedSnap] =
+          await Promise.all([
+            getCountFromServer(collection(db, "content")),
+            getCountFromServer(
+              query(
+                collection(db, "content"),
+                where("status", "==", "published"),
+              ),
+            ),
+            getCountFromServer(
+              query(collection(db, "content"), where("status", "==", "draft")),
+            ),
+            getCountFromServer(
+              query(
+                collection(db, "content"),
+                where("status", "==", "pending"),
+              ),
+            ),
+            getCountFromServer(
+              query(
+                collection(db, "content"),
+                where("status", "==", "rejected"),
+              ),
+            ),
+          ]);
 
         setStats({
           total: totalSnap.data().count,
@@ -280,7 +309,7 @@ export function useContentStats() {
           rejected: rejectedSnap.data().count,
         });
       } catch (err) {
-        console.error('Error fetching content stats:', err);
+        console.error("Error fetching content stats:", err);
       } finally {
         setLoading(false);
       }
@@ -301,7 +330,7 @@ export function useLocations(limitCount = 50) {
     status: string;
     servicesCount?: number;
     contentGenerated?: boolean;
-  }>('locations', [orderBy('city', 'asc')], { limitCount });
+  }>("locations", [orderBy("city", "asc")], { limitCount });
 }
 
 // Hook for services data
@@ -312,7 +341,7 @@ export function useServices(limitCount = 50) {
     category: string;
     status: string;
     locationsCount?: number;
-  }>('services', [orderBy('name', 'asc')], { limitCount });
+  }>("services", [orderBy("name", "asc")], { limitCount });
 }
 
 // Hook for fleet vehicles
@@ -323,7 +352,7 @@ export function useFleet() {
     capacity: number;
     status: string;
     imageUrl?: string;
-  }>('fleet_vehicles', [orderBy('name', 'asc')]);
+  }>("fleet_vehicles", [orderBy("name", "asc")]);
 }
 
 // Hook for recent imports
@@ -335,14 +364,14 @@ export function useImports(limitCount = 20) {
     status: string;
     timestamp: Timestamp;
     userId?: string;
-  }>('imports', [orderBy('timestamp', 'desc')], { limitCount });
+  }>("imports", [orderBy("timestamp", "desc")], { limitCount });
 }
 
 // Hook for bookings (admin only)
 export function useBookings(status?: string, limitCount = 50) {
-  const constraints: QueryConstraint[] = [orderBy('createdAt', 'desc')];
+  const constraints: QueryConstraint[] = [orderBy("createdAt", "desc")];
   if (status) {
-    constraints.unshift(where('status', '==', status));
+    constraints.unshift(where("status", "==", status));
   }
 
   return useCollection<{
@@ -354,7 +383,7 @@ export function useBookings(status?: string, limitCount = 50) {
     dropoffLocation: string;
     status: string;
     amount: number;
-  }>('bookings', constraints, { limitCount });
+  }>("bookings", constraints, { limitCount });
 }
 
 // Hook for command logs (admin only)
@@ -368,7 +397,7 @@ export function useCommandLogs(limitCount = 50) {
     output: string;
     duration: number;
     timestamp: Timestamp;
-  }>('command_logs', [orderBy('timestamp', 'desc')], { limitCount });
+  }>("command_logs", [orderBy("timestamp", "desc")], { limitCount });
 }
 
 // Hook for chat conversations
@@ -380,8 +409,8 @@ export function useChatConversations(userId: string, limitCount = 20) {
     timestamp: Timestamp;
     userId: string;
   }>(
-    'chat_conversations',
-    [where('userId', '==', userId), orderBy('timestamp', 'desc')],
-    { limitCount }
+    "chat_conversations",
+    [where("userId", "==", userId), orderBy("timestamp", "desc")],
+    { limitCount },
   );
 }

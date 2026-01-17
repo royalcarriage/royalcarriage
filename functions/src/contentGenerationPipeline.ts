@@ -4,9 +4,9 @@
  * Features: Rate limiting, batch processing, approval workflow, static page generation
  */
 
-import * as functions from 'firebase-functions/v1';
-import * as admin from 'firebase-admin';
-import { geminiClient } from './shared/gemini-client';
+import * as functions from "firebase-functions/v1";
+import * as admin from "firebase-admin";
+import { geminiClient } from "./shared/gemini-client";
 
 // ========== INTERFACES ==========
 
@@ -29,7 +29,7 @@ interface ServiceContentData {
   internalLinks: string[];
   schema: Record<string, unknown>;
   keywords: string[];
-  approvalStatus: 'pending' | 'approved' | 'rejected';
+  approvalStatus: "pending" | "approved" | "rejected";
   generatedAt: admin.firestore.FieldValue;
   approvedAt?: admin.firestore.FieldValue;
   approvedBy?: string;
@@ -90,8 +90,8 @@ export const generateLocationServiceContent = functions.https.onCall(
     // Authentication check
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
@@ -100,15 +100,15 @@ export const generateLocationServiceContent = functions.https.onCall(
     // Validate input
     if (!locationId || !serviceId || !websiteId) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Missing required parameters: locationId, serviceId, websiteId'
+        "invalid-argument",
+        "Missing required parameters: locationId, serviceId, websiteId",
       );
     }
 
     const db = admin.firestore();
 
     try {
-      functions.logger.info('Generating content', {
+      functions.logger.info("Generating content", {
         locationId,
         serviceId,
         websiteId,
@@ -117,26 +117,29 @@ export const generateLocationServiceContent = functions.https.onCall(
 
       // Fetch location and service data
       const [locationDoc, serviceDoc] = await Promise.all([
-        db.collection('locations').doc(locationId).get(),
-        db.collection('services').doc(serviceId).get(),
+        db.collection("locations").doc(locationId).get(),
+        db.collection("services").doc(serviceId).get(),
       ]);
 
       if (!locationDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Location not found');
+        throw new functions.https.HttpsError("not-found", "Location not found");
       }
 
       if (!serviceDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Service not found');
+        throw new functions.https.HttpsError("not-found", "Service not found");
       }
 
-      const location = { id: locationDoc.id, ...locationDoc.data() } as Location;
+      const location = {
+        id: locationDoc.id,
+        ...locationDoc.data(),
+      } as Location;
       const service = { id: serviceDoc.id, ...serviceDoc.data() } as Service;
 
       // Generate content using Gemini
       const generatedContent = await generateContentWithGemini(
         service,
         location,
-        websiteId
+        websiteId,
       );
 
       // Create SEO title and meta description
@@ -144,7 +147,7 @@ export const generateLocationServiceContent = functions.https.onCall(
       const metaDescription = createMetaDescription(
         service.name,
         location.name,
-        service.description
+        service.description,
       );
 
       // Generate keywords
@@ -154,7 +157,11 @@ export const generateLocationServiceContent = functions.https.onCall(
       const schema = generateSchemaMarkup(service, location, websiteId);
 
       // Generate internal links
-      const internalLinks = generateInternalLinks(serviceId, locationId, websiteId);
+      const internalLinks = generateInternalLinks(
+        serviceId,
+        locationId,
+        websiteId,
+      );
 
       // Create content ID
       const contentId = `${serviceId}-${locationId}`;
@@ -170,32 +177,32 @@ export const generateLocationServiceContent = functions.https.onCall(
         internalLinks,
         schema,
         keywords,
-        approvalStatus: 'pending',
+        approvalStatus: "pending",
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
-      await db.collection('service_content').doc(contentId).set(contentData);
+      await db.collection("service_content").doc(contentId).set(contentData);
 
-      functions.logger.info('Content generated successfully', { contentId });
+      functions.logger.info("Content generated successfully", { contentId });
 
       return {
         contentId,
         title,
-        status: 'pending',
+        status: "pending",
       };
     } catch (error) {
-      functions.logger.error('Content generation failed', {
+      functions.logger.error("Content generation failed", {
         error: error instanceof Error ? error.message : String(error),
         locationId,
         serviceId,
       });
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Content generation failed: ${error instanceof Error ? error.message : String(error)}`
+        "internal",
+        `Content generation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
-  }
+  },
 );
 
 // ========== FUNCTION 2: batchGenerateContent ==========
@@ -207,31 +214,35 @@ export const generateLocationServiceContent = functions.https.onCall(
 export const batchGenerateContent = functions
   .runWith({
     timeoutSeconds: 540, // 9 minutes (max for Cloud Functions)
-    memory: '1GB',
+    memory: "1GB",
   })
   .https.onCall(async (data, context) => {
     // Authentication check
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
     const { websiteId, locationIds, serviceIds } = data;
 
     // Validate input
-    if (!websiteId || !Array.isArray(locationIds) || !Array.isArray(serviceIds)) {
+    if (
+      !websiteId ||
+      !Array.isArray(locationIds) ||
+      !Array.isArray(serviceIds)
+    ) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Invalid input: websiteId, locationIds[], serviceIds[] required'
+        "invalid-argument",
+        "Invalid input: websiteId, locationIds[], serviceIds[] required",
       );
     }
 
     const db = admin.firestore();
     const totalCombinations = locationIds.length * serviceIds.length;
 
-    functions.logger.info('Starting batch generation', {
+    functions.logger.info("Starting batch generation", {
       websiteId,
       locations: locationIds.length,
       services: serviceIds.length,
@@ -239,21 +250,29 @@ export const batchGenerateContent = functions
     });
 
     let totalGenerated = 0;
-    const errors: Array<{ locationId: string; serviceId: string; error: string }> = [];
+    const errors: Array<{
+      locationId: string;
+      serviceId: string;
+      error: string;
+    }> = [];
 
     try {
       // Create batch job record
-      const batchJobRef = await db.collection('batch_jobs').add({
-        type: 'content_generation',
+      const batchJobRef = await db.collection("batch_jobs").add({
+        type: "content_generation",
         websiteId,
         totalCombinations,
-        status: 'running',
+        status: "running",
         startedAt: admin.firestore.FieldValue.serverTimestamp(),
         userId: context.auth.uid,
       });
 
       // Process in batches to respect rate limits
-      const batches = createBatches(locationIds, serviceIds, RATE_LIMITS.concurrentRequests);
+      const batches = createBatches(
+        locationIds,
+        serviceIds,
+        RATE_LIMITS.concurrentRequests,
+      );
 
       for (let i = 0; i < batches.length; i++) {
         const batch = batches[i];
@@ -261,21 +280,21 @@ export const batchGenerateContent = functions
         // Process batch concurrently
         const results = await Promise.allSettled(
           batch.map(({ locationId, serviceId }) =>
-            generateSingleContent(db, locationId, serviceId, websiteId)
-          )
+            generateSingleContent(db, locationId, serviceId, websiteId),
+          ),
         );
 
         // Process results
         results.forEach((result, idx) => {
           const { locationId, serviceId } = batch[idx];
 
-          if (result.status === 'fulfilled') {
+          if (result.status === "fulfilled") {
             totalGenerated++;
           } else {
             errors.push({
               locationId,
               serviceId,
-              error: result.reason?.message || 'Unknown error',
+              error: result.reason?.message || "Unknown error",
             });
           }
         });
@@ -291,7 +310,7 @@ export const batchGenerateContent = functions
           await sleep(RATE_LIMITS.batchDelay);
         }
 
-        functions.logger.info('Batch progress', {
+        functions.logger.info("Batch progress", {
           batchNumber: i + 1,
           totalBatches: batches.length,
           generated: totalGenerated,
@@ -301,13 +320,13 @@ export const batchGenerateContent = functions
 
       // Update batch job status
       await batchJobRef.update({
-        status: 'completed',
+        status: "completed",
         completedAt: admin.firestore.FieldValue.serverTimestamp(),
         totalGenerated,
         totalErrors: errors.length,
       });
 
-      functions.logger.info('Batch generation completed', {
+      functions.logger.info("Batch generation completed", {
         totalGenerated,
         totalErrors: errors.length,
       });
@@ -318,11 +337,11 @@ export const batchGenerateContent = functions
         totalErrors: errors.length,
       };
     } catch (error) {
-      functions.logger.error('Batch generation failed', { error });
+      functions.logger.error("Batch generation failed", { error });
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Batch generation failed: ${error instanceof Error ? error.message : String(error)}`
+        "internal",
+        `Batch generation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   });
@@ -337,8 +356,8 @@ export const approveAndPublishContent = functions.https.onCall(
     // Authentication check
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
@@ -347,8 +366,8 @@ export const approveAndPublishContent = functions.https.onCall(
     // Validate input
     if (!Array.isArray(contentIds) || contentIds.length === 0) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentIds must be a non-empty array'
+        "invalid-argument",
+        "contentIds must be a non-empty array",
       );
     }
 
@@ -357,7 +376,7 @@ export const approveAndPublishContent = functions.https.onCall(
     let published = 0;
 
     try {
-      functions.logger.info('Approving and publishing content', {
+      functions.logger.info("Approving and publishing content", {
         count: contentIds.length,
         userId: context.auth.uid,
       });
@@ -369,11 +388,11 @@ export const approveAndPublishContent = functions.https.onCall(
         const batch = db.batch();
 
         for (const contentId of batchContentIds) {
-          const contentRef = db.collection('service_content').doc(contentId);
+          const contentRef = db.collection("service_content").doc(contentId);
           const contentDoc = await contentRef.get();
 
           if (!contentDoc.exists) {
-            functions.logger.warn('Content not found', { contentId });
+            functions.logger.warn("Content not found", { contentId });
             continue;
           }
 
@@ -381,7 +400,7 @@ export const approveAndPublishContent = functions.https.onCall(
 
           // Mark as approved
           batch.update(contentRef, {
-            approvalStatus: 'approved',
+            approvalStatus: "approved",
             approvedAt: admin.firestore.FieldValue.serverTimestamp(),
             approvedBy: context.auth.uid,
           });
@@ -390,7 +409,7 @@ export const approveAndPublishContent = functions.https.onCall(
 
           // Create page mapping entry
           const pagePath = `/${content.serviceId}/${content.locationId}`;
-          const mappingRef = db.collection('page_mappings').doc(contentId);
+          const mappingRef = db.collection("page_mappings").doc(contentId);
 
           batch.set(mappingRef, {
             contentId,
@@ -398,7 +417,7 @@ export const approveAndPublishContent = functions.https.onCall(
             locationId: content.locationId,
             websiteId: content.websiteId,
             pagePath,
-            status: 'approved',
+            status: "approved",
             readyForPublish: true,
             createdAt: admin.firestore.FieldValue.serverTimestamp(),
           });
@@ -409,21 +428,24 @@ export const approveAndPublishContent = functions.https.onCall(
         await batch.commit();
       }
 
-      functions.logger.info('Content approved and published', { approved, published });
+      functions.logger.info("Content approved and published", {
+        approved,
+        published,
+      });
 
       return {
         approved,
         published,
       };
     } catch (error) {
-      functions.logger.error('Approval/publishing failed', { error });
+      functions.logger.error("Approval/publishing failed", { error });
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Failed to approve/publish: ${error instanceof Error ? error.message : String(error)}`
+        "internal",
+        `Failed to approve/publish: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
-  }
+  },
 );
 
 // ========== FUNCTION 4: generatePageMetadata ==========
@@ -436,8 +458,8 @@ export const generatePageMetadata = functions.https.onCall(
     // Authentication check
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
@@ -445,26 +467,29 @@ export const generatePageMetadata = functions.https.onCall(
 
     if (!contentId) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'contentId is required'
+        "invalid-argument",
+        "contentId is required",
       );
     }
 
     const db = admin.firestore();
 
     try {
-      const contentDoc = await db.collection('service_content').doc(contentId).get();
+      const contentDoc = await db
+        .collection("service_content")
+        .doc(contentId)
+        .get();
 
       if (!contentDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Content not found');
+        throw new functions.https.HttpsError("not-found", "Content not found");
       }
 
       const content = contentDoc.data() as ServiceContentData;
 
       // Fetch service and location for additional metadata
       const [serviceDoc, locationDoc] = await Promise.all([
-        db.collection('services').doc(content.serviceId).get(),
-        db.collection('locations').doc(content.locationId).get(),
+        db.collection("services").doc(content.serviceId).get(),
+        db.collection("locations").doc(content.locationId).get(),
       ]);
 
       const service = serviceDoc.data() as Service;
@@ -477,48 +502,48 @@ export const generatePageMetadata = functions.https.onCall(
         ogTitle: content.title,
         ogDescription: content.metaDescription,
         ogImage: generateOGImageUrl(content.websiteId, content.serviceId),
-        twitterCard: 'summary_large_image',
+        twitterCard: "summary_large_image",
         twitterTitle: content.title,
         twitterDescription: content.metaDescription,
         twitterImage: generateOGImageUrl(content.websiteId, content.serviceId),
         canonical: generateCanonicalUrl(
           content.websiteId,
           content.serviceId,
-          content.locationId
+          content.locationId,
         ),
-        robots: 'index, follow',
+        robots: "index, follow",
         breadcrumbs: generateBreadcrumbs(
           content.websiteId,
           content.serviceId,
           content.locationId,
           service.name,
-          location.name
+          location.name,
         ),
         schema: content.schema,
         keywords: content.keywords,
-        author: 'Royal Carriage Limousine',
+        author: "Royal Carriage Limousine",
         publishedTime: new Date().toISOString(),
         modifiedTime: new Date().toISOString(),
       };
 
       // Store metadata
-      await db.collection('service_content').doc(contentId).update({
+      await db.collection("service_content").doc(contentId).update({
         metadata,
         metadataGeneratedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      functions.logger.info('Metadata generated', { contentId });
+      functions.logger.info("Metadata generated", { contentId });
 
       return { metadata };
     } catch (error) {
-      functions.logger.error('Metadata generation failed', { error });
+      functions.logger.error("Metadata generation failed", { error });
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Metadata generation failed: ${error instanceof Error ? error.message : String(error)}`
+        "internal",
+        `Metadata generation failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
-  }
+  },
 );
 
 // ========== FUNCTION 5: buildStaticPages ==========
@@ -529,34 +554,37 @@ export const generatePageMetadata = functions.https.onCall(
 export const buildStaticPages = functions
   .runWith({
     timeoutSeconds: 540,
-    memory: '2GB',
+    memory: "2GB",
   })
   .https.onCall(async (data, context) => {
     // Authentication check
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'User must be authenticated'
+        "unauthenticated",
+        "User must be authenticated",
       );
     }
 
     const { websiteId, limit = 1000 } = data;
 
     if (!websiteId) {
-      throw new functions.https.HttpsError('invalid-argument', 'websiteId is required');
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "websiteId is required",
+      );
     }
 
     const db = admin.firestore();
     let pagesBuilt = 0;
 
     try {
-      functions.logger.info('Building static pages', { websiteId, limit });
+      functions.logger.info("Building static pages", { websiteId, limit });
 
       // Fetch all approved content for this website
       const contentSnapshot = await db
-        .collection('service_content')
-        .where('websiteId', '==', websiteId)
-        .where('approvalStatus', '==', 'approved')
+        .collection("service_content")
+        .where("websiteId", "==", websiteId)
+        .where("approvalStatus", "==", "approved")
         .limit(limit)
         .get();
 
@@ -571,12 +599,12 @@ export const buildStaticPages = functions
 
         // Fetch service and location data
         const [serviceDoc, locationDoc] = await Promise.all([
-          db.collection('services').doc(content.serviceId).get(),
-          db.collection('locations').doc(content.locationId).get(),
+          db.collection("services").doc(content.serviceId).get(),
+          db.collection("locations").doc(content.locationId).get(),
         ]);
 
         if (!serviceDoc.exists || !locationDoc.exists) {
-          functions.logger.warn('Missing service or location', { contentId });
+          functions.logger.warn("Missing service or location", { contentId });
           continue;
         }
 
@@ -599,12 +627,12 @@ export const buildStaticPages = functions
           keywords: content.keywords,
           serviceName: service.name,
           locationName: location.name,
-          buildStatus: 'ready',
+          buildStatus: "ready",
           builtAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
         // Store in static_pages collection
-        const pageRef = db.collection('static_pages').doc(contentId);
+        const pageRef = db.collection("static_pages").doc(contentId);
         batch.set(pageRef, pageData);
 
         pagesBuilt++;
@@ -612,15 +640,15 @@ export const buildStaticPages = functions
 
       await batch.commit();
 
-      functions.logger.info('Static pages built', { pagesBuilt });
+      functions.logger.info("Static pages built", { pagesBuilt });
 
       return { pagesBuilt };
     } catch (error) {
-      functions.logger.error('Static page build failed', { error });
+      functions.logger.error("Static page build failed", { error });
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Static page build failed: ${error instanceof Error ? error.message : String(error)}`
+        "internal",
+        `Static page build failed: ${error instanceof Error ? error.message : String(error)}`,
       );
     }
   });
@@ -633,7 +661,7 @@ export const buildStaticPages = functions
 async function generateContentWithGemini(
   service: Service,
   location: Location,
-  websiteId: string
+  websiteId: string,
 ): Promise<GeneratedContent> {
   const prompt = buildContentPrompt(service, location, websiteId);
 
@@ -641,19 +669,19 @@ async function generateContentWithGemini(
     const response = await geminiClient.generateContent(prompt, {
       temperature: 0.7,
       maxOutputTokens: 4096,
-      model: 'gemini-1.5-flash',
+      model: "gemini-1.5-flash",
     });
 
     // Parse JSON response
     const parsed = geminiClient.parseJSON<GeneratedContent>(response);
 
     if (!parsed) {
-      throw new Error('Failed to parse Gemini response as JSON');
+      throw new Error("Failed to parse Gemini response as JSON");
     }
 
     return parsed;
   } catch (error) {
-    functions.logger.error('Gemini generation failed', { error });
+    functions.logger.error("Gemini generation failed", { error });
 
     // Return fallback content
     return createFallbackContent(service, location);
@@ -666,22 +694,23 @@ async function generateContentWithGemini(
 function buildContentPrompt(
   service: Service,
   location: Location,
-  websiteId: string
+  websiteId: string,
 ): string {
-  const websiteContext = {
-    airport: 'luxury airport limousine service',
-    corporate: 'premium executive car service',
-    wedding: 'elegant wedding transportation',
-    partybus: 'fun party bus service',
-  }[websiteId] || 'premium limousine service';
+  const websiteContext =
+    {
+      airport: "luxury airport limousine service",
+      corporate: "premium executive car service",
+      wedding: "elegant wedding transportation",
+      partybus: "fun party bus service",
+    }[websiteId] || "premium limousine service";
 
   return `Generate SEO-optimized content for a ${websiteContext} page.
 
 Service: ${service.name}
 Location: ${location.name}
 Description: ${service.description}
-Location Details: ${location.description || 'Chicago area'}
-Landmarks: ${location.landmarks?.join(', ') || 'N/A'}
+Location Details: ${location.description || "Chicago area"}
+Landmarks: ${location.landmarks?.join(", ") || "N/A"}
 
 Return ONLY a JSON object with this exact structure:
 
@@ -712,42 +741,49 @@ Requirements:
 /**
  * Create fallback content if AI generation fails
  */
-function createFallbackContent(service: Service, location: Location): GeneratedContent {
+function createFallbackContent(
+  service: Service,
+  location: Location,
+): GeneratedContent {
   return {
     hero: `Experience premium ${service.name.toLowerCase()} in ${location.name}. Professional service, luxury vehicles, and exceptional customer care.`,
     overview: `Our ${service.name.toLowerCase()} in ${location.name} provides the ultimate transportation experience. ${service.description} We pride ourselves on punctuality, professionalism, and attention to detail.`,
     features: [
-      'Professional chauffeurs',
-      'Luxury fleet vehicles',
-      '24/7 availability',
-      'Competitive pricing',
-      'On-time guarantee',
+      "Professional chauffeurs",
+      "Luxury fleet vehicles",
+      "24/7 availability",
+      "Competitive pricing",
+      "On-time guarantee",
     ],
     whyChooseUs: `Choose us for ${service.name.toLowerCase()} in ${location.name} because we combine years of experience with modern technology and a commitment to excellence. Our local knowledge and professional service ensure a seamless experience.`,
-    localInfo: `${location.name} is a vibrant area with ${location.landmarks?.length || 'many'} notable landmarks. We provide reliable service throughout the region, ensuring you arrive safely and on time.`,
+    localInfo: `${location.name} is a vibrant area with ${location.landmarks?.length || "many"} notable landmarks. We provide reliable service throughout the region, ensuring you arrive safely and on time.`,
     faq: [
       {
         question: `How do I book ${service.name.toLowerCase()} in ${location.name}?`,
-        answer: 'You can book online through our website or call us directly. We recommend booking in advance for the best availability.',
+        answer:
+          "You can book online through our website or call us directly. We recommend booking in advance for the best availability.",
       },
       {
-        question: 'What areas do you serve?',
+        question: "What areas do you serve?",
         answer: `We serve ${location.name} and surrounding areas throughout the Chicago region.`,
       },
       {
-        question: 'What vehicles are available?',
-        answer: 'We offer a range of luxury vehicles including sedans, SUVs, stretch limousines, and party buses.',
+        question: "What vehicles are available?",
+        answer:
+          "We offer a range of luxury vehicles including sedans, SUVs, stretch limousines, and party buses.",
       },
       {
-        question: 'Do you offer 24/7 service?',
-        answer: 'Yes, we provide around-the-clock service for your convenience.',
+        question: "Do you offer 24/7 service?",
+        answer:
+          "Yes, we provide around-the-clock service for your convenience.",
       },
       {
-        question: 'What is your cancellation policy?',
-        answer: 'We offer flexible cancellation options. Please contact us for details on our cancellation policy.',
+        question: "What is your cancellation policy?",
+        answer:
+          "We offer flexible cancellation options. Please contact us for details on our cancellation policy.",
       },
     ],
-    cta: 'Book your luxury transportation today. Call us now or reserve online for the best rates.',
+    cta: "Book your luxury transportation today. Call us now or reserve online for the best rates.",
   };
 }
 
@@ -756,7 +792,7 @@ function createFallbackContent(service: Service, location: Location): GeneratedC
  */
 function createSEOTitle(serviceName: string, locationName: string): string {
   const title = `${serviceName} in ${locationName} | Royal Carriage Limo`;
-  return title.length > 60 ? title.substring(0, 57) + '...' : title;
+  return title.length > 60 ? title.substring(0, 57) + "..." : title;
 }
 
 /**
@@ -765,10 +801,10 @@ function createSEOTitle(serviceName: string, locationName: string): string {
 function createMetaDescription(
   serviceName: string,
   locationName: string,
-  description: string
+  description: string,
 ): string {
   const meta = `Professional ${serviceName.toLowerCase()} in ${locationName}. ${description.substring(0, 80)}. Book now!`;
-  return meta.length > 155 ? meta.substring(0, 152) + '...' : meta;
+  return meta.length > 155 ? meta.substring(0, 152) + "..." : meta;
 }
 
 /**
@@ -793,33 +829,33 @@ function generateKeywords(service: Service, location: Location): string[] {
 function generateSchemaMarkup(
   service: Service,
   location: Location,
-  websiteId: string
+  websiteId: string,
 ): Record<string, unknown> {
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+    "@context": "https://schema.org",
+    "@type": "Service",
     name: `${service.name} in ${location.name}`,
     description: service.description,
     provider: {
-      '@type': 'LocalBusiness',
-      name: 'Royal Carriage Limousine',
+      "@type": "LocalBusiness",
+      name: "Royal Carriage Limousine",
       url: getDomainForWebsite(websiteId),
-      telephone: '+1-312-XXX-XXXX',
+      telephone: "+1-312-XXX-XXXX",
       address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Chicago',
-        addressRegion: 'IL',
-        addressCountry: 'US',
+        "@type": "PostalAddress",
+        addressLocality: "Chicago",
+        addressRegion: "IL",
+        addressCountry: "US",
       },
     },
     areaServed: {
-      '@type': 'City',
+      "@type": "City",
       name: location.name,
     },
     offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceRange: '$$$',
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceRange: "$$$",
     },
   };
 }
@@ -830,15 +866,15 @@ function generateSchemaMarkup(
 function generateInternalLinks(
   serviceId: string,
   locationId: string,
-  websiteId: string
+  websiteId: string,
 ): string[] {
   // This would be more sophisticated in production
   return [
     `/services/${serviceId}`,
     `/locations/${locationId}`,
-    '/fleet',
-    '/about',
-    '/contact',
+    "/fleet",
+    "/about",
+    "/contact",
   ];
 }
 
@@ -855,7 +891,7 @@ function generateOGImageUrl(websiteId: string, serviceId: string): string {
 function generateCanonicalUrl(
   websiteId: string,
   serviceId: string,
-  locationId: string
+  locationId: string,
 ): string {
   const domain = getDomainForWebsite(websiteId);
   return `${domain}/${serviceId}/${locationId}`;
@@ -869,13 +905,13 @@ function generateBreadcrumbs(
   serviceId: string,
   locationId: string,
   serviceName: string,
-  locationName: string
+  locationName: string,
 ): Array<{ name: string; url: string }> {
   const domain = getDomainForWebsite(websiteId);
 
   return [
-    { name: 'Home', url: domain },
-    { name: 'Services', url: `${domain}/services` },
+    { name: "Home", url: domain },
+    { name: "Services", url: `${domain}/services` },
     { name: serviceName, url: `${domain}/services/${serviceId}` },
     { name: locationName, url: `${domain}/${serviceId}/${locationId}` },
   ];
@@ -886,13 +922,13 @@ function generateBreadcrumbs(
  */
 function getDomainForWebsite(websiteId: string): string {
   const domains: Record<string, string> = {
-    airport: 'https://chicagoairportblackcar.com',
-    corporate: 'https://chicagoexecutivecarservice.com',
-    wedding: 'https://chicagoweddingtransportation.com',
-    partybus: 'https://chicago-partybus.com',
+    airport: "https://chicagoairportblackcar.com",
+    corporate: "https://chicagoexecutivecarservice.com",
+    wedding: "https://chicagoweddingtransportation.com",
+    partybus: "https://chicago-partybus.com",
   };
 
-  return domains[websiteId] || 'https://royalcarriagelimousine.com';
+  return domains[websiteId] || "https://royalcarriagelimousine.com";
 }
 
 /**
@@ -902,29 +938,33 @@ async function generateSingleContent(
   db: admin.firestore.Firestore,
   locationId: string,
   serviceId: string,
-  websiteId: string
+  websiteId: string,
 ): Promise<void> {
   // Fetch location and service
   const [locationDoc, serviceDoc] = await Promise.all([
-    db.collection('locations').doc(locationId).get(),
-    db.collection('services').doc(serviceId).get(),
+    db.collection("locations").doc(locationId).get(),
+    db.collection("services").doc(serviceId).get(),
   ]);
 
   if (!locationDoc.exists || !serviceDoc.exists) {
-    throw new Error('Location or service not found');
+    throw new Error("Location or service not found");
   }
 
   const location = { id: locationDoc.id, ...locationDoc.data() } as Location;
   const service = { id: serviceDoc.id, ...serviceDoc.data() } as Service;
 
   // Generate content
-  const generatedContent = await generateContentWithGemini(service, location, websiteId);
+  const generatedContent = await generateContentWithGemini(
+    service,
+    location,
+    websiteId,
+  );
 
   const title = createSEOTitle(service.name, location.name);
   const metaDescription = createMetaDescription(
     service.name,
     location.name,
-    service.description
+    service.description,
   );
   const keywords = generateKeywords(service, location);
   const schema = generateSchemaMarkup(service, location, websiteId);
@@ -933,22 +973,19 @@ async function generateSingleContent(
   const contentId = `${serviceId}-${locationId}`;
 
   // Store content
-  await db
-    .collection('service_content')
-    .doc(contentId)
-    .set({
-      serviceId,
-      locationId,
-      websiteId,
-      title,
-      metaDescription,
-      content: generatedContent,
-      internalLinks,
-      schema,
-      keywords,
-      approvalStatus: 'pending',
-      generatedAt: admin.firestore.FieldValue.serverTimestamp(),
-    });
+  await db.collection("service_content").doc(contentId).set({
+    serviceId,
+    locationId,
+    websiteId,
+    title,
+    metaDescription,
+    content: generatedContent,
+    internalLinks,
+    schema,
+    keywords,
+    approvalStatus: "pending",
+    generatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
 }
 
 /**
@@ -957,7 +994,7 @@ async function generateSingleContent(
 function createBatches(
   locationIds: string[],
   serviceIds: string[],
-  batchSize: number
+  batchSize: number,
 ): Array<Array<{ locationId: string; serviceId: string }>> {
   const combinations: Array<{ locationId: string; serviceId: string }> = [];
 

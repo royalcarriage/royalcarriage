@@ -36,7 +36,9 @@ export function PillButton({
       disabled={loading || rest.disabled}
       {...rest}
     >
-      {loading && <span className="h-2 w-2 animate-ping rounded-full bg-white" />}
+      {loading && (
+        <span className="h-2 w-2 animate-ping rounded-full bg-white" />
+      )}
       {children}
     </button>
   );

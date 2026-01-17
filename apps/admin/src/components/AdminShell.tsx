@@ -41,10 +41,18 @@ export function AdminShell({
       id: "ai-systems",
       label: "AI Systems",
       children: [
-        { id: "ai-command-center", label: "Command Center", href: "/ai/command-center" },
+        {
+          id: "ai-command-center",
+          label: "Command Center",
+          href: "/ai/command-center",
+        },
         { id: "ai-chat", label: "AI Chat", href: "/ai/chat" },
         { id: "ai-analytics", label: "AI Analytics", href: "/ai/analytics" },
-        { id: "content-pipeline", label: "Content Pipeline", href: "/content-pipeline" },
+        {
+          id: "content-pipeline",
+          label: "Content Pipeline",
+          href: "/content-pipeline",
+        },
       ],
     },
     {
@@ -61,8 +69,16 @@ export function AdminShell({
       id: "websites",
       label: "Websites",
       children: [
-        { id: "site-health", label: "Site Health", href: "/websites/site-health" },
-        { id: "money-pages", label: "Money Pages", href: "/websites/money-pages" },
+        {
+          id: "site-health",
+          label: "Site Health",
+          href: "/websites/site-health",
+        },
+        {
+          id: "money-pages",
+          label: "Money Pages",
+          href: "/websites/money-pages",
+        },
         { id: "fleet", label: "Fleet", href: "/websites/fleet" },
         { id: "cities", label: "Cities", href: "/websites/cities" },
         { id: "blog", label: "Blog", href: "/websites/blog" },
@@ -74,7 +90,11 @@ export function AdminShell({
       children: [
         { id: "seo-queue", label: "Queue", href: "/seo/queue" },
         { id: "seo-drafts", label: "Drafts", href: "/seo/drafts" },
-        { id: "seo-gate-reports", label: "Gate Reports", href: "/seo/gate-reports" },
+        {
+          id: "seo-gate-reports",
+          label: "Gate Reports",
+          href: "/seo/gate-reports",
+        },
         { id: "seo-publish", label: "Publish", href: "/seo/publish" },
       ],
     },
@@ -92,7 +112,11 @@ export function AdminShell({
       children: [
         { id: "locations", label: "Locations (233)", href: "/locations" },
         { id: "services", label: "Services (91)", href: "/services" },
-        { id: "fleet", label: "Fleet Vehicles (23)", href: "/fleet-management" },
+        {
+          id: "fleet",
+          label: "Fleet Vehicles (23)",
+          href: "/fleet-management",
+        },
         { id: "drivers", label: "Drivers (8)", href: "/driver-management" },
         { id: "blog-seo", label: "Blog & SEO", href: "/blog-management" },
       ],
@@ -101,7 +125,11 @@ export function AdminShell({
       id: "workflows",
       label: "Workflows",
       children: [
-        { id: "content-approval", label: "Content Approval", href: "/content-approval" },
+        {
+          id: "content-approval",
+          label: "Content Approval",
+          href: "/content-approval",
+        },
         { id: "feedback", label: "Feedback Alerts", href: "/feedback-alerts" },
       ],
     },
@@ -112,7 +140,10 @@ export function AdminShell({
   ];
 
   // Filter navigation based on user role
-  const filteredNavItems = useMemo(() => filterNavByRole(navItems, role), [role]);
+  const filteredNavItems = useMemo(
+    () => filterNavByRole(navItems, role),
+    [role],
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -120,7 +151,9 @@ export function AdminShell({
         <aside className="lg:w-64">
           <div className="mb-4 flex items-center justify-between">
             <div>
-              <div className="text-xs uppercase text-slate-500">Royal Carriage</div>
+              <div className="text-xs uppercase text-slate-500">
+                Royal Carriage
+              </div>
               <div className="text-lg font-semibold">Command Center</div>
             </div>
             <RoleBadge role={role} />
@@ -129,7 +162,9 @@ export function AdminShell({
           <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-3 text-xs text-indigo-900">
             {user?.email ? (
               <>
-                <div className="font-semibold">{user.displayName || user.email}</div>
+                <div className="font-semibold">
+                  {user.displayName || user.email}
+                </div>
                 <div className="opacity-80">{user.email}</div>
               </>
             ) : (
@@ -137,7 +172,11 @@ export function AdminShell({
             )}
           </div>
           <div className="mt-2">
-            <PillButton variant="ghost" className="w-full justify-center" onClick={onSignOut}>
+            <PillButton
+              variant="ghost"
+              className="w-full justify-center"
+              onClick={onSignOut}
+            >
               Sign out
             </PillButton>
           </div>

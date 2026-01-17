@@ -29,21 +29,56 @@
       "utm_medium": "seo",
       "utm_campaign": "microsites",
       "utm_source_from_siteSlug": true,
-      "preserveQueryParams": ["gclid", "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"]
+      "preserveQueryParams": [
+        "gclid",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+      ]
     }
   },
   "sites": [
-    { "siteSlug": "airport", "domain": "https://chicagoairportblackcar.com", "intent": "airport" },
-    { "siteSlug": "partybus", "domain": "https://chicago-partybus.com", "intent": "partybus" },
-    { "siteSlug": "corporate", "domain": "https://chicagoexecutivecarservice.com", "intent": "corporate" },
-    { "siteSlug": "wedding", "domain": "https://chicagoweddingtransportation.com", "intent": "wedding" }
+    {
+      "siteSlug": "airport",
+      "domain": "https://chicagoairportblackcar.com",
+      "intent": "airport"
+    },
+    {
+      "siteSlug": "partybus",
+      "domain": "https://chicago-partybus.com",
+      "intent": "partybus"
+    },
+    {
+      "siteSlug": "corporate",
+      "domain": "https://chicagoexecutivecarservice.com",
+      "intent": "corporate"
+    },
+    {
+      "siteSlug": "wedding",
+      "domain": "https://chicagoweddingtransportation.com",
+      "intent": "wedding"
+    }
   ],
   "imports": {
     "moovs": {
       "storagePath": "imports/moovs/",
       "immutableRaw": true,
-      "requiredColumns": ["Pickup Date", "Order Type", "Trip Type", "Total Amount ($)", "Status Slug"],
-      "dedupeKeys": ["Order No", "Reservation ID", "Pickup Date", "Total Amount ($)", "Created At"],
+      "requiredColumns": [
+        "Pickup Date",
+        "Order Type",
+        "Trip Type",
+        "Total Amount ($)",
+        "Status Slug"
+      ],
+      "dedupeKeys": [
+        "Order No",
+        "Reservation ID",
+        "Pickup Date",
+        "Total Amount ($)",
+        "Created At"
+      ],
       "statusRules": {
         "countRevenueStatuses": ["done"],
         "excludeStatuses": ["cancelled", "refunded", "no_show"]
@@ -51,11 +86,24 @@
     },
     "googleAds": {
       "storagePath": "imports/google-ads/",
-      "datasets": ["campaigns", "keywords", "search_terms", "devices", "demographics_age", "demographics_gender"],
+      "datasets": [
+        "campaigns",
+        "keywords",
+        "search_terms",
+        "devices",
+        "demographics_age",
+        "demographics_gender"
+      ],
       "minFilesForRoi": ["campaigns", "keywords"]
     },
     "ga4": {
-      "requiredEvents": ["call_now_click", "book_now_click", "quote_submit", "scroll_75", "view_vehicle"],
+      "requiredEvents": [
+        "call_now_click",
+        "book_now_click",
+        "quote_submit",
+        "scroll_75",
+        "view_vehicle"
+      ],
       "adminTrafficFilter": true
     },
     "gsc": {
@@ -128,9 +176,24 @@
   },
   "automation": {
     "schedules": [
-      { "name": "nightly_metrics", "freq": "daily", "time": "03:10", "action": "metrics:import" },
-      { "name": "biweekly_seo_propose", "freq": "biweekly", "time": "04:20", "action": "seo:propose+seo:gate+openPR" },
-      { "name": "weekly_quality", "freq": "weekly", "time": "05:15", "action": "verify:seo:full+openIssueIfFail" }
+      {
+        "name": "nightly_metrics",
+        "freq": "daily",
+        "time": "03:10",
+        "action": "metrics:import"
+      },
+      {
+        "name": "biweekly_seo_propose",
+        "freq": "biweekly",
+        "time": "04:20",
+        "action": "seo:propose+seo:gate+openPR"
+      },
+      {
+        "name": "weekly_quality",
+        "freq": "weekly",
+        "time": "05:15",
+        "action": "verify:seo:full+openIssueIfFail"
+      }
     ],
     "publishing": { "mode": "PR-only", "noDirectMainPush": true }
   },

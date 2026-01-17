@@ -2,7 +2,13 @@ import { Link } from "wouter";
 import { useAuth, isAdmin } from "@/hooks/useAuth";
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Brain,
@@ -14,31 +20,79 @@ import {
   Zap,
   TrendingUp,
   Activity,
-  Settings
+  Settings,
 } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
 
   const stats = [
-    { name: 'Pages Analyzed', value: '12', change: '+3', icon: FileText, color: 'text-blue-600' },
-    { name: 'AI Suggestions', value: '24', change: '+8', icon: Brain, color: 'text-purple-600' },
-    { name: 'Images Generated', value: '8', change: '+2', icon: Image, color: 'text-green-600' },
-    { name: 'Avg SEO Score', value: '87', change: '+5', icon: TrendingUp, color: 'text-amber-600' },
+    {
+      name: "Pages Analyzed",
+      value: "12",
+      change: "+3",
+      icon: FileText,
+      color: "text-blue-600",
+    },
+    {
+      name: "AI Suggestions",
+      value: "24",
+      change: "+8",
+      icon: Brain,
+      color: "text-purple-600",
+    },
+    {
+      name: "Images Generated",
+      value: "8",
+      change: "+2",
+      icon: Image,
+      color: "text-green-600",
+    },
+    {
+      name: "Avg SEO Score",
+      value: "87",
+      change: "+5",
+      icon: TrendingUp,
+      color: "text-amber-600",
+    },
   ];
 
   const recentActivity = [
-    { action: 'Page analysis completed', page: 'O\'Hare Airport Limo', time: '2 hours ago', status: 'success' },
-    { action: 'Content generated', page: 'Midway Airport Service', time: '4 hours ago', status: 'success' },
-    { action: 'SEO recommendations', page: 'Downtown Chicago', time: '6 hours ago', status: 'pending' },
-    { action: 'Image optimization', page: 'Fleet Gallery', time: '8 hours ago', status: 'success' },
+    {
+      action: "Page analysis completed",
+      page: "O'Hare Airport Limo",
+      time: "2 hours ago",
+      status: "success",
+    },
+    {
+      action: "Content generated",
+      page: "Midway Airport Service",
+      time: "4 hours ago",
+      status: "success",
+    },
+    {
+      action: "SEO recommendations",
+      page: "Downtown Chicago",
+      time: "6 hours ago",
+      status: "pending",
+    },
+    {
+      action: "Image optimization",
+      page: "Fleet Gallery",
+      time: "8 hours ago",
+      status: "success",
+    },
   ];
 
   const systemStatus = [
-    { service: 'Page Analyzer', status: 'operational', uptime: '99.9%' },
-    { service: 'Content Generator', status: 'operational', uptime: '99.8%' },
-    { service: 'Image Generator', status: 'degraded', uptime: '95.2%' },
-    { service: 'Analytics Integration', status: 'operational', uptime: '99.7%' },
+    { service: "Page Analyzer", status: "operational", uptime: "99.9%" },
+    { service: "Content Generator", status: "operational", uptime: "99.8%" },
+    { service: "Image Generator", status: "degraded", uptime: "95.2%" },
+    {
+      service: "Analytics Integration",
+      status: "operational",
+      uptime: "99.7%",
+    },
   ];
 
   return (
@@ -69,7 +123,10 @@ export default function AdminDashboard() {
                 <CardContent>
                   <div className="flex items-end justify-between">
                     <div className="text-3xl font-bold">{stat.value}</div>
-                    <Badge variant="secondary" className="text-green-700 bg-green-50">
+                    <Badge
+                      variant="secondary"
+                      className="text-green-700 bg-green-50"
+                    >
                       {stat.change}
                     </Badge>
                   </div>
@@ -88,9 +145,7 @@ export default function AdminDashboard() {
                 <Zap className="h-5 w-5 text-amber-500" />
                 Quick Actions
               </CardTitle>
-              <CardDescription>
-                Common tasks and operations
-              </CardDescription>
+              <CardDescription>Common tasks and operations</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <Link href="/admin/analyze">
@@ -133,15 +188,18 @@ export default function AdminDashboard() {
               <div className="space-y-4">
                 {recentActivity.map((activity, index) => (
                   <div key={index} className="flex items-start gap-3">
-                    <div className={`mt-1 ${
-                      activity.status === 'success'
-                        ? 'text-green-600'
-                        : 'text-yellow-600'
-                    }`}>
-                      {activity.status === 'success'
-                        ? <CheckCircle className="h-4 w-4" />
-                        : <Clock className="h-4 w-4" />
-                      }
+                    <div
+                      className={`mt-1 ${
+                        activity.status === "success"
+                          ? "text-green-600"
+                          : "text-yellow-600"
+                      }`}
+                    >
+                      {activity.status === "success" ? (
+                        <CheckCircle className="h-4 w-4" />
+                      ) : (
+                        <Clock className="h-4 w-4" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-gray-900">
@@ -168,24 +226,31 @@ export default function AdminDashboard() {
               <Settings className="h-5 w-5 text-gray-500" />
               System Status
             </CardTitle>
-            <CardDescription>
-              AI services health and uptime
-            </CardDescription>
+            <CardDescription>AI services health and uptime</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {systemStatus.map((service) => (
-                <div key={service.service} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div
+                  key={service.service}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                >
                   <div className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${
-                      service.status === 'operational'
-                        ? 'bg-green-500'
-                        : 'bg-yellow-500'
-                    }`} />
+                    <div
+                      className={`w-2 h-2 rounded-full ${
+                        service.status === "operational"
+                          ? "bg-green-500"
+                          : "bg-yellow-500"
+                      }`}
+                    />
                     <div>
-                      <p className="font-medium text-gray-900">{service.service}</p>
+                      <p className="font-medium text-gray-900">
+                        {service.service}
+                      </p>
                       <p className="text-xs text-gray-500">
-                        {service.status === 'operational' ? 'Operational' : 'Degraded Performance'}
+                        {service.status === "operational"
+                          ? "Operational"
+                          : "Degraded Performance"}
                       </p>
                     </div>
                   </div>
@@ -205,26 +270,40 @@ export default function AdminDashboard() {
               <Clock className="h-5 w-5 text-purple-500" />
               Automation Schedule
             </CardTitle>
-            <CardDescription>
-              Scheduled AI tasks and jobs
-            </CardDescription>
+            <CardDescription>Scheduled AI tasks and jobs</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="font-semibold text-gray-900 mb-1">Daily Page Analysis</div>
-                <div className="text-sm text-gray-600 mb-2">Runs daily at 2:00 AM PST</div>
-                <Badge variant="secondary" className="text-xs">Active</Badge>
+                <div className="font-semibold text-gray-900 mb-1">
+                  Daily Page Analysis
+                </div>
+                <div className="text-sm text-gray-600 mb-2">
+                  Runs daily at 2:00 AM PST
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  Active
+                </Badge>
               </div>
               <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="font-semibold text-gray-900 mb-1">Weekly SEO Report</div>
-                <div className="text-sm text-gray-600 mb-2">Runs every Monday at 9:00 AM</div>
-                <Badge variant="secondary" className="text-xs">Active</Badge>
+                <div className="font-semibold text-gray-900 mb-1">
+                  Weekly SEO Report
+                </div>
+                <div className="text-sm text-gray-600 mb-2">
+                  Runs every Monday at 9:00 AM
+                </div>
+                <Badge variant="secondary" className="text-xs">
+                  Active
+                </Badge>
               </div>
               <div className="p-4 border border-gray-200 rounded-lg">
-                <div className="font-semibold text-gray-900 mb-1">Content Optimization</div>
+                <div className="font-semibold text-gray-900 mb-1">
+                  Content Optimization
+                </div>
                 <div className="text-sm text-gray-600 mb-2">Runs on demand</div>
-                <Badge variant="outline" className="text-xs">Manual</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Manual
+                </Badge>
               </div>
             </div>
           </CardContent>

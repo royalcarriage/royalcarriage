@@ -127,7 +127,13 @@ const memory: MemoryStore = {
   users: [],
 };
 
-const defaultSites: SiteKey[] = ["all", "airport", "partybus", "corporate", "wedding"];
+const defaultSites: SiteKey[] = [
+  "all",
+  "airport",
+  "partybus",
+  "corporate",
+  "wedding",
+];
 
 function withOrg<T extends Record<string, any>>(data: T): T {
   return { ...data, org: data.org || FALLBACK_ORG };
@@ -144,13 +150,19 @@ async function storeDoc<T extends Record<string, any>>(
   const data = stamp(withOrg(payload));
 
   if (db) {
-    await addDoc(collection(db, collectionName), { ...data, createdAt: serverTimestamp() });
+    await addDoc(collection(db, collectionName), {
+      ...data,
+      createdAt: serverTimestamp(),
+    });
     return data;
   }
 
   const bucket = memory[collectionName as keyof MemoryStore] as any[];
   if (bucket) {
-    bucket.unshift({ id: crypto.randomUUID?.() || Date.now().toString(), ...data });
+    bucket.unshift({
+      id: crypto.randomUUID?.() || Date.now().toString(),
+      ...data,
+    });
   }
   return data;
 }
@@ -167,7 +179,7 @@ async function listDocs<T>(
       orderBy(orderField, "desc"),
     );
     const snap = await getDocs(q);
-    return snap.docs.map((d) => ({ id: d.id, ...d.data() } as T));
+    return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as T);
   }
   const bucket = memory[collectionName as keyof MemoryStore] as any[];
   return bucket || [];
@@ -186,12 +198,20 @@ export async function signOutUser(authClient: Auth) {
   await googleSignOut(authClient);
 }
 
-export async function signInWithEmail(authClient: Auth, email: string, password: string) {
+export async function signInWithEmail(
+  authClient: Auth,
+  email: string,
+  password: string,
+) {
   const user = await emailSignIn(authClient, email, password);
   return user;
 }
 
-export async function registerWithEmail(authClient: Auth, email: string, password: string) {
+export async function registerWithEmail(
+  authClient: Auth,
+  email: string,
+  password: string,
+) {
   const user = await emailRegister(authClient, email, password);
   return user;
 }
@@ -224,7 +244,10 @@ export async function ensureUserProfile(user: User): Promise<UserProfile> {
       console.log("[DataStore] Created new user profile:", user.uid);
       return profile;
     } catch (error) {
-      console.warn("[DataStore] Firestore error, falling back to memory:", error);
+      console.warn(
+        "[DataStore] Firestore error, falling back to memory:",
+        error,
+      );
       // If Firestore fails, fall through to memory store
     }
   }
@@ -238,7 +261,10 @@ export async function ensureUserProfile(user: User): Promise<UserProfile> {
 
 export async function updateUserRole(uid: string, role: Role) {
   if (db) {
-    await updateDoc(doc(db, "users", uid), { role, updatedAt: serverTimestamp() });
+    await updateDoc(doc(db, "users", uid), {
+      role,
+      updatedAt: serverTimestamp(),
+    });
   } else {
     const user = memory.users.find((u) => u.uid === uid);
     if (user) user.role = role;
@@ -249,8 +275,11 @@ export async function listUsers(): Promise<UserProfile[]> {
   return listDocs<UserProfile>("users");
 }
 
-export async function recordImport(record: Omit<ImportRecord, "createdAt" | "org">) {
-  const collectionName = record.type === "moovs" ? "moovs_imports" : "ads_imports";
+export async function recordImport(
+  record: Omit<ImportRecord, "createdAt" | "org">,
+) {
+  const collectionName =
+    record.type === "moovs" ? "moovs_imports" : "ads_imports";
   return storeDoc<ImportRecord>(collectionName, {
     ...record,
     org: FALLBACK_ORG,
@@ -258,7 +287,9 @@ export async function recordImport(record: Omit<ImportRecord, "createdAt" | "org
   } as ImportRecord);
 }
 
-export async function listImports(type: "moovs" | "ads"): Promise<ImportRecord[]> {
+export async function listImports(
+  type: "moovs" | "ads",
+): Promise<ImportRecord[]> {
   const collectionName = type === "moovs" ? "moovs_imports" : "ads_imports";
   return listDocs<ImportRecord>(collectionName);
 }
@@ -292,7 +323,9 @@ export async function getSiteHealth(): Promise<SiteHealth[]> {
   return docs.length ? docs : memory.siteHealth;
 }
 
-export async function addSeoQueue(item: Omit<SeoQueueItem, "createdAt" | "org">) {
+export async function addSeoQueue(
+  item: Omit<SeoQueueItem, "createdAt" | "org">,
+) {
   return storeDoc<SeoQueueItem>("seo_topics", {
     ...item,
     createdAt: new Date().toISOString(),
@@ -316,7 +349,9 @@ export async function listSeoDrafts(): Promise<SeoDraft[]> {
   return listDocs<SeoDraft>("seo_drafts", FALLBACK_ORG, "updatedAt");
 }
 
-export async function addGateReport(report: Omit<GateReport, "createdAt" | "org">) {
+export async function addGateReport(
+  report: Omit<GateReport, "createdAt" | "org">,
+) {
   return storeDoc<GateReport>("seo_runs", {
     ...report,
     createdAt: new Date().toISOString(),
@@ -392,7 +427,10 @@ export async function saveSettings(
   };
 
   if (db) {
-    await setDoc(doc(db, "settings", FALLBACK_ORG), { ...data, updatedAt: serverTimestamp() });
+    await setDoc(doc(db, "settings", FALLBACK_ORG), {
+      ...data,
+      updatedAt: serverTimestamp(),
+    });
   } else {
     memory.settings = data;
   }
@@ -413,7 +451,9 @@ export async function runSelfAudit(): Promise<SelfAuditResult[]> {
   checks.push({
     name: "Firebase configuration",
     status: configOk ? "PASS" : "WARN",
-    detail: configOk ? "Client config detected" : "No client config; using mock store",
+    detail: configOk
+      ? "Client config detected"
+      : "No client config; using mock store",
   });
 
   const pagesOk = true;

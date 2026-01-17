@@ -7,9 +7,11 @@ This document defines the complete system architecture for Royal Carriage Limous
 ## System Overview
 
 ### Mission Statement
+
 Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform that manages dispatch operations, fleet management, driver coordination, affiliate partnerships, customer experiences, and complete business operations while maintaining 5 production domains with distinct branding and SEO optimization.
 
 ### Core Principles
+
 1. **Multi-Tenancy First**: Every feature designed for multi-company deployment
 2. **Zero-Downtime Operations**: All deployments must preserve production sites
 3. **Real-Time Everything**: Dispatch, tracking, notifications happen in real-time
@@ -21,6 +23,7 @@ Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform t
 ## Technology Stack
 
 ### Frontend Architecture
+
 - **Framework**: React 18+ with TypeScript
 - **UI Library**: Vision UI Dashboard React patterns (layout/components only)
 - **State Management**: Redux Toolkit + RTK Query
@@ -32,6 +35,7 @@ Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform t
 - **Styling**: Tailwind CSS + custom component library
 
 ### Backend Architecture
+
 - **Platform**: Firebase (Google Cloud Platform)
 - **Authentication**: Firebase Auth (email/password, Google, phone)
 - **Database**: Firestore (primary) + Realtime DB (real-time features)
@@ -42,6 +46,7 @@ Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform t
 - **Search**: Algolia for instant search experiences
 
 ### Infrastructure & DevOps
+
 - **Source Control**: Git with feature branch workflow
 - **CI/CD**: GitHub Actions or Cloud Build
 - **Environments**: Dev, Staging, Production
@@ -236,9 +241,11 @@ Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform t
 ## Core System Components
 
 ### 1. Multi-Tenant Engine
+
 **Purpose**: Enable multiple limousine companies to use the platform with complete data isolation.
 
 **Key Features**:
+
 - Tenant provisioning and configuration
 - Data isolation at database level
 - Custom branding per tenant
@@ -246,32 +253,35 @@ Transform Royal Carriage Limousine into a scalable, multi-tenant SaaS platform t
 - Tenant admin self-service
 
 **Data Model**:
+
 ```typescript
 interface Tenant {
-  id: string
-  name: string
-  slug: string // URL-safe identifier
-  domains: string[] // Custom domains
+  id: string;
+  name: string;
+  slug: string; // URL-safe identifier
+  domains: string[]; // Custom domains
   branding: {
-    logo: string
-    colors: { primary: string, secondary: string }
-    companyInfo: { phone: string, email: string, address: string }
-  }
-  features: string[] // Feature flags
+    logo: string;
+    colors: { primary: string; secondary: string };
+    companyInfo: { phone: string; email: string; address: string };
+  };
+  features: string[]; // Feature flags
   subscription: {
-    plan: 'free' | 'starter' | 'pro' | 'enterprise'
-    status: 'active' | 'suspended' | 'cancelled'
-    billingCycle: 'monthly' | 'annual'
-  }
-  created: Timestamp
-  updated: Timestamp
+    plan: "free" | "starter" | "pro" | "enterprise";
+    status: "active" | "suspended" | "cancelled";
+    billingCycle: "monthly" | "annual";
+  };
+  created: Timestamp;
+  updated: Timestamp;
 }
 ```
 
 ### 2. Authentication & Authorization System
+
 **Purpose**: Secure access control with role-based permissions.
 
 **Roles**:
+
 - **Super Admin**: Platform administrators (Royal Carriage staff)
 - **Tenant Admin**: Company owner/manager
 - **Dispatcher**: Manages bookings and driver assignments
@@ -282,29 +292,32 @@ interface Tenant {
 - **Customer**: Customer portal access
 
 **Permission Model**:
+
 ```typescript
 interface Permission {
-  resource: string // 'bookings', 'drivers', 'vehicles', etc.
-  actions: ('create' | 'read' | 'update' | 'delete')[]
+  resource: string; // 'bookings', 'drivers', 'vehicles', etc.
+  actions: ("create" | "read" | "update" | "delete")[];
   conditions?: {
-    field: string
-    operator: '==' | '!=' | 'in' | 'contains'
-    value: any
-  }[]
+    field: string;
+    operator: "==" | "!=" | "in" | "contains";
+    value: any;
+  }[];
 }
 
 interface Role {
-  id: string
-  name: string
-  permissions: Permission[]
-  tenantId: string
+  id: string;
+  name: string;
+  permissions: Permission[];
+  tenantId: string;
 }
 ```
 
 ### 3. Dispatch Management System
+
 **Purpose**: Central hub for managing ride requests, driver assignments, and real-time operations.
 
 **Core Workflows**:
+
 1. **Booking Creation**: Customer/dispatcher creates booking
 2. **Driver Assignment**: Auto-assign or manual dispatch
 3. **Driver Acceptance**: Driver accepts/rejects ride
@@ -314,6 +327,7 @@ interface Role {
 7. **Post-Ride**: Review, rating, invoice generation
 
 **Real-Time Features**:
+
 - Live driver locations on map
 - Real-time ride status updates
 - ETA calculations and updates
@@ -321,9 +335,11 @@ interface Role {
 - Dispatch board showing all active rides
 
 ### 4. Fleet Management System
+
 **Purpose**: Complete vehicle lifecycle management.
 
 **Key Features**:
+
 - Vehicle inventory (make, model, year, VIN, plates)
 - Vehicle types and classes (sedan, SUV, stretch limo, party bus)
 - Maintenance schedules and tracking
@@ -335,9 +351,11 @@ interface Role {
 - Vehicle-specific pricing rules
 
 ### 5. Driver Management System
+
 **Purpose**: Manage driver profiles, qualifications, performance, and compensation.
 
 **Key Features**:
+
 - Driver profiles (personal info, emergency contacts)
 - Document management (license, insurance, certifications)
 - Driver availability and scheduling
@@ -350,9 +368,11 @@ interface Role {
 - Training and certification tracking
 
 ### 6. Affiliate Partnership System
+
 **Purpose**: Manage partner companies that refer business or provide vehicles/drivers.
 
 **Key Features**:
+
 - Affiliate company profiles
 - Commission structure configuration
 - Ride attribution to affiliates
@@ -363,9 +383,11 @@ interface Role {
 - API access for affiliate integrations
 
 ### 7. Customer Management System
+
 **Purpose**: Comprehensive customer relationship management.
 
 **Key Features**:
+
 - Customer profiles with ride history
 - Saved payment methods
 - Favorite addresses (home, work, airport)
@@ -377,9 +399,11 @@ interface Role {
 - Customer communication history
 
 ### 8. Booking & Reservation System
+
 **Purpose**: Multi-channel booking with intelligent pricing and scheduling.
 
 **Booking Channels**:
+
 - Admin portal (dispatcher-created)
 - Customer portal (self-service)
 - Phone booking (call center integration)
@@ -387,6 +411,7 @@ interface Role {
 - API (third-party integrations)
 
 **Booking Types**:
+
 - Immediate/ASAP rides
 - Scheduled rides (future date/time)
 - Recurring rides (daily, weekly, monthly)
@@ -395,6 +420,7 @@ interface Role {
 - Events (weddings, proms, corporate)
 
 **Pricing Engine**:
+
 - Base rates by vehicle type
 - Distance-based pricing
 - Time-based pricing
@@ -404,15 +430,18 @@ interface Role {
 - Dynamic pricing based on demand
 
 ### 9. Payment & Invoicing System
+
 **Purpose**: Complete payment processing and invoice management.
 
 **Payment Methods**:
+
 - Credit/debit cards (Stripe)
 - Cash (driver collection)
 - Corporate accounts (NET-30)
 - Gift cards and credits
 
 **Payment Workflows**:
+
 - Pre-authorization (hold funds)
 - Capture on ride completion
 - Refund processing
@@ -421,6 +450,7 @@ interface Role {
 - Recurring billing for subscriptions
 
 **Invoicing**:
+
 - Automatic invoice generation
 - Email delivery
 - PDF export
@@ -429,9 +459,11 @@ interface Role {
 - Dunning for failed payments
 
 ### 10. Accounting & Financial System
+
 **Purpose**: Complete financial management with audit trails.
 
 **Key Features**:
+
 - Chart of accounts
 - General ledger
 - Revenue recognition
@@ -443,15 +475,18 @@ interface Role {
 - Integration with QuickBooks/Xero
 
 **Financial Data Requirements**:
+
 - Every transaction is immutable
 - Complete audit trail with user attribution
 - Week-close and month-close procedures
 - Reconciliation between rides, payments, and bank deposits
 
 ### 11. Driver & Affiliate Payroll System
+
 **Purpose**: Automated calculation and disbursement of driver and affiliate pay.
 
 **Driver Pay Calculation**:
+
 - Base pay per ride (percentage or flat rate)
 - Tips and gratuities
 - Deductions (vehicle rent, fuel, damages)
@@ -460,12 +495,14 @@ interface Role {
 - Per-diem allowances
 
 **Affiliate Pay Calculation**:
+
 - Commission percentage per ride
 - Tiered commission structures
 - Volume bonuses
 - Recurring commission for retained customers
 
 **Payroll Processing**:
+
 - Weekly or bi-weekly pay periods
 - Pay period close and finalization
 - Pay stub generation
@@ -474,10 +511,12 @@ interface Role {
 - W-2 preparation for employees
 
 ### 12. Marketing Website System (5 Domains)
+
 **Purpose**: SEO-optimized public websites for each service vertical.
 
 **Site Structure**:
 Each of the 5 domains has:
+
 - Homepage (hero, services, CTAs, testimonials)
 - Service pages (detailed service descriptions)
 - Fleet pages (vehicle galleries with specs)
@@ -489,6 +528,7 @@ Each of the 5 domains has:
 - Booking widget integration
 
 **SEO Features**:
+
 - Dynamic meta tags (title, description, Open Graph)
 - Structured data (JSON-LD for local business)
 - XML sitemap generation
@@ -499,9 +539,11 @@ Each of the 5 domains has:
 - Performance optimization (Core Web Vitals)
 
 ### 13. Blog & Content Management System
+
 **Purpose**: SEO-driven blog for all domains with admin control.
 
 **Key Features**:
+
 - Rich text editor (Markdown or WYSIWYG)
 - Category and tag management
 - Featured images
@@ -515,9 +557,11 @@ Each of the 5 domains has:
 - Analytics integration
 
 ### 14. Image Management System
+
 **Purpose**: Centralized asset management with AI-powered features.
 
 **Key Features**:
+
 - Image upload and storage
 - Image metadata (alt text, tags, SEO)
 - Image variants (thumbnail, medium, large)
@@ -530,9 +574,11 @@ Each of the 5 domains has:
 - Bulk operations (upload, tag, delete)
 
 ### 15. AI Copilot System
+
 **Purpose**: Intelligent assistants for dispatch, drivers, and customers.
 
 **Dispatch Copilot**:
+
 - Suggest optimal driver assignments
 - Predict ride demand
 - Alert to scheduling conflicts
@@ -540,6 +586,7 @@ Each of the 5 domains has:
 - Analyze historical patterns
 
 **Driver Copilot**:
+
 - Navigation assistance
 - Customer interaction tips
 - Earnings optimization suggestions
@@ -547,6 +594,7 @@ Each of the 5 domains has:
 - Performance feedback
 
 **Customer Chatbot**:
+
 - Answer common questions
 - Assist with booking
 - Provide ride status updates
@@ -554,15 +602,18 @@ Each of the 5 domains has:
 - Escalate to human when needed
 
 ### 16. Analytics & Reporting System
+
 **Purpose**: Comprehensive business intelligence and reporting.
 
 **Dashboard Metrics**:
+
 - Real-time: Active rides, available drivers, pending bookings
 - Daily: Revenue, rides completed, customer acquisition
 - Weekly: Driver performance, vehicle utilization, affiliate performance
 - Monthly: Financial summary, growth metrics, churn rate
 
 **Reports**:
+
 - Financial reports (revenue, expenses, profit)
 - Driver performance reports
 - Vehicle utilization reports
@@ -572,15 +623,18 @@ Each of the 5 domains has:
 - SEO performance reports
 
 **Export Formats**:
+
 - PDF (formatted reports)
 - CSV (data export)
 - Excel (with charts)
 - Google Sheets integration
 
 ### 17. Notification System
+
 **Purpose**: Multi-channel notifications for all user types.
 
 **Notification Types**:
+
 - Booking confirmations
 - Driver assignments
 - Ride status updates
@@ -591,21 +645,25 @@ Each of the 5 domains has:
 - Promotional messages
 
 **Channels**:
+
 - Email (transactional and marketing)
 - SMS (time-sensitive updates)
 - Push notifications (mobile apps)
 - In-app notifications (admin portal)
 
 **Preferences**:
+
 - User-configurable notification settings
 - Opt-in/opt-out per channel
 - Quiet hours
 - Notification frequency limits
 
 ### 18. Import & Data Migration System
+
 **Purpose**: Import data from legacy systems (Moovs CSV) with complete auditability.
 
 **Import Pipeline**:
+
 1. Upload CSV file
 2. Validate file format and schema
 3. Parse and map columns
@@ -617,6 +675,7 @@ Each of the 5 domains has:
 9. Store original file for audit
 
 **Import Types**:
+
 - Historical rides (one-time migration)
 - Ongoing rides (weekly/daily syncs)
 - Customer data
@@ -625,6 +684,7 @@ Each of the 5 domains has:
 - Payment data
 
 **Idempotency**:
+
 - Each import has unique ID
 - Track which records came from which import
 - Re-importing same file doesn't create duplicates
@@ -633,6 +693,7 @@ Each of the 5 domains has:
 ## Security Architecture
 
 ### Authentication Security
+
 - Multi-factor authentication (MFA) for admins
 - Session management with automatic timeout
 - Password complexity requirements
@@ -640,6 +701,7 @@ Each of the 5 domains has:
 - Password reset with email verification
 
 ### Data Security
+
 - Encryption at rest (Firestore default)
 - Encryption in transit (HTTPS/TLS)
 - Field-level encryption for sensitive data (SSN, payment info)
@@ -648,6 +710,7 @@ Each of the 5 domains has:
 - Right to deletion (user data export and delete)
 
 ### Firestore Security Rules
+
 - Tenant-scoped data access
 - Role-based read/write permissions
 - Field-level validation rules
@@ -655,6 +718,7 @@ Each of the 5 domains has:
 - No client-side writes to sensitive fields (balances, pay amounts)
 
 ### Cloud Functions Security
+
 - Service account with least privilege
 - Secrets stored in Secret Manager
 - Input validation and sanitization
@@ -662,6 +726,7 @@ Each of the 5 domains has:
 - Request authentication (Firebase Auth or API keys)
 
 ### Infrastructure Security
+
 - Firebase App Check (prevent unauthorized access)
 - Cloud Armor (DDoS protection)
 - reCAPTCHA on public forms
@@ -672,6 +737,7 @@ Each of the 5 domains has:
 ## Performance Architecture
 
 ### Frontend Performance
+
 - Code splitting (lazy load routes)
 - Tree shaking (eliminate unused code)
 - Image optimization (WebP, lazy loading, responsive images)
@@ -680,6 +746,7 @@ Each of the 5 domains has:
 - Lighthouse score targets: 90+ on all metrics
 
 ### Backend Performance
+
 - Firestore query optimization (composite indexes)
 - Realtime DB connection pooling
 - Cloud Function cold start optimization (min instances)
@@ -688,6 +755,7 @@ Each of the 5 domains has:
 - Background jobs for non-critical tasks
 
 ### Database Performance
+
 - Denormalization for read-heavy data
 - Composite indexes for complex queries
 - Pagination for large result sets
@@ -696,6 +764,7 @@ Each of the 5 domains has:
 - Regular index maintenance
 
 ### Scaling Strategy
+
 - Horizontal scaling via Firebase (automatic)
 - Cloud Function concurrency limits
 - Rate limiting per tenant
@@ -706,11 +775,13 @@ Each of the 5 domains has:
 ## Deployment Architecture
 
 ### Environments
+
 1. **Development**: Local emulators + dev Firebase project
 2. **Staging**: Full Firebase project mirroring production
 3. **Production**: Live Firebase project with 5 hosting targets
 
 ### CI/CD Pipeline
+
 ```
 Code Push → GitHub
     ↓
@@ -736,6 +807,7 @@ Notify Team
 ```
 
 ### Deployment Strategy
+
 - Blue-green deployments for functions
 - Gradual rollout for frontend (10% → 50% → 100%)
 - Database migrations run before deployment
@@ -743,6 +815,7 @@ Notify Team
 - Zero-downtime requirement
 
 ### Monitoring & Alerting
+
 - Uptime monitoring (Firebase Hosting status)
 - Error tracking (Sentry, Crashlytics)
 - Performance monitoring (Firebase Performance)
@@ -753,12 +826,14 @@ Notify Team
 ## Disaster Recovery & Business Continuity
 
 ### Backup Strategy
+
 - Automated Firestore exports (daily to Cloud Storage)
 - Realtime DB exports (daily)
 - Cloud Storage backups (versioning enabled)
 - Backup retention: 30 days rolling, 1 year monthly snapshots
 
 ### Recovery Procedures
+
 - Point-in-time recovery from Firestore exports
 - Restore from backup to new Firebase project
 - Data validation after recovery
@@ -766,6 +841,7 @@ Notify Team
 - RPO (Recovery Point Objective): 24 hours
 
 ### Incident Response
+
 - Incident severity levels (P0 = production down, P1 = degraded, P2 = minor)
 - Escalation paths
 - Incident commander role
@@ -775,12 +851,14 @@ Notify Team
 ## Compliance & Data Governance
 
 ### Regulatory Compliance
+
 - PCI DSS (payment card data handling)
 - GDPR (European user data)
 - CCPA (California user data)
 - SOC 2 Type II (future)
 
 ### Data Governance
+
 - Data classification (public, internal, confidential, restricted)
 - Data ownership (tenant-owned vs platform-owned)
 - Data lifecycle management
@@ -788,6 +866,7 @@ Notify Team
 - Master data management
 
 ### Audit & Compliance
+
 - Activity logging (who did what when)
 - Change management tracking
 - Access reviews (quarterly)
@@ -797,6 +876,7 @@ Notify Team
 ## Future Architecture Considerations
 
 ### Scalability Roadmap
+
 - Multi-region deployment (US-East, US-West, Europe)
 - CDN for global asset delivery
 - Database sharding by tenant
@@ -804,6 +884,7 @@ Notify Team
 - Event-driven architecture (Pub/Sub)
 
 ### Technology Evolution
+
 - GraphQL API layer (alternative to REST)
 - gRPC for internal service communication
 - Machine learning for demand prediction
@@ -811,6 +892,7 @@ Notify Team
 - IoT integration for vehicle telematics
 
 ### Feature Expansion
+
 - Mobile native apps (React Native)
 - Driver tablet app (in-vehicle display)
 - Kiosk mode for airport stands
@@ -822,53 +904,64 @@ Notify Team
 ## Architecture Decision Records (ADRs)
 
 ### ADR-001: Why Firebase vs Custom Backend
+
 **Decision**: Use Firebase as primary platform
 **Rationale**:
+
 - Faster time to market (managed services)
 - Built-in real-time capabilities
 - Auto-scaling without DevOps overhead
 - Strong security rules engine
 - Excellent mobile SDK support
-**Trade-offs**: Less control over infrastructure, vendor lock-in
+  **Trade-offs**: Less control over infrastructure, vendor lock-in
 
 ### ADR-002: Why Firestore + Realtime DB
+
 **Decision**: Use both Firestore and Realtime Database
 **Rationale**:
+
 - Firestore for structured data, complex queries
 - Realtime DB for live location tracking (lower latency)
 - Each optimized for specific use cases
-**Trade-offs**: Two databases to manage, security rules in both
+  **Trade-offs**: Two databases to manage, security rules in both
 
 ### ADR-003: Why Multi-Site Hosting vs Single SPA
+
 **Decision**: Use Firebase multi-site hosting for 5 domains
 **Rationale**:
+
 - Each domain independently deployable
 - SEO benefits of separate domains
 - Different branding per domain
 - Isolate failures per domain
-**Trade-offs**: More complex deployment, code duplication
+  **Trade-offs**: More complex deployment, code duplication
 
 ### ADR-004: Why Monorepo vs Multi-Repo
+
 **Decision**: Monorepo with shared packages
 **Rationale**:
+
 - Shared component library across sites
 - Atomic changes across frontend/backend
 - Easier refactoring
 - Single CI/CD pipeline
-**Trade-offs**: Larger repository, all-or-nothing deploys
+  **Trade-offs**: Larger repository, all-or-nothing deploys
 
 ### ADR-005: Why TypeScript Everywhere
+
 **Decision**: TypeScript for frontend and backend
 **Rationale**:
+
 - Type safety reduces bugs
 - Better IDE support
 - Self-documenting code
 - Easier refactoring
-**Trade-offs**: Learning curve, build step required
+  **Trade-offs**: Learning curve, build step required
 
 ## Success Metrics
 
 ### Technical Metrics
+
 - Uptime: 99.9% (43 minutes downtime/month max)
 - API Response Time: p95 < 500ms
 - Page Load Time: p95 < 2 seconds
@@ -877,6 +970,7 @@ Notify Team
 - Mean Time to Recovery (MTTR): < 1 hour
 
 ### Business Metrics
+
 - Time to onboard new tenant: < 1 day
 - Customer booking completion rate: > 85%
 - Driver acceptance rate: > 90%
@@ -890,6 +984,7 @@ This architecture provides a solid foundation for a scalable, secure, multi-tena
 Every component is designed to be independently deployable, testable, and maintainable. The architecture supports the business goals of Royal Carriage Limousine while enabling white-label deployment for other limousine companies.
 
 ---
+
 **Document Version**: 1.0
 **Last Updated**: 2026-01-16
 **Owner**: YOLO Autonomous Builder

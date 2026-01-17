@@ -216,6 +216,7 @@ WEBHOOK ENDPOINTS (HTTPS)
 ## Service Layer Architecture
 
 ### Firestore Sync Service
+
 - Real-time data subscriptions
 - Intelligent caching (5-10 min TTL)
 - Offline support with sync queue
@@ -223,9 +224,11 @@ WEBHOOK ENDPOINTS (HTTPS)
 - Performance monitoring
 
 **Files:**
+
 - `/src/services/integration/firestoreSync.ts`
 
 ### GA4 Integration Service
+
 - Event sending (Measurement Protocol)
 - Conversion tracking
 - Custom dimensions
@@ -233,10 +236,12 @@ WEBHOOK ENDPOINTS (HTTPS)
 - Batch processing
 
 **Files:**
+
 - `/src/services/integration/ga4Integration.ts`
 - `/src/services/ai/ga4Service.ts`
 
 ### Portal Auth Service
+
 - Unified Firebase Auth
 - Role-based access control
 - Multi-portal session management
@@ -244,15 +249,18 @@ WEBHOOK ENDPOINTS (HTTPS)
 - MFA support
 
 **Files:**
+
 - `/src/services/integration/portalAuth.ts`
 
 ### Webhook Manager
+
 - Signature verification
 - Event routing
 - Audit logging
 - Error handling and retry
 
 **Files:**
+
 - `/src/services/integration/webhookManager.ts`
 - `/functions/webhookHandler.ts`
 
@@ -418,18 +426,21 @@ reconciliation_reports/ (weekly audits)
 ## Security Architecture
 
 ### Firestore Rules
+
 - Role-based access control
 - Tenant isolation
 - Collection-level permissions
 - Real-time updates for authorized users only
 
 ### Firebase Auth
+
 - Email/password authentication
 - Multi-factor authentication (optional)
 - Role-based authorization
 - Session management
 
 ### Webhook Security
+
 - HMAC signature verification
 - Timestamp validation (5-minute window)
 - IP whitelisting (optional)
@@ -438,16 +449,19 @@ reconciliation_reports/ (weekly audits)
 ## Performance Optimization
 
 ### Caching Strategy
+
 - **Browser cache:** 5-10 minutes TTL
 - **Firestore:** Real-time subscriptions with lazy loading
 - **API responses:** Cached locally until invalidation
 
 ### Indexing
+
 - Compound indexes on frequently filtered collections
 - Auto-indexed by Firestore for simple queries
 - Manual index management for complex queries
 
 ### Pagination
+
 - Cursor-based pagination for large datasets
 - Limit queries to 100 items by default
 - Client-side lazy loading
@@ -455,18 +469,21 @@ reconciliation_reports/ (weekly audits)
 ## Monitoring & Logging
 
 ### Audit Trails
+
 - All imports logged in `moovs_imports`
 - All webhooks logged in `webhook_logs`
 - All syncs logged in `sync_logs`
 - All GA4 events logged locally
 
 ### Error Handling
+
 - Failed operations queued for retry
 - Exponential backoff for failed webhooks
 - Error notifications to admin dashboard
 - Detailed error logs in Firestore
 
 ### Metrics
+
 - Sync success rate
 - Average sync duration
 - Webhook processing latency
@@ -476,16 +493,19 @@ reconciliation_reports/ (weekly audits)
 ## Deployment
 
 ### Cloud Functions
+
 ```bash
 firebase deploy --only functions
 ```
 
 ### Firestore Security Rules
+
 ```bash
 firebase deploy --only firestore:rules
 ```
 
 ### Website Updates
+
 ```bash
 firebase deploy --only hosting
 ```
@@ -493,16 +513,19 @@ firebase deploy --only hosting
 ## Testing & Validation
 
 ### Unit Tests
+
 - Service layer functions
 - Data transformation
 - Validation logic
 
 ### Integration Tests
+
 - End-to-end workflows
 - Cross-service communication
 - Data consistency
 
 ### E2E Tests
+
 - User portal flows
 - Booking creation to revenue tracking
 - Content generation pipeline

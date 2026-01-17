@@ -8,8 +8,8 @@
  * - Comprehensive audit logging
  */
 
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 import {
   Role,
   Roles,
@@ -19,14 +19,14 @@ import {
   RolePermissions,
   getPermissionsForRole,
   RoleHierarchy,
-} from './rbac/permissions';
+} from "./rbac/permissions";
 import {
   verifyAuthAndGetUser,
   hasPermission,
   canAccessOrganization,
   PermissionDeniedError,
   AuthenticationError,
-} from './rbac/guards';
+} from "./rbac/guards";
 
 // Initialize Firebase Admin if not already initialized
 if (!admin.apps.length) {
@@ -61,7 +61,7 @@ interface AIChatResponse {
 }
 
 interface ChatMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: admin.firestore.Timestamp;
   model?: string;
@@ -93,32 +93,38 @@ interface ExecuteCommandResponse {
 
 // Sensitive field definitions by collection
 const SENSITIVE_FIELDS: Record<string, string[]> = {
-  users: ['password', 'passwordHash', 'apiKey', 'secretKey', 'ssn', 'taxId'],
-  organizations: ['apiKey', 'secretKey', 'stripeKey', 'webhookSecret'],
-  bookings: ['creditCard', 'cvv', 'cardNumber', 'paymentToken'],
-  drivers: ['ssn', 'licenseNumber', 'bankAccount', 'routingNumber'],
-  accounting: ['accountNumber', 'taxId', 'bankDetails'],
+  users: ["password", "passwordHash", "apiKey", "secretKey", "ssn", "taxId"],
+  organizations: ["apiKey", "secretKey", "stripeKey", "webhookSecret"],
+  bookings: ["creditCard", "cvv", "cardNumber", "paymentToken"],
+  drivers: ["ssn", "licenseNumber", "bankAccount", "routingNumber"],
+  accounting: ["accountNumber", "taxId", "bankDetails"],
 };
 
 // Data access levels by role
 const ROLE_DATA_ACCESS: Record<Role, string[]> = {
-  dispatcher: ['vehicles', 'drivers', 'bookings_basic', 'assignments'],
-  accountant: ['accounting', 'receipts', 'refunds', 'drivers_basic'],
-  fleet_manager: ['vehicles', 'drivers', 'assignments', 'vehicle_issues', 'fleet'],
-  admin: [
-    'users',
-    'vehicles',
-    'drivers',
-    'bookings',
-    'accounting',
-    'receipts',
-    'refunds',
-    'assignments',
-    'vehicle_issues',
-    'fleet',
-    'organization',
+  dispatcher: ["vehicles", "drivers", "bookings_basic", "assignments"],
+  accountant: ["accounting", "receipts", "refunds", "drivers_basic"],
+  fleet_manager: [
+    "vehicles",
+    "drivers",
+    "assignments",
+    "vehicle_issues",
+    "fleet",
   ],
-  saas_admin: ['*'], // Full access
+  admin: [
+    "users",
+    "vehicles",
+    "drivers",
+    "bookings",
+    "accounting",
+    "receipts",
+    "refunds",
+    "assignments",
+    "vehicle_issues",
+    "fleet",
+    "organization",
+  ],
+  saas_admin: ["*"], // Full access
 };
 
 // ============================================
@@ -133,16 +139,18 @@ function generateSystemPrompt(user: User): string {
   const dataAccess = ROLE_DATA_ACCESS[user.role];
 
   const roleDescriptions: Record<Role, string> = {
-    dispatcher: 'a dispatcher who manages vehicle assignments and scheduling',
-    accountant: 'an accountant who handles financial records and receipts',
-    fleet_manager: 'a fleet manager who oversees vehicles, drivers, and maintenance',
-    admin: 'an organization administrator with full access to organization data',
-    saas_admin: 'a SaaS platform administrator with full system access',
+    dispatcher: "a dispatcher who manages vehicle assignments and scheduling",
+    accountant: "an accountant who handles financial records and receipts",
+    fleet_manager:
+      "a fleet manager who oversees vehicles, drivers, and maintenance",
+    admin:
+      "an organization administrator with full access to organization data",
+    saas_admin: "a SaaS platform administrator with full system access",
   };
 
-  const roleDescription = roleDescriptions[user.role] || 'a platform user';
+  const roleDescription = roleDescriptions[user.role] || "a platform user";
 
-  let prompt = `You are an AI assistant for Royal Carriage Limousine, a luxury transportation company.
+  const prompt = `You are an AI assistant for Royal Carriage Limousine, a luxury transportation company.
 You are currently assisting ${user.displayName || user.email}, who is ${roleDescription}.
 
 User Details:
@@ -151,10 +159,10 @@ User Details:
 - Email: ${user.email}
 
 The user has the following permissions:
-${permissions.map((p) => `- ${p}`).join('\n')}
+${permissions.map((p) => `- ${p}`).join("\n")}
 
 Data Access:
-${dataAccess.includes('*') ? '- Full access to all data' : dataAccess.map((d) => `- ${d}`).join('\n')}
+${dataAccess.includes("*") ? "- Full access to all data" : dataAccess.map((d) => `- ${d}`).join("\n")}
 
 IMPORTANT RESTRICTIONS:
 1. Only provide information the user is authorized to access based on their role.
@@ -181,12 +189,12 @@ Be helpful, professional, and always respect the permission boundaries.`;
 function redactSensitiveData(
   data: Record<string, unknown>,
   collection: string,
-  userRole: Role
+  userRole: Role,
 ): { data: Record<string, unknown>; redactedFields: string[] } {
   const redactedFields: string[] = [];
 
   // SaaS admin sees everything
-  if (userRole === 'saas_admin') {
+  if (userRole === "saas_admin") {
     return { data, redactedFields: [] };
   }
 
@@ -197,16 +205,16 @@ function redactSensitiveData(
 
   for (const field of fieldsToRedact) {
     if (field in redactedData) {
-      redactedData[field] = '[REDACTED]';
+      redactedData[field] = "[REDACTED]";
       redactedFields.push(field);
     }
 
     // Handle nested objects
     for (const key of Object.keys(redactedData)) {
-      if (typeof redactedData[key] === 'object' && redactedData[key] !== null) {
+      if (typeof redactedData[key] === "object" && redactedData[key] !== null) {
         const nested = redactedData[key] as Record<string, unknown>;
         if (field in nested) {
-          nested[field] = '[REDACTED]';
+          nested[field] = "[REDACTED]";
           redactedFields.push(`${key}.${field}`);
         }
       }
@@ -222,12 +230,12 @@ function redactSensitiveData(
 function canAccessCollection(user: User, collection: string): boolean {
   const accessibleCollections = ROLE_DATA_ACCESS[user.role];
 
-  if (accessibleCollections.includes('*')) {
+  if (accessibleCollections.includes("*")) {
     return true;
   }
 
   return accessibleCollections.some(
-    (c) => c === collection || collection.startsWith(c.replace('_basic', ''))
+    (c) => c === collection || collection.startsWith(c.replace("_basic", "")),
   );
 }
 
@@ -240,9 +248,9 @@ async function logAIInteraction(
   organizationId: string,
   action: string,
   details: Record<string, unknown>,
-  status: 'success' | 'denied' | 'error'
+  status: "success" | "denied" | "error",
 ): Promise<string> {
-  const logRef = await db.collection('ai_audit_log').add({
+  const logRef = await db.collection("ai_audit_log").add({
     userId,
     userRole,
     organizationId,
@@ -250,7 +258,7 @@ async function logAIInteraction(
     details,
     status,
     timestamp: admin.firestore.Timestamp.now(),
-    ipAddress: 'server-side',
+    ipAddress: "server-side",
   });
 
   return logRef.id;
@@ -263,12 +271,13 @@ async function generateAIResponse(
   message: string,
   systemPrompt: string,
   history: ChatMessage[],
-  model: string
+  model: string,
 ): Promise<{ response: string; tokens: number }> {
   try {
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-    const apiKey = process.env.GEMINI_API_KEY || functions.config().gemini?.api_key;
+    const apiKey =
+      process.env.GEMINI_API_KEY || functions.config().gemini?.api_key;
     if (!apiKey) {
       return generateLocalResponse(message, systemPrompt);
     }
@@ -278,16 +287,16 @@ async function generateAIResponse(
 
     // Build conversation context
     const contextMessages = history.slice(-10).map((msg) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
+      role: msg.role === "user" ? "user" : "model",
       parts: [{ text: msg.content }],
     }));
 
     // Start chat with system prompt and history
     const chat = geminiModel.startChat({
       history: [
-        { role: 'user', parts: [{ text: systemPrompt }] },
+        { role: "user", parts: [{ text: systemPrompt }] },
         {
-          role: 'model',
+          role: "model",
           parts: [
             {
               text: "Understood. I'm ready to assist while respecting the user's role and permissions.",
@@ -304,7 +313,7 @@ async function generateAIResponse(
 
     return { response, tokens };
   } catch (error: unknown) {
-    console.error('Gemini API error:', error);
+    console.error("Gemini API error:", error);
     return generateLocalResponse(message, systemPrompt);
   }
 }
@@ -314,19 +323,22 @@ async function generateAIResponse(
  */
 function generateLocalResponse(
   message: string,
-  _systemPrompt: string
+  _systemPrompt: string,
 ): { response: string; tokens: number } {
   const lowerMessage = message.toLowerCase();
 
-  let response = '';
+  let response = "";
 
-  if (lowerMessage.includes('permission') || lowerMessage.includes('access')) {
+  if (lowerMessage.includes("permission") || lowerMessage.includes("access")) {
     response = `Your current role determines what data and features you can access.
 
 If you need access to additional features, please contact your organization administrator.
 
 I can help you with tasks within your current permission scope. What would you like to do?`;
-  } else if (lowerMessage.includes('help') || lowerMessage.includes('what can you do')) {
+  } else if (
+    lowerMessage.includes("help") ||
+    lowerMessage.includes("what can you do")
+  ) {
     response = `I'm your AI assistant for Royal Carriage. Based on your role, I can help you with:
 
 - Answering questions about the platform
@@ -335,7 +347,7 @@ I can help you with tasks within your current permission scope. What would you l
 - Providing guidance on using available features
 
 What would you like help with?`;
-  } else if (lowerMessage.includes('data') || lowerMessage.includes('report')) {
+  } else if (lowerMessage.includes("data") || lowerMessage.includes("report")) {
     response = `I can help you with data and reports within your access level.
 
 Please specify:
@@ -364,7 +376,10 @@ export const processAIChatMessage = functions.https.onCall(
   async (data: AIChatRequest, context): Promise<AIChatResponse> => {
     // Verify authentication
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication required",
+      );
     }
 
     let user: User;
@@ -372,9 +387,12 @@ export const processAIChatMessage = functions.https.onCall(
       user = await verifyAuthAndGetUser(`Bearer ${context.auth.token}`);
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication failed');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication failed",
+      );
     }
 
     // Check AI chat access permission
@@ -383,21 +401,33 @@ export const processAIChatMessage = functions.https.onCall(
         user.uid,
         user.role,
         user.organizationId,
-        'chat_message',
+        "chat_message",
         { message: data.message.substring(0, 100) },
-        'denied'
+        "denied",
       );
 
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'You do not have permission to use AI chat'
+        "permission-denied",
+        "You do not have permission to use AI chat",
       );
     }
 
-    const { message, conversationId, model = 'gemini-pro', context: msgContext } = data;
+    const {
+      message,
+      conversationId,
+      model = "gemini-pro",
+      context: msgContext,
+    } = data;
 
-    if (!message || typeof message !== 'string' || message.trim().length === 0) {
-      throw new functions.https.HttpsError('invalid-argument', 'Message is required');
+    if (
+      !message ||
+      typeof message !== "string" ||
+      message.trim().length === 0
+    ) {
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Message is required",
+      );
     }
 
     let activeConversationId = conversationId;
@@ -407,13 +437,16 @@ export const processAIChatMessage = functions.https.onCall(
     try {
       // Load or create conversation
       if (conversationId) {
-        const convDoc = await db.collection('ai_conversations').doc(conversationId).get();
+        const convDoc = await db
+          .collection("ai_conversations")
+          .doc(conversationId)
+          .get();
         if (convDoc.exists && convDoc.data()?.userId === user.uid) {
           const messagesSnap = await db
-            .collection('ai_conversations')
+            .collection("ai_conversations")
             .doc(conversationId)
-            .collection('messages')
-            .orderBy('timestamp', 'desc')
+            .collection("messages")
+            .orderBy("timestamp", "desc")
             .limit(10)
             .get();
 
@@ -425,12 +458,12 @@ export const processAIChatMessage = functions.https.onCall(
 
       // Create new conversation if needed
       if (!activeConversationId) {
-        const newConv = await db.collection('ai_conversations').add({
+        const newConv = await db.collection("ai_conversations").add({
           userId: user.uid,
           userEmail: user.email,
           userRole: user.role,
           organizationId: user.organizationId,
-          title: message.substring(0, 50) + (message.length > 50 ? '...' : ''),
+          title: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
           lastMessage: message.substring(0, 100),
           messageCount: 0,
           timestamp: admin.firestore.Timestamp.now(),
@@ -444,15 +477,15 @@ export const processAIChatMessage = functions.https.onCall(
         msgContext?.targetCollection &&
         !canAccessCollection(user, msgContext.targetCollection)
       ) {
-        const deniedResponse = `I apologize, but you don't have permission to access data in the "${msgContext.targetCollection}" collection. Your role (${user.role}) has access to: ${ROLE_DATA_ACCESS[user.role].join(', ')}.`;
+        const deniedResponse = `I apologize, but you don't have permission to access data in the "${msgContext.targetCollection}" collection. Your role (${user.role}) has access to: ${ROLE_DATA_ACCESS[user.role].join(", ")}.`;
 
         // Save denied response
         await db
-          .collection('ai_conversations')
+          .collection("ai_conversations")
           .doc(activeConversationId)
-          .collection('messages')
+          .collection("messages")
           .add({
-            role: 'user',
+            role: "user",
             content: message,
             timestamp: admin.firestore.Timestamp.now(),
             userId: user.uid,
@@ -460,30 +493,33 @@ export const processAIChatMessage = functions.https.onCall(
           });
 
         await db
-          .collection('ai_conversations')
+          .collection("ai_conversations")
           .doc(activeConversationId)
-          .collection('messages')
+          .collection("messages")
           .add({
-            role: 'assistant',
+            role: "assistant",
             content: deniedResponse,
             timestamp: admin.firestore.Timestamp.now(),
-            model: 'permission-check',
+            model: "permission-check",
           });
 
         await logAIInteraction(
           user.uid,
           user.role,
           user.organizationId,
-          'chat_data_access_denied',
-          { collection: msgContext.targetCollection, message: message.substring(0, 100) },
-          'denied'
+          "chat_data_access_denied",
+          {
+            collection: msgContext.targetCollection,
+            message: message.substring(0, 100),
+          },
+          "denied",
         );
 
         return {
           response: deniedResponse,
           tokens: 0,
           conversationId: activeConversationId,
-          model: 'permission-check',
+          model: "permission-check",
           permissions: getPermissionsForRole(user.role),
           dataRedacted: false,
         };
@@ -497,7 +533,7 @@ export const processAIChatMessage = functions.https.onCall(
         message,
         systemPrompt,
         conversationHistory,
-        model
+        model,
       );
 
       // Check if response contains potential sensitive data and redact
@@ -511,18 +547,18 @@ export const processAIChatMessage = functions.https.onCall(
       let finalResponse = response;
       for (const pattern of sensitivePatterns) {
         if (pattern.test(finalResponse)) {
-          finalResponse = finalResponse.replace(pattern, '[REDACTED]');
+          finalResponse = finalResponse.replace(pattern, "[REDACTED]");
           dataRedacted = true;
         }
       }
 
       // Save user message
       await db
-        .collection('ai_conversations')
+        .collection("ai_conversations")
         .doc(activeConversationId)
-        .collection('messages')
+        .collection("messages")
         .add({
-          role: 'user',
+          role: "user",
           content: message,
           timestamp: admin.firestore.Timestamp.now(),
           userId: user.uid,
@@ -531,11 +567,11 @@ export const processAIChatMessage = functions.https.onCall(
 
       // Save AI response
       await db
-        .collection('ai_conversations')
+        .collection("ai_conversations")
         .doc(activeConversationId)
-        .collection('messages')
+        .collection("messages")
         .add({
-          role: 'assistant',
+          role: "assistant",
           content: finalResponse,
           timestamp: admin.firestore.Timestamp.now(),
           model,
@@ -544,25 +580,28 @@ export const processAIChatMessage = functions.https.onCall(
         });
 
       // Update conversation metadata
-      await db.collection('ai_conversations').doc(activeConversationId).update({
-        lastMessage: finalResponse.substring(0, 100),
-        messageCount: admin.firestore.FieldValue.increment(2),
-        timestamp: admin.firestore.Timestamp.now(),
-      });
+      await db
+        .collection("ai_conversations")
+        .doc(activeConversationId)
+        .update({
+          lastMessage: finalResponse.substring(0, 100),
+          messageCount: admin.firestore.FieldValue.increment(2),
+          timestamp: admin.firestore.Timestamp.now(),
+        });
 
       // Log successful interaction
       await logAIInteraction(
         user.uid,
         user.role,
         user.organizationId,
-        'chat_message',
+        "chat_message",
         {
           conversationId: activeConversationId,
           tokens,
           model,
           redacted: dataRedacted,
         },
-        'success'
+        "success",
       );
 
       return {
@@ -574,26 +613,26 @@ export const processAIChatMessage = functions.https.onCall(
         dataRedacted,
       };
     } catch (error: unknown) {
-      console.error('AI Chat error:', error);
+      console.error("AI Chat error:", error);
 
       await logAIInteraction(
         user.uid,
         user.role,
         user.organizationId,
-        'chat_message',
+        "chat_message",
         {
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : "Unknown error",
           message: message.substring(0, 100),
         },
-        'error'
+        "error",
       );
 
       throw new functions.https.HttpsError(
-        'internal',
-        `Chat failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+        "internal",
+        `Chat failed: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
-  }
+  },
 );
 
 /**
@@ -602,13 +641,16 @@ export const processAIChatMessage = functions.https.onCall(
 export const getAIChatHistory = functions.https.onCall(
   async (
     data: ChatHistoryRequest,
-    context
+    context,
   ): Promise<{
     conversations: unknown[];
     messages?: unknown[];
   }> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication required",
+      );
     }
 
     let user: User;
@@ -616,36 +658,49 @@ export const getAIChatHistory = functions.https.onCall(
       user = await verifyAuthAndGetUser(`Bearer ${context.auth.token}`);
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication failed');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication failed",
+      );
     }
 
     if (!hasPermission(user, Permissions.AI_CHAT_ACCESS)) {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'You do not have permission to access AI chat history'
+        "permission-denied",
+        "You do not have permission to access AI chat history",
       );
     }
 
-    const { limit: queryLimit = 20, conversationId, includeSystemMessages = false } = data;
+    const {
+      limit: queryLimit = 20,
+      conversationId,
+      includeSystemMessages = false,
+    } = data;
 
     try {
       // If specific conversation requested
       if (conversationId) {
-        const convDoc = await db.collection('ai_conversations').doc(conversationId).get();
+        const convDoc = await db
+          .collection("ai_conversations")
+          .doc(conversationId)
+          .get();
 
         if (!convDoc.exists) {
-          throw new functions.https.HttpsError('not-found', 'Conversation not found');
+          throw new functions.https.HttpsError(
+            "not-found",
+            "Conversation not found",
+          );
         }
 
         const convData = convDoc.data();
 
         // Check ownership or saas_admin access
-        if (convData?.userId !== user.uid && user.role !== 'saas_admin') {
+        if (convData?.userId !== user.uid && user.role !== "saas_admin") {
           throw new functions.https.HttpsError(
-            'permission-denied',
-            'Cannot access this conversation'
+            "permission-denied",
+            "Cannot access this conversation",
           );
         }
 
@@ -655,20 +710,20 @@ export const getAIChatHistory = functions.https.onCall(
           !canAccessOrganization(user, convData?.organizationId)
         ) {
           throw new functions.https.HttpsError(
-            'permission-denied',
-            'Cannot access conversations from other organizations'
+            "permission-denied",
+            "Cannot access conversations from other organizations",
           );
         }
 
         // Get messages
         let messagesQuery = db
-          .collection('ai_conversations')
+          .collection("ai_conversations")
           .doc(conversationId)
-          .collection('messages')
-          .orderBy('timestamp', 'asc');
+          .collection("messages")
+          .orderBy("timestamp", "asc");
 
         if (!includeSystemMessages) {
-          messagesQuery = messagesQuery.where('role', '!=', 'system');
+          messagesQuery = messagesQuery.where("role", "!=", "system");
         }
 
         const messagesSnap = await messagesQuery.get();
@@ -692,21 +747,22 @@ export const getAIChatHistory = functions.https.onCall(
       }
 
       // Get all conversations for user
-      let conversationsQuery: FirebaseFirestore.Query = db.collection('ai_conversations');
+      let conversationsQuery: FirebaseFirestore.Query =
+        db.collection("ai_conversations");
 
       // SaaS admin can see all conversations in all organizations
       // Admin can see all conversations in their organization
       // Other roles can only see their own conversations
-      if (user.role === 'saas_admin') {
-        conversationsQuery = conversationsQuery.orderBy('timestamp', 'desc');
-      } else if (user.role === 'admin') {
+      if (user.role === "saas_admin") {
+        conversationsQuery = conversationsQuery.orderBy("timestamp", "desc");
+      } else if (user.role === "admin") {
         conversationsQuery = conversationsQuery
-          .where('organizationId', '==', user.organizationId)
-          .orderBy('timestamp', 'desc');
+          .where("organizationId", "==", user.organizationId)
+          .orderBy("timestamp", "desc");
       } else {
         conversationsQuery = conversationsQuery
-          .where('userId', '==', user.uid)
-          .orderBy('timestamp', 'desc');
+          .where("userId", "==", user.uid)
+          .orderBy("timestamp", "desc");
       }
 
       conversationsQuery = conversationsQuery.limit(Math.min(queryLimit, 50));
@@ -726,9 +782,9 @@ export const getAIChatHistory = functions.https.onCall(
         user.uid,
         user.role,
         user.organizationId,
-        'get_chat_history',
+        "get_chat_history",
         { count: conversations.length },
-        'success'
+        "success",
       );
 
       return { conversations };
@@ -737,22 +793,28 @@ export const getAIChatHistory = functions.https.onCall(
         throw error;
       }
 
-      console.error('Get AI chat history error:', error);
+      console.error("Get AI chat history error:", error);
       throw new functions.https.HttpsError(
-        'internal',
-        `Failed to get chat history: ${error instanceof Error ? error.message : 'Unknown error'}`
+        "internal",
+        `Failed to get chat history: ${error instanceof Error ? error.message : "Unknown error"}`,
       );
     }
-  }
+  },
 );
 
 /**
  * Execute AI command with permission checks
  */
 export const executeAICommand = functions.https.onCall(
-  async (data: ExecuteCommandRequest, context): Promise<ExecuteCommandResponse> => {
+  async (
+    data: ExecuteCommandRequest,
+    context,
+  ): Promise<ExecuteCommandResponse> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication required",
+      );
     }
 
     let user: User;
@@ -760,9 +822,12 @@ export const executeAICommand = functions.https.onCall(
       user = await verifyAuthAndGetUser(`Bearer ${context.auth.token}`);
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication failed');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication failed",
+      );
     }
 
     // Check AI chat access
@@ -771,14 +836,14 @@ export const executeAICommand = functions.https.onCall(
         user.uid,
         user.role,
         user.organizationId,
-        'execute_command',
+        "execute_command",
         { command: data.command },
-        'denied'
+        "denied",
       );
 
       return {
         success: false,
-        error: 'You do not have permission to execute AI commands',
+        error: "You do not have permission to execute AI commands",
         auditLogId,
       };
     }
@@ -786,60 +851,60 @@ export const executeAICommand = functions.https.onCall(
     const { command, parameters = {}, targetOrganizationId } = data;
 
     // Check organization access if specified
-    if (targetOrganizationId && !canAccessOrganization(user, targetOrganizationId)) {
+    if (
+      targetOrganizationId &&
+      !canAccessOrganization(user, targetOrganizationId)
+    ) {
       const auditLogId = await logAIInteraction(
         user.uid,
         user.role,
         user.organizationId,
-        'execute_command',
+        "execute_command",
         { command, targetOrganization: targetOrganizationId },
-        'denied'
+        "denied",
       );
 
       return {
         success: false,
-        error: 'You do not have permission to access this organization',
+        error: "You do not have permission to access this organization",
         auditLogId,
       };
     }
 
     try {
       let result: unknown;
-      let redactedFields: string[] = [];
+      const redactedFields: string[] = [];
 
       // Command router with permission checks
       switch (command) {
-        case 'view_users': {
+        case "view_users": {
           if (!hasPermission(user, Permissions.USERS_VIEW)) {
             const auditLogId = await logAIInteraction(
               user.uid,
               user.role,
               user.organizationId,
-              'execute_command',
+              "execute_command",
               { command },
-              'denied'
+              "denied",
             );
             return {
               success: false,
-              error: 'Permission denied: Cannot view users',
+              error: "Permission denied: Cannot view users",
               auditLogId,
             };
           }
 
           const orgId = targetOrganizationId || user.organizationId;
           const usersSnap = await db
-            .collection('users')
-            .where('organizationId', '==', orgId)
-            .where('isActive', '==', true)
+            .collection("users")
+            .where("organizationId", "==", orgId)
+            .where("isActive", "==", true)
             .get();
 
           const users = usersSnap.docs.map((doc) => {
             const userData = doc.data();
-            const { data: redacted, redactedFields: fields } = redactSensitiveData(
-              userData,
-              'users',
-              user.role
-            );
+            const { data: redacted, redactedFields: fields } =
+              redactSensitiveData(userData, "users", user.role);
             if (fields.length > 0) redactedFields.push(...fields);
             return { id: doc.id, ...redacted };
           });
@@ -848,41 +913,44 @@ export const executeAICommand = functions.https.onCall(
           break;
         }
 
-        case 'view_vehicles': {
+        case "view_vehicles": {
           if (!hasPermission(user, Permissions.VEHICLES_VIEW)) {
             const auditLogId = await logAIInteraction(
               user.uid,
               user.role,
               user.organizationId,
-              'execute_command',
+              "execute_command",
               { command },
-              'denied'
+              "denied",
             );
             return {
               success: false,
-              error: 'Permission denied: Cannot view vehicles',
+              error: "Permission denied: Cannot view vehicles",
               auditLogId,
             };
           }
 
-          const vehiclesSnap = await db.collection('vehicles').get();
-          result = vehiclesSnap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          const vehiclesSnap = await db.collection("vehicles").get();
+          result = vehiclesSnap.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
           break;
         }
 
-        case 'view_accounting': {
+        case "view_accounting": {
           if (!hasPermission(user, Permissions.ACCOUNTING_VIEW)) {
             const auditLogId = await logAIInteraction(
               user.uid,
               user.role,
               user.organizationId,
-              'execute_command',
+              "execute_command",
               { command },
-              'denied'
+              "denied",
             );
             return {
               success: false,
-              error: 'Permission denied: Cannot view accounting data',
+              error: "Permission denied: Cannot view accounting data",
               auditLogId,
             };
           }
@@ -890,23 +958,21 @@ export const executeAICommand = functions.https.onCall(
           const startDate = parameters.startDate as string;
           const endDate = parameters.endDate as string;
 
-          let accountingQuery: FirebaseFirestore.Query = db.collection('accounting');
+          let accountingQuery: FirebaseFirestore.Query =
+            db.collection("accounting");
 
           if (startDate) {
-            accountingQuery = accountingQuery.where('date', '>=', startDate);
+            accountingQuery = accountingQuery.where("date", ">=", startDate);
           }
           if (endDate) {
-            accountingQuery = accountingQuery.where('date', '<=', endDate);
+            accountingQuery = accountingQuery.where("date", "<=", endDate);
           }
 
           const accountingSnap = await accountingQuery.limit(100).get();
           const accountingData = accountingSnap.docs.map((doc) => {
             const data = doc.data();
-            const { data: redacted, redactedFields: fields } = redactSensitiveData(
-              data,
-              'accounting',
-              user.role
-            );
+            const { data: redacted, redactedFields: fields } =
+              redactSensitiveData(data, "accounting", user.role);
             if (fields.length > 0) redactedFields.push(...fields);
             return { id: doc.id, ...redacted };
           });
@@ -915,7 +981,7 @@ export const executeAICommand = functions.https.onCall(
           break;
         }
 
-        case 'run_report': {
+        case "run_report": {
           const reportType = parameters.type as string;
 
           // Check report-specific permissions
@@ -932,9 +998,9 @@ export const executeAICommand = functions.https.onCall(
               user.uid,
               user.role,
               user.organizationId,
-              'execute_command',
+              "execute_command",
               { command, reportType },
-              'denied'
+              "denied",
             );
             return {
               success: false,
@@ -954,35 +1020,33 @@ export const executeAICommand = functions.https.onCall(
           break;
         }
 
-        case 'view_organizations': {
+        case "view_organizations": {
           if (!hasPermission(user, Permissions.SAAS_VIEW_ALL_ORGANIZATIONS)) {
             const auditLogId = await logAIInteraction(
               user.uid,
               user.role,
               user.organizationId,
-              'execute_command',
+              "execute_command",
               { command },
-              'denied'
+              "denied",
             );
             return {
               success: false,
-              error: 'Permission denied: Only SaaS administrators can view all organizations',
+              error:
+                "Permission denied: Only SaaS administrators can view all organizations",
               auditLogId,
             };
           }
 
           const orgsSnap = await db
-            .collection('organizations')
-            .where('isActive', '==', true)
+            .collection("organizations")
+            .where("isActive", "==", true)
             .get();
 
           const orgs = orgsSnap.docs.map((doc) => {
             const orgData = doc.data();
-            const { data: redacted, redactedFields: fields } = redactSensitiveData(
-              orgData,
-              'organizations',
-              user.role
-            );
+            const { data: redacted, redactedFields: fields } =
+              redactSensitiveData(orgData, "organizations", user.role);
             if (fields.length > 0) redactedFields.push(...fields);
             return { id: doc.id, ...redacted };
           });
@@ -996,9 +1060,9 @@ export const executeAICommand = functions.https.onCall(
             user.uid,
             user.role,
             user.organizationId,
-            'execute_command',
+            "execute_command",
             { command },
-            'error'
+            "error",
           );
           return {
             success: false,
@@ -1011,9 +1075,9 @@ export const executeAICommand = functions.https.onCall(
         user.uid,
         user.role,
         user.organizationId,
-        'execute_command',
+        "execute_command",
         { command, redactedFields: redactedFields.length },
-        'success'
+        "success",
       );
 
       return {
@@ -1023,27 +1087,27 @@ export const executeAICommand = functions.https.onCall(
         auditLogId,
       };
     } catch (error: unknown) {
-      console.error('Execute AI command error:', error);
+      console.error("Execute AI command error:", error);
 
       const auditLogId = await logAIInteraction(
         user.uid,
         user.role,
         user.organizationId,
-        'execute_command',
+        "execute_command",
         {
           command,
-          error: error instanceof Error ? error.message : 'Unknown error',
+          error: error instanceof Error ? error.message : "Unknown error",
         },
-        'error'
+        "error",
       );
 
       return {
         success: false,
-        error: `Command failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        error: `Command failed: ${error instanceof Error ? error.message : "Unknown error"}`,
         auditLogId,
       };
     }
-  }
+  },
 );
 
 /**
@@ -1052,10 +1116,13 @@ export const executeAICommand = functions.https.onCall(
 export const deleteAIConversation = functions.https.onCall(
   async (
     data: { conversationId: string },
-    context
+    context,
   ): Promise<{ success: boolean }> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication required');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication required",
+      );
     }
 
     let user: User;
@@ -1063,42 +1130,51 @@ export const deleteAIConversation = functions.https.onCall(
       user = await verifyAuthAndGetUser(`Bearer ${context.auth.token}`);
     } catch (error) {
       if (error instanceof AuthenticationError) {
-        throw new functions.https.HttpsError('unauthenticated', error.message);
+        throw new functions.https.HttpsError("unauthenticated", error.message);
       }
-      throw new functions.https.HttpsError('unauthenticated', 'Authentication failed');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Authentication failed",
+      );
     }
 
     const { conversationId } = data;
 
     // Verify ownership
-    const convDoc = await db.collection('ai_conversations').doc(conversationId).get();
+    const convDoc = await db
+      .collection("ai_conversations")
+      .doc(conversationId)
+      .get();
 
     if (!convDoc.exists) {
-      throw new functions.https.HttpsError('not-found', 'Conversation not found');
+      throw new functions.https.HttpsError(
+        "not-found",
+        "Conversation not found",
+      );
     }
 
     const convData = convDoc.data();
 
     // Check ownership - only owner or saas_admin can delete
-    if (convData?.userId !== user.uid && user.role !== 'saas_admin') {
+    if (convData?.userId !== user.uid && user.role !== "saas_admin") {
       throw new functions.https.HttpsError(
-        'permission-denied',
-        'Cannot delete this conversation'
+        "permission-denied",
+        "Cannot delete this conversation",
       );
     }
 
     // Delete messages subcollection
     const messagesSnap = await db
-      .collection('ai_conversations')
+      .collection("ai_conversations")
       .doc(conversationId)
-      .collection('messages')
+      .collection("messages")
       .get();
 
     const batch = db.batch();
     messagesSnap.docs.forEach((doc) => {
       batch.delete(doc.ref);
     });
-    batch.delete(db.collection('ai_conversations').doc(conversationId));
+    batch.delete(db.collection("ai_conversations").doc(conversationId));
 
     await batch.commit();
 
@@ -1106,11 +1182,11 @@ export const deleteAIConversation = functions.https.onCall(
       user.uid,
       user.role,
       user.organizationId,
-      'delete_conversation',
+      "delete_conversation",
       { conversationId },
-      'success'
+      "success",
     );
 
     return { success: true };
-  }
+  },
 );

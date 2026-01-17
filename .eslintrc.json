@@ -2,7 +2,11 @@
   "root": true,
   "env": { "es2021": true, "node": true, "browser": true },
   "parser": "@typescript-eslint/parser",
-  "parserOptions": { "ecmaVersion": 2021, "sourceType": "module", "ecmaFeatures": { "jsx": true } },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": { "jsx": true }
+  },
   "plugins": ["@typescript-eslint"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   "rules": {
@@ -15,5 +19,12 @@
       "rules": { "@typescript-eslint/triple-slash-reference": "off" }
     }
   ],
-  "ignorePatterns": ["node_modules/", "dist/", "apps/*/node_modules/", "**/.next/", "**/out/", "functions/lib/"]
+  "ignorePatterns": [
+    "node_modules/",
+    "dist/",
+    "apps/*/node_modules/",
+    "**/.next/",
+    "**/out/",
+    "functions/lib/"
+  ]
 }

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { useAuth } from '../state/AuthProvider';
+import React, { useEffect, useState } from "react";
+import { db } from "../lib/firebase";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { useAuth } from "../state/AuthProvider";
 
 interface QualityScore {
   contentId: string;
@@ -50,13 +50,15 @@ export default function QualityScoringPage() {
   const [loading, setLoading] = useState(true);
   const [scoring, setScoring] = useState(false);
   const [summary, setSummary] = useState<SummaryStats | null>(null);
-  const [selectedWebsite, setSelectedWebsite] = useState<string>('all');
+  const [selectedWebsite, setSelectedWebsite] = useState<string>("all");
   const [autoApprovalThreshold, setAutoApprovalThreshold] = useState(80);
   const [regenerationThreshold, setRegenerationThreshold] = useState(50);
-  const [expandedMetrics, setExpandedMetrics] = useState<Set<string>>(new Set());
+  const [expandedMetrics, setExpandedMetrics] = useState<Set<string>>(
+    new Set(),
+  );
 
   useEffect(() => {
-    if (role !== 'admin' && role !== 'superadmin') {
+    if (role !== "admin" && role !== "superadmin") {
       return;
     }
     loadSummary();
@@ -67,10 +69,13 @@ export default function QualityScoringPage() {
       setLoading(true);
       // Load quality scores from Firestore
       let q;
-      if (selectedWebsite === 'all') {
-        q = query(collection(db, 'content_quality_scores'));
+      if (selectedWebsite === "all") {
+        q = query(collection(db, "content_quality_scores"));
       } else {
-        q = query(collection(db, 'content_quality_scores'), where('websiteId', '==', selectedWebsite));
+        q = query(
+          collection(db, "content_quality_scores"),
+          where("websiteId", "==", selectedWebsite),
+        );
       }
 
       const snapshot = await getDocs(q);
@@ -88,11 +93,17 @@ export default function QualityScoringPage() {
       }
 
       const overallScores = scores.map((s) => s.overallScore);
-      const avgScore = Math.round(overallScores.reduce((a, b) => a + b) / overallScores.length);
+      const avgScore = Math.round(
+        overallScores.reduce((a, b) => a + b) / overallScores.length,
+      );
 
       const excellent = scores.filter((s) => s.overallScore >= 90).length;
-      const good = scores.filter((s) => s.overallScore >= 75 && s.overallScore < 90).length;
-      const fair = scores.filter((s) => s.overallScore >= 50 && s.overallScore < 75).length;
+      const good = scores.filter(
+        (s) => s.overallScore >= 75 && s.overallScore < 90,
+      ).length;
+      const fair = scores.filter(
+        (s) => s.overallScore >= 50 && s.overallScore < 75,
+      ).length;
       const poor = scores.filter((s) => s.overallScore < 50).length;
 
       const lowestScoring = scores
@@ -128,7 +139,7 @@ export default function QualityScoringPage() {
         highestScoring,
       });
     } catch (error) {
-      console.error('Error loading summary:', error);
+      console.error("Error loading summary:", error);
     } finally {
       setLoading(false);
     }
@@ -138,11 +149,11 @@ export default function QualityScoringPage() {
     setScoring(true);
     try {
       // Call Cloud Function to score all content
-      const response = await fetch('/.netlify/functions/bulk-score-content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/.netlify/functions/bulk-score-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          websiteId: selectedWebsite === 'all' ? undefined : selectedWebsite,
+          websiteId: selectedWebsite === "all" ? undefined : selectedWebsite,
           maxItems: 500,
         }),
       });
@@ -153,32 +164,32 @@ export default function QualityScoringPage() {
 
       const result = await response.json();
       alert(
-        `Scored ${result.scoredCount} items. Average: ${result.avgScore}/100. Items needing regeneration: ${result.regenerateCount}`
+        `Scored ${result.scoredCount} items. Average: ${result.avgScore}/100. Items needing regeneration: ${result.regenerateCount}`,
       );
       setScoring(false);
       loadSummary();
     } catch (error) {
-      console.error('Error scoring:', error);
-      alert('Failed to score content. Check console for details.');
+      console.error("Error scoring:", error);
+      alert("Failed to score content. Check console for details.");
       setScoring(false);
     }
   }
 
   function getScoreColor(score: number): string {
-    if (score >= 90) return 'text-green-600';
-    if (score >= 75) return 'text-blue-600';
-    if (score >= 50) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 90) return "text-green-600";
+    if (score >= 75) return "text-blue-600";
+    if (score >= 50) return "text-yellow-600";
+    return "text-red-600";
   }
 
   function getScoreBgColor(score: number): string {
-    if (score >= 90) return 'bg-green-50';
-    if (score >= 75) return 'bg-blue-50';
-    if (score >= 50) return 'bg-yellow-50';
-    return 'bg-red-50';
+    if (score >= 90) return "bg-green-50";
+    if (score >= 75) return "bg-blue-50";
+    if (score >= 50) return "bg-yellow-50";
+    return "bg-red-50";
   }
 
-  if (role !== 'admin' && role !== 'superadmin') {
+  if (role !== "admin" && role !== "superadmin") {
     return <div className="p-8">Access Denied. Admins only.</div>;
   }
 
@@ -189,7 +200,8 @@ export default function QualityScoringPage() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold mb-2">Content Quality Scoring</h1>
           <p className="text-gray-600">
-            Evaluate all generated content quality and identify items needing improvement
+            Evaluate all generated content quality and identify items needing
+            improvement
           </p>
         </div>
 
@@ -210,10 +222,12 @@ export default function QualityScoringPage() {
             onClick={handleScoreAll}
             disabled={scoring}
             className={`px-6 py-2 rounded-lg font-bold text-white transition ${
-              scoring ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+              scoring
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
-            {scoring ? 'Scoring All...' : 'Score All Content'}
+            {scoring ? "Scoring All..." : "Score All Content"}
           </button>
         </div>
 
@@ -224,43 +238,75 @@ export default function QualityScoringPage() {
           <>
             <div className="grid grid-cols-5 gap-4 mb-8">
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
-                <div className={`text-4xl font-bold ${getScoreColor(summary.avgScore)}`}>{summary.avgScore}</div>
+                <div
+                  className={`text-4xl font-bold ${getScoreColor(summary.avgScore)}`}
+                >
+                  {summary.avgScore}
+                </div>
                 <div className="text-gray-600 mt-1">Average Score</div>
-                <div className="text-xs text-gray-500 mt-1">{summary.totalScored} items</div>
+                <div className="text-xs text-gray-500 mt-1">
+                  {summary.totalScored} items
+                </div>
               </div>
 
               <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                <div className="text-4xl font-bold text-green-600">{summary.distribution.excellent}</div>
+                <div className="text-4xl font-bold text-green-600">
+                  {summary.distribution.excellent}
+                </div>
                 <div className="text-gray-600 text-sm">Excellent (90-100)</div>
                 <div className="text-xs text-gray-500 mt-1">
                   {summary.totalScored > 0
-                    ? Math.round((summary.distribution.excellent / summary.totalScored) * 100)
+                    ? Math.round(
+                        (summary.distribution.excellent / summary.totalScored) *
+                          100,
+                      )
                     : 0}
                   %
                 </div>
               </div>
 
               <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                <div className="text-4xl font-bold text-blue-600">{summary.distribution.good}</div>
+                <div className="text-4xl font-bold text-blue-600">
+                  {summary.distribution.good}
+                </div>
                 <div className="text-gray-600 text-sm">Good (75-89)</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {summary.totalScored > 0 ? Math.round((summary.distribution.good / summary.totalScored) * 100) : 0}%
+                  {summary.totalScored > 0
+                    ? Math.round(
+                        (summary.distribution.good / summary.totalScored) * 100,
+                      )
+                    : 0}
+                  %
                 </div>
               </div>
 
               <div className="bg-yellow-50 p-6 rounded-lg border border-yellow-200">
-                <div className="text-4xl font-bold text-yellow-600">{summary.distribution.fair}</div>
+                <div className="text-4xl font-bold text-yellow-600">
+                  {summary.distribution.fair}
+                </div>
                 <div className="text-gray-600 text-sm">Fair (50-74)</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {summary.totalScored > 0 ? Math.round((summary.distribution.fair / summary.totalScored) * 100) : 0}%
+                  {summary.totalScored > 0
+                    ? Math.round(
+                        (summary.distribution.fair / summary.totalScored) * 100,
+                      )
+                    : 0}
+                  %
                 </div>
               </div>
 
               <div className="bg-red-50 p-6 rounded-lg border border-red-200">
-                <div className="text-4xl font-bold text-red-600">{summary.distribution.poor}</div>
+                <div className="text-4xl font-bold text-red-600">
+                  {summary.distribution.poor}
+                </div>
                 <div className="text-gray-600 text-sm">Poor (&lt;50)</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {summary.totalScored > 0 ? Math.round((summary.distribution.poor / summary.totalScored) * 100) : 0}%
+                  {summary.totalScored > 0
+                    ? Math.round(
+                        (summary.distribution.poor / summary.totalScored) * 100,
+                      )
+                    : 0}
+                  %
                 </div>
               </div>
             </div>
@@ -271,8 +317,12 @@ export default function QualityScoringPage() {
               <div className="space-y-3">
                 <div>
                   <div className="flex justify-between mb-1">
-                    <span className="text-sm font-medium">Excellent (90-100)</span>
-                    <span className="text-sm font-medium">{summary.distribution.excellent}</span>
+                    <span className="text-sm font-medium">
+                      Excellent (90-100)
+                    </span>
+                    <span className="text-sm font-medium">
+                      {summary.distribution.excellent}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
                     <div
@@ -286,7 +336,9 @@ export default function QualityScoringPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Good (75-89)</span>
-                    <span className="text-sm font-medium">{summary.distribution.good}</span>
+                    <span className="text-sm font-medium">
+                      {summary.distribution.good}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
                     <div
@@ -300,7 +352,9 @@ export default function QualityScoringPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Fair (50-74)</span>
-                    <span className="text-sm font-medium">{summary.distribution.fair}</span>
+                    <span className="text-sm font-medium">
+                      {summary.distribution.fair}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
                     <div
@@ -314,7 +368,9 @@ export default function QualityScoringPage() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Poor (&lt;50)</span>
-                    <span className="text-sm font-medium">{summary.distribution.poor}</span>
+                    <span className="text-sm font-medium">
+                      {summary.distribution.poor}
+                    </span>
                   </div>
                   <div className="w-full bg-gray-300 rounded-full h-3 overflow-hidden">
                     <div
@@ -342,11 +398,14 @@ export default function QualityScoringPage() {
                     max="95"
                     step="5"
                     value={autoApprovalThreshold}
-                    onChange={(e) => setAutoApprovalThreshold(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setAutoApprovalThreshold(parseInt(e.target.value))
+                    }
                     className="w-full"
                   />
                   <p className="text-xs text-gray-600 mt-2">
-                    Items scoring {autoApprovalThreshold}+ automatically approved
+                    Items scoring {autoApprovalThreshold}+ automatically
+                    approved
                   </p>
                 </div>
                 <div>
@@ -359,10 +418,15 @@ export default function QualityScoringPage() {
                     max="60"
                     step="5"
                     value={regenerationThreshold}
-                    onChange={(e) => setRegenerationThreshold(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setRegenerationThreshold(parseInt(e.target.value))
+                    }
                     className="w-full"
                   />
-                  <p className="text-xs text-gray-600 mt-2">Items scoring below {regenerationThreshold} marked for regeneration</p>
+                  <p className="text-xs text-gray-600 mt-2">
+                    Items scoring below {regenerationThreshold} marked for
+                    regeneration
+                  </p>
                 </div>
               </div>
             </div>
@@ -371,34 +435,55 @@ export default function QualityScoringPage() {
             <div className="grid grid-cols-2 gap-6">
               {/* Lowest Scoring Items */}
               <div>
-                <h2 className="text-2xl font-bold mb-4">Items Needing Improvement</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                  Items Needing Improvement
+                </h2>
                 <div className="space-y-3">
                   {summary.lowestScoring.map((item, idx) => (
-                    <div key={idx} className={`${getScoreBgColor(item.score)} border rounded-lg p-4`}>
+                    <div
+                      key={idx}
+                      className={`${getScoreBgColor(item.score)} border rounded-lg p-4`}
+                    >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-semibold text-gray-800">{item.location}</h4>
-                          <p className="text-xs text-gray-600">{item.service}</p>
+                          <h4 className="font-semibold text-gray-800">
+                            {item.location}
+                          </h4>
+                          <p className="text-xs text-gray-600">
+                            {item.service}
+                          </p>
                         </div>
-                        <span className={`text-2xl font-bold ${getScoreColor(item.score)}`}>{item.score}</span>
+                        <span
+                          className={`text-2xl font-bold ${getScoreColor(item.score)}`}
+                        >
+                          {item.score}
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
                           className={`h-full rounded-full transition-all ${
                             item.score >= 90
-                              ? 'bg-green-600'
+                              ? "bg-green-600"
                               : item.score >= 75
-                              ? 'bg-blue-600'
-                              : item.score >= 50
-                              ? 'bg-yellow-600'
-                              : 'bg-red-600'
+                                ? "bg-blue-600"
+                                : item.score >= 50
+                                  ? "bg-yellow-600"
+                                  : "bg-red-600"
                           }`}
                           style={{ width: `${item.score}%` }}
                         />
                       </div>
                       <div className="mt-2 text-xs text-gray-600">
-                        {item.score < 50 && <span className="text-red-600 font-semibold">⚠️ Mark for regeneration</span>}
-                        {item.score >= 50 && item.score < 75 && <span className="text-yellow-600">⚠️ Review recommended</span>}
+                        {item.score < 50 && (
+                          <span className="text-red-600 font-semibold">
+                            ⚠️ Mark for regeneration
+                          </span>
+                        )}
+                        {item.score >= 50 && item.score < 75 && (
+                          <span className="text-yellow-600">
+                            ⚠️ Review recommended
+                          </span>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -407,16 +492,29 @@ export default function QualityScoringPage() {
 
               {/* Highest Scoring Items */}
               <div>
-                <h2 className="text-2xl font-bold mb-4">Excellent Content Examples</h2>
+                <h2 className="text-2xl font-bold mb-4">
+                  Excellent Content Examples
+                </h2>
                 <div className="space-y-3">
                   {summary.highestScoring.map((item, idx) => (
-                    <div key={idx} className={`${getScoreBgColor(item.score)} border rounded-lg p-4`}>
+                    <div
+                      key={idx}
+                      className={`${getScoreBgColor(item.score)} border rounded-lg p-4`}
+                    >
                       <div className="flex justify-between items-start mb-2">
                         <div>
-                          <h4 className="font-semibold text-gray-800">{item.location}</h4>
-                          <p className="text-xs text-gray-600">{item.service}</p>
+                          <h4 className="font-semibold text-gray-800">
+                            {item.location}
+                          </h4>
+                          <p className="text-xs text-gray-600">
+                            {item.service}
+                          </p>
                         </div>
-                        <span className={`text-2xl font-bold ${getScoreColor(item.score)}`}>{item.score}</span>
+                        <span
+                          className={`text-2xl font-bold ${getScoreColor(item.score)}`}
+                        >
+                          {item.score}
+                        </span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
                         <div
@@ -424,7 +522,9 @@ export default function QualityScoringPage() {
                           style={{ width: `${item.score}%` }}
                         />
                       </div>
-                      <div className="mt-2 text-xs text-gray-600">✓ Excellent quality - ready for publishing</div>
+                      <div className="mt-2 text-xs text-gray-600">
+                        ✓ Excellent quality - ready for publishing
+                      </div>
                     </div>
                   ))}
                 </div>

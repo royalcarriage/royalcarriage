@@ -1,6 +1,12 @@
 import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
@@ -31,15 +37,19 @@ export default function PageAnalyzer() {
 
   // Static pages to analyze
   const websitePages = [
-    { url: '/', name: 'Home', content: '' },
-    { url: '/ohare-airport-limo', name: 'O\'Hare Airport', content: '' },
-    { url: '/midway-airport-limo', name: 'Midway Airport', content: '' },
-    { url: '/airport-limo-downtown-chicago', name: 'Downtown Chicago', content: '' },
-    { url: '/airport-limo-suburbs', name: 'Suburbs Service', content: '' },
-    { url: '/fleet', name: 'Fleet', content: '' },
-    { url: '/pricing', name: 'Pricing', content: '' },
-    { url: '/about', name: 'About', content: '' },
-    { url: '/contact', name: 'Contact', content: '' },
+    { url: "/", name: "Home", content: "" },
+    { url: "/ohare-airport-limo", name: "O'Hare Airport", content: "" },
+    { url: "/midway-airport-limo", name: "Midway Airport", content: "" },
+    {
+      url: "/airport-limo-downtown-chicago",
+      name: "Downtown Chicago",
+      content: "",
+    },
+    { url: "/airport-limo-suburbs", name: "Suburbs Service", content: "" },
+    { url: "/fleet", name: "Fleet", content: "" },
+    { url: "/pricing", name: "Pricing", content: "" },
+    { url: "/about", name: "About", content: "" },
+    { url: "/contact", name: "Contact", content: "" },
   ];
 
   const handleAnalyzePages = async () => {
@@ -65,57 +75,65 @@ export default function PageAnalyzer() {
         contentScore: Math.floor(Math.random() * 40) + 60,
         recommendations: {
           seo: [
-            'Add more location-specific keywords',
-            'Optimize meta description length',
-            'Improve heading structure'
+            "Add more location-specific keywords",
+            "Optimize meta description length",
+            "Improve heading structure",
           ].slice(0, Math.floor(Math.random() * 3) + 1),
           content: [
-            'Expand content to 400+ words',
-            'Add vehicle-specific details',
-            'Include customer testimonials'
+            "Expand content to 400+ words",
+            "Add vehicle-specific details",
+            "Include customer testimonials",
           ].slice(0, Math.floor(Math.random() * 3) + 1),
           style: [
-            'Ensure consistent font sizing',
-            'Use professional imagery'
+            "Ensure consistent font sizing",
+            "Use professional imagery",
           ].slice(0, Math.floor(Math.random() * 2) + 1),
           conversion: [
-            'Add prominent phone number',
-            'Include clear call-to-action',
-            'Display trust badges'
+            "Add prominent phone number",
+            "Include clear call-to-action",
+            "Display trust badges",
           ].slice(0, Math.floor(Math.random() * 3) + 1),
         },
       }));
 
       // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setResults(mockResults);
     } catch (error) {
-      console.error('Analysis failed:', error);
+      console.error("Analysis failed:", error);
     } finally {
       setAnalyzing(false);
     }
   };
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 80) return "text-green-600";
+    if (score >= 60) return "text-yellow-600";
+    return "text-red-600";
   };
 
   const getScoreBadge = (score: number) => {
-    if (score >= 80) return <Badge className="bg-green-100 text-green-800">Excellent</Badge>;
-    if (score >= 60) return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
+    if (score >= 80)
+      return <Badge className="bg-green-100 text-green-800">Excellent</Badge>;
+    if (score >= 60)
+      return <Badge className="bg-yellow-100 text-yellow-800">Good</Badge>;
     return <Badge className="bg-red-100 text-red-800">Needs Work</Badge>;
   };
 
-  const averageSeoScore = results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + r.seoScore, 0) / results.length)
-    : 0;
+  const averageSeoScore =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, r) => sum + r.seoScore, 0) / results.length,
+        )
+      : 0;
 
-  const averageContentScore = results.length > 0
-    ? Math.round(results.reduce((sum, r) => sum + r.contentScore, 0) / results.length)
-    : 0;
+  const averageContentScore =
+    results.length > 0
+      ? Math.round(
+          results.reduce((sum, r) => sum + r.contentScore, 0) / results.length,
+        )
+      : 0;
 
   return (
     <AdminLayout>
@@ -136,7 +154,8 @@ export default function PageAnalyzer() {
           <CardHeader>
             <CardTitle>Start Analysis</CardTitle>
             <CardDescription>
-              Analyze all {websitePages.length} pages for SEO and content optimization opportunities
+              Analyze all {websitePages.length} pages for SEO and content
+              optimization opportunities
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -171,7 +190,9 @@ export default function PageAnalyzer() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}>
+                <div
+                  className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}
+                >
                   {averageSeoScore}/100
                 </div>
                 <Progress value={averageSeoScore} className="mt-2" />
@@ -185,7 +206,9 @@ export default function PageAnalyzer() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}>
+                <div
+                  className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}
+                >
                   {averageContentScore}/100
                 </div>
                 <Progress value={averageContentScore} className="mt-2" />
@@ -202,7 +225,9 @@ export default function PageAnalyzer() {
                 <div className="text-3xl font-bold text-blue-600">
                   {results.length}
                 </div>
-                <p className="text-sm text-gray-500 mt-1">Total pages scanned</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Total pages scanned
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -211,7 +236,9 @@ export default function PageAnalyzer() {
         {/* Analysis Results */}
         {results.length > 0 && (
           <div className="space-y-4">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Analysis Results</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Analysis Results
+            </h2>
 
             {results.map((result, index) => (
               <Card key={index}>
@@ -227,7 +254,9 @@ export default function PageAnalyzer() {
                       </CardDescription>
                     </div>
                     <div className="text-right">
-                      {getScoreBadge((result.seoScore + result.contentScore) / 2)}
+                      {getScoreBadge(
+                        (result.seoScore + result.contentScore) / 2,
+                      )}
                     </div>
                   </div>
                 </CardHeader>
@@ -237,7 +266,9 @@ export default function PageAnalyzer() {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium">SEO Score</span>
-                        <span className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}>
+                        <span
+                          className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}
+                        >
                           {result.seoScore}/100
                         </span>
                       </div>
@@ -247,8 +278,12 @@ export default function PageAnalyzer() {
                     {/* Content Score */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">Content Score</span>
-                        <span className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}>
+                        <span className="text-sm font-medium">
+                          Content Score
+                        </span>
+                        <span
+                          className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}
+                        >
                           {result.contentScore}/100
                         </span>
                       </div>
@@ -266,7 +301,10 @@ export default function PageAnalyzer() {
                         </h4>
                         <ul className="space-y-1">
                           {result.recommendations.seo.map((rec, i) => (
-                            <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
                               <AlertCircle className="h-4 w-4 mt-0.5 text-yellow-500 flex-shrink-0" />
                               {rec}
                             </li>
@@ -283,7 +321,10 @@ export default function PageAnalyzer() {
                         </h4>
                         <ul className="space-y-1">
                           {result.recommendations.content.map((rec, i) => (
-                            <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
                               <AlertCircle className="h-4 w-4 mt-0.5 text-blue-500 flex-shrink-0" />
                               {rec}
                             </li>
@@ -300,7 +341,10 @@ export default function PageAnalyzer() {
                         </h4>
                         <ul className="space-y-1">
                           {result.recommendations.conversion.map((rec, i) => (
-                            <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
                               <AlertCircle className="h-4 w-4 mt-0.5 text-green-500 flex-shrink-0" />
                               {rec}
                             </li>

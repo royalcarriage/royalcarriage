@@ -5,8 +5,10 @@
 - Rule: write stable learnings to these folders as markdown files
 
 Usage notes:
+
 - Store non-sensitive artifacts (design notes, playbooks, schema snippets, RBAC learnings) as plain markdown.
 - Do not persist API keys, tokens, credentials, or personal data.
+
 ## MEMORY (Persistent Notes)
 
 - Primary branch: main
@@ -18,17 +20,22 @@ Usage notes:
 - Smoke checks: `scripts/smoke-check.mjs` and `npm run smoke-check`
 
 Notes:
+
 - The codebase supports Passport local auth and session cookies; server-side RBAC middleware lives in `server/security.ts`.
 - Use emulator scripts (`scripts/emulator-role-test.mjs`) to validate role boundaries before pushing to prod.
+
 # Royal Carriage Memory Index
 
 ## Repos
+
 - royalcarriage/royalcarriage: admin dashboard + sites + firebase
 
 ## Conventions
+
 - Role names:
   - owner_admin, dispatcher, fleet_manager, accounting, seo_manager, developer, affiliate_admin, driver
 
 ## Deploy
+
 - Primary target: Firebase Hosting + Firestore + Storage
 - Always run gates before deploy

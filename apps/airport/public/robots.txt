@@ -1,4 +1,16 @@
+# Royal Carriage Limousine - https://chicagoairportblackcar.com
+# https://royalcarriagelimo.com
+
 User-agent: *
 Allow: /
 
-Sitemap: https://chicagoairportblackcar.web.app/sitemap-index.xml
+# Sitemaps
+Sitemap: https://chicagoairportblackcar.com/sitemap.xml
+
+# Crawl-delay (optional, for politeness)
+Crawl-delay: 1
+
+# Disallow admin and private paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/

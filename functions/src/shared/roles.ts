@@ -1,5 +1,5 @@
 // Shared role helpers and Firebase sync helpers (optional)
-import { UserRole, type UserRoleType } from './schema';
+import { UserRole, type UserRoleType } from "./schema";
 
 export function roleHierarchy(role: UserRoleType) {
   const map: Record<UserRoleType, number> = {

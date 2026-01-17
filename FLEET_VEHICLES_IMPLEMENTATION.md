@@ -1,4 +1,5 @@
 # Fleet Vehicles Implementation - Complete Documentation
+
 **Date**: January 16, 2026
 **Status**: IMPLEMENTED - Ready for Deployment
 **Scope**: 14 Fleet Vehicles with Full Specifications
@@ -10,6 +11,7 @@
 Successfully implemented complete fleet vehicle initialization system for Royal Carriage SEO platform.
 
 **Deliverables:**
+
 - 14 fully-specified vehicles across 6 categories
 - Complete Cloud Functions for fleet management
 - Comprehensive vehicle data with SEO optimization
@@ -22,15 +24,18 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 ## FILES CREATED
 
 ### 1. `/functions/src/scripts/addFleetVehicles.ts`
+
 **Purpose**: Vehicle data repository with complete specifications
 
 **Contents:**
+
 - 14 vehicle definitions with comprehensive details
 - TypeScript interfaces for type safety
 - Helper functions for querying vehicles
 - SEO keywords and descriptions for each vehicle
 
 **Vehicle Categories:**
+
 - 4 Luxury Sedans (Lincoln Continental, Cadillac XTS, Mercedes S-Class, BMW 7 Series)
 - 4 Luxury SUVs (Cadillac Escalade ESV, Lincoln Navigator, Chevrolet Suburban, GMC Yukon Denali)
 - 1 Stretch Limousine (Lincoln Stretch Limo)
@@ -39,9 +44,11 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 - 1 Coach Bus (50+ passenger Motor Coach)
 
 ### 2. `/functions/src/fleetInitializationFunction.ts`
+
 **Purpose**: Cloud Functions for fleet vehicle management
 
 **Exported Functions:**
+
 1. `initializeFleetVehicles` - Populates fleet_vehicles collection
 2. `getFleetVehicle` - Retrieves single vehicle by ID
 3. `getAllFleetVehicles` - Retrieves all vehicles with optional filtering
@@ -49,6 +56,7 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 5. `deleteFleetVehicle` - Soft-deletes vehicle (super_admin only)
 
 ### 3. `/functions/src/index.ts` (Updated)
+
 **Changes**: Added imports and exports for fleet functions
 
 ---
@@ -58,64 +66,70 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 ### Category Breakdown
 
 #### LUXURY SEDANS (1-3 passengers)
+
 **Use Cases**: Airport transfers, corporate travel, executive service
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Lincoln Continental | 3 | $85 | $75 |
-| Cadillac XTS | 3 | $80 | $70 |
-| Mercedes-Benz S-Class | 3 | $120 | $100 |
-| BMW 7 Series | 3 | $115 | $95 |
+| Vehicle               | Capacity | Hourly Rate | Airport Rate |
+| --------------------- | -------- | ----------- | ------------ |
+| Lincoln Continental   | 3        | $85         | $75          |
+| Cadillac XTS          | 3        | $80         | $70          |
+| Mercedes-Benz S-Class | 3        | $120        | $100         |
+| BMW 7 Series          | 3        | $115        | $95          |
 
 **Common Features**: Premium leather, Wi-Fi, charging ports, climate control, professional chauffeur
 
 #### LUXURY SUVs (4-6 passengers)
+
 **Use Cases**: Family trips, wedding parties, group travel, corporate groups
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Cadillac Escalade ESV | 6 | $130 | $110 |
-| Lincoln Navigator | 6 | $125 | $105 |
-| Chevrolet Suburban | 6 | $110 | $90 |
-| GMC Yukon Denali | 6 | $120 | $100 |
+| Vehicle               | Capacity | Hourly Rate | Airport Rate |
+| --------------------- | -------- | ----------- | ------------ |
+| Cadillac Escalade ESV | 6        | $130        | $110         |
+| Lincoln Navigator     | 6        | $125        | $105         |
+| Chevrolet Suburban    | 6        | $110        | $90          |
+| GMC Yukon Denali      | 6        | $120        | $100         |
 
 **Common Features**: Leather seating for 6, entertainment systems, spacious cargo, premium amenities
 
 #### STRETCH LIMOUSINES (8-10 passengers)
+
 **Use Cases**: Weddings, proms, special events, celebrations
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Lincoln Stretch Limo | 10 | $150 | N/A |
+| Vehicle              | Capacity | Hourly Rate | Airport Rate |
+| -------------------- | -------- | ----------- | ------------ |
+| Lincoln Stretch Limo | 10       | $150        | N/A          |
 
 **Features**: Full bar, fiber optic lighting, entertainment system, privacy partition, red carpet service
 
 #### EXECUTIVE VANS (10-16 passengers)
+
 **Use Cases**: Group airport transfers, corporate shuttles, tour groups
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Mercedes Sprinter Van | 14 | $140 | $180 |
-| Luxury Executive Sprinter | 12 | $180 | $220 |
+| Vehicle                   | Capacity | Hourly Rate | Airport Rate |
+| ------------------------- | -------- | ----------- | ------------ |
+| Mercedes Sprinter Van     | 14       | $140        | $180         |
+| Luxury Executive Sprinter | 12       | $180        | $220         |
 
 **Features**: High roof, captain chairs, Wi-Fi, power outlets, climate control
 
 #### PARTY BUSES (20-40 passengers)
+
 **Use Cases**: Bachelor/bachelorette parties, birthdays, nightclub tours
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Full-Size Party Bus | 36 | $250 | N/A |
-| Mid-Size Party Bus | 24 | $200 | N/A |
+| Vehicle             | Capacity | Hourly Rate | Airport Rate |
+| ------------------- | -------- | ----------- | ------------ |
+| Full-Size Party Bus | 36       | $250        | N/A          |
+| Mid-Size Party Bus  | 24       | $200        | N/A          |
 
 **Features**: LED lighting, dance floors, sound systems, bars, entertainment
 
 #### COACH BUSES (40+ passengers)
+
 **Use Cases**: Large group charters, corporate tours, conventions
 
-| Vehicle | Capacity | Hourly Rate | Airport Rate |
-|---------|----------|-------------|--------------|
-| Full-Size Motor Coach | 56 | $180 | $300 |
+| Vehicle               | Capacity | Hourly Rate | Airport Rate |
+| --------------------- | -------- | ----------- | ------------ |
+| Full-Size Motor Coach | 56       | $180        | $300         |
 
 **Features**: Reclining seats, restroom, PA system, luggage bays, wheelchair accessible
 
@@ -126,6 +140,7 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 ### Firestore Collection: `fleet_vehicles`
 
 **Document Structure:**
+
 ```typescript
 {
   id: string;                    // Slug ID (e.g., "lincoln-continental")
@@ -169,21 +184,23 @@ Successfully implemented complete fleet vehicle initialization system for Royal 
 **Security**: Requires authentication + admin role
 
 **Usage from Admin Dashboard:**
+
 ```typescript
 const functions = getFunctions();
-const initFleet = httpsCallable(functions, 'initializeFleetVehicles');
+const initFleet = httpsCallable(functions, "initializeFleetVehicles");
 
 // Basic initialization
 const result = await initFleet({});
 
 // With options
 const result = await initFleet({
-  overwrite: true,  // Replace existing vehicles
-  dryRun: false     // Actually write data (true = test mode)
+  overwrite: true, // Replace existing vehicles
+  dryRun: false, // Actually write data (true = test mode)
 });
 ```
 
 **Response:**
+
 ```typescript
 {
   success: true,
@@ -209,6 +226,7 @@ const result = await initFleet({
 **Security**: Public (no auth required)
 
 **Usage:**
+
 ```typescript
 // Get all vehicles
 const result = await getAllFleetVehicles({});
@@ -219,7 +237,7 @@ const result = await getAllFleetVehicles({ category: "suv" });
 // Filter by capacity
 const result = await getAllFleetVehicles({
   minCapacity: 6,
-  maxCapacity: 14
+  maxCapacity: 14,
 });
 ```
 
@@ -230,9 +248,10 @@ const result = await getAllFleetVehicles({
 **Security**: Public (no auth required)
 
 **Usage:**
+
 ```typescript
 const result = await getFleetVehicle({
-  vehicleId: "lincoln-continental"
+  vehicleId: "lincoln-continental",
 });
 ```
 
@@ -243,14 +262,15 @@ const result = await getFleetVehicle({
 **Security**: Requires authentication + admin role
 
 **Usage:**
+
 ```typescript
 const result = await updateFleetVehicle({
   vehicleId: "lincoln-continental",
   updates: {
     baseHourlyRate: 90,
     baseAirportRate: 80,
-    features: [...updatedFeatures]
-  }
+    features: [...updatedFeatures],
+  },
 });
 ```
 
@@ -261,9 +281,10 @@ const result = await updateFleetVehicle({
 **Security**: Requires authentication + super_admin role
 
 **Usage:**
+
 ```typescript
 const result = await deleteFleetVehicle({
-  vehicleId: "lincoln-continental"
+  vehicleId: "lincoln-continental",
 });
 ```
 
@@ -274,6 +295,7 @@ const result = await deleteFleetVehicle({
 ## DEPLOYMENT INSTRUCTIONS
 
 ### Prerequisites
+
 - Firebase CLI installed and authenticated
 - Admin access to royalcarriagelimoseo project
 - Node.js 18+ installed
@@ -281,6 +303,7 @@ const result = await deleteFleetVehicle({
 ### Deployment Steps
 
 #### 1. Deploy Cloud Functions
+
 ```bash
 cd /Users/admin/VSCODE/functions
 npm run build
@@ -288,6 +311,7 @@ firebase deploy --only functions
 ```
 
 **Expected Output:**
+
 ```
 ✔  functions: Finished running predeploy script.
 i  functions: preparing functions directory for uploading...
@@ -306,6 +330,7 @@ i  functions: creating functions...
 #### 2. Initialize Fleet Data
 
 **Option A: From Admin Dashboard (Recommended)**
+
 1. Login to admin dashboard: https://admin.royalcarriagelimo.com
 2. Navigate to Fleet Management
 3. Click "Initialize Fleet Vehicles"
@@ -313,6 +338,7 @@ i  functions: creating functions...
 5. Click "Confirm & Initialize"
 
 **Option B: From Firebase Console**
+
 1. Go to Firebase Console > Functions
 2. Find `initializeFleetVehicles`
 3. Click "Test function"
@@ -320,29 +346,32 @@ i  functions: creating functions...
 5. Click "Run function"
 
 **Option C: From Code (for testing)**
+
 ```typescript
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const functions = getFunctions();
-const initFleet = httpsCallable(functions, 'initializeFleetVehicles');
+const initFleet = httpsCallable(functions, "initializeFleetVehicles");
 
 try {
   const result = await initFleet({});
-  console.log('Success:', result.data);
+  console.log("Success:", result.data);
 } catch (error) {
-  console.error('Error:', error);
+  console.error("Error:", error);
 }
 ```
 
 #### 3. Verify Data
 
 **Check Firestore:**
+
 1. Firebase Console > Firestore Database
 2. Navigate to `fleet_vehicles` collection
 3. Verify 14 documents exist
 4. Check document structure matches schema
 
 **Check Audit Logs:**
+
 1. Navigate to `audit_logs` collection
 2. Find most recent log with action: "fleet_vehicles_initialized"
 3. Verify results show 14 created vehicles
@@ -354,19 +383,23 @@ try {
 ### Role-Based Access Control
 
 **Public Access (No Auth Required):**
+
 - `getAllFleetVehicles` - View all vehicles
 - `getFleetVehicle` - View single vehicle
 
 **Admin Access (Requires Admin Role):**
+
 - `initializeFleetVehicles` - Initialize fleet data
 - `updateFleetVehicle` - Update vehicle information
 
 **Super Admin Access (Requires Super Admin Role):**
+
 - `deleteFleetVehicle` - Delete vehicles
 
 ### Security Rules
 
 **Firestore Security Rules:**
+
 ```javascript
 // fleet_vehicles collection
 match /fleet_vehicles/{vehicleId} {
@@ -390,6 +423,7 @@ match /fleet_vehicles/{vehicleId} {
 Every fleet operation is logged to the `audit_logs` collection:
 
 **Initialization Log:**
+
 ```typescript
 {
   action: "fleet_vehicles_initialized",
@@ -407,6 +441,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 ```
 
 **Update Log:**
+
 ```typescript
 {
   action: "fleet_vehicle_updated",
@@ -419,6 +454,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 ```
 
 **Delete Log:**
+
 ```typescript
 {
   action: "fleet_vehicle_deleted",
@@ -437,6 +473,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 ### Applicable Services per Vehicle Category
 
 **Sedans:**
+
 - airport-transfer
 - corporate-travel
 - executive-service
@@ -446,6 +483,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 - daily-commute
 
 **SUVs:**
+
 - wedding-transportation
 - group-travel
 - family-events
@@ -454,6 +492,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 - special-occasions
 
 **Stretch Limousines:**
+
 - wedding-transportation
 - prom-service
 - special-events
@@ -462,6 +501,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 - night-out
 
 **Executive Vans:**
+
 - group-airport-transfer
 - corporate-shuttle
 - tour-groups
@@ -470,6 +510,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 - team-events
 
 **Party Buses:**
+
 - bachelor-party
 - bachelorette-party
 - birthday-celebration
@@ -478,6 +519,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 - special-events
 
 **Coach Buses:**
+
 - large-group-charters
 - corporate-tours
 - convention-transport
@@ -490,6 +532,7 @@ Every fleet operation is logged to the `audit_logs` collection:
 ## NEXT STEPS
 
 ### Immediate Actions
+
 1. ✅ Deploy Cloud Functions to production
 2. ✅ Run `initializeFleetVehicles` to populate database
 3. ✅ Verify all 14 vehicles in Firestore
@@ -497,18 +540,21 @@ Every fleet operation is logged to the `audit_logs` collection:
 5. ⏳ Create fleet management UI (add/edit/delete vehicles)
 
 ### Phase 2: Fleet-Service Integration
+
 1. Link vehicles to service definitions
 2. Create service-vehicle recommendation engine
 3. Generate vehicle showcase pages for each vehicle
 4. Create location-vehicle-service cross-linking
 
 ### Phase 3: Content Generation
+
 1. Generate SEO content for each vehicle
 2. Create vehicle landing pages
 3. Generate location-vehicle combinations
 4. Build internal linking strategy
 
 ### Phase 4: Advanced Features
+
 1. Vehicle availability calendar
 2. Dynamic pricing engine
 3. Vehicle comparison tools
@@ -519,19 +565,25 @@ Every fleet operation is logged to the `audit_logs` collection:
 ## TROUBLESHOOTING
 
 ### Issue: "Fleet vehicles already exist"
+
 **Solution**: Use overwrite option:
+
 ```typescript
 await initializeFleetVehicles({ overwrite: true });
 ```
 
 ### Issue: "Permission denied"
+
 **Solution**: Verify user has admin role in Firestore:
+
 ```
 users/{userId}/role = "admin" or "super_admin"
 ```
 
 ### Issue: Build fails with TypeScript errors
+
 **Solution**:
+
 ```bash
 cd /Users/admin/VSCODE/functions
 npm install
@@ -539,7 +591,9 @@ npm run build
 ```
 
 ### Issue: Function not found after deployment
+
 **Solution**:
+
 ```bash
 firebase deploy --only functions:initializeFleetVehicles
 ```
@@ -549,6 +603,7 @@ firebase deploy --only functions:initializeFleetVehicles
 ## MEMORY & LEARNING NOTES
 
 **Architectural Decisions:**
+
 - Used Cloud Functions (not Firestore triggers) for controlled initialization
 - Implemented soft delete to preserve audit trail
 - Separated data definition (scripts/) from logic (functions)
@@ -556,6 +611,7 @@ firebase deploy --only functions:initializeFleetVehicles
 - Included dry-run mode for safe testing
 
 **Pricing Strategy:**
+
 - Sedans: $70-120/hour based on luxury level
 - SUVs: $90-130/hour based on capacity and luxury
 - Stretch Limos: $150/hour (premium event vehicle)
@@ -564,6 +620,7 @@ firebase deploy --only functions:initializeFleetVehicles
 - Coach: $180/hour + higher airport rate due to capacity
 
 **SEO Strategy:**
+
 - Every vehicle has 6+ targeted keywords
 - Descriptions are 50-100 words (optimal for featured snippets)
 - Keywords target local + vehicle + service combinations
@@ -574,6 +631,7 @@ firebase deploy --only functions:initializeFleetVehicles
 ## SUCCESS METRICS
 
 **Completion Checklist:**
+
 - ✅ 14 vehicles defined with full specifications
 - ✅ Cloud Functions created and exported
 - ✅ TypeScript compilation successful
@@ -584,6 +642,7 @@ firebase deploy --only functions:initializeFleetVehicles
 - ⏳ Data initialized in Firestore (pending)
 
 **Expected Results After Deployment:**
+
 - 14 documents in `fleet_vehicles` collection
 - All vehicles status: "active"
 - 1 audit log entry for initialization
@@ -595,16 +654,19 @@ firebase deploy --only functions:initializeFleetVehicles
 ## FILE LOCATIONS
 
 **Source Files:**
+
 - `/Users/admin/VSCODE/functions/src/scripts/addFleetVehicles.ts`
 - `/Users/admin/VSCODE/functions/src/fleetInitializationFunction.ts`
 - `/Users/admin/VSCODE/functions/src/index.ts` (updated)
 
 **Compiled Files:**
+
 - `/Users/admin/VSCODE/functions/lib/scripts/addFleetVehicles.js`
 - `/Users/admin/VSCODE/functions/lib/fleetInitializationFunction.js`
 - `/Users/admin/VSCODE/functions/lib/index.js` (updated)
 
 **Documentation:**
+
 - `/Users/admin/VSCODE/FLEET_VEHICLES_IMPLEMENTATION.md` (this file)
 
 ---

@@ -10,6 +10,7 @@
 Phase 2 of the Royal Carriage enterprise dashboard has been **completed in full**. This phase delivers a complete AI-powered content generation system with human oversight, enabling automated creation of 4,000+ interconnected SEO-optimized pages across 4 brand websites.
 
 **What You Get:**
+
 - 6 Cloud Functions for content generation and page building
 - 3 Admin dashboard pages for content management and analytics
 - 4 Astro dynamic page templates (one per website)
@@ -21,6 +22,7 @@ Phase 2 of the Royal Carriage enterprise dashboard has been **completed in full*
 ## COMPLETION CHECKLIST
 
 ### Cloud Functions (6 Functions)
+
 - ✅ `generateServiceContent()` - AI-powered single content generation
 - ✅ `generateContentBatch()` - Bulk batch processing for multiple locations
 - ✅ `approveAndPublishContent()` - Admin approval workflow
@@ -29,17 +31,20 @@ Phase 2 of the Royal Carriage enterprise dashboard has been **completed in full*
 - ✅ `publishPages()` - Pre-deployment validation
 
 ### Admin Dashboard Pages (3 Pages)
+
 - ✅ Content Approval (`/admin/content-approval`) - Review & approve AI content
 - ✅ Location Management (`/admin/locations-management`) - Select locations & trigger generation
 - ✅ SEO Analytics (`/admin/seo-analytics`) - Monitor coverage and progress
 
 ### Astro Templates (4 Templates)
+
 - ✅ Airport Website (`/airport/src/pages/service/[location]/[service].astro`)
 - ✅ Corporate Website (`/corporate/src/pages/service/[location]/[service].astro`)
 - ✅ Wedding Website (`/wedding/src/pages/service/[location]/[service].astro`)
 - ✅ Party Bus Website (`/partybus/src/pages/service/[location]/[service].astro`)
 
 ### Documentation
+
 - ✅ `PHASE2_COMPLETION_STATUS.md` - Complete technical reference
 - ✅ `PHASE2_DEPLOYMENT_SUMMARY.md` - This deployment guide
 
@@ -84,16 +89,19 @@ Your Visitors
 ### What Makes This Special
 
 **Fully Automated AI Content:**
+
 - Generates unique, SEO-optimized content for each location-service combo
 - Creates titles, descriptions, body content, keywords automatically
 - Uses Google Gemini AI for intelligent variations
 
 **Human Oversight & Control:**
+
 - Every AI-generated page requires human approval before publishing
 - You can review quality scores, reject items, provide feedback
 - Rejected items can be regenerated
 
 **Built-in SEO:**
+
 - Automatic keyword research and insertion (15-20 per page)
 - Internal linking between related services (8-12 links per page)
 - JSON-LD schema markup (LocalBusiness, Service, breadcrumbs)
@@ -101,6 +109,7 @@ Your Visitors
 - Open Graph images for social sharing
 
 **Scalable to 4,000+ Pages:**
+
 - All 4 websites can have content generated in parallel
 - Can scale from 25 locations to 240+ locations
 - Each combination generates unique, relevant content
@@ -118,6 +127,7 @@ firebase deploy --only functions
 ```
 
 **What Happens:**
+
 - Deploys all 6 new Cloud Functions
 - Functions become callable from admin dashboard
 - Functions can access Firestore collections
@@ -195,6 +205,7 @@ firebase deploy --only hosting:chicagoairportblackcar
 **Time Required:** 15 minutes
 
 1. **Deploy Functions** (5 min)
+
    ```bash
    cd /Users/admin/VSCODE && firebase deploy --only functions
    ```
@@ -234,27 +245,35 @@ firebase deploy --only hosting:chicagoairportblackcar
 ## COMMON QUESTIONS & ANSWERS
 
 ### Q: How long does content generation take?
+
 **A:** ~2-3 minutes for 100 items. Generation happens in parallel with concurrency control (max 5 concurrent AI calls).
 
 ### Q: Can I regenerate rejected content?
+
 **A:** Not yet - that's Phase 3. Currently, rejected items are marked "rejected" in Firestore. You can manually trigger regeneration via Cloud Function.
 
 ### Q: How many pages will we have?
+
 **A:**
+
 - With 25 locations × 80 services = 2,000 potential content items
 - Across 4 websites with unique versions = different URLs per site
 - Estimated: 4,000+ unique published pages
 
 ### Q: Do I have to approve every single page?
+
 **A:** No! Use bulk approve. Set the number to approve and click. For example, approve 50 at a time.
 
 ### Q: What if the AI generates bad content?
+
 **A:** Reject it. You get to review every piece. The quality score shows how good the AI thinks it is (0-100%).
 
 ### Q: Can I regenerate a specific location?
+
 **A:** Yes! Use Location Management, select the location, select websites, click "Start Generation". This regenerates all content for that location.
 
 ### Q: How do I know the pages are published?
+
 **A:** Check SEO Analytics. Look for coverage percentage. When it goes up, pages are being approved and published.
 
 ---
@@ -313,6 +332,7 @@ firebase deploy --only hosting:chicagoairportblackcar
 ## WHAT YOU CAN DO NOW
 
 ### Immediate (Today)
+
 - Deploy functions to Firebase
 - Test content generation with 1-2 locations
 - Approve sample content
@@ -320,6 +340,7 @@ firebase deploy --only hosting:chicagoairportblackcar
 - Deploy to Firebase Hosting
 
 ### Short-term (This Week)
+
 - Generate content for all 25 locations
 - Approve content for 2-3 websites
 - Deploy 1,000+ pages to each site
@@ -327,6 +348,7 @@ firebase deploy --only hosting:chicagoairportblackcar
 - Test page quality and UX
 
 ### Medium-term (Next Phase)
+
 - Expand to 240+ locations (Phase 3 feature)
 - Implement automatic content regeneration
 - Add quality scoring improvements
@@ -338,22 +360,26 @@ firebase deploy --only hosting:chicagoairportblackcar
 ## TECHNICAL DETAILS FOR DEVELOPERS
 
 ### Cloud Function Locations
+
 - **Content Generation**: `/functions/src/contentGenerationFunctions.ts`
 - **Page Generation**: `/functions/src/pageGenerationFunctions.ts`
 - **Exports**: `/functions/src/index.ts` (lines showing exports)
 
 ### Admin Dashboard Locations
+
 - **Content Approval**: `/apps/admin/src/pages/content-approval.tsx`
 - **Locations Management**: `/apps/admin/src/pages/locations-management.tsx`
 - **SEO Analytics**: `/apps/admin/src/pages/seo-analytics.tsx`
 
 ### Astro Templates
+
 - **Airport**: `/apps/airport/src/pages/service/[location]/[service].astro`
 - **Corporate**: `/apps/corporate/src/pages/service/[location]/[service].astro`
 - **Wedding**: `/apps/wedding/src/pages/service/[location]/[service].astro`
 - **Party Bus**: `/apps/partybus/src/pages/service/[location]/[service].astro`
 
 ### Firestore Collections
+
 - `locations` - Source location data
 - `services` - Service definitions
 - `fleet_vehicles` - Vehicle inventory
@@ -368,30 +394,35 @@ firebase deploy --only hosting:chicagoairportblackcar
 After Phase 2 is fully deployed, you should see:
 
 ✅ **Functionality**
+
 - Admin pages load without errors
 - Location Management shows all 25 locations
 - Content Approval shows pending items after generation
 - SEO Analytics displays real-time metrics
 
 ✅ **Content Generation**
+
 - 1,000+ AI-generated content items in Firestore
 - Quality scores calculated for each item
 - Internal links auto-generated between related pages
 - Keywords extracted and stored
 
 ✅ **Approvals**
+
 - Admin able to approve/reject items
 - Bulk approve working correctly
 - Approval timestamps recorded
 - Admin email logged with each action
 
 ✅ **Page Generation**
+
 - Astro templates generating static .astro files
 - Dynamic routing working for [location]/[service] patterns
 - Generated pages include breadcrumbs, keywords, CTA
 - JSON-LD schema markup included
 
 ✅ **Live Pages**
+
 - 500+ pages deployed and accessible
 - URLs following pattern: /service/{serviceId}/{locationId}
 - Pages indexable by Google
@@ -402,21 +433,27 @@ After Phase 2 is fully deployed, you should see:
 ## TROUBLESHOOTING
 
 ### Problem: "Functions deployment fails"
+
 **Solution:**
+
 - Check Node.js version: `node --version` (should be 18+)
 - Check Firebase CLI: `firebase --version` (should be latest)
 - Run: `npm install` in `/functions` directory
 - Try again: `firebase deploy --only functions`
 
 ### Problem: "Admin pages don't load"
+
 **Solution:**
+
 - Verify Firestore collections exist
 - Check Firebase auth is enabled
 - Verify user has admin role
 - Check browser console for errors
 
 ### Problem: "Content generation doesn't start"
+
 **Solution:**
+
 - Verify Cloud Functions deployed successfully
 - Check Firestore rules allow write to `service_content`
 - Verify user has admin role
@@ -424,7 +461,9 @@ After Phase 2 is fully deployed, you should see:
 - Verify Gemini API key is configured
 
 ### Problem: "Generated pages have broken content"
+
 **Solution:**
+
 - Check service_content documents in Firestore
 - Verify `content` field has valid HTML
 - Check Astro build logs for errors
@@ -466,6 +505,7 @@ After Phase 2 is fully deployed, you should see:
 ## 🎉 YOU'RE READY!
 
 Phase 2 is complete and ready for deployment. Everything needed to:
+
 - ✅ Generate AI-powered content at scale
 - ✅ Have human oversight of every page
 - ✅ Automatically publish SEO-optimized pages
@@ -480,7 +520,6 @@ Phase 2 is complete and ready for deployment. Everything needed to:
 
 ---
 
-*Generated*: January 16, 2026
-*Status*: ✅ COMPLETE & READY FOR DEPLOYMENT
-*Phase 3 Features*: Advanced analytics, quality optimization, scheduling
-
+_Generated_: January 16, 2026
+_Status_: ✅ COMPLETE & READY FOR DEPLOYMENT
+_Phase 3 Features_: Advanced analytics, quality optimization, scheduling

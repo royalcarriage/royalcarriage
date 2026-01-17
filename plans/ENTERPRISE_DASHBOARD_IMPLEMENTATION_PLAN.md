@@ -1,5 +1,7 @@
 # Enterprise Dashboard Implementation Plan
+
 ## Multi-Location, Multi-Service, AI-Powered Content System
+
 **Date**: January 16, 2026
 **Status**: PLANNING PHASE - Ready for Development
 **Scope**: 200+ Chicago locations × 20 services × 4 websites × 10+ fleet vehicles = 16,000+ pages
@@ -9,7 +11,9 @@
 ## PART 1: COMPREHENSIVE IMPLEMENTATION OVERVIEW
 
 ### 1.1 Executive Summary
+
 Build a fully-integrated, AI-powered location and service management system that:
+
 - **Covers 200+ Chicago locations** (neighborhoods + suburbs)
 - **Manages 20 services per website** (80 total services across 4 sites)
 - **Features 10+ fleet vehicles** with interconnected services
@@ -26,6 +30,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ### 2.1 Complete Fleet Structure
 
 **CATEGORY 1: LUXURY SEDANS (1-3 passengers)**
+
 ```
 1. Lincoln Continental
    - Seats: 3 passengers + driver
@@ -49,6 +54,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 **CATEGORY 2: LUXURY SUVs (4-6 passengers)**
+
 ```
 5. Cadillac Escalade ESV
    - Seats: 6 passengers + driver
@@ -72,6 +78,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 **CATEGORY 3: STRETCH LIMOUSINES (8-10 passengers)**
+
 ```
 9. Lincoln Stretch Limo
    - Seats: 8-10 passengers
@@ -80,6 +87,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 **CATEGORY 4: EXECUTIVE VANS (10-16 passengers)**
+
 ```
 10. Mercedes Sprinter Van (14 seats)
     - Seats: 14 passengers
@@ -93,6 +101,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 **CATEGORY 5: PARTY BUSES (20-40 passengers)**
+
 ```
 12. Full-Size Party Bus (36 seats)
     - Seats: 36 passengers
@@ -106,6 +115,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 **CATEGORY 6: COACH BUSES (40+ passengers)**
+
 ```
 14. Full-Size Motor Coach (50+ seats)
     - Seats: 50+ passengers
@@ -114,6 +124,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ```
 
 ### 2.2 Fleet Database Schema
+
 ```javascript
 // Firestore Collection: fleet_vehicles
 {
@@ -144,6 +155,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ### 3.1 AIRPORT WEBSITE (chicagoairportblackcar.web.app) - 20 Services
 
 **Group A: Airport Transfers (Core)**
+
 1. **O'Hare Airport Transfers**
    - All zones, all times, flight tracking
    - Best for: Solo travelers, business trips
@@ -164,22 +176,22 @@ Build a fully-integrated, AI-powered location and service management system that
    - Best for: Regional travel, group trips
    - Vehicles: SUVs, Sprinters
 
-**Group B: Airport Hotel Transfers**
-5. **Airport to Downtown Hotel**
-   - Loop, River North, Michigan Avenue
-   - Best for: Tourists, business travelers
-   - Vehicles: All categories
+**Group B: Airport Hotel Transfers** 5. **Airport to Downtown Hotel**
+
+- Loop, River North, Michigan Avenue
+- Best for: Tourists, business travelers
+- Vehicles: All categories
 
 6. **Airport to Suburban Hotel**
    - Naperville, Schaumburg, Oak Brook
    - Best for: Suburban visitors, long-distance
    - Vehicles: All categories
 
-**Group C: Airport + Activity Combinations**
-7. **Airport to Business Meeting**
-   - Direct to office with Wi-Fi, charging
-   - Best for: Business travelers
-   - Vehicles: Sedans, SUVs
+**Group C: Airport + Activity Combinations** 7. **Airport to Business Meeting**
+
+- Direct to office with Wi-Fi, charging
+- Best for: Business travelers
+- Vehicles: Sedans, SUVs
 
 8. **Airport to Event/Conference**
    - McCormick Place, Navy Pier, local events
@@ -191,11 +203,7 @@ Build a fully-integrated, AI-powered location and service management system that
    - Best for: Special occasions, group dining
    - Vehicles: Sedans, SUVs, stretch limos
 
-**Group D: Group Airport Travel**
-10. **Corporate Group Airport Transfers**
-    - 4-50+ passengers, pre-arranged
-    - Best for: Corporate travel, team events
-    - Vehicles: Sprinters, Coaches
+**Group D: Group Airport Travel** 10. **Corporate Group Airport Transfers** - 4-50+ passengers, pre-arranged - Best for: Corporate travel, team events - Vehicles: Sprinters, Coaches
 
 11. **Wedding Group Airport Shuttle**
     - Guests from airport to hotel/venue
@@ -207,11 +215,7 @@ Build a fully-integrated, AI-powered location and service management system that
     - Best for: Family reunions, group travel
     - Vehicles: SUVs, Sprinters, Coaches
 
-**Group E: Specialized Airport Services**
-13. **Meet & Greet + Luggage Assistance**
-    - Baggage claim assistance, VIP service
-    - Best for: VIP travelers, business executives
-    - Vehicles: Sedans, SUVs
+**Group E: Specialized Airport Services** 13. **Meet & Greet + Luggage Assistance** - Baggage claim assistance, VIP service - Best for: VIP travelers, business executives - Vehicles: Sedans, SUVs
 
 14. **Airport to Parking Facility**
     - Park & fly services, secure parking
@@ -223,11 +227,7 @@ Build a fully-integrated, AI-powered location and service management system that
     - Best for: Layover management
     - Vehicles: Sedans, SUVs
 
-**Group F: Extended Airport Services**
-16. **Airport + City Tour Combination**
-    - Pickup → tour → hotel drop-off
-    - Best for: Tourists, first-time visitors
-    - Vehicles: SUVs, Coaches
+**Group F: Extended Airport Services** 16. **Airport + City Tour Combination** - Pickup → tour → hotel drop-off - Best for: Tourists, first-time visitors - Vehicles: SUVs, Coaches
 
 17. **All-Day Airport Service Package**
     - Arrival, activities, return to airport
@@ -325,6 +325,7 @@ Build a fully-integrated, AI-powered location and service management system that
 ### 4.1 Location Categories
 
 **CATEGORY 1: Chicago Neighborhoods (77 Official)**
+
 - Lincoln Park, Lake View, Wrigleyville, Boystown
 - River North, Gold Coast, Loop, South Loop
 - Wicker Park, Bucktown, Humboldt Park
@@ -334,24 +335,28 @@ Build a fully-integrated, AI-powered location and service management system that
 - ... (77 total Chicago neighborhoods)
 
 **CATEGORY 2: Northern Suburbs (40+ locations)**
+
 - Evanston, Skokie, Niles, Park Ridge
 - Des Plaines, Glenview, Northbrook
 - Deerfield, Winnetka, Wilmette
 - ... (expanding list)
 
 **CATEGORY 3: Western Suburbs (50+ locations)**
+
 - Naperville, Wheaton, Downers Grove
 - Hinsdale, Oak Brook, Schaumburg
 - Elmhurst, Barrington, Aurora
 - ... (expanding list)
 
 **CATEGORY 4: Southern Suburbs (50+ locations)**
+
 - Oak Park, Forest Preserve, Tinley Park
 - Orland Park, Palos Heights, Burr Ridge
 - Blue Island, Chicago Heights, Calumet City
 - ... (expanding list)
 
 **CATEGORY 5: Southwest Suburbs (20+ locations)**
+
 - Alsip, Merrionette Park, Evergreen Park
 - Summit, Stickney, Bridgeview
 - ... (expanding list)
@@ -420,6 +425,7 @@ Build a fully-integrated, AI-powered location and service management system that
 
 **TYPE 1: SERVICE OVERVIEW PAGES**
 Example: `/airport/services/o-hare-airport-transfers`
+
 - H1: "O'Hare Airport Limousine Service in Chicago"
 - Meta Description: 155 chars with keywords
 - Content Sections:
@@ -437,6 +443,7 @@ Example: `/airport/services/o-hare-airport-transfers`
 
 **TYPE 2: LOCATION-SERVICE COMBO PAGES**
 Example: `/airport/naperville/o-hare-airport-service`
+
 - H1: "O'Hare Airport Limousine Service to Naperville"
 - H2 Topics:
   - Naperville background & demographics (100 words)
@@ -454,6 +461,7 @@ Example: `/airport/naperville/o-hare-airport-service`
 
 **TYPE 3: LOCATION HUB PAGES**
 Example: `/airport/naperville/`
+
 - H1: "Limousine Service in Naperville, Illinois"
 - Sections:
   - Naperville overview (200 words)
@@ -470,6 +478,7 @@ Example: `/airport/naperville/`
 
 **TYPE 4: VEHICLE SHOWCASE PAGES**
 Example: `/airport/cadillac-escalade-suv-service`
+
 - H1: "Cadillac Escalade SUV Rental in Chicago"
 - Sections:
   - Vehicle features & specifications
@@ -487,6 +496,7 @@ Example: `/airport/cadillac-escalade-suv-service`
 
 **TYPE 5: SERVICE DETAIL PAGES**
 Example: `/wedding/bride-transportation-service`
+
 - H1: "Professional Bride Transportation for Chicago Weddings"
 - Sections:
   - Service overview
@@ -505,12 +515,14 @@ Example: `/wedding/bride-transportation-service`
 ### 5.2 SEO Best Practices Implemented
 
 **Keyword Strategy:**
+
 - Primary: "Limousine service [location]"
 - Secondary: "[Service] in [location]"
 - Long-tail: "Luxury [vehicle] rental for [purpose] in [location]"
 - Semantic: Related terms from Gemini research
 
 **Internal Linking Matrix:**
+
 ```
 Location Hub Page
   ↓
@@ -524,12 +536,14 @@ Location Hub Page
 ```
 
 **Schema Markup Strategy:**
+
 - Every page: LocalBusiness schema (location-specific)
 - Service pages: Service schema + LocalBusiness
 - Vehicle pages: Product schema + Service schema
 - Location pages: Multiple Service schemas + LocalBusiness
 
 **Meta Tags:**
+
 - Unique title per page: "[Service] in [Location]"
 - Unique description per page: "Professional [service] in [location]..."
 - OG image: Service-specific (bride, corporate, etc.)
@@ -542,27 +556,24 @@ Location Hub Page
 ### 6.1 New Cloud Functions Required
 
 **Function 1: `generateLocationPages`**
+
 - Trigger: Admin dashboard button or scheduled
 - Input: List of locations, list of services, website
 - Process:
-  1. For each location:
-     2. Create location data in Firestore
-     3. Call Gemini to research location (demographics, landmarks, businesses)
-     4. Store AI research in location document
+  1. For each location: 2. Create location data in Firestore 3. Call Gemini to research location (demographics, landmarks, businesses) 4. Store AI research in location document
 - Output: locations collection populated
 
 **Function 2: `generateServiceContent`**
+
 - Trigger: When service is created/updated
 - Input: Service ID, website, list of locations
 - Process:
-  1. For each location-service combo:
-     2. Generate unique content using Gemini
-     3. Include location-specific details
-     4. Optimize for keywords
+  1. For each location-service combo: 2. Generate unique content using Gemini 3. Include location-specific details 4. Optimize for keywords
   2. Store in `service_content` collection
 - Output: SEO-optimized content for every location-service combo
 
 **Function 3: `generatePageMetadata`**
+
 - Trigger: When content is approved
 - Input: Service ID, location ID, content
 - Process:
@@ -573,6 +584,7 @@ Location Hub Page
 - Output: Complete page metadata
 
 **Function 4: `buildStaticPages`**
+
 - Trigger: Manual or scheduled (weekly)
 - Input: Site name, locations, services
 - Process:
@@ -583,6 +595,7 @@ Location Hub Page
 - Output: 4,000+ static pages deployed
 
 **Function 5: `generateInternalLinkMap`**
+
 - Trigger: When pages are deployed
 - Input: All pages generated
 - Process:
@@ -592,6 +605,7 @@ Location Hub Page
 - Output: Internal link suggestions for each page
 
 **Function 6: `syncFleetToPages`**
+
 - Trigger: When fleet vehicle is added/updated
 - Input: Vehicle ID
 - Process:
@@ -607,6 +621,7 @@ Location Hub Page
 ### 7.1 New Dashboard Components Needed
 
 **Page 1: Location Management**
+
 ```
 /admin/locations
 - Table of all 240+ locations
@@ -617,6 +632,7 @@ Location Hub Page
 ```
 
 **Page 2: Service Management**
+
 ```
 /admin/services
 - Cards/table for all services (80 total)
@@ -627,6 +643,7 @@ Location Hub Page
 ```
 
 **Page 3: Content Review & Approval**
+
 ```
 /admin/content-approval
 - Queue of generated content awaiting approval
@@ -637,6 +654,7 @@ Location Hub Page
 ```
 
 **Page 4: Fleet Management**
+
 ```
 /admin/fleet
 - All 14+ vehicles in table format
@@ -646,6 +664,7 @@ Location Hub Page
 ```
 
 **Page 5: SEO Dashboard**
+
 ```
 /admin/seo-analytics
 - Page count by website
@@ -658,6 +677,7 @@ Location Hub Page
 ```
 
 **Page 6: Content Generation Pipeline**
+
 ```
 /admin/generation-pipeline
 - Step 1: Select website(s)
@@ -670,6 +690,7 @@ Location Hub Page
 ```
 
 **Page 7: Publishing & Deployment**
+
 ```
 /admin/publishing
 - Status: Pages generated, pending approval
@@ -750,6 +771,7 @@ Location Hub Page
 ## PART 9: IMPLEMENTATION PHASES
 
 ### Phase 1: Data Foundation (Week 1)
+
 - [ ] Create Firestore collections
 - [ ] Populate 240+ locations
 - [ ] Add 14+ fleet vehicles
@@ -757,6 +779,7 @@ Location Hub Page
 - [ ] Create location-service mappings
 
 ### Phase 2: AI Content Generation System (Week 2)
+
 - [ ] Enhance GeminiClient for location/service research
 - [ ] Create Cloud Functions for content generation
 - [ ] Build content quality validation
@@ -764,6 +787,7 @@ Location Hub Page
 - [ ] Generate content for all locations
 
 ### Phase 3: Admin Dashboard (Week 3)
+
 - [ ] Create Location Management page
 - [ ] Create Service Management page
 - [ ] Create Content Approval page
@@ -772,6 +796,7 @@ Location Hub Page
 - [ ] Create Content Generation Pipeline
 
 ### Phase 4: Page Generation & SEO (Week 4)
+
 - [ ] Implement dynamic routing in Astro
 - [ ] Create location-service page templates
 - [ ] Generate all 4,000+ static pages
@@ -780,6 +805,7 @@ Location Hub Page
 - [ ] Test SEO (meta tags, schema, keywords)
 
 ### Phase 5: Deployment & Optimization (Week 5)
+
 - [ ] Build & test all pages locally
 - [ ] Deploy to Firebase Hosting
 - [ ] Monitor build time & performance
@@ -792,6 +818,7 @@ Location Hub Page
 ## PART 10: SUCCESS METRICS
 
 ### SEO Metrics
+
 - [ ] 4,000+ pages generated
 - [ ] 100% unique meta titles & descriptions
 - [ ] 100% schema markup coverage
@@ -800,12 +827,14 @@ Location Hub Page
 - [ ] Target: 50+ keywords per location
 
 ### Content Quality
+
 - [ ] 1,200-2,000 words per page
 - [ ] AI-generated, human-reviewed
 - [ ] 0 duplicate content
 - [ ] Location-specific details on every page
 
 ### Technical
+
 - [ ] <3 second page load time
 - [ ] 100% lighthouse score
 - [ ] Mobile responsive (all pages)
@@ -813,6 +842,7 @@ Location Hub Page
 - [ ] Breadcrumbs on all pages
 
 ### Business
+
 - [ ] Every service available in every location
 - [ ] Clear vehicle recommendations per service
 - [ ] Internal linking drives user flow
@@ -826,6 +856,7 @@ Location Hub Page
 ### Against Echo Limousine, Chi Town Black Cars, Pontarelli
 
 **Your Advantages:**
+
 1. **AI-Generated Content at Scale**: 4,000+ unique pages vs. their <100 pages
 2. **Location Saturation**: 240+ locations vs. their generic "Chicago area"
 3. **SEO Dominance**: Long-tail keywords owned (e.g., "Bride transportation in Naperville")
@@ -834,6 +865,7 @@ Location Hub Page
 6. **Rapid Deployment**: New services/locations added in minutes, not weeks
 
 ### Market Research Insights
+
 - **Echo Limousine**: 200+ vehicles, multiple service types - good fleet variety
 - **Chi Town Black Cars**: Clear vehicle categories with pricing - transparent model
 - **Pontarelli**: Wedding-focused marketing - strong niche
@@ -844,6 +876,7 @@ Location Hub Page
 ## PART 12: TECHNICAL IMPLEMENTATION NOTES
 
 ### Astro Dynamic Routing Setup
+
 ```astro
 // File: apps/airport/src/pages/[location]/[service].astro
 ---
@@ -877,6 +910,7 @@ const { location, service, content } = Astro.props;
 ```
 
 ### Content Approval Workflow
+
 ```
 AI generates content → Firestore service_content collection
 ↓
@@ -905,7 +939,6 @@ This plan creates a **fully-integrated, AI-powered, location-aware limousine ser
 
 ---
 
-*Plan Created: January 16, 2026*
-*Status: Ready for Implementation*
-*Next Step: Approve plan and begin Phase 1 (Data Foundation)*
-
+_Plan Created: January 16, 2026_
+_Status: Ready for Implementation_
+_Next Step: Approve plan and begin Phase 1 (Data Foundation)_

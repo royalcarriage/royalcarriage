@@ -2,8 +2,13 @@
  * Security middleware and configuration
  */
 
-import { type Express, type Request, type Response, type NextFunction } from 'express';
-import { type User, UserRole, type UserRoleType } from '../shared/schema';
+import {
+  type Express,
+  type Request,
+  type Response,
+  type NextFunction,
+} from "express";
+import { type User, UserRole, type UserRoleType } from "../shared/schema";
 
 /**
  * Configure security headers
@@ -11,34 +16,34 @@ import { type User, UserRole, type UserRoleType } from '../shared/schema';
 export function setupSecurityHeaders(app: Express) {
   app.use((req: Request, res: Response, next: NextFunction) => {
     // Prevent clickjacking
-    res.setHeader('X-Frame-Options', 'DENY');
+    res.setHeader("X-Frame-Options", "DENY");
 
     // Prevent MIME type sniffing
-    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader("X-Content-Type-Options", "nosniff");
 
     // Enable XSS protection
-    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader("X-XSS-Protection", "1; mode=block");
 
     // Referrer policy
-    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
 
     // Content Security Policy (development vs production)
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NODE_ENV === "production") {
       res.setHeader(
-        'Content-Security-Policy',
+        "Content-Security-Policy",
         "default-src 'self'; " +
-        "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "font-src 'self' https://fonts.gstatic.com; " +
-        "img-src 'self' data: https:; " +
-        "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;"
+          "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+          "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+          "font-src 'self' https://fonts.gstatic.com; " +
+          "img-src 'self' data: https:; " +
+          "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;",
       );
     }
 
     // Permissions Policy (formerly Feature Policy)
     res.setHeader(
-      'Permissions-Policy',
-      'geolocation=(), microphone=(), camera=()'
+      "Permissions-Policy",
+      "geolocation=(), microphone=(), camera=()",
     );
 
     next();
@@ -51,7 +56,7 @@ export function setupSecurityHeaders(app: Express) {
 export const rateLimitConfig = {
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
+  message: "Too many requests from this IP, please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
 };
@@ -63,11 +68,11 @@ export function validateSessionSecret(): string {
   const secret = process.env.SESSION_SECRET;
 
   if (!secret) {
-    throw new Error('SESSION_SECRET environment variable is required');
+    throw new Error("SESSION_SECRET environment variable is required");
   }
 
   if (secret.length < 32) {
-    console.warn('⚠️  SESSION_SECRET should be at least 32 characters long');
+    console.warn("⚠️  SESSION_SECRET should be at least 32 characters long");
   }
 
   return secret;
@@ -78,7 +83,7 @@ export function validateSessionSecret(): string {
  */
 export function sanitizeInput(input: string): string {
   return input
-    .replace(/[<>]/g, '') // Remove angle brackets
+    .replace(/[<>]/g, "") // Remove angle brackets
     .trim();
 }
 
@@ -87,7 +92,7 @@ export function sanitizeInput(input: string): string {
  */
 export function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
-    res.status(401).json({ error: 'Authentication required' });
+    res.status(401).json({ error: "Authentication required" });
     return;
   }
   next();
@@ -98,7 +103,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   if (!req.isAuthenticated()) {
-    res.status(401).json({ error: 'Authentication required' });
+    res.status(401).json({ error: "Authentication required" });
     return;
   }
 
@@ -106,7 +111,9 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
   const allowedRoles: UserRoleType[] = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
 
   if (!allowedRoles.includes(user.role)) {
-    res.status(403).json({ error: 'Insufficient permissions. Admin access required.' });
+    res
+      .status(403)
+      .json({ error: "Insufficient permissions. Admin access required." });
     return;
   }
 
@@ -116,16 +123,24 @@ export function requireAdmin(req: Request, res: Response, next: NextFunction) {
 /**
  * Check if request is from a super admin
  */
-export function requireSuperAdmin(req: Request, res: Response, next: NextFunction) {
+export function requireSuperAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   if (!req.isAuthenticated()) {
-    res.status(401).json({ error: 'Authentication required' });
+    res.status(401).json({ error: "Authentication required" });
     return;
   }
 
   const user = req.user as User;
 
   if (user.role !== UserRole.SUPER_ADMIN) {
-    res.status(403).json({ error: 'Insufficient permissions. Super admin access required.' });
+    res
+      .status(403)
+      .json({
+        error: "Insufficient permissions. Super admin access required.",
+      });
     return;
   }
 
@@ -145,7 +160,7 @@ export function requireRole(minRole: UserRoleType) {
 
   return (req: Request, res: Response, next: NextFunction) => {
     if (!req.isAuthenticated()) {
-      res.status(401).json({ error: 'Authentication required' });
+      res.status(401).json({ error: "Authentication required" });
       return;
     }
 
@@ -155,7 +170,7 @@ export function requireRole(minRole: UserRoleType) {
 
     if (userLevel < requiredLevel) {
       res.status(403).json({
-        error: 'Insufficient permissions',
+        error: "Insufficient permissions",
         required: minRole,
         current: user.role,
       });
@@ -169,13 +184,17 @@ export function requireRole(minRole: UserRoleType) {
 /**
  * Validate API request origin
  */
-export function validateOrigin(req: Request, res: Response, next: NextFunction) {
+export function validateOrigin(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   const origin = req.headers.origin;
   const allowedOrigins = [
-    'https://royalcarriagelimoseo.web.app',
-    'https://chicagoairportblackcar.com',
-    'http://localhost:5000',
-    'http://127.0.0.1:5000',
+    "https://royalcarriagelimoseo.web.app",
+    "https://chicagoairportblackcar.com",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
   ];
 
   // Allow requests without origin (same-origin requests)
@@ -183,15 +202,15 @@ export function validateOrigin(req: Request, res: Response, next: NextFunction) 
     return next();
   }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV === "development") {
     return next();
   }
 
   if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Credentials", "true");
     return next();
   }
 
-  res.status(403).json({ error: 'Forbidden origin' });
+  res.status(403).json({ error: "Forbidden origin" });
 }

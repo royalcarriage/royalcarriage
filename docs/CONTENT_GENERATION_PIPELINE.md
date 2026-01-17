@@ -33,6 +33,7 @@ The Content Generation Pipeline is an enterprise-scale system for generating, ap
 **Trigger**: Callable HTTPS function (authenticated)
 
 **Input**:
+
 ```typescript
 {
   locationId: string,      // Location document ID
@@ -42,6 +43,7 @@ The Content Generation Pipeline is an enterprise-scale system for generating, ap
 ```
 
 **Output**:
+
 ```typescript
 {
   contentId: string,       // Generated content ID (serviceId-locationId)
@@ -51,6 +53,7 @@ The Content Generation Pipeline is an enterprise-scale system for generating, ap
 ```
 
 **Process**:
+
 1. Fetch service and location data from Firestore
 2. Generate content using Gemini AI with structured prompt
 3. Create SEO title, meta description, keywords
@@ -58,11 +61,12 @@ The Content Generation Pipeline is an enterprise-scale system for generating, ap
 5. Store in `service_content` collection with status "pending"
 
 **Example Usage**:
+
 ```javascript
 const result = await generateLocationServiceContent({
-  locationId: 'naperville',
-  serviceId: 'airport-ohare',
-  websiteId: 'airport'
+  locationId: "naperville",
+  serviceId: "airport-ohare",
+  websiteId: "airport",
 });
 
 console.log(result);
@@ -82,6 +86,7 @@ console.log(result);
 **Trigger**: Callable HTTPS function (authenticated, 9-minute timeout, 1GB memory)
 
 **Input**:
+
 ```typescript
 {
   websiteId: string,       // Target website
@@ -91,6 +96,7 @@ console.log(result);
 ```
 
 **Output**:
+
 ```typescript
 {
   totalGenerated: number,  // Successfully generated count
@@ -104,6 +110,7 @@ console.log(result);
 ```
 
 **Features**:
+
 - **Rate Limiting**: Respects Gemini API limits (60 requests/minute, 1500/day)
 - **Concurrent Processing**: 5 concurrent requests per batch
 - **Progress Tracking**: Updates batch job status in real-time
@@ -111,6 +118,7 @@ console.log(result);
 - **Batch Delay**: 1-second delay between batches
 
 **Process**:
+
 1. Create batch job record in `batch_jobs` collection
 2. Split combinations into batches (5 concurrent requests)
 3. Process each batch with rate limiting
@@ -118,11 +126,12 @@ console.log(result);
 5. Update batch job status on completion
 
 **Example Usage**:
+
 ```javascript
 const result = await batchGenerateContent({
-  websiteId: 'wedding',
-  locationIds: ['naperville', 'wheaton', 'oak-brook'],
-  serviceIds: ['wedding-bride', 'wedding-groom', 'wedding-guest']
+  websiteId: "wedding",
+  locationIds: ["naperville", "wheaton", "oak-brook"],
+  serviceIds: ["wedding-bride", "wedding-groom", "wedding-guest"],
 });
 
 console.log(result);
@@ -142,6 +151,7 @@ console.log(result);
 **Trigger**: Callable HTTPS function (authenticated)
 
 **Input**:
+
 ```typescript
 {
   contentIds: string[]     // Array of content IDs to approve
@@ -149,6 +159,7 @@ console.log(result);
 ```
 
 **Output**:
+
 ```typescript
 {
   approved: number,        // Number of items approved
@@ -157,6 +168,7 @@ console.log(result);
 ```
 
 **Process**:
+
 1. Mark content as "approved" in `service_content` collection
 2. Record approval timestamp and approver user ID
 3. Create corresponding entries in `page_mappings` collection
@@ -164,13 +176,14 @@ console.log(result);
 5. Process in batches of 500 (Firestore batch limit)
 
 **Example Usage**:
+
 ```javascript
 const result = await approveAndPublishContent({
   contentIds: [
-    'airport-ohare-naperville',
-    'airport-midway-naperville',
-    'corporate-downtown-naperville'
-  ]
+    "airport-ohare-naperville",
+    "airport-midway-naperville",
+    "corporate-downtown-naperville",
+  ],
 });
 
 console.log(result);
@@ -189,13 +202,15 @@ console.log(result);
 **Trigger**: Callable HTTPS function (authenticated)
 
 **Input**:
+
 ```typescript
 {
-  contentId: string        // Content document ID
+  contentId: string; // Content document ID
 }
 ```
 
 **Output**:
+
 ```typescript
 {
   metadata: {
@@ -221,6 +236,7 @@ console.log(result);
 ```
 
 **Metadata Includes**:
+
 - **SEO Meta Tags**: Title, description, robots
 - **Open Graph**: Title, description, image for social sharing
 - **Twitter Cards**: Optimized for Twitter sharing
@@ -230,9 +246,10 @@ console.log(result);
 - **Keywords**: Target SEO keywords
 
 **Example Usage**:
+
 ```javascript
 const result = await generatePageMetadata({
-  contentId: 'airport-ohare-naperville'
+  contentId: "airport-ohare-naperville",
 });
 
 console.log(result.metadata.breadcrumbs);
@@ -253,6 +270,7 @@ console.log(result.metadata.breadcrumbs);
 **Trigger**: Callable HTTPS function (authenticated, 9-minute timeout, 2GB memory)
 
 **Input**:
+
 ```typescript
 {
   websiteId: string,       // Target website
@@ -261,13 +279,15 @@ console.log(result.metadata.breadcrumbs);
 ```
 
 **Output**:
+
 ```typescript
 {
-  pagesBuilt: number       // Number of static pages generated
+  pagesBuilt: number; // Number of static pages generated
 }
 ```
 
 **Process**:
+
 1. Query all approved content for the website
 2. Fetch service and location data for each content piece
 3. Generate static page data with all metadata
@@ -275,6 +295,7 @@ console.log(result.metadata.breadcrumbs);
 5. Mark with `buildStatus: 'ready'` for deployment
 
 **Static Page Data Structure**:
+
 ```typescript
 {
   id: string,              // Content ID
@@ -297,10 +318,11 @@ console.log(result.metadata.breadcrumbs);
 ```
 
 **Example Usage**:
+
 ```javascript
 const result = await buildStaticPages({
-  websiteId: 'airport',
-  limit: 500
+  websiteId: "airport",
+  limit: 500,
 });
 
 console.log(result);
@@ -424,12 +446,12 @@ The pipeline implements comprehensive rate limiting to respect API quotas:
 
 ```typescript
 const RATE_LIMITS = {
-  requestsPerMinute: 60,           // Gemini API limit
-  requestsPerDay: 1500,            // Daily quota
-  concurrentRequests: 5,           // Parallel processing
-  batchDelay: 1000,                // ms between batches
-  retryAttempts: 3,                // Retry failed requests
-  retryDelay: 2000                 // ms between retries
+  requestsPerMinute: 60, // Gemini API limit
+  requestsPerDay: 1500, // Daily quota
+  concurrentRequests: 5, // Parallel processing
+  batchDelay: 1000, // ms between batches
+  retryAttempts: 3, // Retry failed requests
+  retryDelay: 2000, // ms between retries
 };
 ```
 
@@ -443,13 +465,13 @@ const RATE_LIMITS = {
 // Generate airport transfer content for all Chicago suburbs
 
 const locations = await getLocations(); // ['naperville', 'wheaton', 'oak-brook', ...]
-const serviceId = 'airport-ohare';
-const websiteId = 'airport';
+const serviceId = "airport-ohare";
+const websiteId = "airport";
 
 const result = await batchGenerateContent({
   websiteId,
   locationIds: locations,
-  serviceIds: [serviceId]
+  serviceIds: [serviceId],
 });
 
 console.log(`Generated ${result.totalGenerated} pages`);
@@ -460,8 +482,8 @@ console.log(`Generated ${result.totalGenerated} pages`);
 ```javascript
 // Approve all pending content for a website
 
-const pending = await getPendingContent('airport');
-const contentIds = pending.map(doc => doc.id);
+const pending = await getPendingContent("airport");
+const contentIds = pending.map((doc) => doc.id);
 
 // Approve content
 await approveAndPublishContent({ contentIds });
@@ -473,8 +495,8 @@ for (const contentId of contentIds) {
 
 // Build static pages
 const result = await buildStaticPages({
-  websiteId: 'airport',
-  limit: 1000
+  websiteId: "airport",
+  limit: 1000,
 });
 
 console.log(`${result.pagesBuilt} pages ready for deployment`);
@@ -487,9 +509,9 @@ console.log(`${result.pagesBuilt} pages ready for deployment`);
 
 // Step 1: Generate content
 const batchResult = await batchGenerateContent({
-  websiteId: 'wedding',
-  locationIds: ['naperville', 'wheaton', 'oak-brook'],
-  serviceIds: ['wedding-bride', 'wedding-groom']
+  websiteId: "wedding",
+  locationIds: ["naperville", "wheaton", "oak-brook"],
+  serviceIds: ["wedding-bride", "wedding-groom"],
 });
 
 console.log(`Generated ${batchResult.totalGenerated} pieces`);
@@ -498,12 +520,13 @@ console.log(`Generated ${batchResult.totalGenerated} pieces`);
 // ...
 
 // Step 3: Bulk approve all pending
-const pending = await db.collection('service_content')
-  .where('websiteId', '==', 'wedding')
-  .where('approvalStatus', '==', 'pending')
+const pending = await db
+  .collection("service_content")
+  .where("websiteId", "==", "wedding")
+  .where("approvalStatus", "==", "pending")
   .get();
 
-const contentIds = pending.docs.map(doc => doc.id);
+const contentIds = pending.docs.map((doc) => doc.id);
 
 await approveAndPublishContent({ contentIds });
 
@@ -514,7 +537,7 @@ for (const contentId of contentIds) {
 
 // Step 5: Build static pages
 const buildResult = await buildStaticPages({
-  websiteId: 'wedding'
+  websiteId: "wedding",
 });
 
 console.log(`${buildResult.pagesBuilt} pages ready to deploy`);
@@ -530,16 +553,19 @@ console.log(`${buildResult.pagesBuilt} pages ready to deploy`);
 The pipeline includes comprehensive error handling:
 
 ### Content Generation Failures
+
 - **Gemini API Errors**: Falls back to template-based content
 - **Missing Data**: Throws `not-found` error with details
 - **Rate Limiting**: Implements exponential backoff
 
 ### Batch Processing Failures
+
 - **Individual Failures**: Continue processing, log errors
 - **Partial Success**: Returns count of successful + failed items
 - **Job Tracking**: All batch jobs logged in `batch_jobs` collection
 
 ### Approval/Publishing Failures
+
 - **Missing Content**: Logs warning, continues with remaining items
 - **Firestore Batch Limits**: Processes in chunks of 500
 
@@ -548,16 +574,19 @@ The pipeline includes comprehensive error handling:
 ## Performance Optimization
 
 ### Batch Processing
+
 - Processes 5 concurrent requests at a time
 - 1-second delay between batches
 - Maximum 9-minute execution time
 
 ### Memory Optimization
+
 - 1GB memory for `batchGenerateContent`
 - 2GB memory for `buildStaticPages`
 - Processes large datasets in chunks
 
 ### Firestore Optimization
+
 - Batch writes (up to 500 operations)
 - Parallel reads where possible
 - Indexed queries for performance
@@ -572,13 +601,13 @@ All functions log comprehensive information:
 
 ```javascript
 // Info logs
-functions.logger.info('Generating content', { locationId, serviceId });
+functions.logger.info("Generating content", { locationId, serviceId });
 
 // Error logs
-functions.logger.error('Content generation failed', { error });
+functions.logger.error("Content generation failed", { error });
 
 // Debug logs
-functions.logger.debug('Generated page', { contentId });
+functions.logger.debug("Generated page", { contentId });
 ```
 
 ### Batch Job Tracking
@@ -586,9 +615,10 @@ functions.logger.debug('Generated page', { contentId });
 Monitor batch jobs via Firestore:
 
 ```javascript
-const batchJobs = await db.collection('batch_jobs')
-  .where('status', '==', 'running')
-  .orderBy('startedAt', 'desc')
+const batchJobs = await db
+  .collection("batch_jobs")
+  .where("status", "==", "running")
+  .orderBy("startedAt", "desc")
   .get();
 ```
 
@@ -597,15 +627,18 @@ const batchJobs = await db.collection('batch_jobs')
 ## Security
 
 ### Authentication
+
 - All functions require authentication
 - User context passed to all operations
 - Approval actions log user ID
 
 ### Authorization
+
 - Functions callable by authenticated users
 - Admin-only operations can be added via custom claims
 
 ### Data Validation
+
 - Input validation on all functions
 - Type checking via TypeScript
 - Schema validation for generated content
@@ -615,17 +648,20 @@ const batchJobs = await db.collection('batch_jobs')
 ## Deployment
 
 ### Build Functions
+
 ```bash
 cd functions
 npm run build
 ```
 
 ### Deploy All Functions
+
 ```bash
 firebase deploy --only functions
 ```
 
 ### Deploy Specific Functions
+
 ```bash
 firebase deploy --only functions:generateLocationServiceContent
 firebase deploy --only functions:batchGenerateContent
@@ -643,13 +679,13 @@ firebase deploy --only functions:buildStaticPages
 ```javascript
 // Test single content generation
 const result = await generateLocationServiceContent({
-  locationId: 'naperville',
-  serviceId: 'airport-ohare',
-  websiteId: 'airport'
+  locationId: "naperville",
+  serviceId: "airport-ohare",
+  websiteId: "airport",
 });
 
-assert(result.contentId === 'airport-ohare-naperville');
-assert(result.status === 'pending');
+assert(result.contentId === "airport-ohare-naperville");
+assert(result.status === "pending");
 ```
 
 ### Integration Testing
@@ -657,15 +693,15 @@ assert(result.status === 'pending');
 ```javascript
 // Test full pipeline
 const batchResult = await batchGenerateContent({
-  websiteId: 'airport',
-  locationIds: ['test-location'],
-  serviceIds: ['test-service']
+  websiteId: "airport",
+  locationIds: ["test-location"],
+  serviceIds: ["test-service"],
 });
 
 assert(batchResult.totalGenerated === 1);
 
 const approveResult = await approveAndPublishContent({
-  contentIds: ['test-service-test-location']
+  contentIds: ["test-service-test-location"],
 });
 
 assert(approveResult.approved === 1);
@@ -677,16 +713,19 @@ assert(approveResult.published === 1);
 ## Troubleshooting
 
 ### "Gemini API rate limit exceeded"
+
 - Reduce `concurrentRequests` in rate limits
 - Increase `batchDelay` between batches
 - Monitor daily quota usage
 
 ### "Function timeout (9 minutes)"
+
 - Reduce batch size
 - Process in multiple smaller batches
 - Increase function memory allocation
 
 ### "Missing service or location data"
+
 - Verify data exists in Firestore
 - Check document IDs are correct
 - Ensure data initialization completed
@@ -696,6 +735,7 @@ assert(approveResult.published === 1);
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] A/B testing variants for content
 - [ ] Multi-language content generation
 - [ ] Content quality scoring with AI
@@ -706,6 +746,7 @@ assert(approveResult.published === 1);
 - [ ] Voice search optimization
 
 ### Performance Improvements
+
 - [ ] Caching for service/location data
 - [ ] Pre-warming for cold starts
 - [ ] Parallel metadata generation
@@ -716,6 +757,7 @@ assert(approveResult.published === 1);
 ## Support
 
 For questions or issues:
+
 - Check Firebase Functions logs
 - Review `batch_jobs` collection for job status
 - Verify Gemini API quota usage

@@ -27,7 +27,8 @@ function run(name, cmd) {
     console.log(`[${name}] ✓ PASS (log: ${logFile})`);
     return { ok: true, logFile };
   } catch (e) {
-    const out = (e.stdout?.toString() || "") + "\n" + (e.stderr?.toString() || "");
+    const out =
+      (e.stdout?.toString() || "") + "\n" + (e.stderr?.toString() || "");
     fs.writeFileSync(logFile, out);
     console.error(`[${name}] ✗ FAIL (log: ${logFile})`);
     return { ok: false, logFile };
@@ -41,7 +42,9 @@ for (const [name, cmd] of cmds) {
 }
 
 console.log(`\n=== GATES SUMMARY ===`);
-console.log(`Total: ${cmds.length} | Passed: ${cmds.length - failures} | Failed: ${failures}`);
+console.log(
+  `Total: ${cmds.length} | Passed: ${cmds.length - failures} | Failed: ${failures}`,
+);
 
 if (failures > 0) {
   console.error(`\nGates failed. Check logs in ${logDir}/`);

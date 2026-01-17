@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   Bot,
   Send,
@@ -24,8 +24,8 @@ import {
   AlertCircle,
   Clock,
   X,
-} from 'lucide-react';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+} from "lucide-react";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import {
   collection,
   query,
@@ -38,15 +38,15 @@ import {
   Timestamp,
   getDocs,
   where,
-} from 'firebase/firestore';
-import { db, auth } from '../lib/firebase';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
-import { onAuthStateChanged, type User as FirebaseUser } from 'firebase/auth';
+} from "firebase/firestore";
+import { db, auth } from "../lib/firebase";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
+import { onAuthStateChanged, type User as FirebaseUser } from "firebase/auth";
 
 // Types
 interface ChatMessage {
   id: string;
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: Date;
   model?: string;
@@ -73,46 +73,47 @@ interface QuickAction {
 // Quick action suggestions
 const quickActions: QuickAction[] = [
   {
-    id: 'content',
+    id: "content",
     icon: FileText,
-    label: 'Generate Content',
-    prompt: 'Generate SEO-optimized content for a luxury limousine service page about ',
-    color: 'text-amber-400 bg-amber-500/10',
+    label: "Generate Content",
+    prompt:
+      "Generate SEO-optimized content for a luxury limousine service page about ",
+    color: "text-amber-400 bg-amber-500/10",
   },
   {
-    id: 'analyze',
+    id: "analyze",
     icon: Search,
-    label: 'Analyze Data',
-    prompt: 'Analyze the following data and provide insights: ',
-    color: 'text-cyan-400 bg-cyan-500/10',
+    label: "Analyze Data",
+    prompt: "Analyze the following data and provide insights: ",
+    color: "text-cyan-400 bg-cyan-500/10",
   },
   {
-    id: 'code',
+    id: "code",
     icon: Code,
-    label: 'Write Code',
-    prompt: 'Write TypeScript code for ',
-    color: 'text-emerald-400 bg-emerald-500/10',
+    label: "Write Code",
+    prompt: "Write TypeScript code for ",
+    color: "text-emerald-400 bg-emerald-500/10",
   },
   {
-    id: 'translate',
+    id: "translate",
     icon: Languages,
-    label: 'Translate',
-    prompt: 'Translate the following text to Spanish: ',
-    color: 'text-purple-400 bg-purple-500/10',
+    label: "Translate",
+    prompt: "Translate the following text to Spanish: ",
+    color: "text-purple-400 bg-purple-500/10",
   },
   {
-    id: 'summarize',
+    id: "summarize",
     icon: Lightbulb,
-    label: 'Summarize',
-    prompt: 'Summarize the following content concisely: ',
-    color: 'text-rose-400 bg-rose-500/10',
+    label: "Summarize",
+    prompt: "Summarize the following content concisely: ",
+    color: "text-rose-400 bg-rose-500/10",
   },
   {
-    id: 'ideas',
+    id: "ideas",
     icon: Brain,
-    label: 'Brainstorm',
-    prompt: 'Brainstorm creative ideas for ',
-    color: 'text-indigo-400 bg-indigo-500/10',
+    label: "Brainstorm",
+    prompt: "Brainstorm creative ideas for ",
+    color: "text-indigo-400 bg-indigo-500/10",
   },
 ];
 
@@ -132,19 +133,19 @@ function MessageBubble({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const isUser = message.role === 'user';
-  const isSystem = message.role === 'system';
+  const isUser = message.role === "user";
+  const isSystem = message.role === "system";
 
   return (
-    <div className={`flex gap-4 ${isUser ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-4 ${isUser ? "flex-row-reverse" : ""}`}>
       {/* Avatar */}
       <div
         className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
           isUser
-            ? 'bg-amber-500/20'
+            ? "bg-amber-500/20"
             : isSystem
-            ? 'bg-slate-500/20'
-            : 'bg-purple-500/20'
+              ? "bg-slate-500/20"
+              : "bg-purple-500/20"
         }`}
       >
         {isUser ? (
@@ -157,17 +158,19 @@ function MessageBubble({
       </div>
 
       {/* Message Content */}
-      <div className={`flex-1 max-w-[80%] ${isUser ? 'text-right' : ''}`}>
+      <div className={`flex-1 max-w-[80%] ${isUser ? "text-right" : ""}`}>
         <div
           className={`inline-block rounded-2xl px-5 py-3 ${
             isUser
-              ? 'bg-amber-500/10 border border-amber-500/20'
+              ? "bg-amber-500/10 border border-amber-500/20"
               : isSystem
-              ? 'bg-slate-700/50 border border-slate-600'
-              : 'bg-slate-800 border border-slate-700'
+                ? "bg-slate-700/50 border border-slate-600"
+                : "bg-slate-800 border border-slate-700"
           }`}
         >
-          <div className={`text-sm leading-relaxed ${isUser ? 'text-amber-100' : 'text-slate-200'}`}>
+          <div
+            className={`text-sm leading-relaxed ${isUser ? "text-amber-100" : "text-slate-200"}`}
+          >
             {message.isStreaming ? (
               <span className="flex items-center gap-2">
                 <Loader2 className="w-4 h-4 animate-spin" />
@@ -182,12 +185,15 @@ function MessageBubble({
         {/* Meta info */}
         <div
           className={`flex items-center gap-3 mt-2 text-xs text-slate-500 ${
-            isUser ? 'justify-end' : ''
+            isUser ? "justify-end" : ""
           }`}
         >
           <span className="flex items-center gap-1">
             <Clock className="w-3 h-3" />
-            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+            {message.timestamp.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
           {message.model && (
             <span className="flex items-center gap-1">
@@ -206,8 +212,12 @@ function MessageBubble({
               onClick={handleCopy}
               className="flex items-center gap-1 hover:text-white transition-colors"
             >
-              {copied ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-              {copied ? 'Copied' : 'Copy'}
+              {copied ? (
+                <Check className="w-3 h-3" />
+              ) : (
+                <Copy className="w-3 h-3" />
+              )}
+              {copied ? "Copied" : "Copy"}
             </button>
           )}
         </div>
@@ -232,19 +242,23 @@ function ConversationItem({
     <div
       className={`group flex items-center gap-3 px-3 py-2 rounded-xl cursor-pointer transition-colors ${
         isActive
-          ? 'bg-amber-500/10 border border-amber-500/20'
-          : 'hover:bg-slate-700/50 border border-transparent'
+          ? "bg-amber-500/10 border border-amber-500/20"
+          : "hover:bg-slate-700/50 border border-transparent"
       }`}
       onClick={onClick}
     >
       <MessageSquare
-        className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-amber-400' : 'text-slate-500'}`}
+        className={`w-4 h-4 flex-shrink-0 ${isActive ? "text-amber-400" : "text-slate-500"}`}
       />
       <div className="flex-1 min-w-0">
-        <div className={`text-sm font-medium truncate ${isActive ? 'text-white' : 'text-slate-300'}`}>
+        <div
+          className={`text-sm font-medium truncate ${isActive ? "text-white" : "text-slate-300"}`}
+        >
           {conversation.title}
         </div>
-        <div className="text-xs text-slate-500 truncate">{conversation.lastMessage}</div>
+        <div className="text-xs text-slate-500 truncate">
+          {conversation.lastMessage}
+        </div>
       </div>
       <button
         onClick={(e) => {
@@ -263,11 +277,13 @@ function ConversationItem({
 export function AIChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
-  const [input, setInput] = useState('');
+  const [activeConversationId, setActiveConversationId] = useState<
+    string | null
+  >(null);
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showHistory, setShowHistory] = useState(true);
-  const [selectedModel, setSelectedModel] = useState('gemini-pro');
+  const [selectedModel, setSelectedModel] = useState("gemini-pro");
   const [user, setUser] = useState<FirebaseUser | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -276,13 +292,13 @@ export function AIChat() {
   // Auto-resize textarea
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
-    e.target.style.height = 'auto';
-    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+    e.target.style.height = "auto";
+    e.target.style.height = Math.min(e.target.scrollHeight, 200) + "px";
   };
 
   // Scroll to bottom
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -302,10 +318,10 @@ export function AIChat() {
     if (!user) return;
 
     const conversationsQuery = query(
-      collection(db, 'chat_conversations'),
-      where('userId', '==', user.uid),
-      orderBy('timestamp', 'desc'),
-      limit(20)
+      collection(db, "chat_conversations"),
+      where("userId", "==", user.uid),
+      orderBy("timestamp", "desc"),
+      limit(20),
     );
 
     const unsubscribe = onSnapshot(conversationsQuery, (snapshot) => {
@@ -313,8 +329,8 @@ export function AIChat() {
         const data = doc.data();
         return {
           id: doc.id,
-          title: data.title || 'New Conversation',
-          lastMessage: data.lastMessage || '',
+          title: data.title || "New Conversation",
+          lastMessage: data.lastMessage || "",
           timestamp: data.timestamp?.toDate?.() || new Date(),
           messageCount: data.messageCount || 0,
         };
@@ -333,8 +349,8 @@ export function AIChat() {
     }
 
     const messagesQuery = query(
-      collection(db, 'chat_conversations', activeConversationId, 'messages'),
-      orderBy('timestamp', 'asc')
+      collection(db, "chat_conversations", activeConversationId, "messages"),
+      orderBy("timestamp", "asc"),
     );
 
     const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
@@ -342,8 +358,8 @@ export function AIChat() {
         const data = doc.data();
         return {
           id: doc.id,
-          role: data.role as 'user' | 'assistant' | 'system',
-          content: data.content || '',
+          role: data.role as "user" | "assistant" | "system",
+          content: data.content || "",
           timestamp: data.timestamp?.toDate?.() || new Date(),
           model: data.model,
           tokens: data.tokens,
@@ -366,19 +382,19 @@ export function AIChat() {
 
     const userMessage: ChatMessage = {
       id: Date.now().toString(),
-      role: 'user',
+      role: "user",
       content: input.trim(),
       timestamp: new Date(),
     };
 
     // Add user message to UI immediately
     setMessages((prev) => [...prev, userMessage]);
-    setInput('');
+    setInput("");
     setIsLoading(true);
 
     // Reset textarea height
     if (inputRef.current) {
-      inputRef.current.style.height = 'auto';
+      inputRef.current.style.height = "auto";
     }
 
     // Add streaming placeholder
@@ -387,8 +403,8 @@ export function AIChat() {
       ...prev,
       {
         id: streamingId,
-        role: 'assistant',
-        content: '',
+        role: "assistant",
+        content: "",
         timestamp: new Date(),
         isStreaming: true,
       },
@@ -397,13 +413,13 @@ export function AIChat() {
     try {
       // Call Gemini via Cloud Function
       const { app } = ensureFirebaseApp();
-      if (!app) throw new Error('Firebase not initialized');
+      if (!app) throw new Error("Firebase not initialized");
 
       const functions = getFunctions(app);
       const chatWithAI = httpsCallable<
         { message: string; conversationId?: string; model?: string },
         { response: string; tokens: number; conversationId: string }
-      >(functions, 'chatWithAI');
+      >(functions, "chatWithAI");
 
       const result = await chatWithAI({
         message: userMessage.content,
@@ -422,8 +438,8 @@ export function AIChat() {
                 model: selectedModel,
                 tokens: result.data.tokens,
               }
-            : msg
-        )
+            : msg,
+        ),
       );
 
       // Set active conversation if new
@@ -431,7 +447,7 @@ export function AIChat() {
         setActiveConversationId(result.data.conversationId);
       }
     } catch (error: any) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
 
       // Fallback to local response
       const fallbackResponse = generateLocalResponse(userMessage.content);
@@ -443,10 +459,10 @@ export function AIChat() {
                 ...msg,
                 content: fallbackResponse,
                 isStreaming: false,
-                model: 'local-fallback',
+                model: "local-fallback",
               }
-            : msg
-        )
+            : msg,
+        ),
       );
     } finally {
       setIsLoading(false);
@@ -457,11 +473,11 @@ export function AIChat() {
   const generateLocalResponse = (message: string): string => {
     const lowerMessage = message.toLowerCase();
 
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
       return "Hello! I'm your AI assistant for Royal Carriage. I can help you with content generation, data analysis, code writing, and more. How can I assist you today?";
     }
 
-    if (lowerMessage.includes('content') || lowerMessage.includes('seo')) {
+    if (lowerMessage.includes("content") || lowerMessage.includes("seo")) {
       return `I can help you generate SEO-optimized content for Royal Carriage. Here's a sample:
 
 **Luxury Airport Transportation in Chicago**
@@ -478,7 +494,7 @@ Experience the finest in luxury ground transportation with Royal Carriage Limous
 Contact us today for a quote on your next airport transfer!`;
     }
 
-    if (lowerMessage.includes('analyze') || lowerMessage.includes('data')) {
+    if (lowerMessage.includes("analyze") || lowerMessage.includes("data")) {
       return `I can analyze your data. Please share the specific data or metrics you'd like me to look at, and I'll provide insights on:
 
 - **Trends**: Identify patterns over time
@@ -489,7 +505,7 @@ Contact us today for a quote on your next airport transfer!`;
 What data would you like me to analyze?`;
     }
 
-    if (lowerMessage.includes('code') || lowerMessage.includes('function')) {
+    if (lowerMessage.includes("code") || lowerMessage.includes("function")) {
       return `I can help you write code. Here's an example TypeScript function:
 
 \`\`\`typescript
@@ -535,13 +551,13 @@ What would you like help with?`;
   // Delete conversation
   const deleteConversation = async (id: string) => {
     try {
-      await deleteDoc(doc(db, 'chat_conversations', id));
+      await deleteDoc(doc(db, "chat_conversations", id));
       if (activeConversationId === id) {
         setActiveConversationId(null);
         setMessages([]);
       }
     } catch (error) {
-      console.error('Failed to delete conversation:', error);
+      console.error("Failed to delete conversation:", error);
     }
   };
 
@@ -553,7 +569,7 @@ What would you like help with?`;
 
   // Handle key down
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
@@ -625,7 +641,9 @@ What would you like help with?`;
                 <Bot className="w-6 h-6 text-purple-400" />
               </div>
               <div>
-                <h2 className="text-lg font-semibold text-white">AI Assistant</h2>
+                <h2 className="text-lg font-semibold text-white">
+                  AI Assistant
+                </h2>
                 <p className="text-xs text-slate-500 flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full bg-emerald-500" />
                   Online - {selectedModel}
@@ -658,8 +676,8 @@ What would you like help with?`;
                 How can I help you today?
               </h3>
               <p className="text-slate-500 text-center max-w-md mb-8">
-                I'm your AI assistant for Royal Carriage. I can help with content
-                generation, data analysis, code writing, and much more.
+                I'm your AI assistant for Royal Carriage. I can help with
+                content generation, data analysis, code writing, and much more.
               </p>
 
               {/* Quick Actions */}
@@ -682,7 +700,11 @@ What would you like help with?`;
             </div>
           ) : (
             messages.map((message) => (
-              <MessageBubble key={message.id} message={message} onCopy={copyToClipboard} />
+              <MessageBubble
+                key={message.id}
+                message={message}
+                onCopy={copyToClipboard}
+              />
             ))
           )}
           <div ref={messagesEndRef} />
@@ -700,7 +722,7 @@ What would you like help with?`;
                 placeholder="Type your message... (Shift+Enter for new line)"
                 rows={1}
                 className="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder:text-slate-500 focus:outline-none focus:border-amber-500 resize-none overflow-hidden"
-                style={{ maxHeight: '200px' }}
+                style={{ maxHeight: "200px" }}
               />
             </div>
             <button

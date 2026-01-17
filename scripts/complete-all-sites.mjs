@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(__dirname, "..");
 
-console.log('🚀 Royal Carriage Multi-Site Generator');
-console.log('=====================================\n');
+console.log("🚀 Royal Carriage Multi-Site Generator");
+console.log("=====================================\n");
 
 // Create a page template function
 function createPage(appName, target, filename, pageData) {
@@ -26,7 +26,7 @@ const serviceSchema = generateServiceSchema({
   config,
   serviceName: '${pageData.h1}',
   serviceDescription: '${pageData.description}',
-  serviceType: '${pageData.serviceType || 'Transportation Service'}',
+  serviceType: '${pageData.serviceType || "Transportation Service"}',
   url: Astro.url.pathname
 });
 ---
@@ -34,7 +34,7 @@ const serviceSchema = generateServiceSchema({
 <BaseLayout
   title="${pageData.title}"
   description="${pageData.description}"
-  canonical="${'/' + filename.replace('.astro', '')}"
+  canonical="${"/" + filename.replace(".astro", "")}"
   schema={serviceSchema}
 >
   <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
@@ -55,7 +55,7 @@ const serviceSchema = generateServiceSchema({
 
   <div class="bg-gray-100 py-12">
     <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-6">${pageData.ctaTitle || 'Book Your Service Now'}</h2>
+      <h2 class="text-3xl font-bold mb-6">${pageData.ctaTitle || "Book Your Service Now"}</h2>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <CTAButton target="${target}" location="bottom-cta" size="lg" />
         <CallButton target="${target}" location="bottom-cta" size="lg" variant="primary" />
@@ -70,11 +70,12 @@ const serviceSchema = generateServiceSchema({
 }
 
 // CORPORATE PAGES
-console.log('📊 Creating Corporate site pages...');
+console.log("📊 Creating Corporate site pages...");
 const corporatePages = {
-  'index.astro': {
+  "index.astro": {
     title: "Chicago Executive Car Service - Corporate Black Car Transportation",
-    description: "Professional executive car service in Chicago. Corporate black car transportation, hourly chauffeur services, and business travel solutions. Reliable, discreet, punctual service for professionals.",
+    description:
+      "Professional executive car service in Chicago. Corporate black car transportation, hourly chauffeur services, and business travel solutions. Reliable, discreet, punctual service for professionals.",
     h1: "Chicago Executive Car Service",
     serviceType: "Executive Transportation",
     content: `<p class="text-lg mb-6">Royal Carriage Limousine provides premium executive car service tailored to the needs of business professionals and corporate clients throughout Chicago. Our professional chauffeur service delivers punctual, discreet, and comfortable transportation for meetings, airport transfers, and corporate events.</p>
@@ -118,11 +119,12 @@ const corporatePages = {
   <li>Customizable approval workflows</li>
   <li>Preferred rates for regular clients</li>
   <li>24/7 customer support for urgent needs</li>
-</ul>`
+</ul>`,
   },
-  'executive-transportation.astro': {
+  "executive-transportation.astro": {
     title: "Executive Transportation Chicago - Premium Black Car Service",
-    description: "Premium executive transportation in Chicago. Professional black car service for business leaders, meetings, and corporate travel. Discreet, reliable, luxury service.",
+    description:
+      "Premium executive transportation in Chicago. Professional black car service for business leaders, meetings, and corporate travel. Discreet, reliable, luxury service.",
     h1: "Executive Transportation Service",
     serviceType: "Executive Transportation",
     content: `<p class="text-lg mb-6">Royal Carriage provides sophisticated executive transportation designed specifically for business leaders and high-level professionals. Our premium service combines luxury vehicles, professional chauffeurs, and meticulous attention to detail to ensure a seamless travel experience.</p>
@@ -143,11 +145,12 @@ const corporatePages = {
   <p><strong>Visiting Clients:</strong> Impress important clients with luxury transportation during Chicago visits</p>
   <p><strong>Board Meetings:</strong> Timely arrival for critical board meetings and shareholder events</p>
   <p><strong>Business Development:</strong> Professional transportation for client entertainment and relationship building</p>
-</div>`
+</div>`,
   },
-  'corporate-black-car-service.astro': {
+  "corporate-black-car-service.astro": {
     title: "Corporate Black Car Service Chicago - Business Transportation",
-    description: "Corporate black car service in Chicago. Professional transportation for businesses, employees, and clients. Flexible billing, reliable service, and luxury vehicles.",
+    description:
+      "Corporate black car service in Chicago. Professional transportation for businesses, employees, and clients. Flexible billing, reliable service, and luxury vehicles.",
     h1: "Corporate Black Car Service",
     serviceType: "Corporate Transportation",
     content: `<p class="text-lg mb-6">Royal Carriage Limousine specializes in corporate black car service for Chicago businesses. Whether you need regular airport transportation for employees, client entertainment, or event coordination, our professional service delivers consistent quality and reliability.</p>
@@ -172,11 +175,12 @@ const corporatePages = {
     <li>✓ Real-time ride tracking and notifications</li>
     <li>✓ Expense reporting integration available</li>
   </ul>
-</div>`
+</div>`,
   },
-  'hourly-chauffeur-service.astro': {
+  "hourly-chauffeur-service.astro": {
     title: "Hourly Chauffeur Service Chicago - By the Hour Transportation",
-    description: "Hourly chauffeur service in Chicago. Dedicated vehicle and driver for multiple stops, meetings, or full-day business needs. Flexible, professional service by the hour.",
+    description:
+      "Hourly chauffeur service in Chicago. Dedicated vehicle and driver for multiple stops, meetings, or full-day business needs. Flexible, professional service by the hour.",
     h1: "Hourly Chauffeur Service",
     serviceType: "Hourly Transportation",
     content: `<p class="text-lg mb-6">Need a vehicle and chauffeur for multiple hours? Royal Carriage provides flexible hourly chauffeur service perfect for business professionals with multiple meetings, running errands, or requiring a dedicated vehicle for the day.</p>
@@ -208,11 +212,12 @@ const corporatePages = {
   <li><strong>Luxury SUV:</strong> Starting at $95/hour (3-hour minimum)</li>
   <li><strong>Additional Hours:</strong> Prorated hourly rate</li>
   <li><strong>Includes:</strong> Vehicle, chauffeur, fuel, and standard waiting time</li>
-</ul>`
+</ul>`,
   },
-  'fleet.astro': {
+  "fleet.astro": {
     title: "Corporate Fleet - Executive Sedans & Luxury Vehicles",
-    description: "View our corporate fleet of executive sedans, luxury SUVs, and passenger vans. Professional vehicles for business transportation in Chicago.",
+    description:
+      "View our corporate fleet of executive sedans, luxury SUVs, and passenger vans. Professional vehicles for business transportation in Chicago.",
     h1: "Our Corporate Fleet",
     content: `<p class="text-lg mb-6">Royal Carriage maintains a premium fleet specifically selected for corporate and executive transportation needs. Every vehicle is professionally maintained, regularly detailed, and equipped with business amenities.</p>
 
@@ -250,11 +255,12 @@ const corporatePages = {
     <li>Features: Individual seating, A/C zones, entertainment, Wi-Fi</li>
     <li>Perfect for: Corporate events, conferences, team transportation</li>
   </ul>
-</div>`
+</div>`,
   },
-  'contact.astro': {
+  "contact.astro": {
     title: "Contact - Corporate Account Setup",
-    description: "Contact Royal Carriage for corporate transportation services. Set up a corporate account, request quotes, or book executive car service. Call (224) 801-3090.",
+    description:
+      "Contact Royal Carriage for corporate transportation services. Set up a corporate account, request quotes, or book executive car service. Call (224) 801-3090.",
     h1: "Contact Us - Corporate Services",
     content: `<p class="text-lg mb-6">Ready to establish a corporate account or book executive transportation? Contact Royal Carriage Limousine for professional corporate car service in Chicago.</p>
 
@@ -296,25 +302,28 @@ const corporatePages = {
       <li>✓ Technology integration options</li>
     </ul>
   </div>
-</div>`
-  }
+</div>`,
+  },
 };
 
 // Ensure corporate pages directory exists
-fs.mkdirSync(path.join(rootDir, 'apps/corporate/src/pages'), { recursive: true });
-
-Object.entries(corporatePages).forEach(([filename, data]) => {
-  createPage('corporate', 'corporate', filename, data);
+fs.mkdirSync(path.join(rootDir, "apps/corporate/src/pages"), {
+  recursive: true,
 });
 
-console.log('✓ Corporate site complete\n');
+Object.entries(corporatePages).forEach(([filename, data]) => {
+  createPage("corporate", "corporate", filename, data);
+});
+
+console.log("✓ Corporate site complete\n");
 
 // WEDDING PAGES
-console.log('💒 Creating Wedding site pages...');
+console.log("💒 Creating Wedding site pages...");
 const weddingPages = {
-  'index.astro': {
+  "index.astro": {
     title: "Chicago Wedding Transportation - Elegant Limousine Service",
-    description: "Elegant wedding limousine service in Chicago. Professional transportation for weddings, bridal parties, and special occasions. Luxury vehicles and experienced chauffeurs.",
+    description:
+      "Elegant wedding limousine service in Chicago. Professional transportation for weddings, bridal parties, and special occasions. Luxury vehicles and experienced chauffeurs.",
     h1: "Chicago Wedding Transportation",
     serviceType: "Wedding Transportation",
     content: `<p class="text-lg mb-6">Make your special day even more memorable with Royal Carriage Limousine's elegant wedding transportation service. We provide luxury vehicles, professional chauffeurs, and meticulous attention to detail for weddings throughout Chicago and surrounding suburbs.</p>
@@ -353,11 +362,12 @@ const weddingPages = {
   <li>Multiple vehicle coordination for large wedding parties</li>
   <li>Custom packages combining various services</li>
   <li>Complimentary champagne service available</li>
-</ul>`
+</ul>`,
   },
-  'wedding-limo-service.astro': {
+  "wedding-limo-service.astro": {
     title: "Wedding Limousine Service Chicago - Luxury Wedding Transportation",
-    description: "Luxury wedding limousine service in Chicago. Elegant transportation for your special day with professional chauffeurs and pristine vehicles. Book your wedding limo today.",
+    description:
+      "Luxury wedding limousine service in Chicago. Elegant transportation for your special day with professional chauffeurs and pristine vehicles. Book your wedding limo today.",
     h1: "Wedding Limousine Service",
     serviceType: "Wedding Limousine",
     content: `<p class="text-lg mb-6">Royal Carriage provides elegant wedding limousine service designed to add luxury and sophistication to your special day. Our pristine vehicles and professional chauffeurs ensure you arrive in style while creating beautiful memories.</p>
@@ -415,11 +425,12 @@ const weddingPages = {
   <li>Time to coordinate all details</li>
   <li>Potential early booking discounts</li>
   <li>Peace of mind with confirmed transportation</li>
-</ul>`
+</ul>`,
   },
-  'bridal-party-transportation.astro': {
+  "bridal-party-transportation.astro": {
     title: "Bridal Party Transportation Chicago - Group Wedding Limos",
-    description: "Bridal party transportation in Chicago. Luxury vehicles for bridesmaids, groomsmen, and wedding parties. Comfortable group transportation for your special day.",
+    description:
+      "Bridal party transportation in Chicago. Luxury vehicles for bridesmaids, groomsmen, and wedding parties. Comfortable group transportation for your special day.",
     h1: "Bridal Party Transportation",
     serviceType: "Bridal Party Service",
     content: `<p class="text-lg mb-6">Coordinate seamless transportation for your entire bridal party with Royal Carriage Limousine. We specialize in group transportation that keeps everyone together, on time, and comfortable throughout your wedding day.</p>
@@ -489,11 +500,12 @@ const weddingPages = {
   <li>Buffer time built in for photos and delays</li>
   <li>Multiple stops coordinated seamlessly</li>
   <li>Backup plans for weather or changes</li>
-</ul>`
+</ul>`,
   },
-  'fleet.astro': {
+  "fleet.astro": {
     title: "Wedding Fleet - Luxury Limousines & Elegant Vehicles",
-    description: "View our wedding fleet featuring elegant limousines, luxury sedans, and party buses. Beautiful vehicles for your special day in Chicago.",
+    description:
+      "View our wedding fleet featuring elegant limousines, luxury sedans, and party buses. Beautiful vehicles for your special day in Chicago.",
     h1: "Our Wedding Fleet",
     content: `<p class="text-lg mb-6">Royal Carriage Limousine maintains an elegant fleet specifically suited for weddings and special occasions. Every vehicle is immaculately detailed and decorated for your big day.</p>
 
@@ -536,11 +548,12 @@ const weddingPages = {
     <li>Features: Dance floor, lighting, premium sound, bars</li>
     <li>Perfect for: Large wedding parties, guest shuttles, after-parties</li>
   </ul>
-</div>`
+</div>`,
   },
-  'contact.astro': {
+  "contact.astro": {
     title: "Contact - Wedding Transportation Quotes",
-    description: "Contact Royal Carriage for wedding transportation quotes. Book limousine service for your Chicago wedding. Call (224) 801-3090 for availability.",
+    description:
+      "Contact Royal Carriage for wedding transportation quotes. Book limousine service for your Chicago wedding. Call (224) 801-3090 for availability.",
     h1: "Contact Us - Wedding Services",
     content: `<p class="text-lg mb-6">Ready to book elegant transportation for your wedding day? Contact Royal Carriage Limousine for availability, quotes, and to discuss your wedding transportation needs.</p>
 
@@ -589,24 +602,25 @@ const weddingPages = {
       <li>✓ Peace of mind with confirmed transportation</li>
     </ul>
   </div>
-</div>`
-  }
+</div>`,
+  },
 };
 
-fs.mkdirSync(path.join(rootDir, 'apps/wedding/src/pages'), { recursive: true });
+fs.mkdirSync(path.join(rootDir, "apps/wedding/src/pages"), { recursive: true });
 
 Object.entries(weddingPages).forEach(([filename, data]) => {
-  createPage('wedding', 'wedding', filename, data);
+  createPage("wedding", "wedding", filename, data);
 });
 
-console.log('✓ Wedding site complete\n');
+console.log("✓ Wedding site complete\n");
 
 // PARTYBUS PAGES
-console.log('🎉 Creating Party Bus site pages...');
+console.log("🎉 Creating Party Bus site pages...");
 const partybusPages = {
-  'index.astro': {
+  "index.astro": {
     title: "Chicago Party Bus Rental - Premium Group Transportation",
-    description: "Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation.",
+    description:
+      "Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation.",
     h1: "Chicago Party Bus Rental",
     serviceType: "Party Bus Rental",
     ctaTitle: "Book Your Party Bus Now",
@@ -672,11 +686,12 @@ const partybusPages = {
   <li><strong>Enjoy the Ride:</strong> Your chauffeur handles driving while you party</li>
   <li><strong>Multiple Stops:</strong> Visit bars, clubs, restaurants, or event venues</li>
   <li><strong>Safe Return:</strong> Everyone gets home safely</li>
-</ol>`
+</ol>`,
   },
-  'party-bus-rental.astro': {
+  "party-bus-rental.astro": {
     title: "Party Bus Rental Chicago - Luxury Group Transportation",
-    description: "Rent a party bus in Chicago for your group event. Spacious vehicles with entertainment systems, LED lighting, and professional drivers. Book your party bus rental today.",
+    description:
+      "Rent a party bus in Chicago for your group event. Spacious vehicles with entertainment systems, LED lighting, and professional drivers. Book your party bus rental today.",
     h1: "Party Bus Rental Service",
     serviceType: "Party Bus",
     content: `<p class="text-lg mb-6">Royal Carriage Limousine offers premium party bus rentals in Chicago, providing the ultimate mobile party experience. Our luxury party buses combine comfortable transportation with entertainment features for unforgettable group celebrations.</p>
@@ -737,11 +752,12 @@ const partybusPages = {
   <li><strong>Concert Transportation:</strong> United Center, Wrigley Field, Ravinia</li>
   <li><strong>Suburban Nightlife:</strong> Schaumburg, Naperville, Oak Brook entertainment districts</li>
   <li><strong>Special Events:</strong> Sporting events, festivals, shows</li>
-</ul>`
+</ul>`,
   },
-  'birthday-party-bus.astro': {
+  "birthday-party-bus.astro": {
     title: "Birthday Party Bus Chicago - Mobile Birthday Celebrations",
-    description: "Celebrate birthdays with a party bus in Chicago. Perfect for milestone birthdays, surprise parties, and group celebrations. Book your birthday party bus now.",
+    description:
+      "Celebrate birthdays with a party bus in Chicago. Perfect for milestone birthdays, surprise parties, and group celebrations. Book your birthday party bus now.",
     h1: "Birthday Party Bus Rental",
     serviceType: "Birthday Party Bus",
     content: `<p class="text-lg mb-6">Make your birthday celebration unforgettable with a Royal Carriage party bus rental. Whether it's a milestone 21st, 30th, 40th, or any birthday worth celebrating, our party buses provide a unique mobile venue for your celebration.</p>
@@ -820,11 +836,12 @@ const partybusPages = {
   <li>Champagne service (where permitted)</li>
   <li>Customized playlist for birthday person</li>
   <li>Photo packages at stops</li>
-</ul>`
+</ul>`,
   },
-  'concert-transportation.astro': {
+  "concert-transportation.astro": {
     title: "Concert Transportation Chicago - Party Bus to Shows",
-    description: "Party bus transportation to Chicago concerts and shows. Safe group travel to United Center, Wrigley Field, Ravinia, and all Chicago venues. Book your concert party bus.",
+    description:
+      "Party bus transportation to Chicago concerts and shows. Safe group travel to United Center, Wrigley Field, Ravinia, and all Chicago venues. Book your concert party bus.",
     h1: "Concert & Event Transportation",
     serviceType: "Concert Transportation",
     content: `<p class="text-lg mb-6">Enhance your concert experience with Royal Carriage party bus transportation. Skip the parking hassles, traffic stress, and designated driver worries. Travel to concerts and events with your group in a mobile party atmosphere.</p>
@@ -894,11 +911,12 @@ const partybusPages = {
   <li>Bulls and Blackhawks at United Center</li>
   <li>Fire soccer matches</li>
   <li>Northwestern and college sports</li>
-</ul>`
+</ul>`,
   },
-  'fleet.astro': {
+  "fleet.astro": {
     title: "Party Bus Fleet - View Our Chicago Party Buses",
-    description: "View our fleet of party buses in Chicago. Various sizes from 20-30 passengers with entertainment systems, LED lighting, and premium features.",
+    description:
+      "View our fleet of party buses in Chicago. Various sizes from 20-30 passengers with entertainment systems, LED lighting, and premium features.",
     h1: "Our Party Bus Fleet",
     content: `<p class="text-lg mb-6">Royal Carriage Limousine maintains a modern fleet of party buses designed for group celebrations. Each vehicle features entertainment systems, comfortable seating, and amenities to keep your party going while traveling throughout Chicago.</p>
 
@@ -994,11 +1012,12 @@ const partybusPages = {
   <li>Entertainment system testing and updates</li>
   <li>Safety equipment checks</li>
   <li>DOT and licensing compliance</li>
-</ul>`
+</ul>`,
   },
-  'contact.astro': {
+  "contact.astro": {
     title: "Contact - Party Bus Rental Quotes",
-    description: "Contact Royal Carriage for party bus rental quotes in Chicago. Check availability, get pricing, and book your party bus. Call (224) 801-3090.",
+    description:
+      "Contact Royal Carriage for party bus rental quotes in Chicago. Check availability, get pricing, and book your party bus. Call (224) 801-3090.",
     h1: "Contact Us - Party Bus Rentals",
     content: `<p class="text-lg mb-6">Ready to book your party bus rental in Chicago? Contact Royal Carriage Limousine for availability, quotes, and to plan your group celebration or event transportation.</p>
 
@@ -1071,25 +1090,29 @@ const partybusPages = {
       <p class="text-sm">Overtime charged at prorated hourly rate. Please plan accordingly.</p>
     </div>
   </div>
-</div>`
-  }
+</div>`,
+  },
 };
 
-fs.mkdirSync(path.join(rootDir, 'apps/partybus/src/pages'), { recursive: true });
-
-Object.entries(partybusPages).forEach(([filename, data]) => {
-  createPage('partybus', 'partybus', filename, data);
+fs.mkdirSync(path.join(rootDir, "apps/partybus/src/pages"), {
+  recursive: true,
 });
 
-console.log('✓ Party Bus site complete\n');
+Object.entries(partybusPages).forEach(([filename, data]) => {
+  createPage("partybus", "partybus", filename, data);
+});
 
-console.log('\n✅ ALL SITES COMPLETED!');
-console.log('\nSummary:');
-console.log('  ✓ Corporate: 6 pages');
-console.log('  ✓ Wedding: 5 pages');
-console.log('  ✓ PartyBus: 6 pages');
-console.log('  ✓ Airport: 9 pages (created earlier)\n');
-console.log('Next steps:');
-console.log('  1. Run: pnpm install');
-console.log('  2. Run: pnpm run build:all-sites');
-console.log('  3. Run: firebase deploy --only hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus\n');
+console.log("✓ Party Bus site complete\n");
+
+console.log("\n✅ ALL SITES COMPLETED!");
+console.log("\nSummary:");
+console.log("  ✓ Corporate: 6 pages");
+console.log("  ✓ Wedding: 5 pages");
+console.log("  ✓ PartyBus: 6 pages");
+console.log("  ✓ Airport: 9 pages (created earlier)\n");
+console.log("Next steps:");
+console.log("  1. Run: pnpm install");
+console.log("  2. Run: pnpm run build:all-sites");
+console.log(
+  "  3. Run: firebase deploy --only hosting:airport,hosting:corporate,hosting:wedding,hosting:partybus\n",
+);

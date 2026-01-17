@@ -3,10 +3,14 @@
  * Initializes all Chicago neighborhoods and suburbs
  */
 
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import { CHICAGO_NEIGHBORHOODS, LocationData } from './expandLocations';
-import { NORTHERN_SUBURBS, WESTERN_SUBURBS, SOUTHERN_SUBURBS } from './expandLocationsData';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import { CHICAGO_NEIGHBORHOODS, LocationData } from "./expandLocations";
+import {
+  NORTHERN_SUBURBS,
+  WESTERN_SUBURBS,
+  SOUTHERN_SUBURBS,
+} from "./expandLocationsData";
 
 const db = admin.firestore();
 
@@ -14,7 +18,7 @@ const db = admin.firestore();
  * Insert all location data into Firestore
  */
 async function insertAllLocations(): Promise<number> {
-  console.log('🚀 Starting location expansion...');
+  console.log("🚀 Starting location expansion...");
 
   // Combine all location arrays
   const allLocations: LocationData[] = [
@@ -39,7 +43,7 @@ async function insertAllLocations(): Promise<number> {
     const chunk = allLocations.slice(i, i + batchSize);
 
     for (const location of chunk) {
-      const docRef = db.collection('locations').doc(location.id);
+      const docRef = db.collection("locations").doc(location.id);
       batch.set(docRef, {
         id: location.id,
         name: location.name,
@@ -58,7 +62,9 @@ async function insertAllLocations(): Promise<number> {
     }
 
     await batch.commit();
-    console.log(`✅ Inserted batch ${Math.floor(i / batchSize) + 1} (${chunk.length} locations)`);
+    console.log(
+      `✅ Inserted batch ${Math.floor(i / batchSize) + 1} (${chunk.length} locations)`,
+    );
   }
 
   console.log(`✅ Total locations inserted: ${inserted}`);
@@ -69,7 +75,7 @@ async function insertAllLocations(): Promise<number> {
  * Create location-service mappings for all applicable services
  */
 async function createLocationServiceMappings(): Promise<number> {
-  console.log('\n🗺️  Creating location-service mappings...');
+  console.log("\n🗺️  Creating location-service mappings...");
 
   const allLocations: LocationData[] = [
     ...CHICAGO_NEIGHBORHOODS,
@@ -81,42 +87,48 @@ async function createLocationServiceMappings(): Promise<number> {
   // Map service types to actual service IDs from the system
   const serviceMapping: { [key: string]: string[] } = {
     airport: [
-      'airport-ohare-transfer',
-      'airport-midway-transfer',
-      'airport-meigs-field-transfer',
-      'airport-suburban-hotel',
+      "airport-ohare-transfer",
+      "airport-midway-transfer",
+      "airport-meigs-field-transfer",
+      "airport-suburban-hotel",
     ],
     corporate: [
-      'corporate-executive',
-      'corporate-meeting',
-      'corporate-client',
-      'corp-conference',
-      'corporate-commute',
+      "corporate-executive",
+      "corporate-meeting",
+      "corporate-client",
+      "corp-conference",
+      "corporate-commute",
     ],
     wedding: [
-      'wedding-bride',
-      'wedding-guest',
-      'wedding-multi',
-      'wedding-venue',
-      'wedding-vip',
+      "wedding-bride",
+      "wedding-guest",
+      "wedding-multi",
+      "wedding-venue",
+      "wedding-vip",
     ],
     partyBus: [
-      'partybus-bachelor',
-      'partybus-nightclub',
-      'partybus-birthday',
-      'partybus-concert',
-      'partybus-casino',
+      "partybus-bachelor",
+      "partybus-nightclub",
+      "partybus-birthday",
+      "partybus-concert",
+      "partybus-casino",
     ],
   };
 
   let mappingCount = 0;
   const batchSize = 400;
-  const mappings: Array<{ locationId: string; serviceId: string; relevance: number }> = [];
+  const mappings: Array<{
+    locationId: string;
+    serviceId: string;
+    relevance: number;
+  }> = [];
 
   // Build all mappings
   for (const location of allLocations) {
     if (location.applicableServices) {
-      for (const [serviceType, relevance] of Object.entries(location.applicableServices)) {
+      for (const [serviceType, relevance] of Object.entries(
+        location.applicableServices,
+      )) {
         const serviceIds = serviceMapping[serviceType] || [];
         for (const serviceId of serviceIds) {
           mappings.push({
@@ -138,9 +150,9 @@ async function createLocationServiceMappings(): Promise<number> {
 
     for (const mapping of chunk) {
       const docRef = db
-        .collection('locations')
+        .collection("locations")
         .doc(mapping.locationId)
-        .collection('services')
+        .collection("services")
         .doc(mapping.serviceId);
 
       batch.set(docRef, {
@@ -152,7 +164,9 @@ async function createLocationServiceMappings(): Promise<number> {
     }
 
     await batch.commit();
-    console.log(`✅ Created batch ${Math.floor(i / batchSize) + 1} (${chunk.length} mappings)`);
+    console.log(
+      `✅ Created batch ${Math.floor(i / batchSize) + 1} (${chunk.length} mappings)`,
+    );
   }
 
   console.log(`✅ Total mappings created: ${mappingCount}`);
@@ -163,7 +177,7 @@ async function createLocationServiceMappings(): Promise<number> {
  * Create initial content generation queue for high-priority locations
  */
 async function createContentQueue(): Promise<number> {
-  console.log('\n📋 Creating content generation queue...');
+  console.log("\n📋 Creating content generation queue...");
 
   const allLocations: LocationData[] = [
     ...CHICAGO_NEIGHBORHOODS,
@@ -175,18 +189,17 @@ async function createContentQueue(): Promise<number> {
   // Select locations with high airport service relevance for initial content
   const priorityLocations = allLocations.filter(
     (loc) =>
-      loc.applicableServices?.airport &&
-      loc.applicableServices.airport >= 18
+      loc.applicableServices?.airport && loc.applicableServices.airport >= 18,
   );
 
   console.log(`🎯 Priority locations for queue: ${priorityLocations.length}`);
 
   const priorityServices = [
-    'airport-ohare-transfer',
-    'airport-midway-transfer',
-    'corporate-meeting',
-    'wedding-guest',
-    'partybus-nightclub',
+    "airport-ohare-transfer",
+    "airport-midway-transfer",
+    "corporate-meeting",
+    "wedding-guest",
+    "partybus-nightclub",
   ];
 
   let queueCount = 0;
@@ -195,12 +208,12 @@ async function createContentQueue(): Promise<number> {
   for (const location of priorityLocations) {
     for (const serviceId of priorityServices) {
       const queueId = `${location.id}_${serviceId}`;
-      const queueRef = db.collection('regeneration_queue').doc(queueId);
+      const queueRef = db.collection("regeneration_queue").doc(queueId);
 
       batch.set(queueRef, {
         locationId: location.id,
         serviceId,
-        status: 'pending',
+        status: "pending",
         priority: 10,
         createdAt: admin.firestore.Timestamp.now(),
         retries: 0,
@@ -220,11 +233,11 @@ async function createContentQueue(): Promise<number> {
 export const initializeExpandedLocations = functions
   .runWith({
     timeoutSeconds: 540,
-    memory: '1GB',
+    memory: "1GB",
   })
   .https.onRequest(async (request, response) => {
     try {
-      console.log('🚀 Starting Location Expansion to 173+ locations\n');
+      console.log("🚀 Starting Location Expansion to 173+ locations\n");
       const startTime = Date.now();
 
       // Step 1: Insert all locations
@@ -238,18 +251,18 @@ export const initializeExpandedLocations = functions
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(2);
 
-      console.log('\n' + '='.repeat(60));
-      console.log('✅ LOCATION EXPANSION COMPLETE');
-      console.log('='.repeat(60));
+      console.log("\n" + "=".repeat(60));
+      console.log("✅ LOCATION EXPANSION COMPLETE");
+      console.log("=".repeat(60));
       console.log(`📍 Locations inserted: ${locationsInserted}`);
       console.log(`🗺️  Location-service mappings created: ${mappingsCreated}`);
       console.log(`📋 Content generation tasks queued: ${queuedTasks}`);
       console.log(`⏱️  Duration: ${duration}s`);
-      console.log('='.repeat(60));
+      console.log("=".repeat(60));
 
       response.status(200).json({
         success: true,
-        message: 'Location expansion completed successfully',
+        message: "Location expansion completed successfully",
         stats: {
           locationsInserted,
           mappingsCreated,
@@ -264,10 +277,10 @@ export const initializeExpandedLocations = functions
         },
       });
     } catch (error) {
-      console.error('❌ Error during location expansion:', error);
+      console.error("❌ Error during location expansion:", error);
       response.status(500).json({
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
       });
     }
   });

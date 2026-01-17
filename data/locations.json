@@ -10,13 +10,30 @@
       "zipCodes": ["60601", "60602", "60603"],
       "population": 15000,
       "description": "The heart of Chicago's business district, home to iconic skyscrapers, the Chicago Stock Exchange, and world-class dining and entertainment.",
-      "landmarks": ["Willis Tower", "Chicago Board of Trade", "Thompson Center", "Millennium Park"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 20 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "very-high", "touristAttraction": "high" },
+      "landmarks": [
+        "Willis Tower",
+        "Chicago Board of Trade",
+        "Thompson Center",
+        "Millennium Park"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 20 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "very-high",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 25,
       "hotels": 40,
       "restaurants": 200,
-      "applicableServices": { "airport": 20, "corporate": 20, "wedding": 18, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 20,
+        "wedding": 18,
+        "partyBus": 15
+      }
     },
     {
       "id": "lincoln-park",
@@ -28,13 +45,30 @@
       "zipCodes": ["60614", "60610"],
       "population": 42000,
       "description": "Upscale North Shore neighborhood known for brownstones, Lincoln Park Zoo, lakefront parks, and vibrant nightlife.",
-      "landmarks": ["Lincoln Park Zoo", "Lakefront Trail", "North Avenue Beach", "Chicago History Museum"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 20 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "medium", "touristAttraction": "high" },
+      "landmarks": [
+        "Lincoln Park Zoo",
+        "Lakefront Trail",
+        "North Avenue Beach",
+        "Chicago History Museum"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 20 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "medium",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 18,
       "hotels": 15,
       "restaurants": 180,
-      "applicableServices": { "airport": 20, "corporate": 18, "wedding": 20, "partyBus": 18 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 18,
+        "wedding": 20,
+        "partyBus": 18
+      }
     },
     {
       "id": "lake-view",
@@ -46,13 +80,30 @@
       "zipCodes": ["60613"],
       "population": 65000,
       "description": "Home to Wrigley Field and a young, vibrant community with bars, restaurants, and sports culture.",
-      "landmarks": ["Wrigley Field", "Boystown", "Belmont Harbor", "Theater District"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "medium-high", "touristAttraction": "high" },
+      "landmarks": [
+        "Wrigley Field",
+        "Boystown",
+        "Belmont Harbor",
+        "Theater District"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "medium-high",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 12,
       "hotels": 10,
       "restaurants": 150,
-      "applicableServices": { "airport": 20, "corporate": 15, "wedding": 14, "partyBus": 20 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 15,
+        "wedding": 14,
+        "partyBus": 20
+      }
     },
     {
       "id": "river-north",
@@ -64,13 +115,30 @@
       "zipCodes": ["60610"],
       "population": 8000,
       "description": "Premier dining and nightlife destination with converted lofts, galleries, and high-end restaurants.",
-      "landmarks": ["Magnificent Mile", "Chicago River", "Marina City", "Contemporary Art Museum"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 17 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 19 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "very-high", "touristAttraction": "very-high" },
+      "landmarks": [
+        "Magnificent Mile",
+        "Chicago River",
+        "Marina City",
+        "Contemporary Art Museum"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 17 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 19 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "very-high",
+        "touristAttraction": "very-high"
+      },
       "weddingVenues": 35,
       "hotels": 50,
       "restaurants": 250,
-      "applicableServices": { "airport": 20, "corporate": 20, "wedding": 20, "partyBus": 18 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 20,
+        "wedding": 20,
+        "partyBus": 18
+      }
     },
     {
       "id": "gold-coast",
@@ -82,13 +150,30 @@
       "zipCodes": ["60611"],
       "population": 12000,
       "description": "Historic lakefront neighborhood with historic mansions, high-end shopping, and exclusive residents.",
-      "landmarks": ["Water Tower", "Drake Hotel", "Fourth Presbyterian Church", "Museum of Contemporary Art"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 19 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 21 } },
-      "demographics": { "medianIncome": "ultra-high", "businessDensity": "high", "touristAttraction": "very-high" },
+      "landmarks": [
+        "Water Tower",
+        "Drake Hotel",
+        "Fourth Presbyterian Church",
+        "Museum of Contemporary Art"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 19 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 21 }
+      },
+      "demographics": {
+        "medianIncome": "ultra-high",
+        "businessDensity": "high",
+        "touristAttraction": "very-high"
+      },
       "weddingVenues": 20,
       "hotels": 35,
       "restaurants": 120,
-      "applicableServices": { "airport": 20, "corporate": 20, "wedding": 20, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 20,
+        "wedding": 20,
+        "partyBus": 15
+      }
     },
     {
       "id": "wicker-park",
@@ -96,17 +181,34 @@
       "state": "IL",
       "type": "neighborhood",
       "region": "west",
-      "coordinates": { "lat": 41.9083, "lng": -87.6850 },
+      "coordinates": { "lat": 41.9083, "lng": -87.685 },
       "zipCodes": ["60622"],
       "population": 35000,
       "description": "Hip, artistic neighborhood known for street art, boutiques, coffee shops, and young professionals.",
-      "landmarks": ["Wicker Park Pie", "Buckminster Fuller Home", "Artisan neighborhoods", "Music venues"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 25 } },
-      "demographics": { "medianIncome": "medium-high", "businessDensity": "medium", "touristAttraction": "medium" },
+      "landmarks": [
+        "Wicker Park Pie",
+        "Buckminster Fuller Home",
+        "Artisan neighborhoods",
+        "Music venues"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 25 }
+      },
+      "demographics": {
+        "medianIncome": "medium-high",
+        "businessDensity": "medium",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 15,
       "hotels": 8,
       "restaurants": 100,
-      "applicableServices": { "airport": 19, "corporate": 14, "wedding": 16, "partyBus": 19 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 14,
+        "wedding": 16,
+        "partyBus": 19
+      }
     },
     {
       "id": "bucktown",
@@ -118,13 +220,30 @@
       "zipCodes": ["60622"],
       "population": 28000,
       "description": "Residential neighborhood with young families, good schools, and growing restaurant scene.",
-      "landmarks": ["Bucktown Park", "Milwaukee Avenue shops", "Polish cultural centers", "Family-friendly venues"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 } },
-      "demographics": { "medianIncome": "medium-high", "businessDensity": "low-medium", "touristAttraction": "low" },
+      "landmarks": [
+        "Bucktown Park",
+        "Milwaukee Avenue shops",
+        "Polish cultural centers",
+        "Family-friendly venues"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 }
+      },
+      "demographics": {
+        "medianIncome": "medium-high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 10,
       "hotels": 5,
       "restaurants": 60,
-      "applicableServices": { "airport": 18, "corporate": 12, "wedding": 14, "partyBus": 16 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 12,
+        "wedding": 14,
+        "partyBus": 16
+      }
     },
     {
       "id": "pilsen",
@@ -136,13 +255,30 @@
       "zipCodes": ["60616"],
       "population": 38000,
       "description": "Historic Mexican-American neighborhood with vibrant murals, galleries, and authentic restaurants.",
-      "landmarks": ["National Museum of Mexican Art", "18th Street Murals", "Thalia Hall", "Casa Anita"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 8 } },
-      "demographics": { "medianIncome": "medium", "businessDensity": "medium", "touristAttraction": "medium" },
+      "landmarks": [
+        "National Museum of Mexican Art",
+        "18th Street Murals",
+        "Thalia Hall",
+        "Casa Anita"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 8 }
+      },
+      "demographics": {
+        "medianIncome": "medium",
+        "businessDensity": "medium",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 12,
       "hotels": 6,
       "restaurants": 80,
-      "applicableServices": { "airport": 18, "corporate": 12, "wedding": 14, "partyBus": 16 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 12,
+        "wedding": 14,
+        "partyBus": 16
+      }
     },
     {
       "id": "naperville",
@@ -154,13 +290,31 @@
       "zipCodes": ["60540", "60563", "60564"],
       "population": 141853,
       "description": "Upscale western suburb known for fine dining, shopping, beautiful riverwalk, and excellent schools.",
-      "landmarks": ["Riverwalk", "Millennium Carillon", "Knoch Park", "Mayslake Peabody Estate", "Naper Settlement"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 35 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "medium-high", "touristAttraction": "high" },
+      "landmarks": [
+        "Riverwalk",
+        "Millennium Carillon",
+        "Knoch Park",
+        "Mayslake Peabody Estate",
+        "Naper Settlement"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 35 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "medium-high",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 15,
       "hotels": 12,
       "restaurants": 85,
-      "applicableServices": { "airport": 20, "corporate": 18, "wedding": 19, "partyBus": 17 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 18,
+        "wedding": 19,
+        "partyBus": 17
+      }
     },
     {
       "id": "wheaton",
@@ -172,13 +326,30 @@
       "zipCodes": ["60187", "60188"],
       "population": 55636,
       "description": "Family-friendly western suburb with excellent schools, parks, and historic downtown.",
-      "landmarks": ["Warrenville Reservoir", "Civic Center", "Downtown Wheaton", "Cosley Zoo"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 30 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 40 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low", "touristAttraction": "medium" },
+      "landmarks": [
+        "Warrenville Reservoir",
+        "Civic Center",
+        "Downtown Wheaton",
+        "Cosley Zoo"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 30 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 40 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 12,
       "hotels": 8,
       "restaurants": 50,
-      "applicableServices": { "airport": 19, "corporate": 15, "wedding": 18, "partyBus": 16 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 15,
+        "wedding": 18,
+        "partyBus": 16
+      }
     },
     {
       "id": "evanston",
@@ -190,13 +361,30 @@
       "zipCodes": ["60201", "60202"],
       "population": 74360,
       "description": "College town and lakefront suburb home to Northwestern University with vibrant downtown and beach access.",
-      "landmarks": ["Northwestern University", "Lakefront Park", "Grosse Point Lighthouse", "Downtown Evanston"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 20 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "medium", "touristAttraction": "high" },
+      "landmarks": [
+        "Northwestern University",
+        "Lakefront Park",
+        "Grosse Point Lighthouse",
+        "Downtown Evanston"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 20 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "medium",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 14,
       "hotels": 10,
       "restaurants": 75,
-      "applicableServices": { "airport": 20, "corporate": 16, "wedding": 18, "partyBus": 17 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 16,
+        "wedding": 18,
+        "partyBus": 17
+      }
     },
     {
       "id": "oak-park",
@@ -208,13 +396,30 @@
       "zipCodes": ["60301", "60302"],
       "population": 51884,
       "description": "Charming western suburb with historic Frank Lloyd Wright homes and strong arts community.",
-      "landmarks": ["Frank Lloyd Wright Historic District", "Prairie Style Homes", "Oak Park Avenue", "Hemingway Home"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 15 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low-medium", "touristAttraction": "medium-high" },
+      "landmarks": [
+        "Frank Lloyd Wright Historic District",
+        "Prairie Style Homes",
+        "Oak Park Avenue",
+        "Hemingway Home"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 22 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 15 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "medium-high"
+      },
       "weddingVenues": 10,
       "hotels": 7,
       "restaurants": 55,
-      "applicableServices": { "airport": 19, "corporate": 14, "wedding": 16, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 14,
+        "wedding": 16,
+        "partyBus": 15
+      }
     },
     {
       "id": "schaumburg",
@@ -226,13 +431,30 @@
       "zipCodes": ["60173", "60195"],
       "population": 73305,
       "description": "Major business hub northwest of Chicago with corporate headquarters, shopping, and entertainment.",
-      "landmarks": ["IKEA", "Woodfield Shopping Center", "Busse Woods Forest Preserve", "Corporate offices"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 35 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "very-high", "touristAttraction": "medium" },
+      "landmarks": [
+        "IKEA",
+        "Woodfield Shopping Center",
+        "Busse Woods Forest Preserve",
+        "Corporate offices"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 35 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "very-high",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 16,
       "hotels": 20,
       "restaurants": 100,
-      "applicableServices": { "airport": 20, "corporate": 20, "wedding": 17, "partyBus": 16 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 20,
+        "wedding": 17,
+        "partyBus": 16
+      }
     },
     {
       "id": "oak-brook",
@@ -244,13 +466,30 @@
       "zipCodes": ["60523"],
       "population": 7886,
       "description": "Affluent western suburb with corporate parks, golf courses, and upscale residential areas.",
-      "landmarks": ["Oak Brook Center", "Golf clubs", "Mayslake Peabody Estate", "Business parks"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 } },
-      "demographics": { "medianIncome": "ultra-high", "businessDensity": "very-high", "touristAttraction": "low" },
+      "landmarks": [
+        "Oak Brook Center",
+        "Golf clubs",
+        "Mayslake Peabody Estate",
+        "Business parks"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 }
+      },
+      "demographics": {
+        "medianIncome": "ultra-high",
+        "businessDensity": "very-high",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 12,
       "hotels": 10,
       "restaurants": 45,
-      "applicableServices": { "airport": 20, "corporate": 20, "wedding": 16, "partyBus": 14 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 20,
+        "wedding": 16,
+        "partyBus": 14
+      }
     },
     {
       "id": "downers-grove",
@@ -262,13 +501,30 @@
       "zipCodes": ["60515", "60516"],
       "population": 58440,
       "description": "Established western suburb with tree-lined streets, excellent schools, and family-friendly atmosphere.",
-      "landmarks": ["Lyman Woods", "Recreation Center", "Downtown Downers Grove", "The Depot"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 32 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "low-medium", "touristAttraction": "low" },
+      "landmarks": [
+        "Lyman Woods",
+        "Recreation Center",
+        "Downtown Downers Grove",
+        "The Depot"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 28 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 32 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 11,
       "hotels": 6,
       "restaurants": 50,
-      "applicableServices": { "airport": 19, "corporate": 15, "wedding": 17, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 15,
+        "wedding": 17,
+        "partyBus": 15
+      }
     },
     {
       "id": "hinsdale",
@@ -280,13 +536,30 @@
       "zipCodes": ["60521"],
       "population": 17349,
       "description": "Wealthy western suburb known for commuter rail access, beautiful homes, and strong schools.",
-      "landmarks": ["Salt Creek Trail", "Hinsdale Central High School", "Immanuel Hall", "Downtown shops"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 26 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "low", "touristAttraction": "low" },
+      "landmarks": [
+        "Salt Creek Trail",
+        "Hinsdale Central High School",
+        "Immanuel Hall",
+        "Downtown shops"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 26 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "low",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 9,
       "hotels": 4,
       "restaurants": 35,
-      "applicableServices": { "airport": 19, "corporate": 14, "wedding": 17, "partyBus": 14 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 14,
+        "wedding": 17,
+        "partyBus": 14
+      }
     },
     {
       "id": "brookfield",
@@ -298,13 +571,30 @@
       "zipCodes": ["60513"],
       "population": 12819,
       "description": "Suburban community west of Chicago with Brookfield Zoo and residential neighborhoods.",
-      "landmarks": ["Brookfield Zoo", "Salt Creek", "Forest Preserve", "Parks & recreation"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 27 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 25 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low-medium", "touristAttraction": "medium" },
+      "landmarks": [
+        "Brookfield Zoo",
+        "Salt Creek",
+        "Forest Preserve",
+        "Parks & recreation"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 27 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 25 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 8,
       "hotels": 6,
       "restaurants": 40,
-      "applicableServices": { "airport": 18, "corporate": 13, "wedding": 15, "partyBus": 14 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 13,
+        "wedding": 15,
+        "partyBus": 14
+      }
     },
     {
       "id": "elmhurst",
@@ -312,17 +602,34 @@
       "state": "IL",
       "type": "suburb",
       "region": "western-suburbs",
-      "coordinates": { "lat": 41.8934, "lng": -87.9340 },
+      "coordinates": { "lat": 41.8934, "lng": -87.934 },
       "zipCodes": ["60126"],
       "population": 45435,
       "description": "Desirable western suburb with excellent schools, parks, and commuter rail access.",
-      "landmarks": ["Wilder Park", "Salt Creek Trail", "Downtown Elmhurst", "Recreation Center"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low-medium", "touristAttraction": "low" },
+      "landmarks": [
+        "Wilder Park",
+        "Salt Creek Trail",
+        "Downtown Elmhurst",
+        "Recreation Center"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 25 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 28 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 10,
       "hotels": 5,
       "restaurants": 45,
-      "applicableServices": { "airport": 19, "corporate": 14, "wedding": 16, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 14,
+        "wedding": 16,
+        "partyBus": 15
+      }
     },
     {
       "id": "glenview",
@@ -334,13 +641,30 @@
       "zipCodes": ["60025"],
       "population": 43293,
       "description": "Upscale northern suburb with excellent schools, parks, and family-friendly amenities.",
-      "landmarks": ["Glenview Park", "Glenview Country Club", "Nature Center", "Golf courses"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 15 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "low-medium", "touristAttraction": "low" },
+      "landmarks": [
+        "Glenview Park",
+        "Glenview Country Club",
+        "Nature Center",
+        "Golf courses"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 15 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 30 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 12,
       "hotels": 8,
       "restaurants": 55,
-      "applicableServices": { "airport": 20, "corporate": 15, "wedding": 17, "partyBus": 16 }
+      "applicableServices": {
+        "airport": 20,
+        "corporate": 15,
+        "wedding": 17,
+        "partyBus": 16
+      }
     },
     {
       "id": "skokie",
@@ -352,13 +676,30 @@
       "zipCodes": ["60076", "60077"],
       "population": 64884,
       "description": "Diverse northern suburb with shopping, parks, and proximity to downtown Chicago.",
-      "landmarks": ["Old Orchard Shopping Center", "Skokie Lagoons", "Niles North High School", "Parks system"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 32 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low-medium", "touristAttraction": "low-medium" },
+      "landmarks": [
+        "Old Orchard Shopping Center",
+        "Skokie Lagoons",
+        "Niles North High School",
+        "Parks system"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 18 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 32 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "low-medium"
+      },
       "weddingVenues": 10,
       "hotels": 10,
       "restaurants": 60,
-      "applicableServices": { "airport": 19, "corporate": 14, "wedding": 15, "partyBus": 15 }
+      "applicableServices": {
+        "airport": 19,
+        "corporate": 14,
+        "wedding": 15,
+        "partyBus": 15
+      }
     },
     {
       "id": "tinley-park",
@@ -370,13 +711,30 @@
       "zipCodes": ["60477"],
       "population": 56703,
       "description": "Growing southern suburb with parks, shopping, and highway access.",
-      "landmarks": ["Tinley Park Park District", "Odyssey Fun World", "Burnham Prairie Preserve", "Shopping centers"],
-      "nearbyAirports": { "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 15 }, "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 35 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low", "touristAttraction": "low-medium" },
+      "landmarks": [
+        "Tinley Park Park District",
+        "Odyssey Fun World",
+        "Burnham Prairie Preserve",
+        "Shopping centers"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 15 },
+        "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 35 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low",
+        "touristAttraction": "low-medium"
+      },
       "weddingVenues": 8,
       "hotels": 7,
       "restaurants": 40,
-      "applicableServices": { "airport": 18, "corporate": 12, "wedding": 14, "partyBus": 14 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 12,
+        "wedding": 14,
+        "partyBus": 14
+      }
     },
     {
       "id": "orland-park",
@@ -388,13 +746,30 @@
       "zipCodes": ["60462"],
       "population": 58267,
       "description": "Family-friendly southern suburb with highly rated schools and shopping.",
-      "landmarks": ["Orland Park Park District", "The Preserve at Orland", "Shopping centers", "Golf courses"],
-      "nearbyAirports": { "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 18 }, "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 32 } },
-      "demographics": { "medianIncome": "very-high", "businessDensity": "low", "touristAttraction": "low" },
+      "landmarks": [
+        "Orland Park Park District",
+        "The Preserve at Orland",
+        "Shopping centers",
+        "Golf courses"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 18 },
+        "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 32 }
+      },
+      "demographics": {
+        "medianIncome": "very-high",
+        "businessDensity": "low",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 10,
       "hotels": 8,
       "restaurants": 45,
-      "applicableServices": { "airport": 18, "corporate": 13, "wedding": 15, "partyBus": 14 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 13,
+        "wedding": 15,
+        "partyBus": 14
+      }
     },
     {
       "id": "blue-island",
@@ -406,13 +781,30 @@
       "zipCodes": ["60406"],
       "population": 22908,
       "description": "South suburban community with residential character and railway history.",
-      "landmarks": ["Blue Island Center", "Metra Station", "Parks & recreation", "Historic buildings"],
-      "nearbyAirports": { "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 10 }, "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 30 } },
-      "demographics": { "medianIncome": "medium", "businessDensity": "low", "touristAttraction": "low" },
+      "landmarks": [
+        "Blue Island Center",
+        "Metra Station",
+        "Parks & recreation",
+        "Historic buildings"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago Midway", "code": "MDW", "distance": 10 },
+        "secondary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 30 }
+      },
+      "demographics": {
+        "medianIncome": "medium",
+        "businessDensity": "low",
+        "touristAttraction": "low"
+      },
       "weddingVenues": 5,
       "hotels": 3,
       "restaurants": 25,
-      "applicableServices": { "airport": 17, "corporate": 11, "wedding": 12, "partyBus": 12 }
+      "applicableServices": {
+        "airport": 17,
+        "corporate": 11,
+        "wedding": 12,
+        "partyBus": 12
+      }
     },
     {
       "id": "hyde-park",
@@ -424,13 +816,30 @@
       "zipCodes": ["60615"],
       "population": 30000,
       "description": "Historic South Side neighborhood home to University of Chicago and museums.",
-      "landmarks": ["University of Chicago", "Museum of Science and Industry", "Promontory Point", "Robie House"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 32 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 12 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "medium", "touristAttraction": "high" },
+      "landmarks": [
+        "University of Chicago",
+        "Museum of Science and Industry",
+        "Promontory Point",
+        "Robie House"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 32 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 12 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "medium",
+        "touristAttraction": "high"
+      },
       "weddingVenues": 10,
       "hotels": 8,
       "restaurants": 60,
-      "applicableServices": { "airport": 18, "corporate": 13, "wedding": 14, "partyBus": 13 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 13,
+        "wedding": 14,
+        "partyBus": 13
+      }
     },
     {
       "id": "kenwood",
@@ -442,13 +851,30 @@
       "zipCodes": ["60619"],
       "population": 18000,
       "description": "Historic South Side neighborhood with beautiful lakefront and architectural heritage.",
-      "landmarks": ["Lakefront Park", "Historic homes", "Kenwood Park", "Art institutions"],
-      "nearbyAirports": { "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 34 }, "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 14 } },
-      "demographics": { "medianIncome": "high", "businessDensity": "low-medium", "touristAttraction": "medium" },
+      "landmarks": [
+        "Lakefront Park",
+        "Historic homes",
+        "Kenwood Park",
+        "Art institutions"
+      ],
+      "nearbyAirports": {
+        "primary": { "name": "Chicago O'Hare", "code": "ORD", "distance": 34 },
+        "secondary": { "name": "Chicago Midway", "code": "MDW", "distance": 14 }
+      },
+      "demographics": {
+        "medianIncome": "high",
+        "businessDensity": "low-medium",
+        "touristAttraction": "medium"
+      },
       "weddingVenues": 8,
       "hotels": 5,
       "restaurants": 40,
-      "applicableServices": { "airport": 18, "corporate": 12, "wedding": 14, "partyBus": 12 }
+      "applicableServices": {
+        "airport": 18,
+        "corporate": 12,
+        "wedding": 14,
+        "partyBus": 12
+      }
     }
   ]
 }

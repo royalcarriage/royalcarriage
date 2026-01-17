@@ -48,10 +48,21 @@ const navLinks = [
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Redirect .web.app/.firebaseapp.com to custom domain -->
+  <script is:inline define:vars={{ productionDomain: config.domain }}>
+    (function() {
+      var host = window.location.hostname;
+      if (host.endsWith('.web.app') || host.endsWith('.firebaseapp.com')) {
+        window.location.replace(productionDomain + window.location.pathname + window.location.search);
+      }
+    })();
+  </script>
+
   <title>{metaTags.title}</title>
   <meta name="description" content={metaTags.description}>
   <meta name="robots" content={metaTags.robots}>
-  {canonical && <link rel="canonical" href={`${config.domain}${canonical}`}>}
+  <link rel="canonical" href={`${config.domain}${canonical || Astro.url.pathname}`}>
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -73,8 +84,255 @@ const navLinks = [
   <script type="application/ld+json" set:html={JSON.stringify(businessSchema)}></script>
   {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)}></script>}
 
-  <!-- Google Analytics - Add your measurement ID -->
-  <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
+  <!-- Google Analytics & Comprehensive Tracking -->
+  {config.analytics?.googleAnalyticsId && (
+    <>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.analytics.googleAnalyticsId}`}></script>
+      <script is:inline define:vars={{
+        gaId: config.analytics.googleAnalyticsId,
+        siteTarget: config.target,
+        siteDomain: config.domain
+      }}>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        // Enhanced GA4 Configuration
+        gtag('config', gaId, {
+          'page_title': document.title,
+          'page_location': window.location.href,
+          'page_path': window.location.pathname,
+          'content_group': siteTarget,
+          'send_page_view': true,
+          'custom_map': {
+            'dimension1': 'site_target',
+            'dimension2': 'booking_source',
+            'dimension3': 'page_type',
+            'dimension4': 'service_type',
+            'dimension5': 'location_name'
+          }
+        });
+
+        // Set user properties for audience segmentation
+        gtag('set', 'user_properties', {
+          site_target: siteTarget,
+          user_type: 'visitor',
+          referrer_domain: document.referrer ? new URL(document.referrer).hostname : 'direct'
+        });
+
+        // Detect page type from URL
+        var pageType = 'homepage';
+        var path = window.location.pathname;
+        if (path.includes('/service/')) pageType = 'service_page';
+        else if (path.includes('/city/') || path.includes('/locations')) pageType = 'location_page';
+        else if (path.includes('/fleet')) pageType = 'fleet_page';
+        else if (path.includes('/contact')) pageType = 'contact_page';
+        else if (path.includes('/pricing')) pageType = 'pricing_page';
+        else if (path.includes('/blog')) pageType = 'blog_page';
+        else if (path !== '/') pageType = 'landing_page';
+
+        gtag('event', 'page_classification', {
+          page_type: pageType,
+          site_target: siteTarget
+        });
+
+        // ===== SCROLL DEPTH TRACKING =====
+        var scrollMarks = [25, 50, 75, 90, 100];
+        var scrollFired = {};
+        function trackScrollDepth() {
+          var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+          var scrollPercent = Math.round((scrollTop / docHeight) * 100);
+
+          scrollMarks.forEach(function(mark) {
+            if (scrollPercent >= mark && !scrollFired[mark]) {
+              scrollFired[mark] = true;
+              gtag('event', 'scroll_depth', {
+                event_category: 'engagement',
+                event_label: mark + '%',
+                value: mark,
+                page_path: path,
+                page_type: pageType
+              });
+            }
+          });
+        }
+        window.addEventListener('scroll', trackScrollDepth, {passive: true});
+
+        // ===== TIME ON PAGE TRACKING =====
+        var pageStartTime = Date.now();
+        var timeMarks = [10, 30, 60, 120, 300]; // seconds
+        var timeFired = {};
+        setInterval(function() {
+          var elapsed = Math.floor((Date.now() - pageStartTime) / 1000);
+          timeMarks.forEach(function(mark) {
+            if (elapsed >= mark && !timeFired[mark]) {
+              timeFired[mark] = true;
+              gtag('event', 'time_on_page', {
+                event_category: 'engagement',
+                event_label: mark + 's',
+                value: mark,
+                page_path: path,
+                page_type: pageType
+              });
+            }
+          });
+        }, 5000);
+
+        // ===== MOOVS BOOKING TRACKING =====
+        window.trackMoovsClick = function(action, label, value) {
+          gtag('event', 'moovs_booking', {
+            event_category: 'conversion',
+            event_action: action,
+            event_label: label || siteTarget,
+            value: value || 100,
+            currency: 'USD',
+            page_path: path,
+            page_type: pageType
+          });
+          // Also track as conversion
+          gtag('event', 'conversion', {
+            send_to: gaId,
+            event_category: 'booking',
+            value: value || 100,
+            currency: 'USD'
+          });
+        };
+
+        // ===== PHONE CALL TRACKING =====
+        window.trackPhoneCall = function(location) {
+          gtag('event', 'phone_call', {
+            event_category: 'contact',
+            event_action: 'call_click',
+            event_label: location || path,
+            value: 50,
+            page_path: path,
+            page_type: pageType
+          });
+          gtag('event', 'conversion', {
+            send_to: gaId,
+            event_category: 'phone_call',
+            value: 50,
+            currency: 'USD'
+          });
+        };
+
+        // ===== FORM TRACKING =====
+        window.trackFormSubmit = function(formType, formData) {
+          gtag('event', 'form_submit', {
+            event_category: 'lead',
+            event_action: 'form_submission',
+            event_label: formType || 'contact',
+            value: 25,
+            page_path: path,
+            page_type: pageType,
+            form_type: formType
+          });
+          gtag('event', 'generate_lead', {
+            currency: 'USD',
+            value: 25
+          });
+        };
+
+        // ===== CTA BUTTON TRACKING =====
+        window.trackCTAClick = function(ctaType, ctaText) {
+          gtag('event', 'cta_click', {
+            event_category: 'engagement',
+            event_action: 'cta_' + ctaType,
+            event_label: ctaText,
+            page_path: path,
+            page_type: pageType
+          });
+        };
+
+        // ===== AUTO CLICK TRACKING =====
+        document.addEventListener('click', function(e) {
+          // Moovs booking links
+          var moovsLink = e.target.closest('a[href*="moovs.app"]');
+          if (moovsLink) {
+            window.trackMoovsClick('booking_click', moovsLink.href);
+          }
+
+          // Phone links
+          var phoneLink = e.target.closest('a[href^="tel:"]');
+          if (phoneLink) {
+            window.trackPhoneCall(path);
+          }
+
+          // Email links
+          var emailLink = e.target.closest('a[href^="mailto:"]');
+          if (emailLink) {
+            gtag('event', 'email_click', {
+              event_category: 'contact',
+              event_action: 'email_click',
+              page_path: path
+            });
+          }
+
+          // CTA buttons
+          var ctaButton = e.target.closest('[data-cta], .cta-button, .book-now, .get-quote');
+          if (ctaButton) {
+            window.trackCTAClick(ctaButton.dataset.cta || 'button', ctaButton.textContent.trim());
+          }
+
+          // External links
+          var extLink = e.target.closest('a[href^="http"]');
+          if (extLink && !extLink.href.includes(siteDomain)) {
+            gtag('event', 'outbound_click', {
+              event_category: 'outbound',
+              event_label: extLink.href,
+              page_path: path
+            });
+          }
+
+          // Fleet/vehicle clicks
+          var fleetClick = e.target.closest('[data-vehicle], .vehicle-card, .fleet-item');
+          if (fleetClick) {
+            gtag('event', 'vehicle_view', {
+              event_category: 'fleet',
+              event_label: fleetClick.dataset.vehicle || 'unknown',
+              page_path: path
+            });
+          }
+
+          // Service clicks
+          var serviceClick = e.target.closest('[data-service], .service-card');
+          if (serviceClick) {
+            gtag('event', 'service_interest', {
+              event_category: 'services',
+              event_label: serviceClick.dataset.service || 'unknown',
+              page_path: path
+            });
+          }
+        });
+
+        // ===== PAGE EXIT INTENT =====
+        document.addEventListener('mouseleave', function(e) {
+          if (e.clientY < 10) {
+            var timeOnPage = Math.floor((Date.now() - pageStartTime) / 1000);
+            gtag('event', 'exit_intent', {
+              event_category: 'engagement',
+              time_on_page: timeOnPage,
+              scroll_depth: Math.max.apply(null, Object.keys(scrollFired).map(Number)) || 0,
+              page_path: path,
+              page_type: pageType
+            });
+          }
+        });
+
+        // ===== VISIBILITY TRACKING =====
+        document.addEventListener('visibilitychange', function() {
+          gtag('event', 'page_visibility', {
+            event_category: 'engagement',
+            event_action: document.hidden ? 'hidden' : 'visible',
+            page_path: path
+          });
+        });
+
+        console.log('[Analytics] Royal Carriage tracking initialized for', siteTarget);
+      </script>
+    </>
+  )}
 </head>
 <body class="flex flex-col min-h-screen">
   <Header target="airport" />

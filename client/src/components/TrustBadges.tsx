@@ -30,12 +30,12 @@ const badges = [
 
 export function TrustBadges() {
   return (
-    <div 
+    <div
       className="flex flex-wrap justify-center gap-6 md:gap-8 lg:gap-12 mt-8 pt-8 border-t border-white/20"
       data-testid="trust-badges"
     >
       {badges.map((badge) => (
-        <div 
+        <div
           key={badge.label}
           className="flex items-center gap-3 text-white"
           data-testid={`trust-badge-${badge.label.toLowerCase()}`}

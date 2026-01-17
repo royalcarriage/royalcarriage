@@ -3,10 +3,10 @@
  * Generates images using AI for website content
  */
 
-import { VertexAI } from '@google-cloud/vertexai';
+import { VertexAI } from "@google-cloud/vertexai";
 
 interface ImageGenerationRequest {
-  purpose: 'hero' | 'service_card' | 'fleet' | 'location' | 'testimonial';
+  purpose: "hero" | "service_card" | "fleet" | "location" | "testimonial";
   location?: string;
   vehicle?: string;
   style?: string;
@@ -27,8 +27,9 @@ export class ImageGenerator {
   private location: string;
 
   constructor(projectId?: string, location?: string) {
-    this.projectId = projectId || process.env.GOOGLE_CLOUD_PROJECT || '';
-    this.location = location || process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+    this.projectId = projectId || process.env.GOOGLE_CLOUD_PROJECT || "";
+    this.location =
+      location || process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 
     if (this.projectId) {
       try {
@@ -37,7 +38,10 @@ export class ImageGenerator {
           location: this.location,
         });
       } catch (error) {
-        console.warn('Vertex AI initialization failed for image generation:', error);
+        console.warn(
+          "Vertex AI initialization failed for image generation:",
+          error,
+        );
       }
     }
   }
@@ -45,7 +49,9 @@ export class ImageGenerator {
   /**
    * Generate an image based on request parameters
    */
-  async generateImage(request: ImageGenerationRequest): Promise<ImageGenerationResult> {
+  async generateImage(
+    request: ImageGenerationRequest,
+  ): Promise<ImageGenerationResult> {
     const prompt = this.buildImagePrompt(request);
 
     let result: ImageGenerationResult;
@@ -54,7 +60,7 @@ export class ImageGenerator {
       try {
         result = await this.generateWithVertexAI(prompt, request);
       } catch (error) {
-        console.error('Vertex AI image generation failed:', error);
+        console.error("Vertex AI image generation failed:", error);
         // Fallback to placeholder
         result = this.generatePlaceholder(request, prompt);
       }
@@ -74,13 +80,13 @@ export class ImageGenerator {
    */
   private async saveImageMetadata(
     result: ImageGenerationResult,
-    request: ImageGenerationRequest
+    request: ImageGenerationRequest,
   ): Promise<void> {
     try {
-      const admin = await import('firebase-admin');
+      const admin = await import("firebase-admin");
       const db = admin.firestore();
 
-      await db.collection('ai_images').add({
+      await db.collection("ai_images").add({
         imageUrl: result.imageUrl,
         prompt: result.prompt,
         purpose: request.purpose,
@@ -95,7 +101,7 @@ export class ImageGenerator {
         usageCount: 0,
       });
     } catch (error) {
-      console.error('Failed to save image metadata:', error);
+      console.error("Failed to save image metadata:", error);
       // Don't throw - this is non-critical
     }
   }
@@ -106,54 +112,64 @@ export class ImageGenerator {
   private buildImagePrompt(request: ImageGenerationRequest): string {
     const { purpose, location, vehicle, style, description } = request;
 
-    let prompt = 'Professional photograph, high quality, luxury transportation, ';
+    let prompt =
+      "Professional photograph, high quality, luxury transportation, ";
 
     switch (purpose) {
-      case 'hero':
-        prompt += 'luxury black ';
+      case "hero":
+        prompt += "luxury black ";
         if (vehicle) {
           prompt += `${vehicle} `;
         } else {
-          prompt += 'sedan ';
+          prompt += "sedan ";
         }
         if (location) {
           prompt += `at ${location}, `;
         } else {
-          prompt += 'at modern airport terminal, ';
+          prompt += "at modern airport terminal, ";
         }
-        prompt += 'sleek design, nighttime with dramatic lighting, professional chauffeur standing beside vehicle, ';
-        prompt += 'cinematic composition, wide angle, premium quality, Chicago skyline in background';
+        prompt +=
+          "sleek design, nighttime with dramatic lighting, professional chauffeur standing beside vehicle, ";
+        prompt +=
+          "cinematic composition, wide angle, premium quality, Chicago skyline in background";
         break;
 
-      case 'service_card':
-        prompt += 'luxury ';
+      case "service_card":
+        prompt += "luxury ";
         if (vehicle) {
           prompt += `${vehicle} `;
         }
-        prompt += 'on clean modern street, professional service vehicle, ';
-        prompt += 'daytime, clear sky, well-lit, front 3/4 view, commercial photography style';
+        prompt += "on clean modern street, professional service vehicle, ";
+        prompt +=
+          "daytime, clear sky, well-lit, front 3/4 view, commercial photography style";
         break;
 
-      case 'fleet':
+      case "fleet":
         if (vehicle) {
           prompt += `luxury ${vehicle}, `;
         }
-        prompt += 'studio lighting, professional product photography, pristine condition, ';
-        prompt += 'black or dark color, leather interior visible through windows, side profile view';
+        prompt +=
+          "studio lighting, professional product photography, pristine condition, ";
+        prompt +=
+          "black or dark color, leather interior visible through windows, side profile view";
         break;
 
-      case 'location':
+      case "location":
         if (location) {
           prompt += `${location} landmark or airport, `;
         }
-        prompt += 'luxury black car in foreground, professional transportation service, ';
-        prompt += 'golden hour lighting, establishing shot, travel photography style';
+        prompt +=
+          "luxury black car in foreground, professional transportation service, ";
+        prompt +=
+          "golden hour lighting, establishing shot, travel photography style";
         break;
 
-      case 'testimonial':
-        prompt += 'happy business professional getting into luxury black car, ';
-        prompt += 'professional chauffeur holding door, airport or hotel setting, ';
-        prompt += 'natural candid style, positive atmosphere, professional service';
+      case "testimonial":
+        prompt += "happy business professional getting into luxury black car, ";
+        prompt +=
+          "professional chauffeur holding door, airport or hotel setting, ";
+        prompt +=
+          "natural candid style, positive atmosphere, professional service";
         break;
     }
 
@@ -166,7 +182,8 @@ export class ImageGenerator {
     }
 
     // Add quality and style constraints
-    prompt += ', photorealistic, 4K quality, professional photography, no text or logos';
+    prompt +=
+      ", photorealistic, 4K quality, professional photography, no text or logos";
 
     return prompt;
   }
@@ -176,16 +193,16 @@ export class ImageGenerator {
    */
   private async generateWithVertexAI(
     prompt: string,
-    request: ImageGenerationRequest
+    request: ImageGenerationRequest,
   ): Promise<ImageGenerationResult> {
     if (!this.vertexAI) {
-      throw new Error('Vertex AI not initialized');
+      throw new Error("Vertex AI not initialized");
     }
 
     try {
       // Get the generative model for Imagen
       const generativeModel = this.vertexAI.preview.getGenerativeModel({
-        model: 'imagegeneration@006',
+        model: "imagegeneration@006",
       });
 
       // Determine image dimensions based on purpose
@@ -193,12 +210,16 @@ export class ImageGenerator {
 
       // Generate the image
       const result = await generativeModel.generateContent({
-        contents: [{
-          role: 'user',
-          parts: [{
-            text: prompt,
-          }],
-        }],
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: prompt,
+              },
+            ],
+          },
+        ],
         generationConfig: {
           temperature: 0.4,
           topK: 32,
@@ -211,7 +232,7 @@ export class ImageGenerator {
       const candidates = response.candidates;
 
       if (!candidates || candidates.length === 0) {
-        throw new Error('No image candidates returned from Vertex AI');
+        throw new Error("No image candidates returned from Vertex AI");
       }
 
       // Get the first candidate
@@ -219,25 +240,29 @@ export class ImageGenerator {
       const content = candidate.content;
 
       if (!content || !content.parts || content.parts.length === 0) {
-        throw new Error('No image parts in response');
+        throw new Error("No image parts in response");
       }
 
       // Extract image data (base64 or URL)
       const imagePart = content.parts[0];
       let imageUrl: string;
 
-      if ('inlineData' in imagePart && imagePart.inlineData) {
+      if ("inlineData" in imagePart && imagePart.inlineData) {
         // Image is returned as base64
         const base64Data = imagePart.inlineData.data;
-        const mimeType = imagePart.inlineData.mimeType || 'image/png';
+        const mimeType = imagePart.inlineData.mimeType || "image/png";
 
         // Upload to Firebase Storage
-        imageUrl = await this.uploadToStorage(base64Data, mimeType, request.purpose);
-      } else if ('fileData' in imagePart && imagePart.fileData) {
+        imageUrl = await this.uploadToStorage(
+          base64Data,
+          mimeType,
+          request.purpose,
+        );
+      } else if ("fileData" in imagePart && imagePart.fileData) {
         // Image is returned as a file URI
         imageUrl = imagePart.fileData.fileUri;
       } else {
-        throw new Error('Unexpected image format in response');
+        throw new Error("Unexpected image format in response");
       }
 
       return {
@@ -248,8 +273,10 @@ export class ImageGenerator {
         format: specs.format,
       };
     } catch (error) {
-      console.error('Vertex AI image generation error:', error);
-      throw new Error(`Failed to generate image: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("Vertex AI image generation error:", error);
+      throw new Error(
+        `Failed to generate image: ${error instanceof Error ? error.message : String(error)}`,
+      );
     }
   }
 
@@ -259,18 +286,18 @@ export class ImageGenerator {
   private async uploadToStorage(
     base64Data: string,
     mimeType: string,
-    purpose: string
+    purpose: string,
   ): Promise<string> {
-    const admin = await import('firebase-admin');
+    const admin = await import("firebase-admin");
     const bucket = admin.storage().bucket();
 
     // Generate unique filename
     const timestamp = Date.now();
-    const extension = mimeType.split('/')[1] || 'png';
+    const extension = mimeType.split("/")[1] || "png";
     const filename = `ai-generated/${purpose}/${timestamp}.${extension}`;
 
     // Convert base64 to buffer
-    const buffer = Buffer.from(base64Data, 'base64');
+    const buffer = Buffer.from(base64Data, "base64");
 
     // Create file reference
     const file = bucket.file(filename);
@@ -280,7 +307,7 @@ export class ImageGenerator {
       metadata: {
         contentType: mimeType,
         metadata: {
-          generatedBy: 'vertex-ai-imagen',
+          generatedBy: "vertex-ai-imagen",
           purpose,
           timestamp: new Date().toISOString(),
         },
@@ -299,7 +326,7 @@ export class ImageGenerator {
    */
   private generatePlaceholder(
     request: ImageGenerationRequest,
-    prompt: string
+    prompt: string,
   ): ImageGenerationResult {
     const { purpose, vehicle, location } = request;
 
@@ -307,10 +334,10 @@ export class ImageGenerator {
     let width = 1200;
     let height = 800;
 
-    if (purpose === 'hero') {
+    if (purpose === "hero") {
       width = 1920;
       height = 1080;
-    } else if (purpose === 'service_card') {
+    } else if (purpose === "service_card") {
       width = 600;
       height = 400;
     }
@@ -323,7 +350,7 @@ export class ImageGenerator {
       prompt,
       width,
       height,
-      format: 'png',
+      format: "png",
     };
   }
 
@@ -351,7 +378,7 @@ export class ImageGenerator {
    */
   async generateVariations(
     request: ImageGenerationRequest,
-    count: number = 3
+    count: number = 3,
   ): Promise<ImageGenerationResult[]> {
     const results: ImageGenerationResult[] = [];
 
@@ -377,11 +404,26 @@ export class ImageGenerator {
     format: string;
   } {
     const specs = {
-      hero: { width: 1920, height: 1080, aspectRatio: '16:9', format: 'webp' },
-      service_card: { width: 600, height: 400, aspectRatio: '3:2', format: 'webp' },
-      fleet: { width: 800, height: 600, aspectRatio: '4:3', format: 'webp' },
-      location: { width: 1200, height: 800, aspectRatio: '3:2', format: 'webp' },
-      testimonial: { width: 400, height: 400, aspectRatio: '1:1', format: 'webp' },
+      hero: { width: 1920, height: 1080, aspectRatio: "16:9", format: "webp" },
+      service_card: {
+        width: 600,
+        height: 400,
+        aspectRatio: "3:2",
+        format: "webp",
+      },
+      fleet: { width: 800, height: 600, aspectRatio: "4:3", format: "webp" },
+      location: {
+        width: 1200,
+        height: 800,
+        aspectRatio: "3:2",
+        format: "webp",
+      },
+      testimonial: {
+        width: 400,
+        height: 400,
+        aspectRatio: "1:1",
+        format: "webp",
+      },
     };
 
     return specs[purpose as keyof typeof specs] || specs.service_card;
@@ -392,12 +434,20 @@ export class ImageGenerator {
  * Image prompt templates for different scenarios
  */
 export const ImagePromptTemplates = {
-  oHareAirport: 'luxury black sedan at Chicago O\'Hare International Airport, modern terminal, professional chauffeur, nighttime, dramatic lighting, cinematic',
-  midwayAirport: 'luxury black car at Chicago Midway Airport, professional airport transportation, clean modern setting, daytime, professional photography',
-  downtownChicago: 'luxury limousine in downtown Chicago, Michigan Avenue, city skyline, evening, professional black car service, urban sophistication',
-  luxurySedan: 'luxury black sedan, pristine condition, leather interior, professional product photography, studio lighting, side profile',
-  luxurySUV: 'luxury black SUV, spacious interior, premium vehicle, professional transportation, modern design, studio photography',
-  stretchLimo: 'stretch limousine, elegant luxury vehicle, professional photography, black exterior, sophisticated lighting',
-  professionalChauffeur: 'professional chauffeur in suit opening car door, luxury black car, airport setting, customer service, welcoming',
-  airportPickup: 'luxury car pickup at airport terminal, professional driver with sign, business traveler, premium service',
+  oHareAirport:
+    "luxury black sedan at Chicago O'Hare International Airport, modern terminal, professional chauffeur, nighttime, dramatic lighting, cinematic",
+  midwayAirport:
+    "luxury black car at Chicago Midway Airport, professional airport transportation, clean modern setting, daytime, professional photography",
+  downtownChicago:
+    "luxury limousine in downtown Chicago, Michigan Avenue, city skyline, evening, professional black car service, urban sophistication",
+  luxurySedan:
+    "luxury black sedan, pristine condition, leather interior, professional product photography, studio lighting, side profile",
+  luxurySUV:
+    "luxury black SUV, spacious interior, premium vehicle, professional transportation, modern design, studio photography",
+  stretchLimo:
+    "stretch limousine, elegant luxury vehicle, professional photography, black exterior, sophisticated lighting",
+  professionalChauffeur:
+    "professional chauffeur in suit opening car door, luxury black car, airport setting, customer service, welcoming",
+  airportPickup:
+    "luxury car pickup at airport terminal, professional driver with sign, business traveler, premium service",
 };

@@ -5,8 +5,8 @@
  * and conversation history management.
  */
 
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 const db = admin.firestore();
 
@@ -25,7 +25,7 @@ interface ChatResponse {
 }
 
 interface ConversationMessage {
-  role: 'user' | 'assistant' | 'system';
+  role: "user" | "assistant" | "system";
   content: string;
   timestamp: admin.firestore.Timestamp;
   model?: string;
@@ -34,8 +34,8 @@ interface ConversationMessage {
 
 // Gemini model configuration
 const MODEL_CONFIG: Record<string, { model: string; maxTokens: number }> = {
-  'gemini-pro': { model: 'gemini-pro', maxTokens: 8192 },
-  'gemini-flash': { model: 'gemini-1.5-flash', maxTokens: 4096 },
+  "gemini-pro": { model: "gemini-pro", maxTokens: 8192 },
+  "gemini-flash": { model: "gemini-1.5-flash", maxTokens: 4096 },
 };
 
 /**
@@ -46,23 +46,27 @@ export const chatWithAI = functions.https.onCall(
     // Verify authentication
     if (!context.auth) {
       throw new functions.https.HttpsError(
-        'unauthenticated',
-        'Must be authenticated to use chat'
+        "unauthenticated",
+        "Must be authenticated to use chat",
       );
     }
 
-    const { message, conversationId, model = 'gemini-pro' } = data;
+    const { message, conversationId, model = "gemini-pro" } = data;
 
-    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+    if (
+      !message ||
+      typeof message !== "string" ||
+      message.trim().length === 0
+    ) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Message is required'
+        "invalid-argument",
+        "Message is required",
       );
     }
 
     const userId = context.auth.uid;
-    const userEmail = context.auth.token.email || 'unknown';
-    const modelConfig = MODEL_CONFIG[model] || MODEL_CONFIG['gemini-pro'];
+    const userEmail = context.auth.token.email || "unknown";
+    const modelConfig = MODEL_CONFIG[model] || MODEL_CONFIG["gemini-pro"];
 
     let activeConversationId = conversationId;
     let conversationHistory: ConversationMessage[] = [];
@@ -70,14 +74,17 @@ export const chatWithAI = functions.https.onCall(
     try {
       // Load or create conversation
       if (conversationId) {
-        const convDoc = await db.collection('chat_conversations').doc(conversationId).get();
+        const convDoc = await db
+          .collection("chat_conversations")
+          .doc(conversationId)
+          .get();
         if (convDoc.exists && convDoc.data()?.userId === userId) {
           // Load recent messages for context
           const messagesSnap = await db
-            .collection('chat_conversations')
+            .collection("chat_conversations")
             .doc(conversationId)
-            .collection('messages')
-            .orderBy('timestamp', 'desc')
+            .collection("messages")
+            .orderBy("timestamp", "desc")
             .limit(10)
             .get();
 
@@ -89,10 +96,10 @@ export const chatWithAI = functions.https.onCall(
 
       // Create new conversation if needed
       if (!activeConversationId) {
-        const newConv = await db.collection('chat_conversations').add({
+        const newConv = await db.collection("chat_conversations").add({
           userId,
           userEmail,
-          title: message.substring(0, 50) + (message.length > 50 ? '...' : ''),
+          title: message.substring(0, 50) + (message.length > 50 ? "..." : ""),
           lastMessage: message.substring(0, 100),
           messageCount: 0,
           timestamp: admin.firestore.Timestamp.now(),
@@ -105,27 +112,27 @@ export const chatWithAI = functions.https.onCall(
       const { response, tokens } = await generateAIResponse(
         message,
         conversationHistory,
-        modelConfig.model
+        modelConfig.model,
       );
 
       // Save user message
       await db
-        .collection('chat_conversations')
+        .collection("chat_conversations")
         .doc(activeConversationId)
-        .collection('messages')
+        .collection("messages")
         .add({
-          role: 'user',
+          role: "user",
           content: message,
           timestamp: admin.firestore.Timestamp.now(),
         });
 
       // Save AI response
       await db
-        .collection('chat_conversations')
+        .collection("chat_conversations")
         .doc(activeConversationId)
-        .collection('messages')
+        .collection("messages")
         .add({
-          role: 'assistant',
+          role: "assistant",
           content: response,
           timestamp: admin.firestore.Timestamp.now(),
           model: model,
@@ -134,7 +141,7 @@ export const chatWithAI = functions.https.onCall(
 
       // Update conversation metadata
       await db
-        .collection('chat_conversations')
+        .collection("chat_conversations")
         .doc(activeConversationId)
         .update({
           lastMessage: response.substring(0, 100),
@@ -143,10 +150,10 @@ export const chatWithAI = functions.https.onCall(
         });
 
       // Log chat activity
-      await db.collection('activity_log').add({
-        type: 'ai',
+      await db.collection("activity_log").add({
+        type: "ai",
         message: `AI Chat: "${message.substring(0, 40)}..."`,
-        status: 'success',
+        status: "success",
         userId,
         userEmail,
         timestamp: admin.firestore.Timestamp.now(),
@@ -159,20 +166,23 @@ export const chatWithAI = functions.https.onCall(
         model,
       };
     } catch (error: any) {
-      console.error('Chat error:', error);
+      console.error("Chat error:", error);
 
       // Log error
-      await db.collection('activity_log').add({
-        type: 'ai',
+      await db.collection("activity_log").add({
+        type: "ai",
         message: `AI Chat Error: ${error.message}`,
-        status: 'error',
+        status: "error",
         userId,
         timestamp: admin.firestore.Timestamp.now(),
       });
 
-      throw new functions.https.HttpsError('internal', `Chat failed: ${error.message}`);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Chat failed: ${error.message}`,
+      );
     }
-  }
+  },
 );
 
 /**
@@ -181,12 +191,13 @@ export const chatWithAI = functions.https.onCall(
 async function generateAIResponse(
   message: string,
   history: ConversationMessage[],
-  model: string
+  model: string,
 ): Promise<{ response: string; tokens: number }> {
   try {
-    const { GoogleGenerativeAI } = require('@google/generative-ai');
+    const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-    const apiKey = process.env.GEMINI_API_KEY || functions.config().gemini?.api_key;
+    const apiKey =
+      process.env.GEMINI_API_KEY || functions.config().gemini?.api_key;
     if (!apiKey) {
       // Fallback to local response if no API key
       return generateLocalResponse(message);
@@ -212,15 +223,22 @@ Current company context:
 
     // Build message history for context
     const contextMessages = history.map((msg) => ({
-      role: msg.role === 'user' ? 'user' : 'model',
+      role: msg.role === "user" ? "user" : "model",
       parts: [{ text: msg.content }],
     }));
 
     // Start chat with history
     const chat = geminiModel.startChat({
       history: [
-        { role: 'user', parts: [{ text: systemPrompt }] },
-        { role: 'model', parts: [{ text: 'Understood. I\'m ready to assist with Royal Carriage Limousine tasks.' }] },
+        { role: "user", parts: [{ text: systemPrompt }] },
+        {
+          role: "model",
+          parts: [
+            {
+              text: "Understood. I'm ready to assist with Royal Carriage Limousine tasks.",
+            },
+          ],
+        },
         ...contextMessages,
       ],
     });
@@ -231,7 +249,7 @@ Current company context:
 
     return { response, tokens };
   } catch (error: any) {
-    console.error('Gemini API error:', error);
+    console.error("Gemini API error:", error);
     return generateLocalResponse(message);
   }
 }
@@ -239,14 +257,22 @@ Current company context:
 /**
  * Local fallback response when Gemini is unavailable
  */
-function generateLocalResponse(message: string): { response: string; tokens: number } {
+function generateLocalResponse(message: string): {
+  response: string;
+  tokens: number;
+} {
   const lowerMessage = message.toLowerCase();
 
-  let response = '';
+  let response = "";
 
-  if (lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
-    response = "Hello! I'm your AI assistant for Royal Carriage. I can help you with content generation, data analysis, code writing, and more. How can I assist you today?";
-  } else if (lowerMessage.includes('content') || lowerMessage.includes('seo') || lowerMessage.includes('page')) {
+  if (lowerMessage.includes("hello") || lowerMessage.includes("hi")) {
+    response =
+      "Hello! I'm your AI assistant for Royal Carriage. I can help you with content generation, data analysis, code writing, and more. How can I assist you today?";
+  } else if (
+    lowerMessage.includes("content") ||
+    lowerMessage.includes("seo") ||
+    lowerMessage.includes("page")
+  ) {
     response = `I can help you generate SEO-optimized content for Royal Carriage. Here's a sample:
 
 **Luxury Airport Transportation in Chicago**
@@ -261,7 +287,11 @@ Experience the finest in luxury ground transportation with Royal Carriage Limous
 - Premium vehicles
 
 Would you like me to generate content for a specific service or location?`;
-  } else if (lowerMessage.includes('analyze') || lowerMessage.includes('data') || lowerMessage.includes('metrics')) {
+  } else if (
+    lowerMessage.includes("analyze") ||
+    lowerMessage.includes("data") ||
+    lowerMessage.includes("metrics")
+  ) {
     response = `I can analyze your data. Please share the specific data or metrics you'd like me to look at, and I'll provide insights on:
 
 - **Trends**: Identify patterns over time
@@ -270,7 +300,11 @@ Would you like me to generate content for a specific service or location?`;
 - **Recommendations**: Suggest improvements
 
 What data would you like me to analyze?`;
-  } else if (lowerMessage.includes('code') || lowerMessage.includes('function') || lowerMessage.includes('typescript')) {
+  } else if (
+    lowerMessage.includes("code") ||
+    lowerMessage.includes("function") ||
+    lowerMessage.includes("typescript")
+  ) {
     response = `I can help you write code. Here's an example TypeScript function:
 
 \`\`\`typescript
@@ -292,7 +326,7 @@ async function fetchBookings(customerId: string) {
 \`\`\`
 
 What specific code would you like me to write?`;
-  } else if (lowerMessage.includes('translate')) {
+  } else if (lowerMessage.includes("translate")) {
     response = `I can translate text to multiple languages. Please provide:
 
 1. The text you want translated
@@ -301,7 +335,7 @@ What specific code would you like me to write?`;
 Example: "Translate 'Welcome to Royal Carriage Limousine' to Spanish"
 
 I support: Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Korean, Arabic, and more.`;
-  } else if (lowerMessage.includes('summarize')) {
+  } else if (lowerMessage.includes("summarize")) {
     response = `I can summarize content for you. Please share the text you'd like summarized, and I'll provide:
 
 - **Key Points**: Main ideas extracted
@@ -310,7 +344,7 @@ I support: Spanish, French, German, Italian, Portuguese, Chinese, Japanese, Kore
 
 Just paste the content you'd like me to summarize!`;
   } else {
-    response = `I received your message: "${message.substring(0, 100)}${message.length > 100 ? '...' : ''}"
+    response = `I received your message: "${message.substring(0, 100)}${message.length > 100 ? "..." : ""}"
 
 I'm your AI assistant for Royal Carriage. I can help with:
 - **Content Generation**: SEO pages, blog posts, descriptions
@@ -331,16 +365,19 @@ What would you like help with?`;
 export const getChatHistory = functions.https.onCall(
   async (data: { limit?: number }, context): Promise<any[]> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be authenticated",
+      );
     }
 
     const userId = context.auth.uid;
     const queryLimit = Math.min(data.limit || 20, 50);
 
     const conversationsSnap = await db
-      .collection('chat_conversations')
-      .where('userId', '==', userId)
-      .orderBy('timestamp', 'desc')
+      .collection("chat_conversations")
+      .where("userId", "==", userId)
+      .orderBy("timestamp", "desc")
       .limit(queryLimit)
       .get();
 
@@ -348,44 +385,56 @@ export const getChatHistory = functions.https.onCall(
       id: doc.id,
       ...doc.data(),
     }));
-  }
+  },
 );
 
 /**
  * Delete a conversation
  */
 export const deleteChatConversation = functions.https.onCall(
-  async (data: { conversationId: string }, context): Promise<{ success: boolean }> => {
+  async (
+    data: { conversationId: string },
+    context,
+  ): Promise<{ success: boolean }> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be authenticated",
+      );
     }
 
     const { conversationId } = data;
     const userId = context.auth.uid;
 
     // Verify ownership
-    const convDoc = await db.collection('chat_conversations').doc(conversationId).get();
+    const convDoc = await db
+      .collection("chat_conversations")
+      .doc(conversationId)
+      .get();
     if (!convDoc.exists || convDoc.data()?.userId !== userId) {
-      throw new functions.https.HttpsError('permission-denied', 'Cannot delete this conversation');
+      throw new functions.https.HttpsError(
+        "permission-denied",
+        "Cannot delete this conversation",
+      );
     }
 
     // Delete messages subcollection
     const messagesSnap = await db
-      .collection('chat_conversations')
+      .collection("chat_conversations")
       .doc(conversationId)
-      .collection('messages')
+      .collection("messages")
       .get();
 
     const batch = db.batch();
     messagesSnap.docs.forEach((doc) => {
       batch.delete(doc.ref);
     });
-    batch.delete(db.collection('chat_conversations').doc(conversationId));
+    batch.delete(db.collection("chat_conversations").doc(conversationId));
 
     await batch.commit();
 
     return { success: true };
-  }
+  },
 );
 
 /**
@@ -394,48 +443,55 @@ export const deleteChatConversation = functions.https.onCall(
 export const quickAIAction = functions.https.onCall(
   async (
     data: { action: string; content: string; options?: Record<string, string> },
-    context
+    context,
   ): Promise<{ result: string; tokens: number }> => {
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be authenticated');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be authenticated",
+      );
     }
 
     const { action, content, options = {} } = data;
 
-    let prompt = '';
+    let prompt = "";
 
     switch (action) {
-      case 'summarize':
+      case "summarize":
         prompt = `Summarize the following content concisely:\n\n${content}`;
         break;
-      case 'translate':
-        const targetLang = options.language || 'Spanish';
+      case "translate":
+        const targetLang = options.language || "Spanish";
         prompt = `Translate the following text to ${targetLang}. Provide only the translation:\n\n${content}`;
         break;
-      case 'analyze':
+      case "analyze":
         prompt = `Analyze the following and provide key insights:\n\n${content}`;
         break;
-      case 'generate':
+      case "generate":
         prompt = `Generate SEO-optimized content about: ${content}`;
         break;
-      case 'code':
+      case "code":
         prompt = `Write TypeScript code for: ${content}`;
         break;
       default:
         prompt = content;
     }
 
-    const { response, tokens } = await generateAIResponse(prompt, [], 'gemini-pro');
+    const { response, tokens } = await generateAIResponse(
+      prompt,
+      [],
+      "gemini-pro",
+    );
 
     // Log activity
-    await db.collection('activity_log').add({
-      type: 'ai',
+    await db.collection("activity_log").add({
+      type: "ai",
       message: `Quick AI: ${action} (${tokens} tokens)`,
-      status: 'success',
+      status: "success",
       userId: context.auth.uid,
       timestamp: admin.firestore.Timestamp.now(),
     });
 
     return { result: response, tokens };
-  }
+  },
 );

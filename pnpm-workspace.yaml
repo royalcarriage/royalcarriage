@@ -3,7 +3,7 @@ packages:
   - packages/*
 
 onlyBuiltDependencies:
-  - '@firebase/util'
+  - "@firebase/util"
   - bufferutil
   - esbuild
   - protobufjs

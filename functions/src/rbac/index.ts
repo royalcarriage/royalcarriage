@@ -19,7 +19,7 @@ export {
   getAssignableRoles,
   getAssignableRolesForAdmin,
   PermissionGroups,
-} from './permissions';
+} from "./permissions";
 
 // Export all guards and permission checking functions
 export {
@@ -68,7 +68,7 @@ export {
   withPermission,
   withOrganizationAccess,
   getUserPermissions,
-} from './guards';
+} from "./guards";
 
 // Export all AI chat guards
 export {
@@ -100,4 +100,4 @@ export {
   getAvailableDataCategories,
   getAvailableQueryTypes,
   buildSafeQueryParams,
-} from './aiChatGuards';
+} from "./aiChatGuards";

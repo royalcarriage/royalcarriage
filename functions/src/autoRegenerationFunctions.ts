@@ -1,6 +1,6 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import { generateServiceContent } from './contentGenerationFunctions';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
+import { generateServiceContent } from "./contentGenerationFunctions";
 
 interface RegenerationTask {
   contentId: string;
@@ -25,18 +25,24 @@ interface RegenerationResult {
  * Runs daily via Cloud Scheduler
  */
 export const autoRegenerateContent = functions.https.onCall(
-  async (data: { threshold?: number; maxItems?: number; sendEmail?: boolean }, context) => {
+  async (
+    data: { threshold?: number; maxItems?: number; sendEmail?: boolean },
+    context,
+  ) => {
     // Verify admin authentication
     if (!context.auth) {
-      throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
     }
 
     const db = admin.firestore();
-    const userDoc = await db.collection('users').doc(context.auth.uid).get();
+    const userDoc = await db.collection("users").doc(context.auth.uid).get();
     const userRole = userDoc.data()?.role;
 
-    if (userRole !== 'admin' && userRole !== 'superadmin') {
-      throw new functions.https.HttpsError('permission-denied', 'Admins only');
+    if (userRole !== "admin" && userRole !== "superadmin") {
+      throw new functions.https.HttpsError("permission-denied", "Admins only");
     }
 
     const { threshold = 50, maxItems = 100, sendEmail = true } = data;
@@ -44,7 +50,10 @@ export const autoRegenerateContent = functions.https.onCall(
 
     try {
       // Find all content with quality scores below threshold
-      const snapshot = await db.collection('content_quality_scores').where('overallScore', '<', threshold).get();
+      const snapshot = await db
+        .collection("content_quality_scores")
+        .where("overallScore", "<", threshold)
+        .get();
 
       if (snapshot.empty) {
         return {
@@ -80,7 +89,10 @@ export const autoRegenerateContent = functions.https.onCall(
       for (const task of tasks) {
         try {
           // Get original content
-          const contentDoc = await db.collection('service_content').doc(task.contentId).get();
+          const contentDoc = await db
+            .collection("service_content")
+            .doc(task.contentId)
+            .get();
           if (!contentDoc.exists) {
             failureCount++;
             continue;
@@ -89,9 +101,11 @@ export const autoRegenerateContent = functions.https.onCall(
           const originalContent = contentDoc.data();
 
           // Mark as regenerating
-          const contentRef = db.collection('service_content').doc(task.contentId);
+          const contentRef = db
+            .collection("service_content")
+            .doc(task.contentId);
           batch.update(contentRef, {
-            regenerationStatus: 'in-progress',
+            regenerationStatus: "in-progress",
             lastRegenerationStartedAt: new Date(),
           });
 
@@ -116,7 +130,7 @@ Use a different writing style while maintaining all factual accuracy.`;
             regeneratedAt: new Date(),
             reason: task.reason,
             attemptNumber: (originalContent.regenerationCount || 0) + 1,
-            status: 'regenerating',
+            status: "regenerating",
           };
 
           regenerationHistory.push(regenerationRecord);
@@ -129,7 +143,9 @@ Use a different writing style while maintaining all factual accuracy.`;
           });
 
           // Create regeneration history record
-          const historyRef = db.collection('content_regeneration_history').doc(`${task.contentId}-${Date.now()}`);
+          const historyRef = db
+            .collection("content_regeneration_history")
+            .doc(`${task.contentId}-${Date.now()}`);
           batch.set(historyRef, regenerationRecord);
 
           successCount++;
@@ -145,9 +161,14 @@ Use a different writing style while maintaining all factual accuracy.`;
 
       await batch.commit();
 
-      const avgImprovement = scoreImprovements.length > 0
-        ? Math.round((scoreImprovements.reduce((a, b) => a + b, 0) / scoreImprovements.length) * 100) / 100
-        : 0;
+      const avgImprovement =
+        scoreImprovements.length > 0
+          ? Math.round(
+              (scoreImprovements.reduce((a, b) => a + b, 0) /
+                scoreImprovements.length) *
+                100,
+            ) / 100
+          : 0;
 
       const duration = Date.now() - startTime;
 
@@ -161,7 +182,7 @@ Use a different writing style while maintaining all factual accuracy.`;
       };
 
       // Log regeneration execution
-      await db.collection('regeneration_logs').add({
+      await db.collection("regeneration_logs").add({
         executedAt: new Date(),
         threshold,
         tasksProcessed: tasks.length,
@@ -174,10 +195,10 @@ Use a different writing style while maintaining all factual accuracy.`;
 
       return result;
     } catch (error: any) {
-      console.error('Auto-regeneration error:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      console.error("Auto-regeneration error:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -185,19 +206,22 @@ Use a different writing style while maintaining all factual accuracy.`;
  * Runs every day at 2:00 AM
  */
 export const scheduledDailyRegeneration = functions.pubsub
-  .schedule('0 2 * * *')
-  .timeZone('America/Chicago')
+  .schedule("0 2 * * *")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
     try {
-      functions.logger.info('Starting scheduled daily regeneration...');
+      functions.logger.info("Starting scheduled daily regeneration...");
 
       const db = admin.firestore();
 
       // Find content with quality score below 50
-      const snapshot = await db.collection('content_quality_scores').where('overallScore', '<', 50).get();
+      const snapshot = await db
+        .collection("content_quality_scores")
+        .where("overallScore", "<", 50)
+        .get();
 
       if (snapshot.empty) {
-        functions.logger.info('No content below regeneration threshold');
+        functions.logger.info("No content below regeneration threshold");
         return null;
       }
 
@@ -210,7 +234,10 @@ export const scheduledDailyRegeneration = functions.pubsub
       for (const doc of tasks) {
         try {
           const qualityData = doc.data();
-          const contentDoc = await db.collection('service_content').doc(doc.id).get();
+          const contentDoc = await db
+            .collection("service_content")
+            .doc(doc.id)
+            .get();
 
           if (!contentDoc.exists) {
             errorCount++;
@@ -220,16 +247,16 @@ export const scheduledDailyRegeneration = functions.pubsub
           const contentData = contentDoc.data();
 
           // Mark for regeneration
-          const contentRef = db.collection('service_content').doc(doc.id);
+          const contentRef = db.collection("service_content").doc(doc.id);
           batch.update(contentRef, {
-            regenerationStatus: 'queued',
+            regenerationStatus: "queued",
             markedForRegenerationAt: new Date(),
-            regenerationReason: 'scheduled_daily_auto_regen',
+            regenerationReason: "scheduled_daily_auto_regen",
             regenerationCount: (contentData.regenerationCount || 0) + 1,
           });
 
           // Add to regeneration queue
-          const queueRef = db.collection('regeneration_queue').doc(doc.id);
+          const queueRef = db.collection("regeneration_queue").doc(doc.id);
           batch.set(queueRef, {
             contentId: doc.id,
             websiteId: qualityData.websiteId,
@@ -237,8 +264,11 @@ export const scheduledDailyRegeneration = functions.pubsub
             serviceId: qualityData.serviceId,
             currentScore: qualityData.overallScore,
             queuedAt: new Date(),
-            priority: Math.max(1, 10 - Math.floor(qualityData.overallScore / 10)),
-            status: 'pending',
+            priority: Math.max(
+              1,
+              10 - Math.floor(qualityData.overallScore / 10),
+            ),
+            status: "pending",
           });
 
           processedCount++;
@@ -250,7 +280,7 @@ export const scheduledDailyRegeneration = functions.pubsub
 
       await batch.commit();
 
-      functions.logger.info('Scheduled regeneration completed', {
+      functions.logger.info("Scheduled regeneration completed", {
         processed: processedCount,
         errors: errorCount,
         totalTasks: tasks.length,
@@ -265,7 +295,7 @@ export const scheduledDailyRegeneration = functions.pubsub
 
       return null;
     } catch (error) {
-      functions.logger.error('Scheduled regeneration failed:', error);
+      functions.logger.error("Scheduled regeneration failed:", error);
       throw error;
     }
   });
@@ -275,19 +305,22 @@ export const scheduledDailyRegeneration = functions.pubsub
  * Runs every hour to process queued regeneration tasks
  */
 export const processRegenerationQueue = functions.pubsub
-  .schedule('0 * * * *')
-  .timeZone('America/Chicago')
+  .schedule("0 * * * *")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
     try {
-      functions.logger.info('Processing regeneration queue...');
+      functions.logger.info("Processing regeneration queue...");
 
       const db = admin.firestore();
 
       // Get pending regeneration tasks (priority sorted)
-      const snapshot = await db.collection('regeneration_queue').where('status', '==', 'pending').get();
+      const snapshot = await db
+        .collection("regeneration_queue")
+        .where("status", "==", "pending")
+        .get();
 
       if (snapshot.empty) {
-        functions.logger.info('No pending regeneration tasks');
+        functions.logger.info("No pending regeneration tasks");
         return null;
       }
 
@@ -299,7 +332,7 @@ export const processRegenerationQueue = functions.pubsub
       for (const doc of tasks) {
         try {
           const task = doc.data();
-          const queueRef = db.collection('regeneration_queue').doc(doc.id);
+          const queueRef = db.collection("regeneration_queue").doc(doc.id);
 
           // Call generateServiceContent with regeneration context
           // In production, you would call the actual generateServiceContent function
@@ -307,7 +340,7 @@ export const processRegenerationQueue = functions.pubsub
 
           // Mark as processing
           await queueRef.update({
-            status: 'processing',
+            status: "processing",
             processingStartedAt: new Date(),
           });
 
@@ -316,7 +349,7 @@ export const processRegenerationQueue = functions.pubsub
 
           // Mark as completed
           await queueRef.update({
-            status: 'completed',
+            status: "completed",
             completedAt: new Date(),
           });
 
@@ -326,23 +359,23 @@ export const processRegenerationQueue = functions.pubsub
           failureCount++;
 
           // Mark as failed
-          const queueRef = db.collection('regeneration_queue').doc(doc.id);
+          const queueRef = db.collection("regeneration_queue").doc(doc.id);
           await queueRef.update({
-            status: 'failed',
+            status: "failed",
             failedAt: new Date(),
-            error: error instanceof Error ? error.message : 'Unknown error',
+            error: error instanceof Error ? error.message : "Unknown error",
           });
         }
       }
 
-      functions.logger.info('Regeneration queue processing completed', {
+      functions.logger.info("Regeneration queue processing completed", {
         processed: successCount,
         failed: failureCount,
       });
 
       return null;
     } catch (error) {
-      functions.logger.error('Regeneration queue processing failed:', error);
+      functions.logger.error("Regeneration queue processing failed:", error);
       throw error;
     }
   });
@@ -350,54 +383,73 @@ export const processRegenerationQueue = functions.pubsub
 /**
  * Get regeneration statistics and progress
  */
-export const getRegenerationStatus = functions.https.onCall(async (data, context) => {
-  if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
-  }
+export const getRegenerationStatus = functions.https.onCall(
+  async (data, context) => {
+    if (!context.auth) {
+      throw new functions.https.HttpsError(
+        "unauthenticated",
+        "Must be logged in",
+      );
+    }
 
-  try {
-    const db = admin.firestore();
+    try {
+      const db = admin.firestore();
 
-    // Get pending tasks
-    const pendingSnapshot = await db.collection('regeneration_queue').where('status', '==', 'pending').get();
+      // Get pending tasks
+      const pendingSnapshot = await db
+        .collection("regeneration_queue")
+        .where("status", "==", "pending")
+        .get();
 
-    // Get processing tasks
-    const processingSnapshot = await db.collection('regeneration_queue').where('status', '==', 'processing').get();
+      // Get processing tasks
+      const processingSnapshot = await db
+        .collection("regeneration_queue")
+        .where("status", "==", "processing")
+        .get();
 
-    // Get recent regeneration history
-    const historySnapshot = await db.collection('regeneration_logs').get();
-    const recentLogs = historySnapshot.docs
-      .map((doc) => doc.data())
-      .sort((a, b) => (b.executedAt?.toMillis?.() || 0) - (a.executedAt?.toMillis?.() || 0))
-      .slice(0, 10);
+      // Get recent regeneration history
+      const historySnapshot = await db.collection("regeneration_logs").get();
+      const recentLogs = historySnapshot.docs
+        .map((doc) => doc.data())
+        .sort(
+          (a, b) =>
+            (b.executedAt?.toMillis?.() || 0) -
+            (a.executedAt?.toMillis?.() || 0),
+        )
+        .slice(0, 10);
 
-    return {
-      success: true,
-      queue: {
-        pending: pendingSnapshot.size,
-        processing: processingSnapshot.size,
-        total: pendingSnapshot.size + processingSnapshot.size,
-      },
-      recentLogs,
-    };
-  } catch (error: any) {
-    console.error('Error getting regeneration status:', error);
-    throw new functions.https.HttpsError('internal', error.message);
-  }
-});
+      return {
+        success: true,
+        queue: {
+          pending: pendingSnapshot.size,
+          processing: processingSnapshot.size,
+          total: pendingSnapshot.size + processingSnapshot.size,
+        },
+        recentLogs,
+      };
+    } catch (error: any) {
+      console.error("Error getting regeneration status:", error);
+      throw new functions.https.HttpsError("internal", error.message);
+    }
+  },
+);
 
 /**
  * Send notification email about regeneration progress
  */
-async function sendRegenerationNotification(data: { processedCount: number; errorCount: number; timestamp: Date }) {
+async function sendRegenerationNotification(data: {
+  processedCount: number;
+  errorCount: number;
+  timestamp: Date;
+}) {
   try {
     // In production, integrate with SendGrid or similar email service
-    functions.logger.info('Regeneration notification', {
+    functions.logger.info("Regeneration notification", {
       processed: data.processedCount,
       errors: data.errorCount,
       timestamp: data.timestamp,
     });
   } catch (error) {
-    functions.logger.error('Failed to send regeneration notification:', error);
+    functions.logger.error("Failed to send regeneration notification:", error);
   }
 }

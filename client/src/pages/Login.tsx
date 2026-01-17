@@ -1,12 +1,18 @@
-import { useState } from 'react';
-import { useLocation } from 'wouter';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Lock, AlertCircle } from 'lucide-react';
-import { signInWithPopup } from 'firebase/auth';
-import { auth, googleProvider } from '@/lib/firebase';
-import { useQueryClient } from '@tanstack/react-query';
+import { useState } from "react";
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Lock, AlertCircle } from "lucide-react";
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider } from "@/lib/firebase";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -23,27 +29,27 @@ export default function Login() {
       const token = await user.getIdToken();
 
       // Send token to backend to establish session (optional, but good for syncing roles)
-      const response = await fetch('/api/auth/google', {
-        method: 'POST',
+      const response = await fetch("/api/auth/google", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to verify session with backend');
+        throw new Error("Failed to verify session with backend");
       }
-      
+
       const data = await response.json();
-      
+
       // Update query cache with user data
-      queryClient.setQueryData(['currentUser'], data.user);
-      
-      setLocation('/admin');
+      queryClient.setQueryData(["currentUser"], data.user);
+
+      setLocation("/admin");
     } catch (err: any) {
       console.error("Login failed:", err);
-      setError(err.message || 'Failed to sign in with Google');
+      setError(err.message || "Failed to sign in with Google");
     } finally {
       setIsLoading(false);
     }
@@ -57,9 +63,7 @@ export default function Login() {
             <Lock className="w-6 h-6 text-white" />
           </div>
           <CardTitle className="text-2xl font-bold">Welcome Back</CardTitle>
-          <CardDescription>
-            Sign in to Royal Carriage Admin
-          </CardDescription>
+          <CardDescription>Sign in to Royal Carriage Admin</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">

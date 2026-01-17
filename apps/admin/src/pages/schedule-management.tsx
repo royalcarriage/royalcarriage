@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { db } from '../lib/firebase';
+import React, { useEffect, useState, useCallback } from "react";
+import { db } from "../lib/firebase";
 import {
   collection,
   getDocs,
@@ -12,9 +12,9 @@ import {
   addDoc,
   Timestamp,
   limit,
-} from 'firebase/firestore';
-import { useAuth } from '../state/AuthProvider';
-import { getFunctions, httpsCallable } from 'firebase/functions';
+} from "firebase/firestore";
+import { useAuth } from "../state/AuthProvider";
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 // ============================================================================
 // INTERFACES
@@ -25,7 +25,7 @@ interface Schedule {
   name: string;
   description: string;
   websiteId: string;
-  frequency: 'daily' | 'weekly' | 'monthly' | 'custom';
+  frequency: "daily" | "weekly" | "monthly" | "custom";
   cronExpression: string;
   timezone: string;
   enabled: boolean;
@@ -48,7 +48,7 @@ interface ScheduleExecution {
   id: string;
   scheduleId: string;
   scheduleName: string;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'partial';
+  status: "pending" | "running" | "completed" | "failed" | "partial";
   startedAt: Timestamp;
   completedAt?: Timestamp;
   duration?: number;
@@ -57,7 +57,7 @@ interface ScheduleExecution {
   itemsFailed: number;
   averageQualityScore?: number;
   errorMessage?: string;
-  triggeredBy: 'scheduled' | 'manual';
+  triggeredBy: "scheduled" | "manual";
   triggeredByUserId?: string;
 }
 
@@ -82,29 +82,31 @@ export default function ScheduleManagementPage() {
   const [executions, setExecutions] = useState<ScheduleExecution[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-  const [selectedWebsite, setSelectedWebsite] = useState<string>('all');
+  const [selectedWebsite, setSelectedWebsite] = useState<string>("all");
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingSchedule, setEditingSchedule] = useState<Schedule | null>(null);
-  const [selectedScheduleHistory, setSelectedScheduleHistory] = useState<string | null>(null);
+  const [selectedScheduleHistory, setSelectedScheduleHistory] = useState<
+    string | null
+  >(null);
   const [executing, setExecuting] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // Form state for create/edit
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    websiteId: 'airport',
-    frequency: 'weekly' as 'daily' | 'weekly' | 'monthly' | 'custom',
-    cronExpression: '',
-    timezone: 'America/Chicago',
+    name: "",
+    description: "",
+    websiteId: "airport",
+    frequency: "weekly" as "daily" | "weekly" | "monthly" | "custom",
+    cronExpression: "",
+    timezone: "America/Chicago",
     locationIds: [] as string[],
     serviceIds: [] as string[],
     maxItemsPerRun: 50,
     qualityThreshold: 70,
     notifyOnComplete: true,
-    notifyEmail: '',
+    notifyEmail: "",
   });
 
   // ============================================================================
@@ -115,13 +117,16 @@ export default function ScheduleManagementPage() {
     try {
       setLoading(true);
       let q;
-      if (selectedWebsite === 'all') {
-        q = query(collection(db, 'content_schedules'), orderBy('createdAt', 'desc'));
+      if (selectedWebsite === "all") {
+        q = query(
+          collection(db, "content_schedules"),
+          orderBy("createdAt", "desc"),
+        );
       } else {
         q = query(
-          collection(db, 'content_schedules'),
-          where('websiteId', '==', selectedWebsite),
-          orderBy('createdAt', 'desc')
+          collection(db, "content_schedules"),
+          where("websiteId", "==", selectedWebsite),
+          orderBy("createdAt", "desc"),
         );
       }
 
@@ -133,8 +138,8 @@ export default function ScheduleManagementPage() {
 
       setSchedules(schedulesData);
     } catch (err) {
-      console.error('Error loading schedules:', err);
-      setError('Failed to load schedules');
+      console.error("Error loading schedules:", err);
+      setError("Failed to load schedules");
     } finally {
       setLoading(false);
     }
@@ -145,16 +150,16 @@ export default function ScheduleManagementPage() {
       let q;
       if (scheduleId) {
         q = query(
-          collection(db, 'schedule_executions'),
-          where('scheduleId', '==', scheduleId),
-          orderBy('startedAt', 'desc'),
-          limit(20)
+          collection(db, "schedule_executions"),
+          where("scheduleId", "==", scheduleId),
+          orderBy("startedAt", "desc"),
+          limit(20),
         );
       } else {
         q = query(
-          collection(db, 'schedule_executions'),
-          orderBy('startedAt', 'desc'),
-          limit(50)
+          collection(db, "schedule_executions"),
+          orderBy("startedAt", "desc"),
+          limit(50),
         );
       }
 
@@ -166,37 +171,37 @@ export default function ScheduleManagementPage() {
 
       setExecutions(executionsData);
     } catch (err) {
-      console.error('Error loading executions:', err);
+      console.error("Error loading executions:", err);
     }
   }, []);
 
   const loadLocationsAndServices = useCallback(async () => {
     try {
       const [locationsSnapshot, servicesSnapshot] = await Promise.all([
-        getDocs(query(collection(db, 'locations'), orderBy('name'))),
-        getDocs(query(collection(db, 'services'), orderBy('name'))),
+        getDocs(query(collection(db, "locations"), orderBy("name"))),
+        getDocs(query(collection(db, "services"), orderBy("name"))),
       ]);
 
       setLocations(
         locationsSnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name || doc.id,
-        }))
+        })),
       );
 
       setServices(
         servicesSnapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name || doc.id,
-        }))
+        })),
       );
     } catch (err) {
-      console.error('Error loading locations/services:', err);
+      console.error("Error loading locations/services:", err);
     }
   }, []);
 
   useEffect(() => {
-    if (role !== 'admin' && role !== 'superadmin') {
+    if (role !== "admin" && role !== "superadmin") {
       return;
     }
     loadSchedules();
@@ -209,8 +214,13 @@ export default function ScheduleManagementPage() {
   // ============================================================================
 
   const handleCreateSchedule = async () => {
-    if (!formData.name || !formData.websiteId || formData.locationIds.length === 0 || formData.serviceIds.length === 0) {
-      setError('Please fill in all required fields');
+    if (
+      !formData.name ||
+      !formData.websiteId ||
+      formData.locationIds.length === 0 ||
+      formData.serviceIds.length === 0
+    ) {
+      setError("Please fill in all required fields");
       return;
     }
 
@@ -218,29 +228,32 @@ export default function ScheduleManagementPage() {
       setError(null);
 
       // Calculate next execution
-      const cronExpression = formData.frequency === 'custom'
-        ? formData.cronExpression
-        : frequencyToCron(formData.frequency);
+      const cronExpression =
+        formData.frequency === "custom"
+          ? formData.cronExpression
+          : frequencyToCron(formData.frequency);
 
       const scheduleData = {
         ...formData,
         cronExpression,
         enabled: true,
         createdAt: Timestamp.now(),
-        createdBy: user?.uid || 'unknown',
+        createdBy: user?.uid || "unknown",
         updatedAt: Timestamp.now(),
-        nextExecutionAt: Timestamp.fromDate(calculateNextExecution(cronExpression)),
+        nextExecutionAt: Timestamp.fromDate(
+          calculateNextExecution(cronExpression),
+        ),
       };
 
-      await addDoc(collection(db, 'content_schedules'), scheduleData);
+      await addDoc(collection(db, "content_schedules"), scheduleData);
 
       setSuccessMessage(`Schedule "${formData.name}" created successfully`);
       setShowCreateModal(false);
       resetForm();
       loadSchedules();
     } catch (err) {
-      console.error('Error creating schedule:', err);
-      setError('Failed to create schedule');
+      console.error("Error creating schedule:", err);
+      setError("Failed to create schedule");
     }
   };
 
@@ -250,18 +263,24 @@ export default function ScheduleManagementPage() {
     try {
       setError(null);
 
-      const cronExpression = formData.frequency === 'custom'
-        ? formData.cronExpression
-        : frequencyToCron(formData.frequency);
+      const cronExpression =
+        formData.frequency === "custom"
+          ? formData.cronExpression
+          : frequencyToCron(formData.frequency);
 
       const updateData = {
         ...formData,
         cronExpression,
         updatedAt: Timestamp.now(),
-        nextExecutionAt: Timestamp.fromDate(calculateNextExecution(cronExpression)),
+        nextExecutionAt: Timestamp.fromDate(
+          calculateNextExecution(cronExpression),
+        ),
       };
 
-      await updateDoc(doc(db, 'content_schedules', editingSchedule.id), updateData);
+      await updateDoc(
+        doc(db, "content_schedules", editingSchedule.id),
+        updateData,
+      );
 
       setSuccessMessage(`Schedule "${formData.name}" updated successfully`);
       setShowEditModal(false);
@@ -269,23 +288,27 @@ export default function ScheduleManagementPage() {
       resetForm();
       loadSchedules();
     } catch (err) {
-      console.error('Error updating schedule:', err);
-      setError('Failed to update schedule');
+      console.error("Error updating schedule:", err);
+      setError("Failed to update schedule");
     }
   };
 
   const handleDeleteSchedule = async (schedule: Schedule) => {
-    if (!confirm(`Are you sure you want to delete schedule "${schedule.name}"? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete schedule "${schedule.name}"? This cannot be undone.`,
+      )
+    ) {
       return;
     }
 
     try {
-      await deleteDoc(doc(db, 'content_schedules', schedule.id));
+      await deleteDoc(doc(db, "content_schedules", schedule.id));
       setSuccessMessage(`Schedule "${schedule.name}" deleted`);
       loadSchedules();
     } catch (err) {
-      console.error('Error deleting schedule:', err);
-      setError('Failed to delete schedule');
+      console.error("Error deleting schedule:", err);
+      setError("Failed to delete schedule");
     }
   };
 
@@ -299,16 +322,18 @@ export default function ScheduleManagementPage() {
 
       if (newEnabled) {
         updateData.nextExecutionAt = Timestamp.fromDate(
-          calculateNextExecution(schedule.cronExpression)
+          calculateNextExecution(schedule.cronExpression),
         );
       }
 
-      await updateDoc(doc(db, 'content_schedules', schedule.id), updateData);
-      setSuccessMessage(`Schedule "${schedule.name}" ${newEnabled ? 'enabled' : 'disabled'}`);
+      await updateDoc(doc(db, "content_schedules", schedule.id), updateData);
+      setSuccessMessage(
+        `Schedule "${schedule.name}" ${newEnabled ? "enabled" : "disabled"}`,
+      );
       loadSchedules();
     } catch (err) {
-      console.error('Error toggling schedule:', err);
-      setError('Failed to toggle schedule');
+      console.error("Error toggling schedule:", err);
+      setError("Failed to toggle schedule");
     }
   };
 
@@ -318,22 +343,25 @@ export default function ScheduleManagementPage() {
       setError(null);
 
       const functions = getFunctions();
-      const executeScheduledGeneration = httpsCallable(functions, 'executeScheduledGeneration');
+      const executeScheduledGeneration = httpsCallable(
+        functions,
+        "executeScheduledGeneration",
+      );
 
       const result = await executeScheduledGeneration({
         scheduleId: schedule.id,
-        triggeredBy: 'manual',
+        triggeredBy: "manual",
       });
 
       const data = result.data as any;
       setSuccessMessage(
-        `Execution completed: ${data.itemsSucceeded} items generated, ${data.itemsFailed} failed`
+        `Execution completed: ${data.itemsSucceeded} items generated, ${data.itemsFailed} failed`,
       );
       loadSchedules();
       loadExecutions();
     } catch (err: any) {
-      console.error('Error executing schedule:', err);
-      setError(err.message || 'Failed to execute schedule');
+      console.error("Error executing schedule:", err);
+      setError(err.message || "Failed to execute schedule");
     } finally {
       setExecuting(null);
     }
@@ -353,25 +381,25 @@ export default function ScheduleManagementPage() {
       maxItemsPerRun: schedule.maxItemsPerRun,
       qualityThreshold: schedule.qualityThreshold,
       notifyOnComplete: schedule.notifyOnComplete,
-      notifyEmail: schedule.notifyEmail || '',
+      notifyEmail: schedule.notifyEmail || "",
     });
     setShowEditModal(true);
   };
 
   const resetForm = () => {
     setFormData({
-      name: '',
-      description: '',
-      websiteId: 'airport',
-      frequency: 'weekly',
-      cronExpression: '',
-      timezone: 'America/Chicago',
+      name: "",
+      description: "",
+      websiteId: "airport",
+      frequency: "weekly",
+      cronExpression: "",
+      timezone: "America/Chicago",
       locationIds: [],
       serviceIds: [],
       maxItemsPerRun: 50,
       qualityThreshold: 70,
       notifyOnComplete: true,
-      notifyEmail: '',
+      notifyEmail: "",
     });
   };
 
@@ -381,20 +409,20 @@ export default function ScheduleManagementPage() {
 
   function frequencyToCron(frequency: string): string {
     switch (frequency) {
-      case 'daily':
-        return '0 3 * * *';
-      case 'weekly':
-        return '0 3 * * 0';
-      case 'monthly':
-        return '0 3 1 * *';
+      case "daily":
+        return "0 3 * * *";
+      case "weekly":
+        return "0 3 * * 0";
+      case "monthly":
+        return "0 3 1 * *";
       default:
-        return '0 3 * * *';
+        return "0 3 * * *";
     }
   }
 
   function calculateNextExecution(cronExpression: string): Date {
     const now = new Date();
-    const parts = cronExpression.split(' ');
+    const parts = cronExpression.split(" ");
     const next = new Date(now);
 
     if (parts.length === 5) {
@@ -402,12 +430,12 @@ export default function ScheduleManagementPage() {
       next.setHours(parseInt(hour) || 3, parseInt(minute) || 0, 0, 0);
 
       if (next <= now) {
-        if (dayOfWeek !== '*') {
+        if (dayOfWeek !== "*") {
           const targetDay = parseInt(dayOfWeek);
           const currentDay = next.getDay();
           const daysUntil = (targetDay - currentDay + 7) % 7 || 7;
           next.setDate(next.getDate() + daysUntil);
-        } else if (dayOfMonth !== '*') {
+        } else if (dayOfMonth !== "*") {
           next.setMonth(next.getMonth() + 1);
           next.setDate(parseInt(dayOfMonth));
         } else {
@@ -423,12 +451,12 @@ export default function ScheduleManagementPage() {
   }
 
   function formatDate(timestamp?: Timestamp): string {
-    if (!timestamp) return 'Never';
+    if (!timestamp) return "Never";
     return timestamp.toDate().toLocaleString();
   }
 
   function formatDuration(ms?: number): string {
-    if (!ms) return '-';
+    if (!ms) return "-";
     if (ms < 1000) return `${ms}ms`;
     if (ms < 60000) return `${Math.round(ms / 1000)}s`;
     return `${Math.round(ms / 60000)}m`;
@@ -436,40 +464,43 @@ export default function ScheduleManagementPage() {
 
   function getStatusColor(status: string): string {
     switch (status) {
-      case 'completed':
-        return 'bg-green-100 text-green-800';
-      case 'running':
-        return 'bg-blue-100 text-blue-800';
-      case 'partial':
-        return 'bg-yellow-100 text-yellow-800';
-      case 'failed':
-        return 'bg-red-100 text-red-800';
-      case 'pending':
-        return 'bg-gray-100 text-gray-800';
+      case "completed":
+        return "bg-green-100 text-green-800";
+      case "running":
+        return "bg-blue-100 text-blue-800";
+      case "partial":
+        return "bg-yellow-100 text-yellow-800";
+      case "failed":
+        return "bg-red-100 text-red-800";
+      case "pending":
+        return "bg-gray-100 text-gray-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   }
 
   function getWebsiteName(websiteId: string): string {
     const names: Record<string, string> = {
-      airport: 'Airport Black Car',
-      corporate: 'Executive Car Service',
-      wedding: 'Wedding Transportation',
-      partyBus: 'Party Bus',
+      airport: "Airport Black Car",
+      corporate: "Executive Car Service",
+      wedding: "Wedding Transportation",
+      partyBus: "Party Bus",
     };
     return names[websiteId] || websiteId;
   }
 
-  function getFrequencyDisplay(frequency: string, cronExpression: string): string {
+  function getFrequencyDisplay(
+    frequency: string,
+    cronExpression: string,
+  ): string {
     switch (frequency) {
-      case 'daily':
-        return 'Daily at 3:00 AM';
-      case 'weekly':
-        return 'Weekly (Sunday 3:00 AM)';
-      case 'monthly':
-        return 'Monthly (1st at 3:00 AM)';
-      case 'custom':
+      case "daily":
+        return "Daily at 3:00 AM";
+      case "weekly":
+        return "Weekly (Sunday 3:00 AM)";
+      case "monthly":
+        return "Monthly (1st at 3:00 AM)";
+      case "custom":
         return `Custom: ${cronExpression}`;
       default:
         return frequency;
@@ -480,7 +511,7 @@ export default function ScheduleManagementPage() {
   // RENDER
   // ============================================================================
 
-  if (role !== 'admin' && role !== 'superadmin') {
+  if (role !== "admin" && role !== "superadmin") {
     return <div className="p-8">Access Denied. Admins only.</div>;
   }
 
@@ -577,7 +608,7 @@ export default function ScheduleManagementPage() {
               <div
                 key={schedule.id}
                 className={`border rounded-lg p-6 ${
-                  schedule.enabled ? 'bg-white' : 'bg-gray-50'
+                  schedule.enabled ? "bg-white" : "bg-gray-50"
                 }`}
               >
                 <div className="flex justify-between items-start mb-4">
@@ -587,15 +618,15 @@ export default function ScheduleManagementPage() {
                       <span
                         className={`px-2 py-1 text-xs rounded-full ${
                           schedule.enabled
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-gray-200 text-gray-600'
+                            ? "bg-green-100 text-green-800"
+                            : "bg-gray-200 text-gray-600"
                         }`}
                       >
-                        {schedule.enabled ? 'Active' : 'Disabled'}
+                        {schedule.enabled ? "Active" : "Disabled"}
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm mt-1">
-                      {schedule.description || 'No description'}
+                      {schedule.description || "No description"}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -603,22 +634,22 @@ export default function ScheduleManagementPage() {
                       onClick={() => handleToggleSchedule(schedule)}
                       className={`px-3 py-1 text-sm rounded ${
                         schedule.enabled
-                          ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200'
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                          ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
+                          : "bg-green-100 text-green-700 hover:bg-green-200"
                       }`}
                     >
-                      {schedule.enabled ? 'Disable' : 'Enable'}
+                      {schedule.enabled ? "Disable" : "Enable"}
                     </button>
                     <button
                       onClick={() => handleExecuteNow(schedule)}
                       disabled={executing === schedule.id}
                       className={`px-3 py-1 text-sm rounded ${
                         executing === schedule.id
-                          ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                          : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                          ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                          : "bg-blue-100 text-blue-700 hover:bg-blue-200"
                       }`}
                     >
-                      {executing === schedule.id ? 'Running...' : 'Run Now'}
+                      {executing === schedule.id ? "Running..." : "Run Now"}
                     </button>
                     <button
                       onClick={() => openEditModal(schedule)}
@@ -639,25 +670,34 @@ export default function ScheduleManagementPage() {
                   <div>
                     <span className="text-gray-500">Website:</span>
                     <br />
-                    <span className="font-medium">{getWebsiteName(schedule.websiteId)}</span>
+                    <span className="font-medium">
+                      {getWebsiteName(schedule.websiteId)}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Frequency:</span>
                     <br />
                     <span className="font-medium">
-                      {getFrequencyDisplay(schedule.frequency, schedule.cronExpression)}
+                      {getFrequencyDisplay(
+                        schedule.frequency,
+                        schedule.cronExpression,
+                      )}
                     </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Last Run:</span>
                     <br />
-                    <span className="font-medium">{formatDate(schedule.lastExecutedAt)}</span>
+                    <span className="font-medium">
+                      {formatDate(schedule.lastExecutedAt)}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Next Run:</span>
                     <br />
                     <span className="font-medium">
-                      {schedule.enabled ? formatDate(schedule.nextExecutionAt) : 'Disabled'}
+                      {schedule.enabled
+                        ? formatDate(schedule.nextExecutionAt)
+                        : "Disabled"}
                     </span>
                   </div>
                 </div>
@@ -666,22 +706,30 @@ export default function ScheduleManagementPage() {
                   <div>
                     <span className="text-gray-500">Locations:</span>
                     <br />
-                    <span className="font-medium">{schedule.locationIds.length} selected</span>
+                    <span className="font-medium">
+                      {schedule.locationIds.length} selected
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Services:</span>
                     <br />
-                    <span className="font-medium">{schedule.serviceIds.length} selected</span>
+                    <span className="font-medium">
+                      {schedule.serviceIds.length} selected
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Max Items/Run:</span>
                     <br />
-                    <span className="font-medium">{schedule.maxItemsPerRun}</span>
+                    <span className="font-medium">
+                      {schedule.maxItemsPerRun}
+                    </span>
                   </div>
                   <div>
                     <span className="text-gray-500">Quality Threshold:</span>
                     <br />
-                    <span className="font-medium">{schedule.qualityThreshold}</span>
+                    <span className="font-medium">
+                      {schedule.qualityThreshold}
+                    </span>
                   </div>
                 </div>
 
@@ -689,14 +737,16 @@ export default function ScheduleManagementPage() {
                   <button
                     onClick={() =>
                       setSelectedScheduleHistory(
-                        selectedScheduleHistory === schedule.id ? null : schedule.id
+                        selectedScheduleHistory === schedule.id
+                          ? null
+                          : schedule.id,
                       )
                     }
                     className="text-sm text-blue-600 hover:text-blue-800"
                   >
                     {selectedScheduleHistory === schedule.id
-                      ? 'Hide History'
-                      : 'View Execution History'}
+                      ? "Hide History"
+                      : "View Execution History"}
                   </button>
                 </div>
               </div>
@@ -707,7 +757,9 @@ export default function ScheduleManagementPage() {
         {/* Execution History Section */}
         <div className="mt-12">
           <h2 className="text-2xl font-bold mb-4">
-            {selectedScheduleHistory ? 'Schedule Execution History' : 'Recent Executions'}
+            {selectedScheduleHistory
+              ? "Schedule Execution History"
+              : "Recent Executions"}
           </h2>
 
           {executions.length === 0 ? (
@@ -733,23 +785,33 @@ export default function ScheduleManagementPage() {
                 <tbody>
                   {executions
                     .filter(
-                      (e) => !selectedScheduleHistory || e.scheduleId === selectedScheduleHistory
+                      (e) =>
+                        !selectedScheduleHistory ||
+                        e.scheduleId === selectedScheduleHistory,
                     )
                     .map((execution) => (
                       <tr key={execution.id} className="hover:bg-gray-50">
-                        <td className="p-3 border font-medium">{execution.scheduleName}</td>
+                        <td className="p-3 border font-medium">
+                          {execution.scheduleName}
+                        </td>
                         <td className="p-3 border">
                           <span
                             className={`px-2 py-1 text-xs rounded-full ${getStatusColor(
-                              execution.status
+                              execution.status,
                             )}`}
                           >
                             {execution.status}
                           </span>
                         </td>
-                        <td className="p-3 border text-sm">{formatDate(execution.startedAt)}</td>
-                        <td className="p-3 border text-sm">{formatDuration(execution.duration)}</td>
-                        <td className="p-3 border text-center">{execution.itemsProcessed}</td>
+                        <td className="p-3 border text-sm">
+                          {formatDate(execution.startedAt)}
+                        </td>
+                        <td className="p-3 border text-sm">
+                          {formatDuration(execution.duration)}
+                        </td>
+                        <td className="p-3 border text-center">
+                          {execution.itemsProcessed}
+                        </td>
                         <td className="p-3 border text-center text-green-600">
                           {execution.itemsSucceeded}
                         </td>
@@ -757,9 +819,11 @@ export default function ScheduleManagementPage() {
                           {execution.itemsFailed}
                         </td>
                         <td className="p-3 border text-center">
-                          {execution.averageQualityScore || '-'}
+                          {execution.averageQualityScore || "-"}
                         </td>
-                        <td className="p-3 border text-sm capitalize">{execution.triggeredBy}</td>
+                        <td className="p-3 border text-sm capitalize">
+                          {execution.triggeredBy}
+                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -774,7 +838,7 @@ export default function ScheduleManagementPage() {
             <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b">
                 <h2 className="text-2xl font-bold">
-                  {showEditModal ? 'Edit Schedule' : 'Create New Schedule'}
+                  {showEditModal ? "Edit Schedule" : "Create New Schedule"}
                 </h2>
               </div>
 
@@ -787,7 +851,9 @@ export default function ScheduleManagementPage() {
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
                     className="w-full px-4 py-2 border rounded-lg"
                     placeholder="e.g., Weekly Airport Content Generation"
                   />
@@ -795,10 +861,14 @@ export default function ScheduleManagementPage() {
 
                 {/* Description */}
                 <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
+                  <label className="block text-sm font-medium mb-2">
+                    Description
+                  </label>
                   <textarea
                     value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, description: e.target.value })
+                    }
                     className="w-full px-4 py-2 border rounded-lg"
                     rows={2}
                     placeholder="Optional description of this schedule"
@@ -812,7 +882,9 @@ export default function ScheduleManagementPage() {
                   </label>
                   <select
                     value={formData.websiteId}
-                    onChange={(e) => setFormData({ ...formData, websiteId: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, websiteId: e.target.value })
+                    }
                     className="w-full px-4 py-2 border rounded-lg"
                   >
                     <option value="airport">Airport Black Car</option>
@@ -832,7 +904,11 @@ export default function ScheduleManagementPage() {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        frequency: e.target.value as 'daily' | 'weekly' | 'monthly' | 'custom',
+                        frequency: e.target.value as
+                          | "daily"
+                          | "weekly"
+                          | "monthly"
+                          | "custom",
                       })
                     }
                     className="w-full px-4 py-2 border rounded-lg"
@@ -845,7 +921,7 @@ export default function ScheduleManagementPage() {
                 </div>
 
                 {/* Custom Cron Expression */}
-                {formData.frequency === 'custom' && (
+                {formData.frequency === "custom" && (
                   <div>
                     <label className="block text-sm font-medium mb-2">
                       Cron Expression <span className="text-red-500">*</span>
@@ -853,7 +929,12 @@ export default function ScheduleManagementPage() {
                     <input
                       type="text"
                       value={formData.cronExpression}
-                      onChange={(e) => setFormData({ ...formData, cronExpression: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          cronExpression: e.target.value,
+                        })
+                      }
                       className="w-full px-4 py-2 border rounded-lg font-mono"
                       placeholder="0 3 * * *"
                     />
@@ -884,13 +965,16 @@ export default function ScheduleManagementPage() {
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         {formData.locationIds.length === locations.length
-                          ? 'Deselect All'
-                          : 'Select All'}
+                          ? "Deselect All"
+                          : "Select All"}
                       </button>
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       {locations.map((location) => (
-                        <label key={location.id} className="flex items-center gap-2 text-sm">
+                        <label
+                          key={location.id}
+                          className="flex items-center gap-2 text-sm"
+                        >
                           <input
                             type="checkbox"
                             checked={formData.locationIds.includes(location.id)}
@@ -898,13 +982,16 @@ export default function ScheduleManagementPage() {
                               if (e.target.checked) {
                                 setFormData({
                                   ...formData,
-                                  locationIds: [...formData.locationIds, location.id],
+                                  locationIds: [
+                                    ...formData.locationIds,
+                                    location.id,
+                                  ],
                                 });
                               } else {
                                 setFormData({
                                   ...formData,
                                   locationIds: formData.locationIds.filter(
-                                    (id) => id !== location.id
+                                    (id) => id !== location.id,
                                   ),
                                 });
                               }
@@ -941,13 +1028,16 @@ export default function ScheduleManagementPage() {
                         className="text-sm text-blue-600 hover:text-blue-800"
                       >
                         {formData.serviceIds.length === services.length
-                          ? 'Deselect All'
-                          : 'Select All'}
+                          ? "Deselect All"
+                          : "Select All"}
                       </button>
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {services.map((service) => (
-                        <label key={service.id} className="flex items-center gap-2 text-sm">
+                        <label
+                          key={service.id}
+                          className="flex items-center gap-2 text-sm"
+                        >
                           <input
                             type="checkbox"
                             checked={formData.serviceIds.includes(service.id)}
@@ -955,13 +1045,16 @@ export default function ScheduleManagementPage() {
                               if (e.target.checked) {
                                 setFormData({
                                   ...formData,
-                                  serviceIds: [...formData.serviceIds, service.id],
+                                  serviceIds: [
+                                    ...formData.serviceIds,
+                                    service.id,
+                                  ],
                                 });
                               } else {
                                 setFormData({
                                   ...formData,
                                   serviceIds: formData.serviceIds.filter(
-                                    (id) => id !== service.id
+                                    (id) => id !== service.id,
                                   ),
                                 });
                               }
@@ -980,12 +1073,17 @@ export default function ScheduleManagementPage() {
                 {/* Settings Row */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Max Items Per Run</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Max Items Per Run
+                    </label>
                     <input
                       type="number"
                       value={formData.maxItemsPerRun}
                       onChange={(e) =>
-                        setFormData({ ...formData, maxItemsPerRun: parseInt(e.target.value) || 50 })
+                        setFormData({
+                          ...formData,
+                          maxItemsPerRun: parseInt(e.target.value) || 50,
+                        })
                       }
                       className="w-full px-4 py-2 border rounded-lg"
                       min={1}
@@ -993,7 +1091,9 @@ export default function ScheduleManagementPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Quality Threshold</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Quality Threshold
+                    </label>
                     <input
                       type="number"
                       value={formData.qualityThreshold}
@@ -1017,20 +1117,32 @@ export default function ScheduleManagementPage() {
                       type="checkbox"
                       checked={formData.notifyOnComplete}
                       onChange={(e) =>
-                        setFormData({ ...formData, notifyOnComplete: e.target.checked })
+                        setFormData({
+                          ...formData,
+                          notifyOnComplete: e.target.checked,
+                        })
                       }
                     />
-                    <span className="text-sm font-medium">Notify on completion</span>
+                    <span className="text-sm font-medium">
+                      Notify on completion
+                    </span>
                   </label>
                 </div>
 
                 {formData.notifyOnComplete && (
                   <div>
-                    <label className="block text-sm font-medium mb-2">Notification Email</label>
+                    <label className="block text-sm font-medium mb-2">
+                      Notification Email
+                    </label>
                     <input
                       type="email"
                       value={formData.notifyEmail}
-                      onChange={(e) => setFormData({ ...formData, notifyEmail: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          notifyEmail: e.target.value,
+                        })
+                      }
                       className="w-full px-4 py-2 border rounded-lg"
                       placeholder="admin@example.com"
                     />
@@ -1051,10 +1163,12 @@ export default function ScheduleManagementPage() {
                   Cancel
                 </button>
                 <button
-                  onClick={showEditModal ? handleUpdateSchedule : handleCreateSchedule}
+                  onClick={
+                    showEditModal ? handleUpdateSchedule : handleCreateSchedule
+                  }
                   className="px-6 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700"
                 >
-                  {showEditModal ? 'Update Schedule' : 'Create Schedule'}
+                  {showEditModal ? "Update Schedule" : "Create Schedule"}
                 </button>
               </div>
             </div>

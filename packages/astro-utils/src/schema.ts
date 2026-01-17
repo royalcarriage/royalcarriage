@@ -1,4 +1,4 @@
-import type { SiteConfig } from './config';
+import type { SiteConfig } from "./config";
 
 export interface LocalBusinessSchemaProps {
   config: SiteConfig;
@@ -9,57 +9,60 @@ export function generateLocalBusinessSchema(props: LocalBusinessSchemaProps) {
   const { config, url: _url } = props;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    '@id': `${config.domain}/#organization`,
-    name: 'Royal Carriage Limousine',
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${config.domain}/#organization`,
+    name: "Royal Carriage Limousine",
     alternateName: config.name,
     description: config.description,
     url: config.domain,
     telephone: config.phone,
     address: {
-      '@type': 'PostalAddress',
-      addressLocality: 'Chicago',
-      addressRegion: 'IL',
-      addressCountry: 'US'
+      "@type": "PostalAddress",
+      addressLocality: "Chicago",
+      addressRegion: "IL",
+      addressCountry: "US",
     },
     geo: {
-      '@type': 'GeoCoordinates',
+      "@type": "GeoCoordinates",
       latitude: 41.8781,
-      longitude: -87.6298
+      longitude: -87.6298,
     },
-    openingHoursSpecification: config.businessHours === '24/7 Service Available' ? {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ],
-      opens: '00:00',
-      closes: '23:59'
-    } : {
-      '@type': 'OpeningHoursSpecification',
-      dayOfWeek: [
-        'Monday',
-        'Tuesday',
-        'Wednesday',
-        'Thursday',
-        'Friday',
-        'Saturday',
-        'Sunday'
-      ]
-    },
+    openingHoursSpecification:
+      config.businessHours === "24/7 Service Available"
+        ? {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday",
+            ],
+            opens: "00:00",
+            closes: "23:59",
+          }
+        : {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+              "Sunday",
+            ],
+          },
     sameAs: Object.values(config.socialMedia).filter(Boolean),
-    priceRange: '$$$',
+    priceRange: "$$$",
     image: `${config.domain}/images/logo.png`,
     logo: {
-      '@type': 'ImageObject',
-      url: `${config.domain}/images/logo.png`
-    }
+      "@type": "ImageObject",
+      url: `${config.domain}/images/logo.png`,
+    },
   };
 }
 
@@ -72,30 +75,36 @@ export interface ServiceSchemaProps {
 }
 
 export function generateServiceSchema(props: ServiceSchemaProps) {
-  const { config, serviceName, serviceDescription, serviceType, url: _url } = props;
+  const {
+    config,
+    serviceName,
+    serviceDescription,
+    serviceType,
+    url: _url,
+  } = props;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'Service',
+    "@context": "https://schema.org",
+    "@type": "Service",
     serviceType,
     provider: {
-      '@type': 'LocalBusiness',
-      '@id': `${config.domain}/#organization`,
-      name: 'Royal Carriage Limousine'
+      "@type": "LocalBusiness",
+      "@id": `${config.domain}/#organization`,
+      name: "Royal Carriage Limousine",
     },
     name: serviceName,
     description: serviceDescription,
     areaServed: {
-      '@type': 'City',
-      name: 'Chicago',
-      '@id': 'https://en.wikipedia.org/wiki/Chicago'
+      "@type": "City",
+      name: "Chicago",
+      "@id": "https://en.wikipedia.org/wiki/Chicago",
     },
     url: _url,
     offers: {
-      '@type': 'Offer',
-      availability: 'https://schema.org/InStock',
-      priceRange: '$$$'
-    }
+      "@type": "Offer",
+      availability: "https://schema.org/InStock",
+      priceRange: "$$$",
+    },
   };
 }
 
@@ -110,16 +119,16 @@ export function generateFAQSchema(props: FAQSchemaProps) {
   const { faqs } = props;
 
   return {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: faqs.map(faq => ({
-      '@type': 'Question',
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.map((faq) => ({
+      "@type": "Question",
       name: faq.question,
       acceptedAnswer: {
-        '@type': 'Answer',
-        text: faq.answer
-      }
-    }))
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
   };
 }
 
@@ -130,14 +139,16 @@ export interface AggregateRatingSchemaProps {
   worstRating?: number;
 }
 
-export function generateAggregateRatingSchema(props: AggregateRatingSchemaProps) {
+export function generateAggregateRatingSchema(
+  props: AggregateRatingSchemaProps,
+) {
   const { ratingValue, reviewCount, bestRating = 5, worstRating = 1 } = props;
 
   return {
-    '@type': 'AggregateRating',
+    "@type": "AggregateRating",
     ratingValue,
     reviewCount,
     bestRating,
-    worstRating
+    worstRating,
   };
 }

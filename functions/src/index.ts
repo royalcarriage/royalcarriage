@@ -3,11 +3,11 @@
  * Scheduled functions for automated page analysis and optimization
  */
 
-import * as functions from 'firebase-functions/v1';
-import * as admin from 'firebase-admin';
-import express from 'express';
-import cors from 'cors';
-import { registerRoutes } from './api/routes';
+import * as functions from "firebase-functions/v1";
+import * as admin from "firebase-admin";
+import express from "express";
+import cors from "cors";
+import { registerRoutes } from "./api/routes";
 
 // Import AI content functions
 import {
@@ -16,38 +16,38 @@ import {
   translatePageContent,
   suggestSocialCaptions,
   analyzeSentimentOfFeedback,
-} from './contentFunctions';
+} from "./contentFunctions";
 
 // Import advanced AI functions
-import { aiModelRouter } from './advancedFunctions';
+import { aiModelRouter } from "./advancedFunctions";
 
 // Import initialization functions
 import {
   initializeData,
   seedLocationServiceMappings,
   createCollectionIndexes,
-} from './initializeData';
+} from "./initializeData";
 
 // Import content generation functions - PHASE 2
 import {
   generateServiceContent,
   generateContentBatch,
   approveAndPublishContent,
-} from './contentGenerationFunctions';
+} from "./contentGenerationFunctions";
 
 // Import page generation functions - PHASE 2
 import {
   generatePageMetadata,
   buildStaticPages,
   publishPages,
-} from './pageGenerationFunctions';
+} from "./pageGenerationFunctions";
 
 // Import quality scoring functions - PHASE 3
 import {
   calculateContentQuality,
   bulkScoreContent,
   getQualityScoreSummary,
-} from './qualityScoringFunctions';
+} from "./qualityScoringFunctions";
 
 // Import auto-regeneration functions - PHASE 3
 import {
@@ -55,7 +55,7 @@ import {
   scheduledDailyRegeneration,
   processRegenerationQueue,
   getRegenerationStatus,
-} from './autoRegenerationFunctions';
+} from "./autoRegenerationFunctions";
 
 // Import competitor analysis functions - PHASE 3
 import {
@@ -63,7 +63,7 @@ import {
   getCompetitorAnalysis,
   identifyServiceGaps,
   getKeywordOpportunities,
-} from './competitorAnalysisFunctions';
+} from "./competitorAnalysisFunctions";
 
 // Import performance monitoring functions - PHASE 3
 import {
@@ -73,13 +73,13 @@ import {
   getPerformanceTrends,
   syncPerformanceMetrics,
   generatePerformanceReport,
-} from './performanceMonitoringFunctions';
+} from "./performanceMonitoringFunctions";
 
 // Import data initialization function - PHASE 4
-import { initializeProductionData } from './dataInitializationFunction';
+import { initializeProductionData } from "./dataInitializationFunction";
 
 // Import location expansion function - LOCATION EXPANSION
-import { initializeExpandedLocations } from './scripts/expandLocationsFunction';
+import { initializeExpandedLocations } from "./scripts/expandLocationsFunction";
 
 // Import content enhancement functions - P2 RC-201
 import {
@@ -89,7 +89,7 @@ import {
   generateABVariants,
   createContentVersion,
   rollbackContentVersion,
-} from './contentEnhancements';
+} from "./contentEnhancements";
 
 // Import image optimization functions - P2 RC-202
 import {
@@ -98,7 +98,7 @@ import {
   generateSrcset,
   runImageAudit,
   getOptimizedImageUrl,
-} from './imageOptimization';
+} from "./imageOptimization";
 
 // Import ROI dashboard functions - P2 RC-203
 import {
@@ -107,7 +107,7 @@ import {
   generateForecast,
   exportDashboardData,
   getDateRangeSummary,
-} from './roiDashboard';
+} from "./roiDashboard";
 
 // Import sentiment pipeline functions - P2.2
 import {
@@ -116,7 +116,7 @@ import {
   submitFeedbackResponse,
   getFeedbackAlertsDashboard,
   escalateFeedbackAlert,
-} from './sentimentPipeline';
+} from "./sentimentPipeline";
 
 // Import content approval workflow functions - P2.3
 import {
@@ -127,7 +127,7 @@ import {
   publishApprovedContent,
   getApprovalStatistics,
   requestContentRevision,
-} from './contentApprovalWorkflow';
+} from "./contentApprovalWorkflow";
 
 // Import schedule management functions - PHASE 3
 import {
@@ -139,7 +139,7 @@ import {
   getScheduleHistory,
   processScheduledGenerations,
   toggleSchedule,
-} from './scheduleManagementFunctions';
+} from "./scheduleManagementFunctions";
 
 // Import advanced analytics functions - PHASE 3
 import {
@@ -148,7 +148,7 @@ import {
   getCompetitorBenchmark,
   generateCustomReport,
   getAnalyticsTrends,
-} from './advancedAnalyticsFunctions';
+} from "./advancedAnalyticsFunctions";
 
 // Import CSV import functions - P1.3
 import {
@@ -157,7 +157,7 @@ import {
   getImportHistory,
   rollbackImport,
   getImportErrorReport,
-} from './csvImportFunctions';
+} from "./csvImportFunctions";
 
 // Import fleet initialization functions - PHASE 1
 import {
@@ -166,7 +166,7 @@ import {
   getAllFleetVehicles,
   updateFleetVehicle,
   deleteFleetVehicle,
-} from './fleetInitializationFunction';
+} from "./fleetInitializationFunction";
 
 // Initialize Firebase Admin
 if (!admin.apps.length) {
@@ -178,12 +178,12 @@ const app = express();
 
 // CORS Configuration - Whitelist only authorized domains
 const allowedOrigins = [
-  'https://admin.royalcarriagelimo.com',
-  'https://chicagoairportblackcar.com',
-  'https://chicagoexecutivecarservice.com',
-  'https://chicagoweddingtransportation.com',
-  'https://chicago-partybus.com',
-  'http://localhost:3000', // Development only
+  "https://admin.royalcarriagelimo.com",
+  "https://chicagoairportblackcar.com",
+  "https://chicagoexecutivecarservice.com",
+  "https://chicagoweddingtransportation.com",
+  "https://chicago-partybus.com",
+  "http://localhost:3000", // Development only
 ];
 
 const corsOptions = {
@@ -196,8 +196,8 @@ const corsOptions = {
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // Middleware
@@ -215,24 +215,24 @@ export const api = functions.https.onRequest(app);
  * Runs every day at 2:00 AM to analyze all website pages
  */
 export const dailyPageAnalysis = functions.pubsub
-  .schedule('0 2 * * *')
-  .timeZone('America/Chicago')
+  .schedule("0 2 * * *")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Starting daily page analysis...');
+    functions.logger.info("Starting daily page analysis...");
 
     try {
       const db = admin.firestore();
-      const { geminiClient } = await import('./shared/gemini-client');
+      const { geminiClient } = await import("./shared/gemini-client");
 
       // Fetch all pages from settings/master_spec/pages
       const pagesSnapshot = await db
-        .collection('settings')
-        .doc('master_spec')
-        .collection('pages')
+        .collection("settings")
+        .doc("master_spec")
+        .collection("pages")
         .get();
 
       if (pagesSnapshot.empty) {
-        functions.logger.info('No pages found to analyze');
+        functions.logger.info("No pages found to analyze");
         return null;
       }
 
@@ -246,10 +246,10 @@ export const dailyPageAnalysis = functions.pubsub
         // Create analysis prompt
         const analysisPrompt = `Analyze this page for SEO quality and provide a score from 0-100:
 
-Page URL: ${pageData.path || 'Unknown'}
-Page Title: ${pageData.title || 'Unknown'}
-Meta Description: ${pageData.metaDescription || 'None'}
-Content: ${pageData.content?.substring(0, 500) || 'No content'}
+Page URL: ${pageData.path || "Unknown"}
+Page Title: ${pageData.title || "Unknown"}
+Meta Description: ${pageData.metaDescription || "None"}
+Content: ${pageData.content?.substring(0, 500) || "No content"}
 
 Provide analysis in JSON format:
 {
@@ -265,14 +265,14 @@ Provide analysis in JSON format:
           .then(async (response) => {
             const analysis = geminiClient.parseJSON(response, {
               seoScore: 50,
-              issues: ['Failed to parse analysis'],
+              issues: ["Failed to parse analysis"],
               strengths: [],
               recommendations: [],
-              priority: 'medium',
+              priority: "medium",
             });
 
             // Store analysis in page_analyses collection
-            await db.collection('page_analyses').add({
+            await db.collection("page_analyses").add({
               pageId,
               pagePath: pageData.path,
               pageTitle: pageData.title,
@@ -282,14 +282,14 @@ Provide analysis in JSON format:
               recommendations: analysis.recommendations,
               priority: analysis.priority,
               analyzedAt: timestamp,
-              analysisType: 'daily_scheduled',
+              analysisType: "daily_scheduled",
             });
 
             // Create alert if score is low
             if (analysis.seoScore < 50) {
-              await db.collection('reports').add({
-                type: 'seo_alert',
-                severity: 'high',
+              await db.collection("reports").add({
+                type: "seo_alert",
+                severity: "high",
                 pageId,
                 pagePath: pageData.path,
                 seoScore: analysis.seoScore,
@@ -312,13 +312,13 @@ Provide analysis in JSON format:
 
       await Promise.all(analysisPromises);
 
-      functions.logger.info('Daily page analysis completed', {
+      functions.logger.info("Daily page analysis completed", {
         totalPages: pagesSnapshot.size,
       });
 
       return null;
     } catch (error) {
-      functions.logger.error('Daily page analysis failed:', error);
+      functions.logger.error("Daily page analysis failed:", error);
       throw error;
     }
   });
@@ -328,10 +328,10 @@ Provide analysis in JSON format:
  * Runs every Monday at 9:00 AM to generate SEO report
  */
 export const weeklySeoReport = functions.pubsub
-  .schedule('0 9 * * 1')
-  .timeZone('America/Chicago')
+  .schedule("0 9 * * 1")
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Starting weekly SEO report generation...');
+    functions.logger.info("Starting weekly SEO report generation...");
 
     try {
       const db = admin.firestore();
@@ -341,13 +341,13 @@ export const weeklySeoReport = functions.pubsub
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
       const analysesSnapshot = await db
-        .collection('page_analyses')
-        .where('analyzedAt', '>=', sevenDaysAgo)
-        .orderBy('analyzedAt', 'desc')
+        .collection("page_analyses")
+        .where("analyzedAt", ">=", sevenDaysAgo)
+        .orderBy("analyzedAt", "desc")
         .get();
 
       if (analysesSnapshot.empty) {
-        functions.logger.info('No analyses found for the past week');
+        functions.logger.info("No analyses found for the past week");
         return null;
       }
 
@@ -359,7 +359,7 @@ export const weeklySeoReport = functions.pubsub
 
       // Sort by score
       const sortedAnalyses = [...analyses].sort(
-        (a, b) => (b.seoScore || 0) - (a.seoScore || 0)
+        (a, b) => (b.seoScore || 0) - (a.seoScore || 0),
       );
 
       const topPages = sortedAnalyses.slice(0, 10);
@@ -387,7 +387,7 @@ export const weeklySeoReport = functions.pubsub
 
       // Create weekly report
       const report = {
-        type: 'weekly_seo_report',
+        type: "weekly_seo_report",
         reportPeriod: {
           startDate: sevenDaysAgo.toISOString(),
           endDate: new Date().toISOString(),
@@ -413,16 +413,16 @@ export const weeklySeoReport = functions.pubsub
       };
 
       // Store report
-      await db.collection('reports').add(report);
+      await db.collection("reports").add(report);
 
-      functions.logger.info('Weekly SEO report generated', {
+      functions.logger.info("Weekly SEO report generated", {
         totalPages: analyses.length,
         avgScore,
       });
 
       return null;
     } catch (error) {
-      functions.logger.error('Weekly SEO report generation failed:', error);
+      functions.logger.error("Weekly SEO report generation failed:", error);
       throw error;
     }
   });
@@ -432,7 +432,7 @@ export const weeklySeoReport = functions.pubsub
  * Automatically analyze pages when they're added to the database
  */
 export const autoAnalyzeNewPage = functions.firestore
-  .document('settings/master_spec/pages/{pageId}')
+  .document("settings/master_spec/pages/{pageId}")
   .onCreate(async (snap, context) => {
     const pageId = context.params.pageId;
     const pageData = snap.data();
@@ -441,15 +441,15 @@ export const autoAnalyzeNewPage = functions.firestore
 
     try {
       const db = admin.firestore();
-      const { geminiClient } = await import('./shared/gemini-client');
+      const { geminiClient } = await import("./shared/gemini-client");
 
       // Create analysis prompt
       const analysisPrompt = `Analyze this newly created page for SEO quality and provide a score from 0-100:
 
-Page URL: ${pageData.path || 'Unknown'}
-Page Title: ${pageData.title || 'Unknown'}
-Meta Description: ${pageData.metaDescription || 'None'}
-Content: ${pageData.content?.substring(0, 500) || 'No content'}
+Page URL: ${pageData.path || "Unknown"}
+Page Title: ${pageData.title || "Unknown"}
+Meta Description: ${pageData.metaDescription || "None"}
+Content: ${pageData.content?.substring(0, 500) || "No content"}
 
 Provide analysis in JSON format:
 {
@@ -466,14 +466,14 @@ Provide analysis in JSON format:
 
       const analysis = geminiClient.parseJSON(response, {
         seoScore: 50,
-        issues: ['Failed to parse analysis'],
+        issues: ["Failed to parse analysis"],
         strengths: [],
         recommendations: [],
-        priority: 'medium',
+        priority: "medium",
       });
 
       // Store analysis
-      await db.collection('page_analyses').add({
+      await db.collection("page_analyses").add({
         pageId,
         pagePath: pageData.path,
         pageTitle: pageData.title,
@@ -483,7 +483,7 @@ Provide analysis in JSON format:
         recommendations: analysis.recommendations,
         priority: analysis.priority,
         analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-        analysisType: 'auto_on_create',
+        analysisType: "auto_on_create",
       });
 
       functions.logger.info(`Successfully analyzed new page: ${pageId}`, {
@@ -503,7 +503,7 @@ Provide analysis in JSON format:
  * Updates Firebase Auth custom claims when a user's role changes in Firestore
  */
 export const syncUserRole = functions.firestore
-  .document('users/{userId}')
+  .document("users/{userId}")
   .onWrite(async (change, context) => {
     const userId = context.params.userId;
     const newData = change.after.exists ? change.after.data() : null;
@@ -517,13 +517,17 @@ export const syncUserRole = functions.firestore
       return null;
     }
 
-    functions.logger.info(`Syncing role for user ${userId}: ${previousRole} -> ${newRole}`);
+    functions.logger.info(
+      `Syncing role for user ${userId}: ${previousRole} -> ${newRole}`,
+    );
 
     try {
       if (newRole) {
         // Set custom claim
         await admin.auth().setCustomUserClaims(userId, { role: newRole });
-        functions.logger.info(`Successfully set role '${newRole}' for user ${userId}`);
+        functions.logger.info(
+          `Successfully set role '${newRole}' for user ${userId}`,
+        );
       } else {
         // Remove custom claim if role is removed
         await admin.auth().setCustomUserClaims(userId, { role: null });
@@ -553,11 +557,7 @@ export { aiModelRouter };
 // --- INITIALIZATION & DATA MANAGEMENT FUNCTIONS ---
 
 // Export initialization functions
-export {
-  initializeData,
-  seedLocationServiceMappings,
-  createCollectionIndexes,
-};
+export { initializeData, seedLocationServiceMappings, createCollectionIndexes };
 
 // --- CONTENT GENERATION FUNCTIONS ---
 
@@ -571,20 +571,12 @@ export {
 // --- PAGE GENERATION FUNCTIONS ---
 
 // Export page generation functions
-export {
-  generatePageMetadata,
-  buildStaticPages,
-  publishPages,
-};
+export { generatePageMetadata, buildStaticPages, publishPages };
 
 // --- QUALITY SCORING FUNCTIONS - PHASE 3 ---
 
 // Export quality scoring functions
-export {
-  calculateContentQuality,
-  bulkScoreContent,
-  getQualityScoreSummary,
-};
+export { calculateContentQuality, bulkScoreContent, getQualityScoreSummary };
 
 // --- AUTO-REGENERATION FUNCTIONS - PHASE 3 ---
 
@@ -720,7 +712,7 @@ import {
   validateServices,
   getServiceById,
   listServicesByWebsite,
-} from './expandedServicesFunction';
+} from "./expandedServicesFunction";
 
 // Export expanded services functions
 export {
@@ -751,7 +743,7 @@ import {
   approveAndPublishContent as pipelineApproveAndPublishContent,
   generatePageMetadata as pipelineGeneratePageMetadata,
   buildStaticPages as pipelineBuildStaticPages,
-} from './contentGenerationPipeline';
+} from "./contentGenerationPipeline";
 
 // Export content generation pipeline functions
 export {
@@ -781,7 +773,7 @@ import {
   getCommandHistory,
   getSystemMetrics,
   logActivity,
-} from './aiTerminalFunctions';
+} from "./aiTerminalFunctions";
 
 // Import AI chat functions
 import {
@@ -789,7 +781,7 @@ import {
   getChatHistory,
   deleteChatConversation,
   quickAIAction,
-} from './aiChatFunctions';
+} from "./aiChatFunctions";
 
 // Export AI terminal functions
 export {
@@ -800,12 +792,7 @@ export {
 };
 
 // Export AI chat functions
-export {
-  chatWithAI,
-  getChatHistory,
-  deleteChatConversation,
-  quickAIAction,
-};
+export { chatWithAI, getChatHistory, deleteChatConversation, quickAIAction };
 
 // --- AI CHAT WITH ROLE-BASED PERMISSIONS ---
 
@@ -815,7 +802,7 @@ import {
   getAIChatHistory,
   executeAICommand,
   deleteAIConversation,
-} from './aiChat';
+} from "./aiChat";
 
 // Export role-based AI chat functions
 export {
@@ -836,7 +823,7 @@ import {
   updateUserRole,
   getUsersByOrganization,
   getUserPermissions,
-} from './userManagement';
+} from "./userManagement";
 
 // Import organization management functions
 import {
@@ -847,7 +834,7 @@ import {
   addUserToOrganization,
   removeUserFromOrganization,
   getOrganizationUsers,
-} from './organizationManagement';
+} from "./organizationManagement";
 
 // Export user management functions
 export {

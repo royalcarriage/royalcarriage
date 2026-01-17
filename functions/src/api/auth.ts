@@ -1,7 +1,7 @@
-import passport from 'passport';
-import { Strategy as LocalStrategy } from 'passport-local';
-import { storage } from './storage';
-import { type User } from '../shared/schema';
+import passport from "passport";
+import { Strategy as LocalStrategy } from "passport-local";
+import { storage } from "./storage";
+import { type User } from "../shared/schema";
 
 // Configure Passport Local Strategy
 export function setupAuthentication() {
@@ -11,14 +11,14 @@ export function setupAuthentication() {
         const user = await storage.verifyPassword(username, password);
 
         if (!user) {
-          return done(null, false, { message: 'Invalid username or password' });
+          return done(null, false, { message: "Invalid username or password" });
         }
 
         return done(null, user);
       } catch (error) {
         return done(error);
       }
-    })
+    }),
   );
 
   // Serialize user to session

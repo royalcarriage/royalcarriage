@@ -1,4 +1,9 @@
-import { type User, type InsertUser, UserRole, type UserRoleType } from "../shared/schema";
+import {
+  type User,
+  type InsertUser,
+  UserRole,
+  type UserRoleType,
+} from "../shared/schema";
 import * as admin from "firebase-admin";
 import bcrypt from "bcryptjs";
 
@@ -16,7 +21,7 @@ export class FirestoreStorage implements IStorage {
   private get db() {
     return admin.firestore();
   }
-  
+
   private get usersCollection() {
     return this.db.collection("users");
   }
@@ -29,7 +34,10 @@ export class FirestoreStorage implements IStorage {
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const snapshot = await this.usersCollection.where("username", "==", username).limit(1).get();
+    const snapshot = await this.usersCollection
+      .where("username", "==", username)
+      .limit(1)
+      .get();
     if (snapshot.empty) return undefined;
     const doc = snapshot.docs[0];
     return { id: doc.id, ...doc.data() } as User;
@@ -37,17 +45,17 @@ export class FirestoreStorage implements IStorage {
 
   async createUser(insertUser: InsertUser, id?: string): Promise<User> {
     const hashedPassword = await bcrypt.hash(insertUser.password, 10);
-    const user: Omit<User, 'id'> = {
+    const user: Omit<User, "id"> = {
       username: insertUser.username,
       password: hashedPassword,
       role: UserRole.USER,
       createdAt: new Date(),
     };
-    
+
     // Check if user exists first to enforce unique username
     const existing = await this.getUserByUsername(insertUser.username);
     if (existing) {
-        throw new Error("Username already exists");
+      throw new Error("Username already exists");
     }
 
     if (id) {
@@ -59,7 +67,10 @@ export class FirestoreStorage implements IStorage {
     }
   }
 
-  async updateUserRole(id: string, role: UserRoleType): Promise<User | undefined> {
+  async updateUserRole(
+    id: string,
+    role: UserRoleType,
+  ): Promise<User | undefined> {
     const docRef = this.usersCollection.doc(id);
     await docRef.update({ role });
     return this.getUser(id);
@@ -67,7 +78,7 @@ export class FirestoreStorage implements IStorage {
 
   async getAllUsers(): Promise<User[]> {
     const snapshot = await this.usersCollection.get();
-    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as User));
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as User);
   }
 
   async deleteUser(id: string): Promise<boolean> {
@@ -75,7 +86,10 @@ export class FirestoreStorage implements IStorage {
     return true;
   }
 
-  async verifyPassword(username: string, password: string): Promise<User | null> {
+  async verifyPassword(
+    username: string,
+    password: string,
+  ): Promise<User | null> {
     const user = await this.getUserByUsername(username);
     if (!user) return null;
     const isValid = await bcrypt.compare(password, user.password);

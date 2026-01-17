@@ -19,6 +19,7 @@ Phase 3 adds advanced features to maximize SEO performance and automate content 
 **Purpose**: Automatically evaluate and score all generated content before publishing
 
 **Functionality**:
+
 ```typescript
 contentQualityScore = function(content) {
   // Evaluates:
@@ -40,6 +41,7 @@ contentQualityScore = function(content) {
 ```
 
 **Dashboard Display**:
+
 ```
 Quality Scoring Dashboard
 ├─ Average quality score across all content
@@ -51,6 +53,7 @@ Quality Scoring Dashboard
 ```
 
 **Admin Controls**:
+
 - Set auto-approval threshold (default: 80)
 - Set regeneration threshold (default: 50)
 - View score breakdown per metric
@@ -63,6 +66,7 @@ Quality Scoring Dashboard
 **Purpose**: Automatically regenerate low-quality content to improve overall coverage
 
 **Functionality**:
+
 ```typescript
 autoRegenerateContent = function() {
   // Runs daily at configured time (e.g., 2 AM)
@@ -83,6 +87,7 @@ autoRegenerateContent = function() {
 ```
 
 **Configuration**:
+
 - Regeneration schedule (daily, weekly)
 - Time to run (off-peak hours)
 - Regeneration threshold (default: 50)
@@ -90,6 +95,7 @@ autoRegenerateContent = function() {
 - Retry logic for failed regenerations
 
 **Tracking**:
+
 - Regeneration history per content item
 - Success/failure rates
 - Score improvement metrics
@@ -102,6 +108,7 @@ autoRegenerateContent = function() {
 **Purpose**: Analyze competitor websites to discover high-value keywords and content gaps
 
 **Functionality**:
+
 ```typescript
 analyzeCompetitors = function() {
   // Analyzes 3 competitor websites:
@@ -129,6 +136,7 @@ analyzeCompetitors = function() {
 ```
 
 **Opportunities Dashboard**:
+
 ```
 Competitor Analysis
 ├─ Keywords Competitors Rank For (that we don't)
@@ -154,29 +162,31 @@ Competitor Analysis
 **Purpose**: Track how each page performs in search results and user behavior
 
 **Functionality**:
+
 ```typescript
 performanceMetrics = {
   // From Google Search Console API integration
-  impressions: number,       // Times shown in search results
-  clicks: number,            // Times clicked from search
-  avgPosition: number,       // Average ranking position
-  ctr: number,              // Click-through rate
+  impressions: number, // Times shown in search results
+  clicks: number, // Times clicked from search
+  avgPosition: number, // Average ranking position
+  ctr: number, // Click-through rate
 
   // From Google Analytics API integration
-  pageViews: number,        // Visitors to page
+  pageViews: number, // Visitors to page
   avgSessionDuration: number, // How long they stay
-  bounceRate: number,       // % who leave immediately
-  conversionRate: number,   // % who click CTA
+  bounceRate: number, // % who leave immediately
+  conversionRate: number, // % who click CTA
 
   // Calculated metrics
-  seoScore: number,         // Overall SEO performance
-  contentScore: number,     // Quality score
-  userEngagement: number,   // How users interact
+  seoScore: number, // Overall SEO performance
+  contentScore: number, // Quality score
+  userEngagement: number, // How users interact
   opportunityScore: number, // Potential for improvement
-}
+};
 ```
 
 **Dashboard Sections**:
+
 ```
 Performance Monitoring
 ├─ Top Performing Pages (by traffic)
@@ -204,6 +214,7 @@ Performance Monitoring
 **Purpose**: Automate content generation on a schedule to continuously expand coverage
 
 **Functionality**:
+
 ```typescript
 scheduledGeneration = {
   // Configuration
@@ -238,6 +249,7 @@ scheduledGeneration = {
 ```
 
 **Schedule Management**:
+
 ```
 Scheduled Generation Management
 ├─ Create/edit schedules
@@ -255,6 +267,7 @@ Scheduled Generation Management
 ## IMPLEMENTATION ORDER
 
 ### Week 1: Quality Scoring + Auto-Regeneration
+
 1. **Day 1-2**: Build `contentQualityScore()` function
    - Implement 7 scoring metrics
    - Build scoring dashboard UI
@@ -269,6 +282,7 @@ Scheduled Generation Management
    - Email notifications
 
 ### Week 2: Competitor Analysis + Scheduling
+
 1. **Day 1-2**: Build competitor analysis function
    - Web scraping integration
    - Keyword extraction
@@ -285,6 +299,7 @@ Scheduled Generation Management
    - Notifications
 
 ### Week 3: Performance Monitoring + Integration
+
 1. **Day 1-2**: Build performance monitoring function
    - Google Search Console API integration
    - Google Analytics API integration
@@ -302,6 +317,7 @@ Scheduled Generation Management
 ## CLOUD FUNCTIONS TO CREATE (Phase 3)
 
 ### Quality Scoring (2 functions)
+
 ```
 1. calculateContentQuality()
    Input: contentId, content object
@@ -313,6 +329,7 @@ Scheduled Generation Management
 ```
 
 ### Automatic Regeneration (1 function)
+
 ```
 3. autoRegenerateContent()
    Input: threshold, maxItems
@@ -321,6 +338,7 @@ Scheduled Generation Management
 ```
 
 ### Competitor Analysis (2 functions)
+
 ```
 4. analyzeCompetitors()
    Input: competitors URLs array
@@ -333,6 +351,7 @@ Scheduled Generation Management
 ```
 
 ### Performance Monitoring (2 functions)
+
 ```
 6. syncPerformanceMetrics()
    Input: none (pulls from Google APIs)
@@ -345,6 +364,7 @@ Scheduled Generation Management
 ```
 
 ### Scheduling (1 function)
+
 ```
 8. executeScheduledGeneration()
    Input: scheduleId
@@ -357,6 +377,7 @@ Scheduled Generation Management
 ## ADMIN PAGES TO CREATE (Phase 3)
 
 ### 1. Quality Scoring Page
+
 ```
 /admin/quality-scoring
 ├─ Overall quality metrics
@@ -369,6 +390,7 @@ Scheduled Generation Management
 ```
 
 ### 2. Competitor Analysis Page
+
 ```
 /admin/competitor-analysis
 ├─ Competitor websites configuration
@@ -381,6 +403,7 @@ Scheduled Generation Management
 ```
 
 ### 3. Performance Monitoring Page
+
 ```
 /admin/performance-monitoring
 ├─ Overall metrics dashboard
@@ -393,6 +416,7 @@ Scheduled Generation Management
 ```
 
 ### 4. Schedule Management Page
+
 ```
 /admin/scheduled-generation
 ├─ List of active schedules
@@ -405,6 +429,7 @@ Scheduled Generation Management
 ```
 
 ### 5. Advanced Analytics Page
+
 ```
 /admin/advanced-analytics
 ├─ Content performance by:
@@ -423,6 +448,7 @@ Scheduled Generation Management
 ## FIRESTORE COLLECTIONS (New in Phase 3)
 
 ### 1. `content_quality_scores`
+
 ```
 {
   contentId: string,
@@ -452,6 +478,7 @@ Scheduled Generation Management
 ```
 
 ### 2. `content_regeneration_history`
+
 ```
 {
   contentId: string,
@@ -465,6 +492,7 @@ Scheduled Generation Management
 ```
 
 ### 3. `competitor_analysis`
+
 ```
 {
   analysisId: string,
@@ -495,6 +523,7 @@ Scheduled Generation Management
 ```
 
 ### 4. `performance_metrics`
+
 ```
 {
   contentId: string,
@@ -529,6 +558,7 @@ Scheduled Generation Management
 ```
 
 ### 5. `scheduled_generations`
+
 ```
 {
   scheduleId: string,
@@ -566,6 +596,7 @@ Scheduled Generation Management
 ```
 
 ### 6. `content_age_tracking`
+
 ```
 {
   contentId: string,
@@ -587,6 +618,7 @@ Scheduled Generation Management
 ## KEY METRICS TO TRACK
 
 ### Quality Metrics
+
 - Average quality score (target: 85+)
 - % of content auto-approved (target: 70%+)
 - % needing review (target: 25%)
@@ -594,6 +626,7 @@ Scheduled Generation Management
 - Average improvement per regeneration (target: +10 points)
 
 ### Performance Metrics
+
 - Average ranking position (target: <15)
 - Average click-through rate (target: 2%+)
 - Pages ranking in top 10 (target: 100+)
@@ -601,12 +634,14 @@ Scheduled Generation Management
 - Average page views per item (target: 50+)
 
 ### Coverage Metrics
+
 - Total content generated (target: 2,000+)
 - Total pages published (target: 1,500+)
 - Content gap closure rate (target: 80%+)
 - New content per day (target: 50+)
 
 ### Operational Metrics
+
 - Auto-regeneration success rate (target: 95%+)
 - Scheduled generation uptime (target: 99.9%)
 - Average generation time (target: <2 min/100 items)
@@ -617,24 +652,28 @@ Scheduled Generation Management
 ## INTEGRATION POINTS
 
 ### Google Search Console API
+
 - Pull keyword rankings
 - Track impressions and clicks
 - Monitor CTR and position
 - Setup: OAuth 2.0, daily sync
 
 ### Google Analytics API
+
 - Pull page views and engagement
 - Track user behavior
 - Monitor conversion rates
 - Setup: OAuth 2.0, daily sync
 
 ### Cloud Scheduler
+
 - Daily quality scoring
 - Weekly competitor analysis
 - Daily auto-regeneration
 - Custom scheduled generation
 
 ### Cloud Pub/Sub
+
 - Event-driven regeneration
 - Quality score updates trigger actions
 - Competitor analysis triggers recommendations
@@ -643,21 +682,22 @@ Scheduled Generation Management
 
 ## ESTIMATED BUILD TIME
 
-| Component | Time | Priority |
-|-----------|------|----------|
-| Quality Scoring | 6-8 hours | P0 |
-| Auto-Regeneration | 4-6 hours | P1 |
-| Competitor Analysis | 8-10 hours | P1 |
-| Performance Monitoring | 8-10 hours | P1 |
-| Schedule Management | 6-8 hours | P2 |
-| Advanced Analytics | 8-10 hours | P2 |
-| **Total** | **40-52 hours** | |
+| Component              | Time            | Priority |
+| ---------------------- | --------------- | -------- |
+| Quality Scoring        | 6-8 hours       | P0       |
+| Auto-Regeneration      | 4-6 hours       | P1       |
+| Competitor Analysis    | 8-10 hours      | P1       |
+| Performance Monitoring | 8-10 hours      | P1       |
+| Schedule Management    | 6-8 hours       | P2       |
+| Advanced Analytics     | 8-10 hours      | P2       |
+| **Total**              | **40-52 hours** |          |
 
 ---
 
 ## DEPLOYMENT PLAN
 
 ### Week 1-2: Core Features (P0-P1)
+
 1. Deploy quality scoring
 2. Deploy auto-regeneration
 3. Deploy competitor analysis
@@ -665,11 +705,13 @@ Scheduled Generation Management
 5. Test end-to-end
 
 ### Week 3: Optional Features (P2)
+
 1. Deploy schedule management
 2. Deploy advanced analytics
 3. Optimization and tuning
 
 ### Post-Launch
+
 1. Monitor metrics daily
 2. Adjust thresholds based on results
 3. Expand to 240+ locations
@@ -707,7 +749,6 @@ Scheduled Generation Management
 
 ---
 
-*Phase 3 Plan Created*: January 16, 2026
-*Target Completion*: January 30, 2026
-*Priority*: HIGH - These features drive competitive advantage
-
+_Phase 3 Plan Created_: January 16, 2026
+_Target Completion_: January 30, 2026
+_Priority_: HIGH - These features drive competitive advantage

@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { db, storage } from '../lib/firebase';
+import React, { useEffect, useState, useRef } from "react";
+import { db, storage } from "../lib/firebase";
 import {
   collection,
   getDocs,
@@ -11,11 +11,11 @@ import {
   Timestamp,
   onSnapshot,
   orderBy,
-  where
-} from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useAuth } from '../state/AuthProvider';
-import { canPerformAction } from '../lib/permissions';
+  where,
+} from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useAuth } from "../state/AuthProvider";
+import { canPerformAction } from "../lib/permissions";
 import {
   Plus,
   Edit2,
@@ -33,8 +33,8 @@ import {
   Tag,
   FileText,
   Globe,
-  Search
-} from 'lucide-react';
+  Search,
+} from "lucide-react";
 
 interface BlogPost {
   id: string;
@@ -47,7 +47,7 @@ interface BlogPost {
   authorEmail?: string;
   category: string;
   tags: string[];
-  status: 'draft' | 'published' | 'scheduled';
+  status: "draft" | "published" | "scheduled";
   publishedAt?: Timestamp;
   scheduledAt?: Timestamp;
   websiteId: string;
@@ -63,29 +63,29 @@ interface BlogPost {
 }
 
 const BLOG_CATEGORIES = [
-  { id: 'company-news', label: 'Company News' },
-  { id: 'travel-tips', label: 'Travel Tips' },
-  { id: 'chicago-events', label: 'Chicago Events' },
-  { id: 'wedding-planning', label: 'Wedding Planning' },
-  { id: 'corporate-travel', label: 'Corporate Travel' },
-  { id: 'luxury-lifestyle', label: 'Luxury Lifestyle' },
-  { id: 'party-ideas', label: 'Party Ideas' },
-  { id: 'airport-guides', label: 'Airport Guides' },
+  { id: "company-news", label: "Company News" },
+  { id: "travel-tips", label: "Travel Tips" },
+  { id: "chicago-events", label: "Chicago Events" },
+  { id: "wedding-planning", label: "Wedding Planning" },
+  { id: "corporate-travel", label: "Corporate Travel" },
+  { id: "luxury-lifestyle", label: "Luxury Lifestyle" },
+  { id: "party-ideas", label: "Party Ideas" },
+  { id: "airport-guides", label: "Airport Guides" },
 ];
 
 const WEBSITES = [
-  { id: 'all', label: 'All Websites' },
-  { id: 'chicagoairportblackcar', label: 'Airport' },
-  { id: 'chicagoexecutivecarservice', label: 'Corporate' },
-  { id: 'chicagoweddingtransportation', label: 'Wedding' },
-  { id: 'chicago-partybus', label: 'Party Bus' },
+  { id: "all", label: "All Websites" },
+  { id: "chicagoairportblackcar", label: "Airport" },
+  { id: "chicagoexecutivecarservice", label: "Corporate" },
+  { id: "chicagoweddingtransportation", label: "Wedding" },
+  { id: "chicago-partybus", label: "Party Bus" },
 ];
 
 function generateSlug(title: string): string {
   return title
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '');
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
 }
 
 // Blog Post Editor Modal
@@ -104,28 +104,28 @@ function BlogEditorModal({
 }) {
   const { user } = useAuth();
   const [formData, setFormData] = useState<Partial<BlogPost>>({
-    title: '',
-    slug: '',
-    excerpt: '',
-    content: '',
-    category: 'company-news',
+    title: "",
+    slug: "",
+    excerpt: "",
+    content: "",
+    category: "company-news",
     tags: [],
-    status: 'draft',
-    websiteId: 'chicagoairportblackcar',
-    author: user?.displayName || user?.email || 'Admin',
-    authorEmail: user?.email || '',
+    status: "draft",
+    websiteId: "chicagoairportblackcar",
+    author: user?.displayName || user?.email || "Admin",
+    authorEmail: user?.email || "",
     seo: {
-      metaTitle: '',
-      metaDescription: '',
+      metaTitle: "",
+      metaDescription: "",
       keywords: [],
     },
   });
-  const [newTag, setNewTag] = useState('');
-  const [newKeyword, setNewKeyword] = useState('');
+  const [newTag, setNewTag] = useState("");
+  const [newKeyword, setNewKeyword] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
-  const [activeTab, setActiveTab] = useState<'content' | 'seo'>('content');
+  const [activeTab, setActiveTab] = useState<"content" | "seo">("content");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -134,19 +134,19 @@ function BlogEditorModal({
       setImagePreview(post.featuredImage || null);
     } else {
       setFormData({
-        title: '',
-        slug: '',
-        excerpt: '',
-        content: '',
-        category: 'company-news',
+        title: "",
+        slug: "",
+        excerpt: "",
+        content: "",
+        category: "company-news",
         tags: [],
-        status: 'draft',
-        websiteId: 'chicagoairportblackcar',
-        author: user?.displayName || user?.email || 'Admin',
-        authorEmail: user?.email || '',
+        status: "draft",
+        websiteId: "chicagoairportblackcar",
+        author: user?.displayName || user?.email || "Admin",
+        authorEmail: user?.email || "",
         seo: {
-          metaTitle: '',
-          metaDescription: '',
+          metaTitle: "",
+          metaDescription: "",
           keywords: [],
         },
       });
@@ -182,12 +182,15 @@ function BlogEditorModal({
 
     setUploadingImage(true);
     try {
-      const slug = formData.slug || generateSlug(formData.title || 'post');
-      const storageRef = ref(storage, `blog-images/${slug}-${Date.now()}.${imageFile.name.split('.').pop()}`);
+      const slug = formData.slug || generateSlug(formData.title || "post");
+      const storageRef = ref(
+        storage,
+        `blog-images/${slug}-${Date.now()}.${imageFile.name.split(".").pop()}`,
+      );
       await uploadBytes(storageRef, imageFile);
       return await getDownloadURL(storageRef);
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
       return null;
     } finally {
       setUploadingImage(false);
@@ -200,7 +203,7 @@ function BlogEditorModal({
         ...formData,
         tags: [...(formData.tags || []), newTag.trim()],
       });
-      setNewTag('');
+      setNewTag("");
     }
   }
 
@@ -212,7 +215,10 @@ function BlogEditorModal({
   }
 
   function handleAddKeyword() {
-    if (newKeyword.trim() && !formData.seo?.keywords?.includes(newKeyword.trim())) {
+    if (
+      newKeyword.trim() &&
+      !formData.seo?.keywords?.includes(newKeyword.trim())
+    ) {
       setFormData({
         ...formData,
         seo: {
@@ -220,7 +226,7 @@ function BlogEditorModal({
           keywords: [...(formData.seo?.keywords || []), newKeyword.trim()],
         },
       });
-      setNewKeyword('');
+      setNewKeyword("");
     }
   }
 
@@ -241,9 +247,12 @@ function BlogEditorModal({
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[95vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
           <h2 className="text-xl font-bold">
-            {post ? 'Edit Blog Post' : 'Create New Blog Post'}
+            {post ? "Edit Blog Post" : "Create New Blog Post"}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -251,22 +260,22 @@ function BlogEditorModal({
         {/* Tabs */}
         <div className="flex border-b px-6">
           <button
-            onClick={() => setActiveTab('content')}
+            onClick={() => setActiveTab("content")}
             className={`px-4 py-3 font-medium border-b-2 transition ${
-              activeTab === 'content'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+              activeTab === "content"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             <FileText className="w-4 h-4 inline mr-2" />
             Content
           </button>
           <button
-            onClick={() => setActiveTab('seo')}
+            onClick={() => setActiveTab("seo")}
             className={`px-4 py-3 font-medium border-b-2 transition ${
-              activeTab === 'seo'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+              activeTab === "seo"
+                ? "border-blue-600 text-blue-600"
+                : "border-transparent text-gray-500 hover:text-gray-700"
             }`}
           >
             <Globe className="w-4 h-4 inline mr-2" />
@@ -275,14 +284,16 @@ function BlogEditorModal({
         </div>
 
         <div className="p-6 space-y-4">
-          {activeTab === 'content' ? (
+          {activeTab === "content" ? (
             <>
               {/* Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Title *
+                </label>
                 <input
                   type="text"
-                  value={formData.title || ''}
+                  value={formData.title || ""}
                   onChange={(e) => handleTitleChange(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter blog post title..."
@@ -291,13 +302,17 @@ function BlogEditorModal({
 
               {/* Slug */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">URL Slug</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  URL Slug
+                </label>
                 <div className="flex items-center">
                   <span className="text-gray-500 text-sm mr-2">/blog/</span>
                   <input
                     type="text"
-                    value={formData.slug || ''}
-                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    value={formData.slug || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, slug: e.target.value })
+                    }
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="url-friendly-slug"
                   />
@@ -307,13 +322,17 @@ function BlogEditorModal({
               {/* Website and Category */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Website *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Website *
+                  </label>
                   <select
-                    value={formData.websiteId || ''}
-                    onChange={(e) => setFormData({ ...formData, websiteId: e.target.value })}
+                    value={formData.websiteId || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, websiteId: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    {WEBSITES.filter((w) => w.id !== 'all').map((ws) => (
+                    {WEBSITES.filter((w) => w.id !== "all").map((ws) => (
                       <option key={ws.id} value={ws.id}>
                         {ws.label}
                       </option>
@@ -321,10 +340,14 @@ function BlogEditorModal({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Category *</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category *
+                  </label>
                   <select
-                    value={formData.category || ''}
-                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    value={formData.category || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, category: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     {BLOG_CATEGORIES.map((cat) => (
@@ -338,14 +361,20 @@ function BlogEditorModal({
 
               {/* Featured Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Featured Image
+                </label>
                 <div className="flex items-start gap-4">
                   <div
                     onClick={() => fileInputRef.current?.click()}
                     className="w-48 h-32 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition overflow-hidden border-2 border-dashed border-gray-300"
                   >
                     {imagePreview ? (
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
                     ) : (
                       <div className="text-center text-gray-400">
                         <ImageIcon className="w-8 h-8 mx-auto mb-1" />
@@ -362,7 +391,8 @@ function BlogEditorModal({
                   />
                   <div className="flex-1">
                     <p className="text-sm text-gray-500 mb-2">
-                      Upload a featured image for this blog post. Recommended: 1200x630px
+                      Upload a featured image for this blog post. Recommended:
+                      1200x630px
                     </p>
                     <div className="flex gap-2">
                       <button
@@ -379,7 +409,7 @@ function BlogEditorModal({
                           onClick={() => {
                             setImageFile(null);
                             setImagePreview(null);
-                            setFormData({ ...formData, featuredImage: '' });
+                            setFormData({ ...formData, featuredImage: "" });
                           }}
                           className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm"
                         >
@@ -393,43 +423,56 @@ function BlogEditorModal({
 
               {/* Excerpt */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Excerpt
+                </label>
                 <textarea
-                  value={formData.excerpt || ''}
-                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                  value={formData.excerpt || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, excerpt: e.target.value })
+                  }
                   rows={2}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Brief summary of the post (used in listings and previews)..."
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  {(formData.excerpt?.length || 0)}/160 characters recommended
+                  {formData.excerpt?.length || 0}/160 characters recommended
                 </p>
               </div>
 
               {/* Content */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Content *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Content *
+                </label>
                 <textarea
-                  value={formData.content || ''}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  value={formData.content || ""}
+                  onChange={(e) =>
+                    setFormData({ ...formData, content: e.target.value })
+                  }
                   rows={12}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent font-mono text-sm"
                   placeholder="Write your blog post content here. You can use HTML tags for formatting..."
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Supports HTML. {(formData.content?.split(/\s+/).length || 0)} words
+                  Supports HTML. {formData.content?.split(/\s+/).length || 0}{" "}
+                  words
                 </p>
               </div>
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tags
+                </label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" && (e.preventDefault(), handleAddTag())
+                    }
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Add a tag..."
                   />
@@ -449,7 +492,11 @@ function BlogEditorModal({
                     >
                       <Tag className="w-3 h-3" />
                       {tag}
-                      <button type="button" onClick={() => handleRemoveTag(tag)} className="hover:text-red-600">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveTag(tag)}
+                        className="hover:text-red-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </span>
@@ -460,10 +507,17 @@ function BlogEditorModal({
               {/* Status and Author */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Status
+                  </label>
                   <select
-                    value={formData.status || 'draft'}
-                    onChange={(e) => setFormData({ ...formData, status: e.target.value as BlogPost['status'] })}
+                    value={formData.status || "draft"}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        status: e.target.value as BlogPost["status"],
+                      })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="draft">Draft</option>
@@ -472,11 +526,15 @@ function BlogEditorModal({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Author</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Author
+                  </label>
                   <input
                     type="text"
-                    value={formData.author || ''}
-                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                    value={formData.author || ""}
+                    onChange={(e) =>
+                      setFormData({ ...formData, author: e.target.value })
+                    }
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
@@ -486,18 +544,23 @@ function BlogEditorModal({
             <>
               {/* SEO Tab */}
               <div className="bg-blue-50 p-4 rounded-lg mb-4">
-                <h3 className="font-medium text-blue-900 mb-1">Search Engine Optimization</h3>
+                <h3 className="font-medium text-blue-900 mb-1">
+                  Search Engine Optimization
+                </h3>
                 <p className="text-sm text-blue-700">
-                  Optimize your blog post for search engines. These settings affect how your post appears in search results.
+                  Optimize your blog post for search engines. These settings
+                  affect how your post appears in search results.
                 </p>
               </div>
 
               {/* Meta Title */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Meta Title
+                </label>
                 <input
                   type="text"
-                  value={formData.seo?.metaTitle || ''}
+                  value={formData.seo?.metaTitle || ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -508,19 +571,25 @@ function BlogEditorModal({
                   placeholder="SEO title for search engines..."
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  {(formData.seo?.metaTitle?.length || 0)}/60 characters (recommended)
+                  {formData.seo?.metaTitle?.length || 0}/60 characters
+                  (recommended)
                 </p>
               </div>
 
               {/* Meta Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Meta Description
+                </label>
                 <textarea
-                  value={formData.seo?.metaDescription || ''}
+                  value={formData.seo?.metaDescription || ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      seo: { ...formData.seo!, metaDescription: e.target.value },
+                      seo: {
+                        ...formData.seo!,
+                        metaDescription: e.target.value,
+                      },
                     })
                   }
                   rows={3}
@@ -528,19 +597,25 @@ function BlogEditorModal({
                   placeholder="Description for search engine results..."
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  {(formData.seo?.metaDescription?.length || 0)}/160 characters (recommended)
+                  {formData.seo?.metaDescription?.length || 0}/160 characters
+                  (recommended)
                 </p>
               </div>
 
               {/* SEO Keywords */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Focus Keywords</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Focus Keywords
+                </label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
                     value={newKeyword}
                     onChange={(e) => setNewKeyword(e.target.value)}
-                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeyword())}
+                    onKeyPress={(e) =>
+                      e.key === "Enter" &&
+                      (e.preventDefault(), handleAddKeyword())
+                    }
                     className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Add a keyword..."
                   />
@@ -559,7 +634,11 @@ function BlogEditorModal({
                       className="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm"
                     >
                       {keyword}
-                      <button type="button" onClick={() => handleRemoveKeyword(keyword)} className="hover:text-red-600">
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveKeyword(keyword)}
+                        className="hover:text-red-600"
+                      >
                         <X className="w-3 h-3" />
                       </button>
                     </span>
@@ -569,10 +648,12 @@ function BlogEditorModal({
 
               {/* Canonical URL */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Canonical URL (optional)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Canonical URL (optional)
+                </label>
                 <input
                   type="url"
-                  value={formData.seo?.canonical || ''}
+                  value={formData.seo?.canonical || ""}
                   onChange={(e) =>
                     setFormData({
                       ...formData,
@@ -583,22 +664,27 @@ function BlogEditorModal({
                   placeholder="https://..."
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Leave empty to use the default URL. Use only if this content exists elsewhere.
+                  Leave empty to use the default URL. Use only if this content
+                  exists elsewhere.
                 </p>
               </div>
 
               {/* Search Preview */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Search Preview</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search Preview
+                </label>
                 <div className="p-4 bg-white border rounded-lg">
                   <div className="text-blue-600 text-lg hover:underline cursor-pointer">
-                    {formData.seo?.metaTitle || formData.title || 'Page Title'}
+                    {formData.seo?.metaTitle || formData.title || "Page Title"}
                   </div>
                   <div className="text-green-700 text-sm">
-                    {formData.websiteId}.com/blog/{formData.slug || 'url-slug'}
+                    {formData.websiteId}.com/blog/{formData.slug || "url-slug"}
                   </div>
                   <div className="text-gray-600 text-sm mt-1">
-                    {formData.seo?.metaDescription || formData.excerpt || 'Meta description will appear here...'}
+                    {formData.seo?.metaDescription ||
+                      formData.excerpt ||
+                      "Meta description will appear here..."}
                   </div>
                 </div>
               </div>
@@ -621,15 +707,29 @@ function BlogEditorModal({
                 featuredImage: imageUrl || formData.featuredImage,
                 seo: {
                   ...formData.seo!,
-                  ogImage: imageUrl || formData.seo?.ogImage || formData.featuredImage,
+                  ogImage:
+                    imageUrl || formData.seo?.ogImage || formData.featuredImage,
                 },
               });
             }}
-            disabled={isLoading || uploadingImage || !formData.title || !formData.content}
+            disabled={
+              isLoading ||
+              uploadingImage ||
+              !formData.title ||
+              !formData.content
+            }
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading || uploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {uploadingImage ? 'Uploading...' : post ? 'Update Post' : 'Create Post'}
+            {isLoading || uploadingImage ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {uploadingImage
+              ? "Uploading..."
+              : post
+                ? "Update Post"
+                : "Create Post"}
           </button>
         </div>
       </div>
@@ -641,9 +741,9 @@ export default function BlogManagementPage() {
   const { user, role } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedWebsite, setSelectedWebsite] = useState<string>('all');
-  const [selectedStatus, setSelectedStatus] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedWebsite, setSelectedWebsite] = useState<string>("all");
+  const [selectedStatus, setSelectedStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
   // CRUD state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -651,13 +751,13 @@ export default function BlogManagementPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  const canEdit = canPerformAction(role, 'editContent');
-  const canDelete = canPerformAction(role, 'deleteContent');
+  const canEdit = canPerformAction(role, "editContent");
+  const canDelete = canPerformAction(role, "deleteContent");
 
   // Real-time subscription to blog posts
   useEffect(() => {
     setLoading(true);
-    const q = query(collection(db, 'blog_posts'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, "blog_posts"), orderBy("createdAt", "desc"));
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -669,9 +769,9 @@ export default function BlogManagementPage() {
         setLoading(false);
       },
       (error) => {
-        console.error('Error listening to blog posts:', error);
+        console.error("Error listening to blog posts:", error);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
@@ -680,7 +780,7 @@ export default function BlogManagementPage() {
   // Create or Update post
   async function handleSavePost(data: Partial<BlogPost>) {
     if (!canEdit) {
-      alert('You do not have permission to edit blog posts');
+      alert("You do not have permission to edit blog posts");
       return;
     }
 
@@ -690,16 +790,16 @@ export default function BlogManagementPage() {
 
       if (editingPost) {
         // Update existing
-        await updateDoc(doc(db, 'blog_posts', editingPost.id), {
+        await updateDoc(doc(db, "blog_posts", editingPost.id), {
           ...data,
           updatedAt: now,
         });
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'content',
+        await addDoc(collection(db, "activity_log"), {
+          type: "content",
           message: `Updated blog post: ${data.title}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: now,
@@ -710,16 +810,16 @@ export default function BlogManagementPage() {
           ...data,
           createdAt: now,
           updatedAt: now,
-          publishedAt: data.status === 'published' ? now : null,
+          publishedAt: data.status === "published" ? now : null,
         };
 
-        await addDoc(collection(db, 'blog_posts'), newPost);
+        await addDoc(collection(db, "blog_posts"), newPost);
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'content',
+        await addDoc(collection(db, "activity_log"), {
+          type: "content",
           message: `Created blog post: ${data.title}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: now,
@@ -729,8 +829,8 @@ export default function BlogManagementPage() {
       setIsModalOpen(false);
       setEditingPost(undefined);
     } catch (error) {
-      console.error('Error saving post:', error);
-      alert('Failed to save post. Please try again.');
+      console.error("Error saving post:", error);
+      alert("Failed to save post. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -739,30 +839,34 @@ export default function BlogManagementPage() {
   // Delete post
   async function handleDeletePost(post: BlogPost) {
     if (!canDelete) {
-      alert('You do not have permission to delete blog posts');
+      alert("You do not have permission to delete blog posts");
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete "${post.title}"? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${post.title}"? This cannot be undone.`,
+      )
+    ) {
       return;
     }
 
     setIsDeleting(post.id);
     try {
-      await deleteDoc(doc(db, 'blog_posts', post.id));
+      await deleteDoc(doc(db, "blog_posts", post.id));
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'content',
+      await addDoc(collection(db, "activity_log"), {
+        type: "content",
         message: `Deleted blog post: ${post.title}`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
       });
     } catch (error) {
-      console.error('Error deleting post:', error);
-      alert('Failed to delete post. Please try again.');
+      console.error("Error deleting post:", error);
+      alert("Failed to delete post. Please try again.");
     } finally {
       setIsDeleting(null);
     }
@@ -772,23 +876,25 @@ export default function BlogManagementPage() {
   async function handleTogglePublish(post: BlogPost) {
     if (!canEdit) return;
 
-    const newStatus = post.status === 'published' ? 'draft' : 'published';
+    const newStatus = post.status === "published" ? "draft" : "published";
 
     try {
-      await updateDoc(doc(db, 'blog_posts', post.id), {
+      await updateDoc(doc(db, "blog_posts", post.id), {
         status: newStatus,
-        publishedAt: newStatus === 'published' ? Timestamp.now() : null,
+        publishedAt: newStatus === "published" ? Timestamp.now() : null,
         updatedAt: Timestamp.now(),
       });
     } catch (error) {
-      console.error('Error toggling publish status:', error);
+      console.error("Error toggling publish status:", error);
     }
   }
 
   // Filter posts
   const filteredPosts = posts.filter((post) => {
-    if (selectedWebsite !== 'all' && post.websiteId !== selectedWebsite) return false;
-    if (selectedStatus !== 'all' && post.status !== selectedStatus) return false;
+    if (selectedWebsite !== "all" && post.websiteId !== selectedWebsite)
+      return false;
+    if (selectedStatus !== "all" && post.status !== selectedStatus)
+      return false;
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       return (
@@ -803,9 +909,9 @@ export default function BlogManagementPage() {
   // Stats
   const stats = {
     total: posts.length,
-    published: posts.filter((p) => p.status === 'published').length,
-    drafts: posts.filter((p) => p.status === 'draft').length,
-    scheduled: posts.filter((p) => p.status === 'scheduled').length,
+    published: posts.filter((p) => p.status === "published").length,
+    drafts: posts.filter((p) => p.status === "draft").length,
+    scheduled: posts.filter((p) => p.status === "scheduled").length,
   };
 
   function getWebsiteLabel(websiteId: string) {
@@ -813,7 +919,9 @@ export default function BlogManagementPage() {
   }
 
   function getCategoryLabel(categoryId: string) {
-    return BLOG_CATEGORIES.find((c) => c.id === categoryId)?.label || categoryId;
+    return (
+      BLOG_CATEGORIES.find((c) => c.id === categoryId)?.label || categoryId
+    );
   }
 
   return (
@@ -849,26 +957,35 @@ export default function BlogManagementPage() {
             )}
           </div>
           <p className="text-gray-600">
-            Create and manage blog posts for all your websites. Optimize SEO for better search rankings.
+            Create and manage blog posts for all your websites. Optimize SEO for
+            better search rankings.
           </p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-3xl font-bold text-blue-600">{stats.total}</div>
+            <div className="text-3xl font-bold text-blue-600">
+              {stats.total}
+            </div>
             <div className="text-gray-600">Total Posts</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-3xl font-bold text-green-600">{stats.published}</div>
+            <div className="text-3xl font-bold text-green-600">
+              {stats.published}
+            </div>
             <div className="text-gray-600">Published</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-3xl font-bold text-yellow-600">{stats.drafts}</div>
+            <div className="text-3xl font-bold text-yellow-600">
+              {stats.drafts}
+            </div>
             <div className="text-gray-600">Drafts</div>
           </div>
           <div className="bg-white p-6 rounded-lg shadow">
-            <div className="text-3xl font-bold text-purple-600">{stats.scheduled}</div>
+            <div className="text-3xl font-bold text-purple-600">
+              {stats.scheduled}
+            </div>
             <div className="text-gray-600">Scheduled</div>
           </div>
         </div>
@@ -926,8 +1043,12 @@ export default function BlogManagementPage() {
         ) : filteredPosts.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-lg shadow">
             <FileText className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-            <h3 className="text-lg font-medium text-gray-900 mb-1">No blog posts found</h3>
-            <p className="text-gray-500 mb-4">Get started by creating your first blog post.</p>
+            <h3 className="text-lg font-medium text-gray-900 mb-1">
+              No blog posts found
+            </h3>
+            <p className="text-gray-500 mb-4">
+              Get started by creating your first blog post.
+            </p>
             {canEdit && (
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -968,11 +1089,11 @@ export default function BlogManagementPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <span
                             className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                              post.status === 'published'
-                                ? 'bg-green-100 text-green-800'
-                                : post.status === 'scheduled'
-                                ? 'bg-purple-100 text-purple-800'
-                                : 'bg-yellow-100 text-yellow-800'
+                              post.status === "published"
+                                ? "bg-green-100 text-green-800"
+                                : post.status === "scheduled"
+                                  ? "bg-purple-100 text-purple-800"
+                                  : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
                             {post.status}
@@ -988,7 +1109,9 @@ export default function BlogManagementPage() {
                         <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600">
                           {post.title}
                         </h3>
-                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">{post.excerpt}</p>
+                        <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                          {post.excerpt}
+                        </p>
                       </div>
 
                       {/* Actions */}
@@ -998,13 +1121,17 @@ export default function BlogManagementPage() {
                             <button
                               onClick={() => handleTogglePublish(post)}
                               className={`p-2 rounded-lg transition ${
-                                post.status === 'published'
-                                  ? 'text-green-600 hover:bg-green-50'
-                                  : 'text-gray-400 hover:bg-gray-100'
+                                post.status === "published"
+                                  ? "text-green-600 hover:bg-green-50"
+                                  : "text-gray-400 hover:bg-gray-100"
                               }`}
-                              title={post.status === 'published' ? 'Unpublish' : 'Publish'}
+                              title={
+                                post.status === "published"
+                                  ? "Unpublish"
+                                  : "Publish"
+                              }
                             >
-                              {post.status === 'published' ? (
+                              {post.status === "published" ? (
                                 <Eye className="w-4 h-4" />
                               ) : (
                                 <EyeOff className="w-4 h-4" />
@@ -1047,12 +1174,13 @@ export default function BlogManagementPage() {
                       </span>
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        {post.createdAt?.toDate?.()?.toLocaleDateString() || 'N/A'}
+                        {post.createdAt?.toDate?.()?.toLocaleDateString() ||
+                          "N/A"}
                       </span>
                       {post.tags && post.tags.length > 0 && (
                         <span className="flex items-center gap-1">
                           <Tag className="w-3 h-3" />
-                          {post.tags.slice(0, 3).join(', ')}
+                          {post.tags.slice(0, 3).join(", ")}
                           {post.tags.length > 3 && ` +${post.tags.length - 3}`}
                         </span>
                       )}

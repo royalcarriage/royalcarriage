@@ -76,15 +76,17 @@ async function main() {
   // Also add admin email setup
   console.log("\n👤 Admin Email Setup");
   const adminEmail = await question(
-    "Enter your admin email (for dashboard access): "
+    "Enter your admin email (for dashboard access): ",
   );
 
   if (adminEmail.trim()) {
     envContent += `\n\n# Admin Configuration\nADMIN_EMAIL=${adminEmail.trim()}`;
 
-    console.log(`\n📝 Update the admin email in: apps/admin/src/lib/dataStore.ts`);
     console.log(
-      `Line 208: role: user.email === "${adminEmail.trim()}" ? "superadmin" : "viewer",`
+      `\n📝 Update the admin email in: apps/admin/src/lib/dataStore.ts`,
+    );
+    console.log(
+      `Line 208: role: user.email === "${adminEmail.trim()}" ? "superadmin" : "viewer",`,
     );
   }
 
@@ -95,7 +97,9 @@ async function main() {
   console.log(`📍 File: ${envLocalPath}\n`);
 
   console.log("Next steps:");
-  console.log("1. Update admin email in apps/admin/src/lib/dataStore.ts line 208");
+  console.log(
+    "1. Update admin email in apps/admin/src/lib/dataStore.ts line 208",
+  );
   console.log("2. Rebuild admin app: cd apps/admin && npm run build");
   console.log("3. Start dev server: npm run dev");
   console.log("4. Visit http://localhost:3000 and sign in with Google\n");

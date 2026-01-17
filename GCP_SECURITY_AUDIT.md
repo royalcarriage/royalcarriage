@@ -1,4 +1,5 @@
 # Google Cloud Platform Security Audit Report
+
 **Project:** royalcarriagelimoseo
 **Date:** 2026-01-17
 **Audit Type:** GCP Infrastructure Security Assessment
@@ -15,6 +16,7 @@ A comprehensive security audit of the Royal Carriage GCP infrastructure has iden
 **Risk Level:** MEDIUM-HIGH
 
 **Breakdown:**
+
 - Cloud Functions: 60/100 ⚠️ (Publicly accessible, no authentication)
 - IAM Policies: 70/100 ⚠️ (Excessive permissions, multiple deployers)
 - Service Accounts: 65/100 ⚠️ (Too many with broad permissions)
@@ -31,12 +33,14 @@ A comprehensive security audit of the Royal Carriage GCP infrastructure has iden
 **Risk:** Unauthorized access, data breach, service abuse, cost escalation
 
 **Findings:**
+
 - **ALL Cloud Functions** have `ingressSettings: "ALLOW_ALL"`
 - The `api` function (main HTTP endpoint) is publicly accessible
 - No authentication required at the function level
 - Only the `api` function has a single service account invoker permission
 
 **Affected Functions:**
+
 ```
 - api (main HTTP endpoint)
 - chatWithAI (AI chat - CRITICAL DATA)
@@ -47,6 +51,7 @@ A comprehensive security audit of the Royal Carriage GCP infrastructure has iden
 ```
 
 **Impact:**
+
 - Attackers can call any function directly
 - No rate limiting at function level
 - Potential for DDoS attacks
@@ -54,6 +59,7 @@ A comprehensive security audit of the Royal Carriage GCP infrastructure has iden
 - Service abuse leading to massive costs
 
 **Recommended Fix:**
+
 ```bash
 # Set ingress to internal only for sensitive functions
 gcloud functions update executeTerminalCommand \
@@ -80,27 +86,34 @@ gcloud functions add-iam-policy-binding chatWithAI \
 **Findings:**
 
 #### Default App Engine Service Account
+
 **Account:** `royalcarriagelimoseo@appspot.gserviceaccount.com`
 **Roles:**
+
 - `roles/aiplatform.admin` - Full AI Platform admin access ⚠️
 - `roles/aiplatform.user` - AI Platform usage
 
 **Issues:**
+
 - Admin role is too broad for a service account
 - Should use principle of least privilege
 - Runs ALL Cloud Functions with these permissions
 
 #### Firebase Admin SDK Account
+
 **Account:** `firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com`
 **Roles:**
+
 - `roles/cloudfunctions.admin` - Full Cloud Functions admin 🔴
 
 **Issues:**
+
 - Admin role allows creating/deleting/modifying ANY function
 - Only needs invoke permissions, not admin
 - Potential for function hijacking
 
 **Recommended Fix:**
+
 ```bash
 # Remove admin role
 gcloud projects remove-iam-policy-binding royalcarriagelimoseo \
@@ -122,6 +135,7 @@ gcloud projects add-iam-policy-binding royalcarriagelimoseo \
 
 **Findings:**
 Found **5 different deployment service accounts**:
+
 1. `ci-deployer@royalcarriagelimoseo.iam.gserviceaccount.com`
 2. `github-actions-deploy@royalcarriagelimoseo.iam.gserviceaccount.com`
 3. `github-deployer@royalcarriagelimoseo.iam.gserviceaccount.com`
@@ -129,12 +143,14 @@ Found **5 different deployment service accounts**:
 5. `firebase-adminsdk-fbsvc@royalcarriagelimoseo.iam.gserviceaccount.com`
 
 **Issues:**
+
 - Too many accounts with deployment permissions
 - Unclear which one is actively used
 - Increases attack surface
 - Difficult to audit who deployed what
 
 **Recommended Fix:**
+
 1. Identify which service account is actually used
 2. Disable/delete unused accounts
 3. Consolidate to single deployment account
@@ -150,12 +166,14 @@ Found **5 different deployment service accounts**:
 **Risk:** DDoS attacks, cost escalation, service degradation
 
 **Findings:**
+
 - No max instances set on most functions (unlimited scaling)
 - Only trigger-based functions have `maxInstances: 3000`
 - No rate limiting per IP/user
 - No Cloud Armor protection
 
 **Affected Functions:**
+
 ```
 All HTTP-triggered functions including:
 - api
@@ -165,15 +183,17 @@ All HTTP-triggered functions including:
 ```
 
 **Current Configuration:**
+
 ```json
 {
-  "maxInstances": null,  // Unlimited!
+  "maxInstances": null, // Unlimited!
   "timeout": "60s",
   "availableMemoryMb": 256
 }
 ```
 
 **Recommended Fix:**
+
 ```bash
 # Set reasonable max instances
 gcloud functions update chatWithAI \
@@ -195,12 +215,14 @@ gcloud functions update chatWithAI \
 **Risk:** Remote code execution, full system compromise
 
 **Findings:**
+
 - Function allows executing arbitrary terminal commands
 - Publicly accessible (no authentication)
 - No command whitelisting visible
 - Runs with App Engine default service account permissions
 
 **Function Details:**
+
 ```
 Name: executeTerminalCommand
 Runtime: nodejs20
@@ -210,12 +232,14 @@ Service Account: royalcarriagelimoseo@appspot.gserviceaccount.com
 ```
 
 **Attack Scenarios:**
+
 1. Attacker calls function with malicious command
 2. Command executes with service account permissions
 3. Access to Firestore, Cloud Storage, other GCP services
 4. Potential data exfiltration or destruction
 
 **Recommended Fix:**
+
 ```bash
 # IMMEDIATE: Set to internal-only
 gcloud functions update executeTerminalCommand \
@@ -243,6 +267,7 @@ gcloud functions delete executeTerminalCommand
 All buckets have `publicAccessPrevention: "inherited"` instead of `enforced`
 
 **Buckets:**
+
 ```
 - royalcarriagelimoseo.firebasestorage.app
 - royalcarriage-firestore-backups
@@ -251,6 +276,7 @@ All buckets have `publicAccessPrevention: "inherited"` instead of `enforced`
 ```
 
 **Recommended Fix:**
+
 ```bash
 # Enforce public access prevention
 gcloud storage buckets update gs://royalcarriagelimoseo.firebasestorage.app \
@@ -271,6 +297,7 @@ gcloud storage buckets update gs://royalcarriage-audit-logs \
 **Risk:** Stale permissions
 
 **Findings:**
+
 ```json
 {
   "condition": {
@@ -297,6 +324,7 @@ Clean up expired IAM bindings regularly
 **Risk:** Complex permission management, security gaps
 
 **Active Accounts:**
+
 1. Default App Engine
 2. Default Compute Engine
 3. 3x Firebase Extensions (chatgpt-bot, genai-chatbot, image-processing)
@@ -307,6 +335,7 @@ Clean up expired IAM bindings regularly
 8. Analytics
 
 **Recommendations:**
+
 - Audit which accounts are actively used
 - Disable unused accounts
 - Consolidate deployment accounts
@@ -324,25 +353,25 @@ Clean up expired IAM bindings regularly
 
 #### Security Configuration
 
-| Setting | Current | Recommended |
-|---------|---------|-------------|
-| Ingress | ALLOW_ALL 🔴 | INTERNAL_ONLY or authenticated |
-| Max Instances | None (unlimited) ⚠️ | Set limits (10-100) |
-| Authentication | None 🔴 | Required for all |
-| VPC Connector | None ⚠️ | Add for private networking |
-| HTTPS | Enforced ✅ | Keep enforced |
-| Timeout | 60s (540s batch) ✅ | Appropriate |
+| Setting        | Current             | Recommended                    |
+| -------------- | ------------------- | ------------------------------ |
+| Ingress        | ALLOW_ALL 🔴        | INTERNAL_ONLY or authenticated |
+| Max Instances  | None (unlimited) ⚠️ | Set limits (10-100)            |
+| Authentication | None 🔴             | Required for all               |
+| VPC Connector  | None ⚠️             | Add for private networking     |
+| HTTPS          | Enforced ✅         | Keep enforced                  |
+| Timeout        | 60s (540s batch) ✅ | Appropriate                    |
 
 #### High-Risk Functions
 
-| Function | Risk Level | Reason |
-|----------|------------|--------|
+| Function               | Risk Level  | Reason                |
+| ---------------------- | ----------- | --------------------- |
 | executeTerminalCommand | CRITICAL 🔴 | Remote code execution |
-| deleteUser | HIGH 🟠 | Data deletion |
-| deleteOrganization | HIGH 🟠 | Data deletion |
-| createUser | HIGH 🟠 | Privilege escalation |
-| chatWithAI | MEDIUM 🟡 | Data access |
-| api | MEDIUM 🟡 | Main entry point |
+| deleteUser             | HIGH 🟠     | Data deletion         |
+| deleteOrganization     | HIGH 🟠     | Data deletion         |
+| createUser             | HIGH 🟠     | Privilege escalation  |
+| chatWithAI             | MEDIUM 🟡   | Data access           |
+| api                    | MEDIUM 🟡   | Main entry point      |
 
 ---
 
@@ -351,6 +380,7 @@ Clean up expired IAM bindings regularly
 ### Principle of Least Privilege
 
 **Current Issues:**
+
 - Default service account has `aiplatform.admin` (too broad)
 - Firebase Admin SDK has `cloudfunctions.admin` (too broad)
 - Multiple accounts with `cloudfunctions.developer`
@@ -382,17 +412,17 @@ Service Accounts:
 
 ### Current State vs. Best Practices
 
-| Practice | Current | Recommended | Status |
-|----------|---------|-------------|--------|
-| Function Auth Required | ❌ No | ✅ Yes | 🔴 Fail |
-| Least Privilege | ❌ No | ✅ Yes | 🔴 Fail |
-| VPC/Private Network | ❌ No | ✅ Yes | 🟡 Warn |
-| Rate Limiting | ❌ No | ✅ Yes | 🔴 Fail |
+| Practice                 | Current      | Recommended | Status  |
+| ------------------------ | ------------ | ----------- | ------- |
+| Function Auth Required   | ❌ No        | ✅ Yes      | 🔴 Fail |
+| Least Privilege          | ❌ No        | ✅ Yes      | 🔴 Fail |
+| VPC/Private Network      | ❌ No        | ✅ Yes      | 🟡 Warn |
+| Rate Limiting            | ❌ No        | ✅ Yes      | 🔴 Fail |
 | Public Access Prevention | ⚠️ Inherited | ✅ Enforced | 🟡 Warn |
-| Service Account Rotation | ❌ No | ✅ Yes | 🟡 Warn |
-| Audit Logging | ✅ Yes | ✅ Yes | ✅ Pass |
-| Encryption at Rest | ✅ Yes | ✅ Yes | ✅ Pass |
-| HTTPS Enforced | ✅ Yes | ✅ Yes | ✅ Pass |
+| Service Account Rotation | ❌ No        | ✅ Yes      | 🟡 Warn |
+| Audit Logging            | ✅ Yes       | ✅ Yes      | ✅ Pass |
+| Encryption at Rest       | ✅ Yes       | ✅ Yes      | ✅ Pass |
+| HTTPS Enforced           | ✅ Yes       | ✅ Yes      | ✅ Pass |
 
 ---
 
@@ -401,6 +431,7 @@ Service Accounts:
 ### Week 1 (CRITICAL - Do Now)
 
 1. **Secure executeTerminalCommand** (30 min)
+
    ```bash
    gcloud functions update executeTerminalCommand --ingress-settings=internal-only
    ```
@@ -440,15 +471,15 @@ Service Accounts:
 
 ## Security Scoring Matrix
 
-| Category | Weight | Score | Weighted |
-|----------|--------|-------|----------|
-| Authentication | 25% | 40/100 | 10 |
-| Authorization | 20% | 60/100 | 12 |
-| Network Security | 20% | 50/100 | 10 |
-| IAM Management | 15% | 65/100 | 9.75 |
-| Data Protection | 10% | 80/100 | 8 |
-| Audit & Monitoring | 10% | 85/100 | 8.5 |
-| **TOTAL** | **100%** | - | **58.25/100** |
+| Category           | Weight   | Score  | Weighted      |
+| ------------------ | -------- | ------ | ------------- |
+| Authentication     | 25%      | 40/100 | 10            |
+| Authorization      | 20%      | 60/100 | 12            |
+| Network Security   | 20%      | 50/100 | 10            |
+| IAM Management     | 15%      | 65/100 | 9.75          |
+| Data Protection    | 10%      | 80/100 | 8             |
+| Audit & Monitoring | 10%      | 85/100 | 8.5           |
+| **TOTAL**          | **100%** | -      | **58.25/100** |
 
 **Adjusted Score with Risk Multiplier:** 65/100 🟡
 
@@ -459,12 +490,14 @@ Service Accounts:
 The Royal Carriage GCP infrastructure has **significant security vulnerabilities** that require immediate attention. While the platform is functional, it is **NOT secure for production use** in its current state.
 
 ### Critical Risks:
+
 1. ✅ All functions publicly accessible without authentication
 2. ✅ Dangerous remote code execution function exposed
 3. ✅ Excessive service account permissions
 4. ✅ No rate limiting or DDoS protection
 
 ### Immediate Actions Required:
+
 1. Restrict function ingress to internal-only
 2. Require authentication for all functions
 3. Remove excessive IAM permissions
@@ -478,4 +511,3 @@ The Royal Carriage GCP infrastructure has **significant security vulnerabilities
 **Audit Completed By:** Claude Code Assistant  
 **Date:** 2026-01-17  
 **Next Audit Recommended:** 2026-02-17 (after fixes applied)
-

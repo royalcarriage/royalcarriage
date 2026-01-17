@@ -126,11 +126,11 @@ async function checkMissingImages() {
     const images = await getVehicleImages(vehicle.id);
     if (images.length === 0) {
       issues.push({
-        type: 'vehicle_no_images',
+        type: "vehicle_no_images",
         entityId: vehicle.id,
-        entityType: 'vehicle',
-        severity: 'high',
-        message: `Vehicle ${vehicle.make} ${vehicle.model} has no images`
+        entityType: "vehicle",
+        severity: "high",
+        message: `Vehicle ${vehicle.make} ${vehicle.model} has no images`,
       });
     }
 
@@ -139,11 +139,11 @@ async function checkMissingImages() {
       const status = await checkImageUrl(image.originalUrl);
       if (status === 404) {
         issues.push({
-          type: 'broken_image_link',
+          type: "broken_image_link",
           entityId: vehicle.id,
           imageId: image.id,
-          severity: 'high',
-          message: `Image at ${image.originalUrl} is 404`
+          severity: "high",
+          message: `Image at ${image.originalUrl} is 404`,
         });
       }
     }
@@ -155,11 +155,11 @@ async function checkMissingImages() {
     const profilePhoto = await getDriverProfilePhoto(driver.id);
     if (!profilePhoto) {
       issues.push({
-        type: 'driver_no_profile',
+        type: "driver_no_profile",
         entityId: driver.id,
-        entityType: 'driver',
-        severity: 'medium',
-        message: `Driver ${driver.name} has no profile photo`
+        entityType: "driver",
+        severity: "medium",
+        message: `Driver ${driver.name} has no profile photo`,
       });
     }
   }
@@ -169,10 +169,10 @@ async function checkMissingImages() {
   for (const post of posts) {
     if (!post.featuredImage) {
       issues.push({
-        type: 'blog_no_featured_image',
+        type: "blog_no_featured_image",
         entityId: post.id,
-        entityType: 'blog',
-        severity: 'medium'
+        entityType: "blog",
+        severity: "medium",
       });
     }
   }
@@ -221,9 +221,9 @@ async function generateMissingImage(vehicle) {
   const response = await openai.images.generate({
     prompt: prompt,
     n: 1,
-    size: '1024x1024',
-    quality: 'hd',
-    model: 'dall-e-3'
+    size: "1024x1024",
+    quality: "hd",
+    model: "dall-e-3",
   });
 
   // 3. Download image
@@ -235,8 +235,8 @@ async function generateMissingImage(vehicle) {
   const fileRef = bucket.file(storagePath);
   await fileRef.save(imageBuffer, {
     metadata: {
-      contentType: 'image/jpeg'
-    }
+      contentType: "image/jpeg",
+    },
   });
 
   // 5. Create variants (thumb, medium, large, webp)
@@ -244,19 +244,19 @@ async function generateMissingImage(vehicle) {
 
   // 6. Save metadata to Firestore
   await saveImageMetadata({
-    entityType: 'vehicle',
+    entityType: "vehicle",
     entityId: vehicle.id,
     generatedByAI: true,
-    model: 'dall-e-3',
+    model: "dall-e-3",
     generationPrompt: prompt,
-    approvalStatus: 'pending', // Requires manager approval
+    approvalStatus: "pending", // Requires manager approval
     storage: {
       originalUrl: storagePath,
       thumbUrl: variants.thumb,
       mediumUrl: variants.medium,
       largeUrl: variants.large,
-      webpUrl: variants.webp
-    }
+      webpUrl: variants.webp,
+    },
   });
 
   // 7. Send for approval
@@ -267,24 +267,28 @@ async function generateMissingImage(vehicle) {
 ### Prompt Engineering
 
 ```javascript
-function buildPrompt(vehicle, context = 'marketing') {
+function buildPrompt(vehicle, context = "marketing") {
   const basePrompt = `Professional high-quality photo of a ${vehicle.year} ${vehicle.make} ${vehicle.model}`;
 
   const stylePrompts = {
-    marketing: 'luxury vehicle advertisement, studio lighting, white background, professional photography',
-    driver_profile: 'clean, well-maintained vehicle, natural lighting, 3/4 side angle',
-    fleet_gallery: 'fleet of vehicles, professional lineup, uniform lighting'
+    marketing:
+      "luxury vehicle advertisement, studio lighting, white background, professional photography",
+    driver_profile:
+      "clean, well-maintained vehicle, natural lighting, 3/4 side angle",
+    fleet_gallery: "fleet of vehicles, professional lineup, uniform lighting",
   };
 
   const featurePrompts = {
-    stretch_limo: 'elegant stretch limousine, luxury interior visible, dark tinted windows, professional',
-    party_bus: 'party bus, colorful interior lighting, entertainment features visible',
-    sedan: 'professional sedan, business transportation, clean exterior',
-    suv: 'luxury SUV, spacious interior, premium finishes'
+    stretch_limo:
+      "elegant stretch limousine, luxury interior visible, dark tinted windows, professional",
+    party_bus:
+      "party bus, colorful interior lighting, entertainment features visible",
+    sedan: "professional sedan, business transportation, clean exterior",
+    suv: "luxury SUV, spacious interior, premium finishes",
   };
 
   const style = stylePrompts[context] || stylePrompts.marketing;
-  const features = featurePrompts[vehicle.type] || '';
+  const features = featurePrompts[vehicle.type] || "";
 
   return `${basePrompt}, ${features}, ${style}, high resolution, sharp details, professional quality`;
 }
@@ -296,9 +300,9 @@ function buildPrompt(vehicle, context = 'marketing') {
 async function trackGenerationCost(imageId) {
   const costPerImage = 0.08; // DALL-E 3 HD cost
 
-  await db.collection('images').doc(imageId).update({
-    'ai.generationCost': costPerImage,
-    'ai.generatedAt': serverTimestamp()
+  await db.collection("images").doc(imageId).update({
+    "ai.generationCost": costPerImage,
+    "ai.generatedAt": serverTimestamp(),
   });
 
   // Update tenant's AI spending
@@ -306,15 +310,16 @@ async function trackGenerationCost(imageId) {
 }
 
 async function getAISpending(tenantId, month) {
-  const query = await db.collection('images')
-    .where('tenantId', '==', tenantId)
-    .where('ai.generatedByAI', '==', true)
-    .where('ai.generatedAt', '>=', monthStart)
-    .where('ai.generatedAt', '<=', monthEnd)
+  const query = await db
+    .collection("images")
+    .where("tenantId", "==", tenantId)
+    .where("ai.generatedByAI", "==", true)
+    .where("ai.generatedAt", ">=", monthStart)
+    .where("ai.generatedAt", "<=", monthEnd)
     .get();
 
   let total = 0;
-  query.docs.forEach(doc => {
+  query.docs.forEach((doc) => {
     total += doc.data().ai.generationCost || 0;
   });
 
@@ -330,38 +335,38 @@ async function getAISpending(tenantId, month) {
 
 ```javascript
 async function createImageVariants(originalBuffer) {
-  const sharp = require('sharp');
+  const sharp = require("sharp");
 
   // 1. Create thumbnail (200px)
   const thumb = await sharp(originalBuffer)
-    .resize(200, 200, { fit: 'cover', position: 'center' })
+    .resize(200, 200, { fit: "cover", position: "center" })
     .jpeg({ quality: 80 })
     .toBuffer();
 
   // 2. Create medium (600px)
   const medium = await sharp(originalBuffer)
-    .resize(600, 600, { fit: 'cover', position: 'center' })
+    .resize(600, 600, { fit: "cover", position: "center" })
     .jpeg({ quality: 85 })
     .toBuffer();
 
   // 3. Create large (1200px)
   const large = await sharp(originalBuffer)
-    .resize(1200, 1200, { fit: 'cover', position: 'center' })
+    .resize(1200, 1200, { fit: "cover", position: "center" })
     .jpeg({ quality: 85 })
     .toBuffer();
 
   // 4. Create WebP (modern format)
   const webp = await sharp(originalBuffer)
-    .resize(1200, 1200, { fit: 'cover', position: 'center' })
+    .resize(1200, 1200, { fit: "cover", position: "center" })
     .webp({ quality: 80 })
     .toBuffer();
 
   // Upload all to Cloud Storage
   const paths = {
-    thumb: await uploadVariant(thumb, 'thumb'),
-    medium: await uploadVariant(medium, 'medium'),
-    large: await uploadVariant(large, 'large'),
-    webp: await uploadVariant(webp, 'webp')
+    thumb: await uploadVariant(thumb, "thumb"),
+    medium: await uploadVariant(medium, "medium"),
+    large: await uploadVariant(large, "large"),
+    webp: await uploadVariant(webp, "webp"),
   };
 
   return paths;
@@ -373,8 +378,8 @@ async function createImageVariants(originalBuffer) {
 ```html
 <!-- Responsive image with WebP fallback -->
 <picture>
-  <source srcset="{{ image.webpUrl }}" type="image/webp">
-  <source srcset="{{ image.largeUrl }}" type="image/jpeg">
+  <source srcset="{{ image.webpUrl }}" type="image/webp" />
+  <source srcset="{{ image.largeUrl }}" type="image/jpeg" />
   <img
     src="{{ image.mediumUrl }}"
     alt="{{ image.altText }}"
@@ -391,10 +396,13 @@ async function createImageVariants(originalBuffer) {
 
 ```javascript
 async function approveImage(imageId, approved = true) {
-  await db.collection('images').doc(imageId).update({
-    'ai.approvalStatus': approved ? 'approved' : 'rejected',
-    'status': approved ? 'active' : 'flagged'
-  });
+  await db
+    .collection("images")
+    .doc(imageId)
+    .update({
+      "ai.approvalStatus": approved ? "approved" : "rejected",
+      status: approved ? "active" : "flagged",
+    });
 
   if (approved) {
     // Make image live on all pages
@@ -412,6 +420,7 @@ async function approveImage(imageId, approved = true) {
 ## Integration Points
 
 ### Vehicle Detail Page
+
 ```javascript
 // Show images for vehicle
 const vehicle = await getVehicle(vehicleId);
@@ -421,14 +430,15 @@ if (images.length === 0) {
   // Fallback to AI-generated placeholder
   const aiImage = await getAIGeneratedImage(vehicleId);
   if (aiImage) {
-    displayAlert('This image was AI-generated');
+    displayAlert("This image was AI-generated");
   } else {
-    displayAlert('Missing vehicle image - admin will generate');
+    displayAlert("Missing vehicle image - admin will generate");
   }
 }
 ```
 
 ### Admin Dashboard
+
 ```
 Image Library
 ├─ All Images (1,234)

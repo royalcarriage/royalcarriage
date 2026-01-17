@@ -4,15 +4,15 @@
  * React components for role-based access control in the UI.
  */
 
-import React from 'react';
-import type { Role } from '../types';
+import React from "react";
+import type { Role } from "../types";
 import {
   hasPermission,
   isAtLeastRole,
   canPerformAction,
   type Permission,
-} from '../lib/permissions';
-import { Lock, ShieldAlert, AlertCircle } from 'lucide-react';
+} from "../lib/permissions";
+import { Lock, ShieldAlert, AlertCircle } from "lucide-react";
 
 interface AccessControlProps {
   role: Role;
@@ -86,7 +86,7 @@ export function ProtectedButton({
   action,
   children,
   disabled,
-  className = '',
+  className = "",
   ...props
 }: ProtectedButtonProps) {
   const hasAccess = canPerformAction(role, action);
@@ -97,9 +97,11 @@ export function ProtectedButton({
       {...props}
       disabled={isDisabled}
       className={`${className} ${
-        isDisabled ? 'opacity-50 cursor-not-allowed' : ''
+        isDisabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
-      title={!hasAccess ? 'You do not have permission for this action' : undefined}
+      title={
+        !hasAccess ? "You do not have permission for this action" : undefined
+      }
     >
       {children}
       {!hasAccess && <Lock className="w-3 h-3 ml-1 inline" />}
@@ -121,7 +123,8 @@ export function AccessDenied({ requiredRole }: { requiredRole?: Role }) {
         You don't have permission to access this page.
         {requiredRole && (
           <span className="block mt-1 text-sm">
-            Required role: <span className="font-semibold capitalize">{requiredRole}</span>
+            Required role:{" "}
+            <span className="font-semibold capitalize">{requiredRole}</span>
           </span>
         )}
       </p>
@@ -134,25 +137,25 @@ export function AccessDenied({ requiredRole }: { requiredRole?: Role }) {
  */
 export function RoleBadge({ role }: { role: Role }) {
   const colors: Record<Role, string> = {
-    viewer: 'bg-slate-100 text-slate-700 border-slate-200',
-    editor: 'bg-blue-50 text-blue-700 border-blue-200',
-    admin: 'bg-amber-50 text-amber-700 border-amber-200',
-    superadmin: 'bg-purple-50 text-purple-700 border-purple-200',
-    saas_admin: 'bg-red-50 text-red-700 border-red-200',
-    fleet_manager: 'bg-green-50 text-green-700 border-green-200',
-    accountant: 'bg-teal-50 text-teal-700 border-teal-200',
-    dispatcher: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+    viewer: "bg-slate-100 text-slate-700 border-slate-200",
+    editor: "bg-blue-50 text-blue-700 border-blue-200",
+    admin: "bg-amber-50 text-amber-700 border-amber-200",
+    superadmin: "bg-purple-50 text-purple-700 border-purple-200",
+    saas_admin: "bg-red-50 text-red-700 border-red-200",
+    fleet_manager: "bg-green-50 text-green-700 border-green-200",
+    accountant: "bg-teal-50 text-teal-700 border-teal-200",
+    dispatcher: "bg-indigo-50 text-indigo-700 border-indigo-200",
   };
 
   const labels: Record<Role, string> = {
-    viewer: 'Viewer',
-    editor: 'Editor',
-    admin: 'Admin',
-    superadmin: 'Super Admin',
-    saas_admin: 'SaaS Admin',
-    fleet_manager: 'Fleet Manager',
-    accountant: 'Accountant',
-    dispatcher: 'Dispatcher',
+    viewer: "Viewer",
+    editor: "Editor",
+    admin: "Admin",
+    superadmin: "Super Admin",
+    saas_admin: "SaaS Admin",
+    fleet_manager: "Fleet Manager",
+    accountant: "Accountant",
+    dispatcher: "Dispatcher",
   };
 
   return (

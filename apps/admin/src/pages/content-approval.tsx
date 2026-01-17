@@ -1,12 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
-import { collection, getDocs, query, where, updateDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
-import { useAuth } from '../state/AuthProvider';
-import { AccessControl, AdminOnly } from '../components/AccessControl';
-import { canPerformAction } from '../lib/permissions';
-import { Lock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { db } from "../lib/firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
+import { useAuth } from "../state/AuthProvider";
+import { AccessControl, AdminOnly } from "../components/AccessControl";
+import { canPerformAction } from "../lib/permissions";
+import { Lock, CheckCircle, XCircle, Loader2 } from "lucide-react";
 
 interface ApprovalItem {
   id: string;
@@ -19,26 +28,28 @@ interface ApprovalItem {
   metaDescription: string;
   content: string;
   keywords: string[];
-  status: 'pending' | 'approved' | 'rejected';
+  status: "pending" | "approved" | "rejected";
   generatedAt: string;
   aiQualityScore?: number;
-  approvalStatus?: 'pending' | 'approved' | 'rejected';
+  approvalStatus?: "pending" | "approved" | "rejected";
 }
 
 export default function ContentApprovalPage() {
   const { user, role } = useAuth();
   const [content, setContent] = useState<ApprovalItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedContent, setSelectedContent] = useState<ApprovalItem | null>(null);
-  const [filter, setFilter] = useState<'pending' | 'all'>('pending');
-  const [feedback, setFeedback] = useState('');
+  const [selectedContent, setSelectedContent] = useState<ApprovalItem | null>(
+    null,
+  );
+  const [filter, setFilter] = useState<"pending" | "all">("pending");
+  const [feedback, setFeedback] = useState("");
   const [bulkApproveCount, setBulkApproveCount] = useState(10);
-  const [websiteFilter, setWebsiteFilter] = useState<string>('all');
-  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [websiteFilter, setWebsiteFilter] = useState<string>("all");
+  const [dateFilter, setDateFilter] = useState<string>("all");
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    if (role !== 'admin' && role !== 'superadmin') {
+    if (role !== "admin" && role !== "superadmin") {
       return;
     }
     loadContent();
@@ -47,9 +58,13 @@ export default function ContentApprovalPage() {
   async function loadContent() {
     try {
       setLoading(true);
-      const q = filter === 'pending'
-        ? query(collection(db, 'service_content'), where('approvalStatus', '==', 'pending'))
-        : collection(db, 'service_content');
+      const q =
+        filter === "pending"
+          ? query(
+              collection(db, "service_content"),
+              where("approvalStatus", "==", "pending"),
+            )
+          : collection(db, "service_content");
 
       const snapshot = await getDocs(q);
       let items = snapshot.docs.map((doc) => ({
@@ -57,54 +72,59 @@ export default function ContentApprovalPage() {
         ...doc.data(),
       })) as ApprovalItem[];
 
-      if (websiteFilter !== 'all') {
+      if (websiteFilter !== "all") {
         items = items.filter((item) => item.websiteId === websiteFilter);
       }
 
-      if (dateFilter !== 'all') {
+      if (dateFilter !== "all") {
         const now = new Date();
         const filterDate = new Date();
 
-        if (dateFilter === 'today') {
+        if (dateFilter === "today") {
           filterDate.setHours(0, 0, 0, 0);
-        } else if (dateFilter === 'week') {
+        } else if (dateFilter === "week") {
           filterDate.setDate(now.getDate() - 7);
-        } else if (dateFilter === 'month') {
+        } else if (dateFilter === "month") {
           filterDate.setMonth(now.getMonth() - 1);
         }
 
-        items = items.filter((item) => new Date(item.generatedAt) >= filterDate);
+        items = items.filter(
+          (item) => new Date(item.generatedAt) >= filterDate,
+        );
       }
 
-      items.sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime());
+      items.sort(
+        (a, b) =>
+          new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime(),
+      );
 
       setContent(items);
     } catch (error) {
-      console.error('Error loading content:', error);
+      console.error("Error loading content:", error);
     } finally {
       setLoading(false);
     }
   }
 
   async function handleApprove(item: ApprovalItem) {
-    if (!canPerformAction(role, 'approveContent')) {
-      alert('You do not have permission to approve content');
+    if (!canPerformAction(role, "approveContent")) {
+      alert("You do not have permission to approve content");
       return;
     }
 
     try {
-      const contentRef = doc(db, 'service_content', item.id);
+      const contentRef = doc(db, "service_content", item.id);
       await updateDoc(contentRef, {
-        approvalStatus: 'approved',
+        approvalStatus: "approved",
         approvedAt: new Date(),
         approvedBy: user?.email,
       });
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'content',
+      await addDoc(collection(db, "activity_log"), {
+        type: "content",
         message: `Approved content: ${item.serviceName || item.serviceId} - ${item.locationName || item.locationId}`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
@@ -113,31 +133,31 @@ export default function ContentApprovalPage() {
       setContent(content.filter((c) => c.id !== item.id));
       setSelectedContent(null);
     } catch (error) {
-      console.error('Error approving content:', error);
-      alert('Failed to approve content. Please try again.');
+      console.error("Error approving content:", error);
+      alert("Failed to approve content. Please try again.");
     }
   }
 
   async function handleReject(item: ApprovalItem) {
-    if (!canPerformAction(role, 'approveContent')) {
-      alert('You do not have permission to reject content');
+    if (!canPerformAction(role, "approveContent")) {
+      alert("You do not have permission to reject content");
       return;
     }
 
     try {
-      const contentRef = doc(db, 'service_content', item.id);
+      const contentRef = doc(db, "service_content", item.id);
       await updateDoc(contentRef, {
-        approvalStatus: 'rejected',
+        approvalStatus: "rejected",
         rejectedAt: new Date(),
         rejectionFeedback: feedback,
         rejectedBy: user?.email,
       });
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'content',
+      await addDoc(collection(db, "activity_log"), {
+        type: "content",
         message: `Rejected content: ${item.serviceName || item.serviceId} - ${item.locationName || item.locationId}`,
-        status: 'error',
+        status: "error",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
@@ -145,38 +165,39 @@ export default function ContentApprovalPage() {
 
       setContent(content.filter((c) => c.id !== item.id));
       setSelectedContent(null);
-      setFeedback('');
+      setFeedback("");
     } catch (error) {
-      console.error('Error rejecting content:', error);
-      alert('Failed to reject content. Please try again.');
+      console.error("Error rejecting content:", error);
+      alert("Failed to reject content. Please try again.");
     }
   }
 
   async function handleBulkApprove() {
-    if (!canPerformAction(role, 'approveContent')) {
-      alert('You do not have permission to approve content');
+    if (!canPerformAction(role, "approveContent")) {
+      alert("You do not have permission to approve content");
       return;
     }
 
     try {
-      const itemsToApprove = selectedItems.size > 0
-        ? content.filter((item) => selectedItems.has(item.id))
-        : content.slice(0, bulkApproveCount);
+      const itemsToApprove =
+        selectedItems.size > 0
+          ? content.filter((item) => selectedItems.has(item.id))
+          : content.slice(0, bulkApproveCount);
 
       for (const item of itemsToApprove) {
-        const contentRef = doc(db, 'service_content', item.id);
+        const contentRef = doc(db, "service_content", item.id);
         await updateDoc(contentRef, {
-          approvalStatus: 'approved',
+          approvalStatus: "approved",
           approvedAt: new Date(),
           approvedBy: user?.email,
         });
       }
 
       // Log bulk activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'content',
+      await addDoc(collection(db, "activity_log"), {
+        type: "content",
         message: `Bulk approved ${itemsToApprove.length} content items`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
@@ -186,47 +207,50 @@ export default function ContentApprovalPage() {
       loadContent();
       alert(`Successfully approved ${itemsToApprove.length} items`);
     } catch (error) {
-      console.error('Error bulk approving:', error);
-      alert('Failed to approve items. Check console for details.');
+      console.error("Error bulk approving:", error);
+      alert("Failed to approve items. Check console for details.");
     }
   }
 
   async function handleBulkApproveQuality() {
-    if (!canPerformAction(role, 'approveContent')) {
-      alert('You do not have permission to approve content');
+    if (!canPerformAction(role, "approveContent")) {
+      alert("You do not have permission to approve content");
       return;
     }
 
     try {
       const qualityThreshold = 0.75;
-      const itemsToApprove = content.filter((item) =>
-        item.aiQualityScore && item.aiQualityScore >= qualityThreshold
+      const itemsToApprove = content.filter(
+        (item) =>
+          item.aiQualityScore && item.aiQualityScore >= qualityThreshold,
       );
 
       for (const item of itemsToApprove) {
-        const contentRef = doc(db, 'service_content', item.id);
+        const contentRef = doc(db, "service_content", item.id);
         await updateDoc(contentRef, {
-          approvalStatus: 'approved',
+          approvalStatus: "approved",
           approvedAt: new Date(),
           approvedBy: user?.email,
         });
       }
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'ai',
+      await addDoc(collection(db, "activity_log"), {
+        type: "ai",
         message: `Auto-approved ${itemsToApprove.length} high-quality content items (>= 75%)`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
       });
 
       loadContent();
-      alert(`Successfully approved ${itemsToApprove.length} items with quality score >= 75%`);
+      alert(
+        `Successfully approved ${itemsToApprove.length} items with quality score >= 75%`,
+      );
     } catch (error) {
-      console.error('Error bulk approving by quality:', error);
-      alert('Failed to approve items. Check console for details.');
+      console.error("Error bulk approving by quality:", error);
+      alert("Failed to approve items. Check console for details.");
     }
   }
 
@@ -248,7 +272,7 @@ export default function ContentApprovalPage() {
     }
   }
 
-  if (role !== 'admin' && role !== 'superadmin') {
+  if (role !== "admin" && role !== "superadmin") {
     return <div className="p-8">Access Denied. Admins only.</div>;
   }
 
@@ -266,7 +290,9 @@ export default function ContentApprovalPage() {
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
           <div className="bg-blue-50 p-6 rounded-lg">
-            <div className="text-3xl font-bold text-blue-600">{content.length}</div>
+            <div className="text-3xl font-bold text-blue-600">
+              {content.length}
+            </div>
             <div className="text-gray-600">Pending Approval</div>
           </div>
           <div className="bg-green-50 p-6 rounded-lg">
@@ -322,7 +348,7 @@ export default function ContentApprovalPage() {
               </label>
               <select
                 value={filter}
-                onChange={(e) => setFilter(e.target.value as 'pending' | 'all')}
+                onChange={(e) => setFilter(e.target.value as "pending" | "all")}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="pending">Pending Only</option>
@@ -340,15 +366,17 @@ export default function ContentApprovalPage() {
               onClick={toggleSelectAll}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
             >
-              {selectedItems.size === content.length ? 'Deselect All' : 'Select All'}
+              {selectedItems.size === content.length
+                ? "Deselect All"
+                : "Select All"}
             </button>
             <button
               onClick={handleBulkApprove}
               disabled={selectedItems.size === 0}
               className={`px-6 py-2 rounded-lg font-medium ${
                 selectedItems.size > 0
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ? "bg-green-600 text-white hover:bg-green-700"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
             >
               Approve Selected ({selectedItems.size})
@@ -375,10 +403,10 @@ export default function ContentApprovalPage() {
                     key={item.id}
                     className={`p-4 rounded-lg border-2 transition ${
                       selectedContent?.id === item.id
-                        ? 'border-blue-600 bg-blue-50'
+                        ? "border-blue-600 bg-blue-50"
                         : selectedItems.has(item.id)
-                        ? 'border-green-500 bg-green-50'
-                        : 'border-gray-200 hover:border-gray-300'
+                          ? "border-green-500 bg-green-50"
+                          : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <div className="flex items-start gap-3">
@@ -407,14 +435,14 @@ export default function ContentApprovalPage() {
                         <div className="flex items-center justify-between text-xs text-gray-400">
                           {item.aiQualityScore && (
                             <div>
-                              Quality:{' '}
+                              Quality:{" "}
                               <span
                                 className={`font-bold ${
                                   item.aiQualityScore >= 0.75
-                                    ? 'text-green-600'
+                                    ? "text-green-600"
                                     : item.aiQualityScore >= 0.5
-                                    ? 'text-yellow-600'
-                                    : 'text-red-600'
+                                      ? "text-yellow-600"
+                                      : "text-red-600"
                                 }`}
                               >
                                 {(item.aiQualityScore * 100).toFixed(0)}%
@@ -436,7 +464,9 @@ export default function ContentApprovalPage() {
             {selectedContent ? (
               <div className="border rounded-lg p-6 bg-gray-50">
                 <div className="mb-4">
-                  <h3 className="text-lg font-bold mb-2">{selectedContent.title}</h3>
+                  <h3 className="text-lg font-bold mb-2">
+                    {selectedContent.title}
+                  </h3>
                   <p className="text-sm text-gray-600 mb-4">
                     {selectedContent.metaDescription}
                   </p>
@@ -445,7 +475,8 @@ export default function ContentApprovalPage() {
                     <div
                       className="text-sm"
                       dangerouslySetInnerHTML={{
-                        __html: selectedContent.content.substring(0, 500) + '...',
+                        __html:
+                          selectedContent.content.substring(0, 500) + "...",
                       }}
                     />
                   </div>

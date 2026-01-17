@@ -5,8 +5,8 @@
  * Part of Phase 3 - Advanced Content Management
  */
 
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import * as functions from "firebase-functions";
+import * as admin from "firebase-admin";
 
 // ============================================================================
 // INTERFACES
@@ -17,7 +17,7 @@ export interface Schedule {
   name: string;
   description: string;
   websiteId: string;
-  frequency: 'daily' | 'weekly' | 'monthly' | 'custom';
+  frequency: "daily" | "weekly" | "monthly" | "custom";
   cronExpression: string;
   timezone: string;
   enabled: boolean;
@@ -38,7 +38,7 @@ export interface ScheduleExecution {
   id: string;
   scheduleId: string;
   scheduleName: string;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'partial';
+  status: "pending" | "running" | "completed" | "failed" | "partial";
   startedAt: FirebaseFirestore.Timestamp;
   completedAt?: FirebaseFirestore.Timestamp;
   duration?: number;
@@ -47,7 +47,7 @@ export interface ScheduleExecution {
   itemsFailed: number;
   averageQualityScore?: number;
   errorMessage?: string;
-  triggeredBy: 'scheduled' | 'manual';
+  triggeredBy: "scheduled" | "manual";
   triggeredByUserId?: string;
   generatedContentIds: string[];
 }
@@ -56,7 +56,7 @@ export interface CreateScheduleInput {
   name: string;
   description?: string;
   websiteId: string;
-  frequency: 'daily' | 'weekly' | 'monthly' | 'custom';
+  frequency: "daily" | "weekly" | "monthly" | "custom";
   cronExpression?: string;
   timezone?: string;
   locationIds: string[];
@@ -71,7 +71,7 @@ export interface UpdateScheduleInput {
   scheduleId: string;
   name?: string;
   description?: string;
-  frequency?: 'daily' | 'weekly' | 'monthly' | 'custom';
+  frequency?: "daily" | "weekly" | "monthly" | "custom";
   cronExpression?: string;
   timezone?: string;
   enabled?: boolean;
@@ -92,24 +92,27 @@ export interface UpdateScheduleInput {
  */
 function frequencyToCron(frequency: string): string {
   switch (frequency) {
-    case 'daily':
-      return '0 3 * * *'; // 3:00 AM daily
-    case 'weekly':
-      return '0 3 * * 0'; // 3:00 AM every Sunday
-    case 'monthly':
-      return '0 3 1 * *'; // 3:00 AM on the 1st of each month
+    case "daily":
+      return "0 3 * * *"; // 3:00 AM daily
+    case "weekly":
+      return "0 3 * * 0"; // 3:00 AM every Sunday
+    case "monthly":
+      return "0 3 1 * *"; // 3:00 AM on the 1st of each month
     default:
-      return '0 3 * * *'; // Default to daily
+      return "0 3 * * *"; // Default to daily
   }
 }
 
 /**
  * Calculate next execution time based on cron expression
  */
-function calculateNextExecution(cronExpression: string, timezone: string): Date {
+function calculateNextExecution(
+  cronExpression: string,
+  timezone: string,
+): Date {
   // Simple implementation - in production, use a proper cron parser library
   const now = new Date();
-  const parts = cronExpression.split(' ');
+  const parts = cronExpression.split(" ");
 
   if (parts.length !== 5) {
     // Default to tomorrow at 3 AM
@@ -127,13 +130,13 @@ function calculateNextExecution(cronExpression: string, timezone: string): Date 
 
   // If the time has passed today, move to next occurrence
   if (next <= now) {
-    if (dayOfWeek !== '*') {
+    if (dayOfWeek !== "*") {
       // Weekly schedule
       const targetDay = parseInt(dayOfWeek);
       const currentDay = next.getDay();
       const daysUntil = (targetDay - currentDay + 7) % 7 || 7;
       next.setDate(next.getDate() + daysUntil);
-    } else if (dayOfMonth !== '*') {
+    } else if (dayOfMonth !== "*") {
       // Monthly schedule
       next.setMonth(next.getMonth() + 1);
       next.setDate(parseInt(dayOfMonth));
@@ -149,17 +152,25 @@ function calculateNextExecution(cronExpression: string, timezone: string): Date 
 /**
  * Verify admin authentication
  */
-async function verifyAdmin(context: functions.https.CallableContext): Promise<string> {
+async function verifyAdmin(
+  context: functions.https.CallableContext,
+): Promise<string> {
   if (!context.auth) {
-    throw new functions.https.HttpsError('unauthenticated', 'Must be logged in');
+    throw new functions.https.HttpsError(
+      "unauthenticated",
+      "Must be logged in",
+    );
   }
 
   const db = admin.firestore();
-  const userDoc = await db.collection('users').doc(context.auth.uid).get();
+  const userDoc = await db.collection("users").doc(context.auth.uid).get();
   const userRole = userDoc.data()?.role;
 
-  if (userRole !== 'admin' && userRole !== 'superadmin') {
-    throw new functions.https.HttpsError('permission-denied', 'Admin access required');
+  if (userRole !== "admin" && userRole !== "superadmin") {
+    throw new functions.https.HttpsError(
+      "permission-denied",
+      "Admin access required",
+    );
   }
 
   return context.auth.uid;
@@ -180,38 +191,44 @@ export const createSchedule = functions.https.onCall(
     const db = admin.firestore();
 
     // Validate required fields
-    if (!data.name || !data.websiteId || !data.locationIds?.length || !data.serviceIds?.length) {
+    if (
+      !data.name ||
+      !data.websiteId ||
+      !data.locationIds?.length ||
+      !data.serviceIds?.length
+    ) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Name, websiteId, locationIds, and serviceIds are required'
+        "invalid-argument",
+        "Name, websiteId, locationIds, and serviceIds are required",
       );
     }
 
     // Validate frequency
-    const validFrequencies = ['daily', 'weekly', 'monthly', 'custom'];
+    const validFrequencies = ["daily", "weekly", "monthly", "custom"];
     if (!validFrequencies.includes(data.frequency)) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Invalid frequency. Must be daily, weekly, monthly, or custom'
+        "invalid-argument",
+        "Invalid frequency. Must be daily, weekly, monthly, or custom",
       );
     }
 
     // If custom frequency, require cronExpression
-    if (data.frequency === 'custom' && !data.cronExpression) {
+    if (data.frequency === "custom" && !data.cronExpression) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'Custom frequency requires a cronExpression'
+        "invalid-argument",
+        "Custom frequency requires a cronExpression",
       );
     }
 
     try {
-      const cronExpression = data.cronExpression || frequencyToCron(data.frequency);
-      const timezone = data.timezone || 'America/Chicago';
+      const cronExpression =
+        data.cronExpression || frequencyToCron(data.frequency);
+      const timezone = data.timezone || "America/Chicago";
       const nextExecution = calculateNextExecution(cronExpression, timezone);
 
-      const scheduleData: Omit<Schedule, 'id'> = {
+      const scheduleData: Omit<Schedule, "id"> = {
         name: data.name,
-        description: data.description || '',
+        description: data.description || "",
         websiteId: data.websiteId,
         frequency: data.frequency,
         cronExpression,
@@ -229,7 +246,7 @@ export const createSchedule = functions.https.onCall(
         nextExecutionAt: admin.firestore.Timestamp.fromDate(nextExecution),
       };
 
-      const docRef = await db.collection('content_schedules').add(scheduleData);
+      const docRef = await db.collection("content_schedules").add(scheduleData);
 
       functions.logger.info(`Schedule created: ${docRef.id}`, {
         name: data.name,
@@ -244,10 +261,10 @@ export const createSchedule = functions.https.onCall(
         message: `Schedule "${data.name}" created successfully`,
       };
     } catch (error: any) {
-      functions.logger.error('Error creating schedule:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      functions.logger.error("Error creating schedule:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -261,15 +278,20 @@ export const updateSchedule = functions.https.onCall(
     const db = admin.firestore();
 
     if (!data.scheduleId) {
-      throw new functions.https.HttpsError('invalid-argument', 'scheduleId is required');
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "scheduleId is required",
+      );
     }
 
     try {
-      const scheduleRef = db.collection('content_schedules').doc(data.scheduleId);
+      const scheduleRef = db
+        .collection("content_schedules")
+        .doc(data.scheduleId);
       const scheduleDoc = await scheduleRef.get();
 
       if (!scheduleDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Schedule not found');
+        throw new functions.https.HttpsError("not-found", "Schedule not found");
       }
 
       const currentSchedule = scheduleDoc.data() as Schedule;
@@ -279,27 +301,37 @@ export const updateSchedule = functions.https.onCall(
 
       // Update fields if provided
       if (data.name !== undefined) updateData.name = data.name;
-      if (data.description !== undefined) updateData.description = data.description;
+      if (data.description !== undefined)
+        updateData.description = data.description;
       if (data.enabled !== undefined) updateData.enabled = data.enabled;
-      if (data.locationIds !== undefined) updateData.locationIds = data.locationIds;
-      if (data.serviceIds !== undefined) updateData.serviceIds = data.serviceIds;
-      if (data.maxItemsPerRun !== undefined) updateData.maxItemsPerRun = data.maxItemsPerRun;
-      if (data.qualityThreshold !== undefined) updateData.qualityThreshold = data.qualityThreshold;
-      if (data.notifyOnComplete !== undefined) updateData.notifyOnComplete = data.notifyOnComplete;
-      if (data.notifyEmail !== undefined) updateData.notifyEmail = data.notifyEmail;
+      if (data.locationIds !== undefined)
+        updateData.locationIds = data.locationIds;
+      if (data.serviceIds !== undefined)
+        updateData.serviceIds = data.serviceIds;
+      if (data.maxItemsPerRun !== undefined)
+        updateData.maxItemsPerRun = data.maxItemsPerRun;
+      if (data.qualityThreshold !== undefined)
+        updateData.qualityThreshold = data.qualityThreshold;
+      if (data.notifyOnComplete !== undefined)
+        updateData.notifyOnComplete = data.notifyOnComplete;
+      if (data.notifyEmail !== undefined)
+        updateData.notifyEmail = data.notifyEmail;
       if (data.timezone !== undefined) updateData.timezone = data.timezone;
 
       // Handle frequency/cron changes
       if (data.frequency !== undefined || data.cronExpression !== undefined) {
         const frequency = data.frequency || currentSchedule.frequency;
-        const cronExpression = data.cronExpression ||
-          (data.frequency ? frequencyToCron(data.frequency) : currentSchedule.cronExpression);
+        const cronExpression =
+          data.cronExpression ||
+          (data.frequency
+            ? frequencyToCron(data.frequency)
+            : currentSchedule.cronExpression);
         const timezone = data.timezone || currentSchedule.timezone;
 
         updateData.frequency = frequency;
         updateData.cronExpression = cronExpression;
         updateData.nextExecutionAt = admin.firestore.Timestamp.fromDate(
-          calculateNextExecution(cronExpression, timezone)
+          calculateNextExecution(cronExpression, timezone),
         );
       }
 
@@ -313,14 +345,14 @@ export const updateSchedule = functions.https.onCall(
         success: true,
         scheduleId: data.scheduleId,
         schedule: { id: data.scheduleId, ...updatedDoc.data() },
-        message: 'Schedule updated successfully',
+        message: "Schedule updated successfully",
       };
     } catch (error: any) {
-      functions.logger.error('Error updating schedule:', error);
+      functions.logger.error("Error updating schedule:", error);
       if (error instanceof functions.https.HttpsError) throw error;
-      throw new functions.https.HttpsError('internal', error.message);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -334,15 +366,20 @@ export const deleteSchedule = functions.https.onCall(
     const db = admin.firestore();
 
     if (!data.scheduleId) {
-      throw new functions.https.HttpsError('invalid-argument', 'scheduleId is required');
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "scheduleId is required",
+      );
     }
 
     try {
-      const scheduleRef = db.collection('content_schedules').doc(data.scheduleId);
+      const scheduleRef = db
+        .collection("content_schedules")
+        .doc(data.scheduleId);
       const scheduleDoc = await scheduleRef.get();
 
       if (!scheduleDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Schedule not found');
+        throw new functions.https.HttpsError("not-found", "Schedule not found");
       }
 
       const scheduleName = scheduleDoc.data()?.name;
@@ -353,7 +390,9 @@ export const deleteSchedule = functions.https.onCall(
       // Optionally archive execution history (keep for audit purposes)
       // In production, you might move history to an archive collection instead of deleting
 
-      functions.logger.info(`Schedule deleted: ${data.scheduleId}`, { name: scheduleName });
+      functions.logger.info(`Schedule deleted: ${data.scheduleId}`, {
+        name: scheduleName,
+      });
 
       return {
         success: true,
@@ -361,11 +400,11 @@ export const deleteSchedule = functions.https.onCall(
         message: `Schedule "${scheduleName}" deleted successfully`,
       };
     } catch (error: any) {
-      functions.logger.error('Error deleting schedule:', error);
+      functions.logger.error("Error deleting schedule:", error);
       if (error instanceof functions.https.HttpsError) throw error;
-      throw new functions.https.HttpsError('internal', error.message);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -379,18 +418,18 @@ export const getSchedules = functions.https.onCall(
     const db = admin.firestore();
 
     try {
-      let query: FirebaseFirestore.Query = db.collection('content_schedules');
+      let query: FirebaseFirestore.Query = db.collection("content_schedules");
 
       // Apply filters
       if (data.websiteId) {
-        query = query.where('websiteId', '==', data.websiteId);
+        query = query.where("websiteId", "==", data.websiteId);
       }
       if (data.enabled !== undefined) {
-        query = query.where('enabled', '==', data.enabled);
+        query = query.where("enabled", "==", data.enabled);
       }
 
       // Order by creation date
-      query = query.orderBy('createdAt', 'desc');
+      query = query.orderBy("createdAt", "desc");
 
       const snapshot = await query.get();
       const schedules: Schedule[] = snapshot.docs.map((doc) => ({
@@ -402,20 +441,20 @@ export const getSchedules = functions.https.onCall(
       const schedulesWithStats = await Promise.all(
         schedules.map(async (schedule) => {
           const executionsSnapshot = await db
-            .collection('schedule_executions')
-            .where('scheduleId', '==', schedule.id)
+            .collection("schedule_executions")
+            .where("scheduleId", "==", schedule.id)
             .limit(1)
             .get();
 
           const totalExecutionsSnapshot = await db
-            .collection('schedule_executions')
-            .where('scheduleId', '==', schedule.id)
+            .collection("schedule_executions")
+            .where("scheduleId", "==", schedule.id)
             .get();
 
           const successfulExecutionsSnapshot = await db
-            .collection('schedule_executions')
-            .where('scheduleId', '==', schedule.id)
-            .where('status', '==', 'completed')
+            .collection("schedule_executions")
+            .where("scheduleId", "==", schedule.id)
+            .where("status", "==", "completed")
             .get();
 
           return {
@@ -423,7 +462,7 @@ export const getSchedules = functions.https.onCall(
             totalExecutions: totalExecutionsSnapshot.size,
             successfulExecutions: successfulExecutionsSnapshot.size,
           };
-        })
+        }),
       );
 
       return {
@@ -432,10 +471,10 @@ export const getSchedules = functions.https.onCall(
         total: schedules.length,
       };
     } catch (error: any) {
-      functions.logger.error('Error fetching schedules:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      functions.logger.error("Error fetching schedules:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -444,11 +483,14 @@ export const getSchedules = functions.https.onCall(
  * @returns Execution result
  */
 export const executeScheduledGeneration = functions.https.onCall(
-  async (data: { scheduleId: string; triggeredBy?: 'scheduled' | 'manual' }, context) => {
+  async (
+    data: { scheduleId: string; triggeredBy?: "scheduled" | "manual" },
+    context,
+  ) => {
     let userId: string | undefined;
 
     // For manual triggers, require admin auth
-    if (data.triggeredBy !== 'scheduled') {
+    if (data.triggeredBy !== "scheduled") {
       userId = await verifyAdmin(context);
     }
 
@@ -456,44 +498,51 @@ export const executeScheduledGeneration = functions.https.onCall(
     const startTime = Date.now();
 
     if (!data.scheduleId) {
-      throw new functions.https.HttpsError('invalid-argument', 'scheduleId is required');
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "scheduleId is required",
+      );
     }
 
     try {
       // Get schedule
-      const scheduleRef = db.collection('content_schedules').doc(data.scheduleId);
+      const scheduleRef = db
+        .collection("content_schedules")
+        .doc(data.scheduleId);
       const scheduleDoc = await scheduleRef.get();
 
       if (!scheduleDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Schedule not found');
+        throw new functions.https.HttpsError("not-found", "Schedule not found");
       }
 
       const schedule = scheduleDoc.data() as Schedule;
 
       // Check if schedule is enabled (skip for manual triggers)
-      if (!schedule.enabled && data.triggeredBy === 'scheduled') {
+      if (!schedule.enabled && data.triggeredBy === "scheduled") {
         return {
           success: false,
-          message: 'Schedule is disabled',
+          message: "Schedule is disabled",
           skipped: true,
         };
       }
 
       // Create execution record
-      const executionData: Omit<ScheduleExecution, 'id'> = {
+      const executionData: Omit<ScheduleExecution, "id"> = {
         scheduleId: data.scheduleId,
         scheduleName: schedule.name,
-        status: 'running',
+        status: "running",
         startedAt: admin.firestore.Timestamp.now(),
         itemsProcessed: 0,
         itemsSucceeded: 0,
         itemsFailed: 0,
-        triggeredBy: data.triggeredBy || 'manual',
+        triggeredBy: data.triggeredBy || "manual",
         triggeredByUserId: userId,
         generatedContentIds: [],
       };
 
-      const executionRef = await db.collection('schedule_executions').add(executionData);
+      const executionRef = await db
+        .collection("schedule_executions")
+        .add(executionData);
       const executionId = executionRef.id;
 
       functions.logger.info(`Starting scheduled generation: ${executionId}`, {
@@ -510,11 +559,13 @@ export const executeScheduledGeneration = functions.https.onCall(
 
       // Get existing content to avoid duplicates
       const existingContentSnapshot = await db
-        .collection('service_content')
-        .where('websiteId', '==', schedule.websiteId)
+        .collection("service_content")
+        .where("websiteId", "==", schedule.websiteId)
         .get();
 
-      const existingContentIds = new Set(existingContentSnapshot.docs.map((doc) => doc.id));
+      const existingContentIds = new Set(
+        existingContentSnapshot.docs.map((doc) => doc.id),
+      );
 
       // Generate combinations of locations and services
       const combinations: Array<{ locationId: string; serviceId: string }> = [];
@@ -531,7 +582,9 @@ export const executeScheduledGeneration = functions.https.onCall(
       // Limit to maxItemsPerRun
       const itemsToProcess = combinations.slice(0, schedule.maxItemsPerRun);
 
-      functions.logger.info(`Processing ${itemsToProcess.length} items for schedule ${schedule.name}`);
+      functions.logger.info(
+        `Processing ${itemsToProcess.length} items for schedule ${schedule.name}`,
+      );
 
       // Process each combination
       for (const { locationId, serviceId } of itemsToProcess) {
@@ -540,12 +593,14 @@ export const executeScheduledGeneration = functions.https.onCall(
 
           // Get location and service data
           const [locationDoc, serviceDoc] = await Promise.all([
-            db.collection('locations').doc(locationId).get(),
-            db.collection('services').doc(serviceId).get(),
+            db.collection("locations").doc(locationId).get(),
+            db.collection("services").doc(serviceId).get(),
           ]);
 
           if (!locationDoc.exists || !serviceDoc.exists) {
-            functions.logger.warn(`Location or service not found: ${locationId}, ${serviceId}`);
+            functions.logger.warn(
+              `Location or service not found: ${locationId}, ${serviceId}`,
+            );
             itemsFailed++;
             continue;
           }
@@ -562,23 +617,26 @@ export const executeScheduledGeneration = functions.https.onCall(
             locationId,
             websiteId: schedule.websiteId,
             title: `${service?.name || serviceId} in ${location?.name || locationId}`,
-            metaDescription: `Professional ${service?.name?.toLowerCase() || 'service'} in ${location?.name || locationId}. Royal Carriage Limousine provides premium transportation services.`,
-            content: '', // Would be AI-generated in production
+            metaDescription: `Professional ${service?.name?.toLowerCase() || "service"} in ${location?.name || locationId}. Royal Carriage Limousine provides premium transportation services.`,
+            content: "", // Would be AI-generated in production
             keywords: service?.keywords || [],
-            approvalStatus: 'pending',
+            approvalStatus: "pending",
             generatedAt: admin.firestore.FieldValue.serverTimestamp(),
             generatedBySchedule: data.scheduleId,
             scheduleName: schedule.name,
             aiQualityScore: Math.floor(Math.random() * 30) + 70, // Simulated score
           };
 
-          await db.collection('service_content').doc(contentId).set(contentData);
+          await db
+            .collection("service_content")
+            .doc(contentId)
+            .set(contentData);
 
           // Add to approval queue
-          await db.collection('content_approval_queue').add({
+          await db.collection("content_approval_queue").add({
             contentId,
-            contentType: 'service-location',
-            status: 'pending',
+            contentType: "service-location",
+            status: "pending",
             serviceId,
             locationId,
             websiteId: schedule.websiteId,
@@ -592,7 +650,10 @@ export const executeScheduledGeneration = functions.https.onCall(
 
           functions.logger.info(`Generated content: ${contentId}`);
         } catch (error) {
-          functions.logger.error(`Failed to generate content for ${locationId}-${serviceId}:`, error);
+          functions.logger.error(
+            `Failed to generate content for ${locationId}-${serviceId}:`,
+            error,
+          );
           itemsFailed++;
         }
 
@@ -607,16 +668,19 @@ export const executeScheduledGeneration = functions.https.onCall(
       }
 
       // Calculate average quality score
-      const averageQualityScore = qualityScores.length > 0
-        ? Math.round(qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length)
-        : undefined;
+      const averageQualityScore =
+        qualityScores.length > 0
+          ? Math.round(
+              qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length,
+            )
+          : undefined;
 
       // Determine final status
-      let finalStatus: ScheduleExecution['status'] = 'completed';
+      let finalStatus: ScheduleExecution["status"] = "completed";
       if (itemsFailed > 0 && itemsSucceeded === 0) {
-        finalStatus = 'failed';
+        finalStatus = "failed";
       } else if (itemsFailed > 0) {
-        finalStatus = 'partial';
+        finalStatus = "partial";
       }
 
       const duration = Date.now() - startTime;
@@ -634,7 +698,10 @@ export const executeScheduledGeneration = functions.https.onCall(
       });
 
       // Update schedule with last execution time and next execution
-      const nextExecution = calculateNextExecution(schedule.cronExpression, schedule.timezone);
+      const nextExecution = calculateNextExecution(
+        schedule.cronExpression,
+        schedule.timezone,
+      );
       await scheduleRef.update({
         lastExecutedAt: admin.firestore.Timestamp.now(),
         nextExecutionAt: admin.firestore.Timestamp.fromDate(nextExecution),
@@ -673,11 +740,11 @@ export const executeScheduledGeneration = functions.https.onCall(
         message: `Schedule "${schedule.name}" execution ${finalStatus}. ${itemsSucceeded} items generated.`,
       };
     } catch (error: any) {
-      functions.logger.error('Error executing scheduled generation:', error);
+      functions.logger.error("Error executing scheduled generation:", error);
       if (error instanceof functions.https.HttpsError) throw error;
-      throw new functions.https.HttpsError('internal', error.message);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -686,18 +753,22 @@ export const executeScheduledGeneration = functions.https.onCall(
  * @returns List of executions
  */
 export const getScheduleHistory = functions.https.onCall(
-  async (data: { scheduleId?: string; limit?: number; offset?: number }, context) => {
+  async (
+    data: { scheduleId?: string; limit?: number; offset?: number },
+    context,
+  ) => {
     await verifyAdmin(context);
     const db = admin.firestore();
 
     try {
       const limit = Math.min(data.limit || 50, 100);
 
-      let query: FirebaseFirestore.Query = db.collection('schedule_executions')
-        .orderBy('startedAt', 'desc');
+      let query: FirebaseFirestore.Query = db
+        .collection("schedule_executions")
+        .orderBy("startedAt", "desc");
 
       if (data.scheduleId) {
-        query = query.where('scheduleId', '==', data.scheduleId);
+        query = query.where("scheduleId", "==", data.scheduleId);
       }
 
       query = query.limit(limit);
@@ -709,19 +780,30 @@ export const getScheduleHistory = functions.https.onCall(
       })) as ScheduleExecution[];
 
       // Get total count
-      let countQuery: FirebaseFirestore.Query = db.collection('schedule_executions');
+      let countQuery: FirebaseFirestore.Query = db.collection(
+        "schedule_executions",
+      );
       if (data.scheduleId) {
-        countQuery = countQuery.where('scheduleId', '==', data.scheduleId);
+        countQuery = countQuery.where("scheduleId", "==", data.scheduleId);
       }
       const countSnapshot = await countQuery.count().get();
       const total = countSnapshot.data().count;
 
       // Calculate aggregate statistics
-      const completedExecutions = executions.filter((e) => e.status === 'completed');
-      const totalItemsGenerated = executions.reduce((sum, e) => sum + (e.itemsSucceeded || 0), 0);
-      const avgDuration = executions.length > 0
-        ? Math.round(executions.reduce((sum, e) => sum + (e.duration || 0), 0) / executions.length)
-        : 0;
+      const completedExecutions = executions.filter(
+        (e) => e.status === "completed",
+      );
+      const totalItemsGenerated = executions.reduce(
+        (sum, e) => sum + (e.itemsSucceeded || 0),
+        0,
+      );
+      const avgDuration =
+        executions.length > 0
+          ? Math.round(
+              executions.reduce((sum, e) => sum + (e.duration || 0), 0) /
+                executions.length,
+            )
+          : 0;
 
       return {
         success: true,
@@ -732,14 +814,17 @@ export const getScheduleHistory = functions.https.onCall(
           completedExecutions: completedExecutions.length,
           totalItemsGenerated,
           averageDuration: avgDuration,
-          successRate: total > 0 ? Math.round((completedExecutions.length / total) * 100) : 0,
+          successRate:
+            total > 0
+              ? Math.round((completedExecutions.length / total) * 100)
+              : 0,
         },
       };
     } catch (error: any) {
-      functions.logger.error('Error fetching schedule history:', error);
-      throw new functions.https.HttpsError('internal', error.message);
+      functions.logger.error("Error fetching schedule history:", error);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );
 
 /**
@@ -747,10 +832,10 @@ export const getScheduleHistory = functions.https.onCall(
  * Runs every hour to check for schedules that need execution
  */
 export const processScheduledGenerations = functions.pubsub
-  .schedule('0 * * * *') // Every hour
-  .timeZone('America/Chicago')
+  .schedule("0 * * * *") // Every hour
+  .timeZone("America/Chicago")
   .onRun(async (context) => {
-    functions.logger.info('Processing scheduled generations...');
+    functions.logger.info("Processing scheduled generations...");
 
     const db = admin.firestore();
     const now = admin.firestore.Timestamp.now();
@@ -758,17 +843,19 @@ export const processScheduledGenerations = functions.pubsub
     try {
       // Find enabled schedules that are due for execution
       const schedulesSnapshot = await db
-        .collection('content_schedules')
-        .where('enabled', '==', true)
-        .where('nextExecutionAt', '<=', now)
+        .collection("content_schedules")
+        .where("enabled", "==", true)
+        .where("nextExecutionAt", "<=", now)
         .get();
 
       if (schedulesSnapshot.empty) {
-        functions.logger.info('No scheduled generations due');
+        functions.logger.info("No scheduled generations due");
         return null;
       }
 
-      functions.logger.info(`Found ${schedulesSnapshot.size} schedules to execute`);
+      functions.logger.info(
+        `Found ${schedulesSnapshot.size} schedules to execute`,
+      );
 
       for (const doc of schedulesSnapshot.docs) {
         try {
@@ -778,17 +865,20 @@ export const processScheduledGenerations = functions.pubsub
 
           // Execute the generation
           await executeScheduledGeneration.run(
-            { scheduleId: doc.id, triggeredBy: 'scheduled' },
-            {} as any // No auth context for scheduled execution
+            { scheduleId: doc.id, triggeredBy: "scheduled" },
+            {} as any, // No auth context for scheduled execution
           );
         } catch (error) {
-          functions.logger.error(`Failed to execute schedule ${doc.id}:`, error);
+          functions.logger.error(
+            `Failed to execute schedule ${doc.id}:`,
+            error,
+          );
         }
       }
 
       return null;
     } catch (error) {
-      functions.logger.error('Error processing scheduled generations:', error);
+      functions.logger.error("Error processing scheduled generations:", error);
       throw error;
     }
   });
@@ -805,11 +895,11 @@ async function sendExecutionNotification(
     itemsFailed: number;
     averageQualityScore?: number;
     duration: number;
-  }
+  },
 ): Promise<void> {
   try {
     // In production, integrate with SendGrid or similar email service
-    functions.logger.info('Sending execution notification', {
+    functions.logger.info("Sending execution notification", {
       scheduleName: schedule.name,
       email: schedule.notifyEmail,
       result,
@@ -817,8 +907,8 @@ async function sendExecutionNotification(
 
     // Store notification in Firestore for now
     const db = admin.firestore();
-    await db.collection('notifications').add({
-      type: 'schedule_execution',
+    await db.collection("notifications").add({
+      type: "schedule_execution",
       recipientEmail: schedule.notifyEmail,
       scheduleName: schedule.name,
       scheduleId: schedule.id,
@@ -827,7 +917,7 @@ async function sendExecutionNotification(
       read: false,
     });
   } catch (error) {
-    functions.logger.error('Failed to send execution notification:', error);
+    functions.logger.error("Failed to send execution notification:", error);
   }
 }
 
@@ -843,17 +933,19 @@ export const toggleSchedule = functions.https.onCall(
 
     if (!data.scheduleId || data.enabled === undefined) {
       throw new functions.https.HttpsError(
-        'invalid-argument',
-        'scheduleId and enabled are required'
+        "invalid-argument",
+        "scheduleId and enabled are required",
       );
     }
 
     try {
-      const scheduleRef = db.collection('content_schedules').doc(data.scheduleId);
+      const scheduleRef = db
+        .collection("content_schedules")
+        .doc(data.scheduleId);
       const scheduleDoc = await scheduleRef.get();
 
       if (!scheduleDoc.exists) {
-        throw new functions.https.HttpsError('not-found', 'Schedule not found');
+        throw new functions.https.HttpsError("not-found", "Schedule not found");
       }
 
       const schedule = scheduleDoc.data() as Schedule;
@@ -865,24 +957,30 @@ export const toggleSchedule = functions.https.onCall(
       };
 
       if (data.enabled) {
-        const nextExecution = calculateNextExecution(schedule.cronExpression, schedule.timezone);
-        updateData.nextExecutionAt = admin.firestore.Timestamp.fromDate(nextExecution);
+        const nextExecution = calculateNextExecution(
+          schedule.cronExpression,
+          schedule.timezone,
+        );
+        updateData.nextExecutionAt =
+          admin.firestore.Timestamp.fromDate(nextExecution);
       }
 
       await scheduleRef.update(updateData);
 
-      functions.logger.info(`Schedule ${data.scheduleId} ${data.enabled ? 'enabled' : 'disabled'}`);
+      functions.logger.info(
+        `Schedule ${data.scheduleId} ${data.enabled ? "enabled" : "disabled"}`,
+      );
 
       return {
         success: true,
         scheduleId: data.scheduleId,
         enabled: data.enabled,
-        message: `Schedule "${schedule.name}" ${data.enabled ? 'enabled' : 'disabled'}`,
+        message: `Schedule "${schedule.name}" ${data.enabled ? "enabled" : "disabled"}`,
       };
     } catch (error: any) {
-      functions.logger.error('Error toggling schedule:', error);
+      functions.logger.error("Error toggling schedule:", error);
       if (error instanceof functions.https.HttpsError) throw error;
-      throw new functions.https.HttpsError('internal', error.message);
+      throw new functions.https.HttpsError("internal", error.message);
     }
-  }
+  },
 );

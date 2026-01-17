@@ -13,10 +13,12 @@
 
 ```javascript
 // Generate content for one location-service combination
-const result = await firebase.functions().httpsCallable('generateLocationServiceContent')({
-  locationId: 'naperville',
-  serviceId: 'airport-ohare',
-  websiteId: 'airport'
+const result = await firebase
+  .functions()
+  .httpsCallable("generateLocationServiceContent")({
+  locationId: "naperville",
+  serviceId: "airport-ohare",
+  websiteId: "airport",
 });
 
 console.log(result.data);
@@ -31,11 +33,13 @@ console.log(result.data);
 
 ```javascript
 // Generate content for multiple locations and services
-const result = await firebase.functions().httpsCallable('batchGenerateContent')({
-  websiteId: 'wedding',
-  locationIds: ['naperville', 'wheaton', 'oak-brook', 'hinsdale'],
-  serviceIds: ['wedding-bride', 'wedding-groom', 'wedding-guest']
-});
+const result = await firebase.functions().httpsCallable("batchGenerateContent")(
+  {
+    websiteId: "wedding",
+    locationIds: ["naperville", "wheaton", "oak-brook", "hinsdale"],
+    serviceIds: ["wedding-bride", "wedding-groom", "wedding-guest"],
+  },
+);
 
 console.log(result.data);
 // {
@@ -49,12 +53,14 @@ console.log(result.data);
 
 ```javascript
 // Approve multiple content pieces
-const result = await firebase.functions().httpsCallable('pipelineApproveAndPublishContent')({
+const result = await firebase
+  .functions()
+  .httpsCallable("pipelineApproveAndPublishContent")({
   contentIds: [
-    'wedding-bride-naperville',
-    'wedding-bride-wheaton',
-    'wedding-bride-oak-brook'
-  ]
+    "wedding-bride-naperville",
+    "wedding-bride-wheaton",
+    "wedding-bride-oak-brook",
+  ],
 });
 
 console.log(result.data);
@@ -68,8 +74,10 @@ console.log(result.data);
 
 ```javascript
 // Generate comprehensive metadata for a page
-const result = await firebase.functions().httpsCallable('pipelineGeneratePageMetadata')({
-  contentId: 'wedding-bride-naperville'
+const result = await firebase
+  .functions()
+  .httpsCallable("pipelineGeneratePageMetadata")({
+  contentId: "wedding-bride-naperville",
 });
 
 console.log(result.data.metadata);
@@ -86,9 +94,11 @@ console.log(result.data.metadata);
 
 ```javascript
 // Build static pages for deployment
-const result = await firebase.functions().httpsCallable('pipelineBuildStaticPages')({
-  websiteId: 'wedding',
-  limit: 500
+const result = await firebase
+  .functions()
+  .httpsCallable("pipelineBuildStaticPages")({
+  websiteId: "wedding",
+  limit: 500,
 });
 
 console.log(result.data);
@@ -103,10 +113,12 @@ console.log(result.data);
 // Full pipeline: Generate → Approve → Build
 
 // Step 1: Batch generate content
-const batchResult = await firebase.functions().httpsCallable('batchGenerateContent')({
-  websiteId: 'airport',
-  locationIds: ['naperville', 'wheaton', 'oak-brook'],
-  serviceIds: ['airport-ohare', 'airport-midway']
+const batchResult = await firebase
+  .functions()
+  .httpsCallable("batchGenerateContent")({
+  websiteId: "airport",
+  locationIds: ["naperville", "wheaton", "oak-brook"],
+  serviceIds: ["airport-ohare", "airport-midway"],
 });
 
 console.log(`Generated ${batchResult.data.totalGenerated} pages`);
@@ -116,32 +128,37 @@ console.log(`Generated ${batchResult.data.totalGenerated} pages`);
 
 // Step 3: Bulk approve pending content
 const db = firebase.firestore();
-const pendingDocs = await db.collection('service_content')
-  .where('websiteId', '==', 'airport')
-  .where('approvalStatus', '==', 'pending')
+const pendingDocs = await db
+  .collection("service_content")
+  .where("websiteId", "==", "airport")
+  .where("approvalStatus", "==", "pending")
   .get();
 
-const contentIds = pendingDocs.docs.map(doc => doc.id);
+const contentIds = pendingDocs.docs.map((doc) => doc.id);
 
-const approveResult = await firebase.functions().httpsCallable('pipelineApproveAndPublishContent')({
-  contentIds
+const approveResult = await firebase
+  .functions()
+  .httpsCallable("pipelineApproveAndPublishContent")({
+  contentIds,
 });
 
 console.log(`Approved ${approveResult.data.approved} pages`);
 
 // Step 4: Generate metadata for all approved content
 for (const contentId of contentIds) {
-  await firebase.functions().httpsCallable('pipelineGeneratePageMetadata')({
-    contentId
+  await firebase.functions().httpsCallable("pipelineGeneratePageMetadata")({
+    contentId,
   });
 }
 
-console.log('Metadata generated');
+console.log("Metadata generated");
 
 // Step 5: Build static pages
-const buildResult = await firebase.functions().httpsCallable('pipelineBuildStaticPages')({
-  websiteId: 'airport',
-  limit: 1000
+const buildResult = await firebase
+  .functions()
+  .httpsCallable("pipelineBuildStaticPages")({
+  websiteId: "airport",
+  limit: 1000,
 });
 
 console.log(`${buildResult.data.pagesBuilt} pages ready for deployment`);
@@ -232,25 +249,28 @@ export default function ContentApprovalQueue() {
 ## Firestore Queries
 
 ### Get All Pending Content
+
 ```javascript
-const pending = await db.collection('service_content')
-  .where('approvalStatus', '==', 'pending')
+const pending = await db
+  .collection("service_content")
+  .where("approvalStatus", "==", "pending")
   .get();
 ```
 
 ### Get Approved Content for Website
+
 ```javascript
-const approved = await db.collection('service_content')
-  .where('websiteId', '==', 'airport')
-  .where('approvalStatus', '==', 'approved')
+const approved = await db
+  .collection("service_content")
+  .where("websiteId", "==", "airport")
+  .where("approvalStatus", "==", "approved")
   .get();
 ```
 
 ### Get Batch Job Status
+
 ```javascript
-const batchJob = await db.collection('batch_jobs')
-  .doc(jobId)
-  .get();
+const batchJob = await db.collection("batch_jobs").doc(jobId).get();
 
 console.log(batchJob.data());
 // {
@@ -262,16 +282,19 @@ console.log(batchJob.data());
 ```
 
 ### Get Static Pages Ready for Deploy
+
 ```javascript
-const ready = await db.collection('static_pages')
-  .where('websiteId', '==', 'wedding')
-  .where('buildStatus', '==', 'ready')
+const ready = await db
+  .collection("static_pages")
+  .where("websiteId", "==", "wedding")
+  .where("buildStatus", "==", "ready")
   .get();
 ```
 
 ## CLI Commands
 
 ### Deploy Functions
+
 ```bash
 # Deploy all functions
 firebase deploy --only functions
@@ -285,6 +308,7 @@ firebase deploy --only functions:pipelineBuildStaticPages
 ```
 
 ### View Logs
+
 ```bash
 # View all function logs
 firebase functions:log
@@ -297,6 +321,7 @@ firebase functions:log --follow
 ```
 
 ### Test Functions Locally
+
 ```bash
 # Start emulators
 firebase emulators:start
@@ -316,16 +341,19 @@ curl -X POST http://localhost:5001/royalcarriagelimoseo/us-central1/generateLoca
 ## Performance Tips
 
 ### Batch Processing
+
 - Process 50-100 pages at a time for optimal performance
 - Allow 1-2 minutes per batch of 10 pages
 - Monitor batch job progress in `batch_jobs` collection
 
 ### Rate Limiting
+
 - Gemini API: 60 requests/minute, 1500/day
 - Current settings: 5 concurrent requests with 1-second delays
 - Adjust in `contentGenerationPipeline.ts` if needed
 
 ### Memory Management
+
 - `batchGenerateContent`: Uses 1GB memory, 9-minute timeout
 - `buildStaticPages`: Uses 2GB memory, 9-minute timeout
 - Split large batches if hitting limits
@@ -333,6 +361,7 @@ curl -X POST http://localhost:5001/royalcarriagelimoseo/us-central1/generateLoca
 ## Troubleshooting
 
 ### "Permission denied" Error
+
 ```javascript
 // Ensure user is authenticated
 const user = firebase.auth().currentUser;
@@ -342,36 +371,41 @@ if (!user) {
 ```
 
 ### "Content not found" Error
+
 ```javascript
 // Verify service and location exist
-const serviceExists = await db.collection('services').doc(serviceId).get();
-const locationExists = await db.collection('locations').doc(locationId).get();
+const serviceExists = await db.collection("services").doc(serviceId).get();
+const locationExists = await db.collection("locations").doc(locationId).get();
 
-if (!serviceExists.exists) console.error('Service not found');
-if (!locationExists.exists) console.error('Location not found');
+if (!serviceExists.exists) console.error("Service not found");
+if (!locationExists.exists) console.error("Location not found");
 ```
 
 ### "Function timeout" Error
+
 ```javascript
 // Reduce batch size
-const result = await firebase.functions().httpsCallable('batchGenerateContent')({
-  websiteId: 'airport',
-  locationIds: locations.slice(0, 20), // Process 20 at a time
-  serviceIds: services
-});
+const result = await firebase.functions().httpsCallable("batchGenerateContent")(
+  {
+    websiteId: "airport",
+    locationIds: locations.slice(0, 20), // Process 20 at a time
+    serviceIds: services,
+  },
+);
 ```
 
 ## Data Validation
 
 ### Before Generation
+
 ```javascript
 // Validate input data exists
 async function validateBeforeGeneration(locationId, serviceId) {
   const db = firebase.firestore();
 
   const [location, service] = await Promise.all([
-    db.collection('locations').doc(locationId).get(),
-    db.collection('services').doc(serviceId).get()
+    db.collection("locations").doc(locationId).get(),
+    db.collection("services").doc(serviceId).get(),
   ]);
 
   if (!location.exists) {
@@ -387,11 +421,12 @@ async function validateBeforeGeneration(locationId, serviceId) {
 ```
 
 ### After Generation
+
 ```javascript
 // Verify content quality
 async function verifyContentQuality(contentId) {
   const db = firebase.firestore();
-  const content = await db.collection('service_content').doc(contentId).get();
+  const content = await db.collection("service_content").doc(contentId).get();
 
   const data = content.data();
 
@@ -400,10 +435,10 @@ async function verifyContentQuality(contentId) {
     hasMetaDesc: !!data.metaDescription && data.metaDescription.length <= 155,
     hasContent: !!data.content && !!data.content.hero,
     hasKeywords: data.keywords?.length > 0,
-    hasSchema: !!data.schema
+    hasSchema: !!data.schema,
   };
 
-  const passed = Object.values(checks).every(v => v);
+  const passed = Object.values(checks).every((v) => v);
 
   return { passed, checks };
 }

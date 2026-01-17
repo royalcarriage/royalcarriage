@@ -57,7 +57,7 @@ export const generateServiceContent = functions.https.onCall(
     if (!serviceId || !locationId || !websiteId) {
       throw new functions.https.HttpsError(
         "invalid-argument",
-        "Missing required parameters"
+        "Missing required parameters",
       );
     }
 
@@ -66,15 +66,21 @@ export const generateServiceContent = functions.https.onCall(
 
     try {
       functions.logger.info(
-        `Generating content for ${serviceId} in ${locationId} on ${websiteId}`
+        `Generating content for ${serviceId} in ${locationId} on ${websiteId}`,
       );
 
       // Fetch service and location data
       const serviceDoc = await db.collection("services").doc(serviceId).get();
-      const locationDoc = await db.collection("locations").doc(locationId).get();
+      const locationDoc = await db
+        .collection("locations")
+        .doc(locationId)
+        .get();
 
       if (!serviceDoc.exists || !locationDoc.exists) {
-        throw new functions.https.HttpsError("not-found", "Service or location not found");
+        throw new functions.https.HttpsError(
+          "not-found",
+          "Service or location not found",
+        );
       }
 
       const service = serviceDoc.data() as Service;
@@ -85,7 +91,7 @@ export const generateServiceContent = functions.https.onCall(
         geminiClient,
         service,
         location,
-        websiteId
+        websiteId,
       );
 
       // Save to service_content collection for approval
@@ -118,7 +124,9 @@ export const generateServiceContent = functions.https.onCall(
         generatedAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      functions.logger.info(`Content generated and queued for approval: ${contentId}`);
+      functions.logger.info(
+        `Content generated and queued for approval: ${contentId}`,
+      );
 
       return {
         success: true,
@@ -131,9 +139,12 @@ export const generateServiceContent = functions.https.onCall(
       };
     } catch (error) {
       functions.logger.error("Error generating content:", error);
-      throw new functions.https.HttpsError("internal", `Content generation failed: ${error}`);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Content generation failed: ${error}`,
+      );
     }
-  }
+  },
 );
 
 /**
@@ -150,7 +161,10 @@ export const generateContentBatch = functions.https.onCall(
     const { websiteId, locationIds, serviceIds, maxConcurrent = 5 } = data;
 
     if (!websiteId || !locationIds || !serviceIds) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing parameters");
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Missing parameters",
+      );
     }
 
     const db = admin.firestore();
@@ -159,7 +173,7 @@ export const generateContentBatch = functions.https.onCall(
 
     try {
       functions.logger.info(
-        `Starting batch generation: ${locationIds.length} locations × ${serviceIds.length} services`
+        `Starting batch generation: ${locationIds.length} locations × ${serviceIds.length} services`,
       );
 
       // Process in batches to avoid timeout
@@ -176,7 +190,7 @@ export const generateContentBatch = functions.https.onCall(
                   locationId,
                   websiteId,
                 },
-                { auth: context.auth }
+                { auth: context.auth },
               );
 
               if (result.success) {
@@ -185,7 +199,7 @@ export const generateContentBatch = functions.https.onCall(
             } catch (error) {
               functions.logger.error(
                 `Failed to generate ${serviceId}-${locationId}:`,
-                error
+                error,
               );
               failed++;
             }
@@ -194,7 +208,7 @@ export const generateContentBatch = functions.https.onCall(
 
         // Log progress
         functions.logger.info(
-          `Batch progress: ${generated} generated, ${failed} failed`
+          `Batch progress: ${generated} generated, ${failed} failed`,
         );
       }
 
@@ -209,10 +223,10 @@ export const generateContentBatch = functions.https.onCall(
       functions.logger.error("Batch generation error:", error);
       throw new functions.https.HttpsError(
         "internal",
-        `Batch generation failed: ${error}`
+        `Batch generation failed: ${error}`,
       );
     }
-  }
+  },
 );
 
 /**
@@ -223,7 +237,7 @@ async function generateContentWithAI(
   geminiClient: GeminiClient,
   service: Service,
   location: Location,
-  websiteId: string
+  websiteId: string,
 ): Promise<GeneratedContent> {
   // Build prompt for Gemini AI
   const prompt = buildContentPrompt(service, location, websiteId);
@@ -232,7 +246,8 @@ async function generateContentWithAI(
   const aiContent = await geminiClient.generateContent(prompt);
 
   // Parse AI response
-  const content = typeof aiContent === "string" ? aiContent : (aiContent as any).text;
+  const content =
+    typeof aiContent === "string" ? aiContent : (aiContent as any).text;
 
   // Extract sections from content
   const title = extractSection(content, "TITLE");
@@ -250,7 +265,7 @@ async function generateContentWithAI(
       metaDescription ||
       `Professional ${service.name.toLowerCase()} service in ${location.name}, Chicago. ${location.description?.substring(
         0,
-        80
+        80,
       )}...`,
     content: pageContent || content,
     keywords: keywordsList,
@@ -265,17 +280,19 @@ async function generateContentWithAI(
 function buildContentPrompt(
   service: Service,
   location: Location,
-  websiteId: string
+  websiteId: string,
 ): string {
-  const siteContext = {
-    airport:
-      "luxury airport limousine service with focus on transfers, convenience, and professional service",
-    corporate:
-      "premium executive car service with focus on business travel, professional image, and reliability",
-    wedding:
-      "luxury wedding transportation service with focus on special occasions, elegance, and guest coordination",
-    partyBus: "fun group celebration service with focus on entertainment, safety, and memorable experiences",
-  }[websiteId] || "premium transportation service";
+  const siteContext =
+    {
+      airport:
+        "luxury airport limousine service with focus on transfers, convenience, and professional service",
+      corporate:
+        "premium executive car service with focus on business travel, professional image, and reliability",
+      wedding:
+        "luxury wedding transportation service with focus on special occasions, elegance, and guest coordination",
+      partyBus:
+        "fun group celebration service with focus on entertainment, safety, and memorable experiences",
+    }[websiteId] || "premium transportation service";
 
   return `
 You are an SEO expert copywriter. Generate unique, engaging content for a limousine service webpage.
@@ -329,10 +346,7 @@ Format: keyword1, keyword2, keyword3...
  * Extract a specific section from AI-generated content
  */
 function extractSection(content: string, sectionName: string): string {
-  const regex = new RegExp(
-    `${sectionName}:?\\s*(.+?)(?=\\n[A-Z_]+:|$)`,
-    "is"
-  );
+  const regex = new RegExp(`${sectionName}:?\\s*(.+?)(?=\\n[A-Z_]+:|$)`, "is");
   const match = content.match(regex);
   return match ? match[1].trim() : "";
 }
@@ -355,7 +369,10 @@ function extractKeywords(content: string): string[] {
  * Generate internal links for this page
  * Links to related services, locations, and vehicles
  */
-function generateInternalLinks(serviceId: string, locationId: string): string[] {
+function generateInternalLinks(
+  serviceId: string,
+  locationId: string,
+): string[] {
   const links = [];
 
   // Link to related services (same website)
@@ -412,7 +429,7 @@ function getNearbyLocations(locationId: string): string[] {
  */
 function generateSchema(
   service: Service,
-  location: Location
+  location: Location,
 ): Record<string, unknown> {
   return {
     "@context": "https://schema.org",
@@ -449,7 +466,10 @@ export const approveAndPublishContent = functions.https.onCall(
     const { contentId, approved, feedback } = data;
 
     if (!contentId || approved === undefined) {
-      throw new functions.https.HttpsError("invalid-argument", "Missing parameters");
+      throw new functions.https.HttpsError(
+        "invalid-argument",
+        "Missing parameters",
+      );
     }
 
     const db = admin.firestore();
@@ -489,7 +509,10 @@ export const approveAndPublishContent = functions.https.onCall(
       };
     } catch (error) {
       functions.logger.error("Error updating content status:", error);
-      throw new functions.https.HttpsError("internal", `Update failed: ${error}`);
+      throw new functions.https.HttpsError(
+        "internal",
+        `Update failed: ${error}`,
+      );
     }
-  }
+  },
 );

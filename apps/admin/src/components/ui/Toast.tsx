@@ -1,4 +1,10 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import clsx from "clsx";
 
 type ToastTone = "success" | "error" | "info";
@@ -40,9 +46,11 @@ export function ToastProvider({ children }: { children: ReactNode }) {
             key={toast.id}
             className={clsx(
               "rounded-xl border px-4 py-3 text-sm font-medium shadow-lg",
-              toast.tone === "success" && "border-emerald-200 bg-emerald-50 text-emerald-800",
+              toast.tone === "success" &&
+                "border-emerald-200 bg-emerald-50 text-emerald-800",
               toast.tone === "error" && "border-red-200 bg-red-50 text-red-800",
-              toast.tone === "info" && "border-slate-200 bg-white text-slate-900",
+              toast.tone === "info" &&
+                "border-slate-200 bg-white text-slate-900",
             )}
           >
             {toast.message}

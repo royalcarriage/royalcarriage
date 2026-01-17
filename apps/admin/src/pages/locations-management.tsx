@@ -1,17 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
-import { collection, getDocs, query, where, updateDoc, doc, addDoc, deleteDoc, Timestamp } from 'firebase/firestore';
-import { getFunctions, httpsCallable } from 'firebase/functions';
-import { ensureFirebaseApp } from '../lib/firebaseClient';
-import { useAuth } from '../state/AuthProvider';
-import { canPerformAction } from '../lib/permissions';
-import { Plus, Edit2, Trash2, Save, X, MapPin, Loader2, Search, Filter, RefreshCw } from 'lucide-react';
+import React, { useEffect, useState } from "react";
+import { db } from "../lib/firebase";
+import {
+  collection,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  doc,
+  addDoc,
+  deleteDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { getFunctions, httpsCallable } from "firebase/functions";
+import { ensureFirebaseApp } from "../lib/firebaseClient";
+import { useAuth } from "../state/AuthProvider";
+import { canPerformAction } from "../lib/permissions";
+import {
+  Plus,
+  Edit2,
+  Trash2,
+  Save,
+  X,
+  MapPin,
+  Loader2,
+  Search,
+  Filter,
+  RefreshCw,
+} from "lucide-react";
 
 interface LocationItem {
   id: string;
   name: string;
   state: string;
-  type: 'neighborhood' | 'suburb';
+  type: "neighborhood" | "suburb";
   region: string;
   coordinates: { lat: number; lng: number };
   zipCodes: string[];
@@ -23,25 +44,29 @@ interface LocationItem {
     wedding: number;
     partyBus: number;
   };
-  contentGenerationStatus?: 'not-started' | 'in-progress' | 'completed' | 'pending-approval';
+  contentGenerationStatus?:
+    | "not-started"
+    | "in-progress"
+    | "completed"
+    | "pending-approval";
   servicesWithContent?: number;
   servicesTotal?: number;
 }
 
 const REGIONS = [
-  'downtown',
-  'north',
-  'northeast',
-  'west',
-  'southwest',
-  'south',
-  'southeast',
-  'western-suburbs',
-  'northern-suburbs',
-  'southern-suburbs',
+  "downtown",
+  "north",
+  "northeast",
+  "west",
+  "southwest",
+  "south",
+  "southeast",
+  "western-suburbs",
+  "northern-suburbs",
+  "southern-suburbs",
 ];
 
-const WEBSITES = ['airport', 'corporate', 'wedding', 'partyBus'] as const;
+const WEBSITES = ["airport", "corporate", "wedding", "partyBus"] as const;
 
 // Location Form Modal
 function LocationModal({
@@ -58,11 +83,11 @@ function LocationModal({
   isLoading: boolean;
 }) {
   const [formData, setFormData] = useState<Partial<LocationItem>>({
-    name: '',
-    state: 'IL',
-    type: 'neighborhood',
-    region: 'downtown',
-    description: '',
+    name: "",
+    state: "IL",
+    type: "neighborhood",
+    region: "downtown",
+    description: "",
     population: 0,
     zipCodes: [],
     coordinates: { lat: 41.8781, lng: -87.6298 },
@@ -74,15 +99,20 @@ function LocationModal({
       setFormData(location);
     } else {
       setFormData({
-        name: '',
-        state: 'IL',
-        type: 'neighborhood',
-        region: 'downtown',
-        description: '',
+        name: "",
+        state: "IL",
+        type: "neighborhood",
+        region: "downtown",
+        description: "",
         population: 0,
         zipCodes: [],
         coordinates: { lat: 41.8781, lng: -87.6298 },
-        applicableServices: { airport: 10, corporate: 8, wedding: 6, partyBus: 4 },
+        applicableServices: {
+          airport: 10,
+          corporate: 8,
+          wedding: 6,
+          partyBus: 4,
+        },
       });
     }
   }, [location, isOpen]);
@@ -94,9 +124,12 @@ function LocationModal({
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-bold">
-            {location ? 'Edit Location' : 'Add New Location'}
+            {location ? "Edit Location" : "Add New Location"}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg">
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-gray-100 rounded-lg"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -104,21 +137,29 @@ function LocationModal({
         <div className="p-6 space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Location Name
+              </label>
               <input
                 type="text"
-                value={formData.name || ''}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                value={formData.name || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="e.g., Lincoln Park"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                State
+              </label>
               <input
                 type="text"
-                value={formData.state || 'IL'}
-                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                value={formData.state || "IL"}
+                onChange={(e) =>
+                  setFormData({ ...formData, state: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -126,10 +167,17 @@ function LocationModal({
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Type
+              </label>
               <select
-                value={formData.type || 'neighborhood'}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as 'neighborhood' | 'suburb' })}
+                value={formData.type || "neighborhood"}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    type: e.target.value as "neighborhood" | "suburb",
+                  })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="neighborhood">Neighborhood</option>
@@ -137,34 +185,51 @@ function LocationModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Region
+              </label>
               <select
-                value={formData.region || 'downtown'}
-                onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                value={formData.region || "downtown"}
+                onChange={(e) =>
+                  setFormData({ ...formData, region: e.target.value })
+                }
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 {REGIONS.map((region) => (
-                  <option key={region} value={region}>{region.replace('-', ' ')}</option>
+                  <option key={region} value={region}>
+                    {region.replace("-", " ")}
+                  </option>
                 ))}
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Population</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Population
+            </label>
             <input
               type="number"
               value={formData.population || 0}
-              onChange={(e) => setFormData({ ...formData, population: parseInt(e.target.value) || 0 })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  population: parseInt(e.target.value) || 0,
+                })
+              }
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
             <textarea
-              value={formData.description || ''}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.description || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               rows={3}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Brief description of this location..."
@@ -172,21 +237,31 @@ function LocationModal({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Applicable Services (count per website)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Applicable Services (count per website)
+            </label>
             <div className="grid grid-cols-4 gap-3">
               {WEBSITES.map((website) => (
                 <div key={website}>
-                  <label className="block text-xs text-gray-500 capitalize mb-1">{website}</label>
+                  <label className="block text-xs text-gray-500 capitalize mb-1">
+                    {website}
+                  </label>
                   <input
                     type="number"
-                    value={formData.applicableServices?.[website as keyof typeof formData.applicableServices] || 0}
-                    onChange={(e) => setFormData({
-                      ...formData,
-                      applicableServices: {
-                        ...formData.applicableServices!,
-                        [website]: parseInt(e.target.value) || 0,
-                      },
-                    })}
+                    value={
+                      formData.applicableServices?.[
+                        website as keyof typeof formData.applicableServices
+                      ] || 0
+                    }
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        applicableServices: {
+                          ...formData.applicableServices!,
+                          [website]: parseInt(e.target.value) || 0,
+                        },
+                      })
+                    }
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
                   />
                 </div>
@@ -207,8 +282,12 @@ function LocationModal({
             disabled={isLoading || !formData.name}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {location ? 'Update' : 'Create'}
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Save className="w-4 h-4" />
+            )}
+            {location ? "Update" : "Create"}
           </button>
         </div>
       </div>
@@ -220,25 +299,34 @@ export default function LocationsManagementPage() {
   const { user, role } = useAuth();
   const [locations, setLocations] = useState<LocationItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedRegion, setSelectedRegion] = useState<string>('all');
-  const [selectedType, setSelectedType] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedLocations, setSelectedLocations] = useState<Set<string>>(new Set());
-  const [selectedWebsites, setSelectedWebsites] = useState<Set<string>>(new Set(['airport', 'corporate']));
+  const [selectedRegion, setSelectedRegion] = useState<string>("all");
+  const [selectedType, setSelectedType] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [selectedLocations, setSelectedLocations] = useState<Set<string>>(
+    new Set(),
+  );
+  const [selectedWebsites, setSelectedWebsites] = useState<Set<string>>(
+    new Set(["airport", "corporate"]),
+  );
   const [generatingContent, setGeneratingContent] = useState(false);
-  const [generationProgress, setGenerationProgress] = useState({ current: 0, total: 0 });
+  const [generationProgress, setGenerationProgress] = useState({
+    current: 0,
+    total: 0,
+  });
 
   // CRUD state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingLocation, setEditingLocation] = useState<LocationItem | undefined>();
+  const [editingLocation, setEditingLocation] = useState<
+    LocationItem | undefined
+  >();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  const canEdit = canPerformAction(role, 'editSettings');
-  const canDelete = canPerformAction(role, 'deleteContent');
+  const canEdit = canPerformAction(role, "editSettings");
+  const canDelete = canPerformAction(role, "deleteContent");
 
   useEffect(() => {
-    if (role !== 'admin' && role !== 'superadmin') {
+    if (role !== "admin" && role !== "superadmin") {
       return;
     }
     loadLocations();
@@ -247,7 +335,7 @@ export default function LocationsManagementPage() {
   async function loadLocations() {
     try {
       setLoading(true);
-      const q = query(collection(db, 'locations'));
+      const q = query(collection(db, "locations"));
       const snapshot = await getDocs(q);
       const items = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -256,14 +344,14 @@ export default function LocationsManagementPage() {
 
       // Sort by region then name
       items.sort((a, b) => {
-        const regionCompare = (a.region || '').localeCompare(b.region || '');
+        const regionCompare = (a.region || "").localeCompare(b.region || "");
         if (regionCompare !== 0) return regionCompare;
-        return (a.name || '').localeCompare(b.name || '');
+        return (a.name || "").localeCompare(b.name || "");
       });
 
       setLocations(items);
     } catch (error) {
-      console.error('Error loading locations:', error);
+      console.error("Error loading locations:", error);
     } finally {
       setLoading(false);
     }
@@ -272,7 +360,7 @@ export default function LocationsManagementPage() {
   // Create or Update location
   async function handleSaveLocation(data: Partial<LocationItem>) {
     if (!canEdit) {
-      alert('You do not have permission to edit locations');
+      alert("You do not have permission to edit locations");
       return;
     }
 
@@ -280,35 +368,35 @@ export default function LocationsManagementPage() {
     try {
       if (editingLocation) {
         // Update existing
-        await updateDoc(doc(db, 'locations', editingLocation.id), {
+        await updateDoc(doc(db, "locations", editingLocation.id), {
           ...data,
           updatedAt: Timestamp.now(),
           updatedBy: user?.email,
         });
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'system',
+        await addDoc(collection(db, "activity_log"), {
+          type: "system",
           message: `Updated location: ${data.name}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: Timestamp.now(),
         });
       } else {
         // Create new
-        await addDoc(collection(db, 'locations'), {
+        await addDoc(collection(db, "locations"), {
           ...data,
-          contentGenerationStatus: 'not-started',
+          contentGenerationStatus: "not-started",
           createdAt: Timestamp.now(),
           createdBy: user?.email,
         });
 
         // Log activity
-        await addDoc(collection(db, 'activity_log'), {
-          type: 'system',
+        await addDoc(collection(db, "activity_log"), {
+          type: "system",
           message: `Created new location: ${data.name}`,
-          status: 'success',
+          status: "success",
           userId: user?.uid,
           userEmail: user?.email,
           timestamp: Timestamp.now(),
@@ -319,8 +407,8 @@ export default function LocationsManagementPage() {
       setEditingLocation(undefined);
       loadLocations();
     } catch (error) {
-      console.error('Error saving location:', error);
-      alert('Failed to save location. Please try again.');
+      console.error("Error saving location:", error);
+      alert("Failed to save location. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -329,23 +417,27 @@ export default function LocationsManagementPage() {
   // Delete location
   async function handleDeleteLocation(location: LocationItem) {
     if (!canDelete) {
-      alert('You do not have permission to delete locations');
+      alert("You do not have permission to delete locations");
       return;
     }
 
-    if (!confirm(`Are you sure you want to delete "${location.name}"? This cannot be undone.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete "${location.name}"? This cannot be undone.`,
+      )
+    ) {
       return;
     }
 
     setIsDeleting(location.id);
     try {
-      await deleteDoc(doc(db, 'locations', location.id));
+      await deleteDoc(doc(db, "locations", location.id));
 
       // Log activity
-      await addDoc(collection(db, 'activity_log'), {
-        type: 'system',
+      await addDoc(collection(db, "activity_log"), {
+        type: "system",
         message: `Deleted location: ${location.name}`,
-        status: 'success',
+        status: "success",
         userId: user?.uid,
         userEmail: user?.email,
         timestamp: Timestamp.now(),
@@ -353,8 +445,8 @@ export default function LocationsManagementPage() {
 
       loadLocations();
     } catch (error) {
-      console.error('Error deleting location:', error);
-      alert('Failed to delete location. Please try again.');
+      console.error("Error deleting location:", error);
+      alert("Failed to delete location. Please try again.");
     } finally {
       setIsDeleting(null);
     }
@@ -373,9 +465,11 @@ export default function LocationsManagementPage() {
   }
 
   const filteredLocations = locations.filter((loc) => {
-    const matchesRegion = selectedRegion === 'all' || loc.region === selectedRegion;
-    const matchesType = selectedType === 'all' || loc.type === selectedType;
-    const matchesSearch = searchQuery === '' ||
+    const matchesRegion =
+      selectedRegion === "all" || loc.region === selectedRegion;
+    const matchesType = selectedType === "all" || loc.type === selectedType;
+    const matchesSearch =
+      searchQuery === "" ||
       loc.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       loc.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesRegion && matchesType && matchesSearch;
@@ -383,31 +477,37 @@ export default function LocationsManagementPage() {
 
   async function handleGenerateContent() {
     if (selectedLocations.size === 0) {
-      alert('Please select at least one location');
+      alert("Please select at least one location");
       return;
     }
     if (selectedWebsites.size === 0) {
-      alert('Please select at least one website');
+      alert("Please select at least one website");
       return;
     }
 
     setGeneratingContent(true);
-    setGenerationProgress({ current: 0, total: selectedLocations.size * selectedWebsites.size });
+    setGenerationProgress({
+      current: 0,
+      total: selectedLocations.size * selectedWebsites.size,
+    });
 
     try {
       const locationsArray = Array.from(selectedLocations);
       const websitesArray = Array.from(selectedWebsites);
 
       // Call Cloud Function to generate content
-      const response = await fetch('/.netlify/functions/generate-batch-content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          locationIds: locationsArray,
-          serviceIds: [], // Will generate for all applicable services
-          websiteIds: websitesArray,
-        }),
-      });
+      const response = await fetch(
+        "/.netlify/functions/generate-batch-content",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            locationIds: locationsArray,
+            serviceIds: [], // Will generate for all applicable services
+            websiteIds: websitesArray,
+          }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -419,8 +519,8 @@ export default function LocationsManagementPage() {
       setSelectedLocations(new Set());
       loadLocations();
     } catch (error) {
-      console.error('Error generating content:', error);
-      alert('Failed to generate content. Check console for details.');
+      console.error("Error generating content:", error);
+      alert("Failed to generate content. Check console for details.");
       setGeneratingContent(false);
     }
   }
@@ -453,7 +553,7 @@ export default function LocationsManagementPage() {
     }
   }
 
-  if (role !== 'admin' && role !== 'superadmin') {
+  if (role !== "admin" && role !== "superadmin") {
     return <div className="p-8">Access Denied. Admins only.</div>;
   }
 
@@ -462,7 +562,10 @@ export default function LocationsManagementPage() {
       {/* Location Modal */}
       <LocationModal
         isOpen={isModalOpen}
-        onClose={() => { setIsModalOpen(false); setEditingLocation(undefined); }}
+        onClose={() => {
+          setIsModalOpen(false);
+          setEditingLocation(undefined);
+        }}
         onSave={handleSaveLocation}
         location={editingLocation}
         isLoading={isSaving}
@@ -482,7 +585,9 @@ export default function LocationsManagementPage() {
               onClick={loadLocations}
               className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
             >
-              <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
               Refresh
             </button>
             {canEdit && (
@@ -500,15 +605,21 @@ export default function LocationsManagementPage() {
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           <div className="bg-blue-50 p-6 rounded-lg">
-            <div className="text-3xl font-bold text-blue-600">{locations.length}</div>
+            <div className="text-3xl font-bold text-blue-600">
+              {locations.length}
+            </div>
             <div className="text-gray-600">Total Locations</div>
           </div>
           <div className="bg-green-50 p-6 rounded-lg">
-            <div className="text-3xl font-bold text-green-600">{selectedLocations.size}</div>
+            <div className="text-3xl font-bold text-green-600">
+              {selectedLocations.size}
+            </div>
             <div className="text-gray-600">Selected</div>
           </div>
           <div className="bg-purple-50 p-6 rounded-lg">
-            <div className="text-3xl font-bold text-purple-600">{selectedWebsites.size}</div>
+            <div className="text-3xl font-bold text-purple-600">
+              {selectedWebsites.size}
+            </div>
             <div className="text-gray-600">Websites Selected</div>
           </div>
           <div className="bg-orange-50 p-6 rounded-lg">
@@ -521,7 +632,9 @@ export default function LocationsManagementPage() {
 
         {/* Website Selection */}
         <div className="bg-indigo-50 border border-indigo-200 p-6 rounded-lg mb-8">
-          <h2 className="font-bold mb-4">Select Websites for Content Generation</h2>
+          <h2 className="font-bold mb-4">
+            Select Websites for Content Generation
+          </h2>
           <div className="flex gap-4">
             {WEBSITES.map((website) => (
               <label key={website} className="flex items-center gap-2">
@@ -583,28 +696,30 @@ export default function LocationsManagementPage() {
           <h3 className="font-semibold mb-3">Filter by Region</h3>
           <div className="flex flex-wrap gap-2">
             <button
-              onClick={() => setSelectedRegion('all')}
+              onClick={() => setSelectedRegion("all")}
               className={`px-4 py-2 rounded-lg font-medium transition ${
-                selectedRegion === 'all'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                selectedRegion === "all"
+                  ? "bg-blue-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               All Regions ({locations.length})
             </button>
             {REGIONS.map((region) => {
-              const count = locations.filter((loc) => loc.region === region).length;
+              const count = locations.filter(
+                (loc) => loc.region === region,
+              ).length;
               return count > 0 ? (
                 <button
                   key={region}
                   onClick={() => setSelectedRegion(region)}
                   className={`px-4 py-2 rounded-lg font-medium transition capitalize ${
                     selectedRegion === region
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
-                  {region.replace('-', ' ')} ({count})
+                  {region.replace("-", " ")} ({count})
                 </button>
               ) : null;
             })}
@@ -617,19 +732,29 @@ export default function LocationsManagementPage() {
             <div>
               <h3 className="font-bold mb-2">Bulk Content Generation</h3>
               <p className="text-sm text-gray-600">
-                Generate AI content for {selectedLocations.size * selectedWebsites.size} location-service combinations
+                Generate AI content for{" "}
+                {selectedLocations.size * selectedWebsites.size}{" "}
+                location-service combinations
               </p>
             </div>
             <button
               onClick={handleGenerateContent}
-              disabled={generatingContent || selectedLocations.size === 0 || selectedWebsites.size === 0}
+              disabled={
+                generatingContent ||
+                selectedLocations.size === 0 ||
+                selectedWebsites.size === 0
+              }
               className={`px-6 py-3 rounded-lg font-bold text-white transition ${
-                generatingContent || selectedLocations.size === 0 || selectedWebsites.size === 0
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-yellow-600 hover:bg-yellow-700'
+                generatingContent ||
+                selectedLocations.size === 0 ||
+                selectedWebsites.size === 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-yellow-600 hover:bg-yellow-700"
               }`}
             >
-              {generatingContent ? `Generating (${generationProgress.current}/${generationProgress.total})...` : 'Start Generation'}
+              {generatingContent
+                ? `Generating (${generationProgress.current}/${generationProgress.total})...`
+                : "Start Generation"}
             </button>
           </div>
         </div>
@@ -643,7 +768,10 @@ export default function LocationsManagementPage() {
             <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg font-semibold">
               <input
                 type="checkbox"
-                checked={selectedLocations.size === filteredLocations.length && filteredLocations.length > 0}
+                checked={
+                  selectedLocations.size === filteredLocations.length &&
+                  filteredLocations.length > 0
+                }
                 onChange={toggleSelectAll}
                 className="w-5 h-5"
               />
@@ -693,31 +821,45 @@ export default function LocationsManagementPage() {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mb-2">
-                      {location.type} • {(location.region || '').replace('-', ' ')} • Population: {(location.population || 0).toLocaleString()}
+                      {location.type} •{" "}
+                      {(location.region || "").replace("-", " ")} • Population:{" "}
+                      {(location.population || 0).toLocaleString()}
                     </p>
-                    <p className="text-sm text-gray-700 mb-3">{location.description.substring(0, 150)}...</p>
+                    <p className="text-sm text-gray-700 mb-3">
+                      {location.description.substring(0, 150)}...
+                    </p>
 
                     {/* Services Available */}
                     <div className="grid grid-cols-4 gap-3 text-sm">
                       {WEBSITES.map((website) => (
                         <div key={website} className="bg-gray-100 p-2 rounded">
-                          <div className="font-semibold capitalize text-gray-700">{website}</div>
-                          <div className="text-gray-600">{location.applicableServices[website as keyof typeof location.applicableServices]} services</div>
+                          <div className="font-semibold capitalize text-gray-700">
+                            {website}
+                          </div>
+                          <div className="text-gray-600">
+                            {
+                              location.applicableServices[
+                                website as keyof typeof location.applicableServices
+                              ]
+                            }{" "}
+                            services
+                          </div>
                         </div>
                       ))}
                     </div>
 
                     {/* Status Badge */}
                     <div className="mt-3">
-                      {location.contentGenerationStatus === 'completed' ? (
+                      {location.contentGenerationStatus === "completed" ? (
                         <span className="inline-block bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">
                           ✓ Content Generated
                         </span>
-                      ) : location.contentGenerationStatus === 'in-progress' ? (
+                      ) : location.contentGenerationStatus === "in-progress" ? (
                         <span className="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-semibold">
                           ⟳ In Progress
                         </span>
-                      ) : location.contentGenerationStatus === 'pending-approval' ? (
+                      ) : location.contentGenerationStatus ===
+                        "pending-approval" ? (
                         <span className="inline-block bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold">
                           ⊕ Pending Approval
                         </span>

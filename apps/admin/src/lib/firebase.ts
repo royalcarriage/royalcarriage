@@ -1,4 +1,4 @@
-import { ensureFirebaseApp } from './firebaseClient';
+import { ensureFirebaseApp } from "./firebaseClient";
 
 const firebaseApp = ensureFirebaseApp();
 

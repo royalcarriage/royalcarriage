@@ -9,6 +9,7 @@
 ## Executive Summary
 
 The Royal Carriage Limousine SEO system is a fully-integrated, AI-powered content management platform covering:
+
 - **205 Chicago locations** (84 neighborhoods + 121 suburbs)
 - **91 services** (20 per website across 4 sites + 11 cross-site)
 - **14 fleet vehicles** (sedans, SUVs, stretch limos, vans, party buses, coaches)
@@ -20,46 +21,46 @@ The Royal Carriage Limousine SEO system is a fully-integrated, AI-powered conten
 
 ### 1. Firebase Cloud Functions (141 Deployed)
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| Content Generation | 15+ | generateServiceContent, generateFAQForCity |
-| Quality Scoring | 5 | calculateContentQuality, bulkScoreContent |
-| Auto-Regeneration | 5 | autoRegenerateContent, scheduledDailyRegeneration |
-| Competitor Analysis | 5 | analyzeCompetitors, identifyServiceGaps |
-| Performance Monitoring | 6 | getPerformanceMetrics, getKeywordRankings |
-| Schedule Management | 8 | createSchedule, processScheduledGenerations |
-| Advanced Analytics | 5 | getContentAnalytics, getROIAnalysis |
-| CSV Import | 5 | importMoovsCSV, importAdsCSV |
-| Fleet Management | 5 | initializeFleetVehicles, getAllFleetVehicles |
-| Location Expansion | 3 | initializeExpandedLocations |
-| Service Expansion | 2 | initializeExpandedServices |
+| Category               | Count | Examples                                          |
+| ---------------------- | ----- | ------------------------------------------------- |
+| Content Generation     | 15+   | generateServiceContent, generateFAQForCity        |
+| Quality Scoring        | 5     | calculateContentQuality, bulkScoreContent         |
+| Auto-Regeneration      | 5     | autoRegenerateContent, scheduledDailyRegeneration |
+| Competitor Analysis    | 5     | analyzeCompetitors, identifyServiceGaps           |
+| Performance Monitoring | 6     | getPerformanceMetrics, getKeywordRankings         |
+| Schedule Management    | 8     | createSchedule, processScheduledGenerations       |
+| Advanced Analytics     | 5     | getContentAnalytics, getROIAnalysis               |
+| CSV Import             | 5     | importMoovsCSV, importAdsCSV                      |
+| Fleet Management       | 5     | initializeFleetVehicles, getAllFleetVehicles      |
+| Location Expansion     | 3     | initializeExpandedLocations                       |
+| Service Expansion      | 2     | initializeExpandedServices                        |
 
 ### 2. Admin Dashboard (18 Pages)
 
-| Page | Route | Function |
-|------|-------|----------|
-| Performance Monitoring | /performance-monitoring | Traffic & keyword analytics |
-| Schedule Management | /schedule-management | Content generation scheduling |
-| Advanced Analytics | /advanced-analytics | ROI & trend analysis |
-| Competitor Analysis | /competitor-analysis | Market gap identification |
-| Data Import | /data-import | CSV import from Moovs |
-| Fleet Management | /fleet-management | Vehicle inventory |
-| Locations Management | /locations-management | 205 Chicago areas |
-| Services Management | /services-management | 91 services |
-| Content Pipeline | /content-pipeline | AI content generation |
-| Content Approval | /content-approval | Review workflow |
-| Quality Scoring | /quality-scoring | Content quality metrics |
-| SEO Analytics | /seo-analytics | SEO performance |
+| Page                   | Route                   | Function                      |
+| ---------------------- | ----------------------- | ----------------------------- |
+| Performance Monitoring | /performance-monitoring | Traffic & keyword analytics   |
+| Schedule Management    | /schedule-management    | Content generation scheduling |
+| Advanced Analytics     | /advanced-analytics     | ROI & trend analysis          |
+| Competitor Analysis    | /competitor-analysis    | Market gap identification     |
+| Data Import            | /data-import            | CSV import from Moovs         |
+| Fleet Management       | /fleet-management       | Vehicle inventory             |
+| Locations Management   | /locations-management   | 205 Chicago areas             |
+| Services Management    | /services-management    | 91 services                   |
+| Content Pipeline       | /content-pipeline       | AI content generation         |
+| Content Approval       | /content-approval       | Review workflow               |
+| Quality Scoring        | /quality-scoring        | Content quality metrics       |
+| SEO Analytics          | /seo-analytics          | SEO performance               |
 
 ### 3. Production Websites (5 Live)
 
-| Site | URL | Purpose |
-|------|-----|---------|
-| Admin Dashboard | https://royalcarriagelimoseo.web.app | System management |
-| Airport | https://chicagoairportblackcar.web.app | Airport transfer services |
-| Corporate | https://chicagoexecutivecarservice.web.app | Executive transportation |
-| Wedding | https://chicagoweddingtransportation.web.app | Wedding services |
-| Party Bus | https://chicago-partybus.web.app | Party & event transport |
+| Site            | URL                                          | Purpose                   |
+| --------------- | -------------------------------------------- | ------------------------- |
+| Admin Dashboard | https://royalcarriagelimoseo.web.app         | System management         |
+| Airport         | https://chicagoairportblackcar.web.app       | Airport transfer services |
+| Corporate       | https://chicagoexecutivecarservice.web.app   | Executive transportation  |
+| Wedding         | https://chicagoweddingtransportation.web.app | Wedding services          |
+| Party Bus       | https://chicago-partybus.web.app             | Party & event transport   |
 
 ---
 
@@ -67,22 +68,23 @@ The Royal Carriage Limousine SEO system is a fully-integrated, AI-powered conten
 
 ### Firestore Collections
 
-| Collection | Documents | Purpose |
-|------------|-----------|---------|
-| locations | 205 | Chicago neighborhoods & suburbs |
-| services | 91 | Service offerings by website |
-| fleet_vehicles | 14 | Vehicle inventory |
-| service_content | 16,000+ | AI-generated SEO content |
-| content_quality_scores | per content | Quality metrics |
-| regeneration_queue | dynamic | Auto-regeneration tracking |
-| competitor_analysis | 5+ | Market competitor data |
-| bookings | imported | Real booking data |
-| payments | imported | Payment records |
-| payroll | imported | Driver payroll |
+| Collection             | Documents   | Purpose                         |
+| ---------------------- | ----------- | ------------------------------- |
+| locations              | 205         | Chicago neighborhoods & suburbs |
+| services               | 91          | Service offerings by website    |
+| fleet_vehicles         | 14          | Vehicle inventory               |
+| service_content        | 16,000+     | AI-generated SEO content        |
+| content_quality_scores | per content | Quality metrics                 |
+| regeneration_queue     | dynamic     | Auto-regeneration tracking      |
+| competitor_analysis    | 5+          | Market competitor data          |
+| bookings               | imported    | Real booking data               |
+| payments               | imported    | Payment records                 |
+| payroll                | imported    | Driver payroll                  |
 
 ### Location Coverage (205 Total)
 
 **Chicago Neighborhoods (84):**
+
 - Downtown: Loop, River North, Gold Coast, Streeterville
 - North Side: Lincoln Park, Lake View, Wrigleyville, Uptown
 - West Side: Wicker Park, Bucktown, Logan Square, Humboldt Park
@@ -116,14 +118,14 @@ Special occasion packages spanning multiple categories
 
 ### Fleet Vehicles (14)
 
-| Category | Vehicles | Capacity |
-|----------|----------|----------|
-| Luxury Sedans | Lincoln Continental, Cadillac XTS, Mercedes S-Class, BMW 7 Series | 3 passengers |
-| Luxury SUVs | Cadillac Escalade, Lincoln Navigator, Suburban, Yukon Denali | 6 passengers |
-| Stretch Limos | Lincoln Stretch | 8-10 passengers |
-| Executive Vans | Mercedes Sprinter (14), Luxury Sprinter (12) | 12-14 passengers |
-| Party Buses | Full-Size (36), Mid-Size (24) | 24-36 passengers |
-| Coach Buses | Full-Size Motor Coach | 50+ passengers |
+| Category       | Vehicles                                                          | Capacity         |
+| -------------- | ----------------------------------------------------------------- | ---------------- |
+| Luxury Sedans  | Lincoln Continental, Cadillac XTS, Mercedes S-Class, BMW 7 Series | 3 passengers     |
+| Luxury SUVs    | Cadillac Escalade, Lincoln Navigator, Suburban, Yukon Denali      | 6 passengers     |
+| Stretch Limos  | Lincoln Stretch                                                   | 8-10 passengers  |
+| Executive Vans | Mercedes Sprinter (14), Luxury Sprinter (12)                      | 12-14 passengers |
+| Party Buses    | Full-Size (36), Mid-Size (24)                                     | 24-36 passengers |
+| Coach Buses    | Full-Size Motor Coach                                             | 50+ passengers   |
 
 ---
 
@@ -145,38 +147,40 @@ Special occasion packages spanning multiple categories
 
 ### Quality Scoring (7 Metrics)
 
-| Metric | Weight | Target |
-|--------|--------|--------|
-| Keyword Density | 15% | 1-3% |
-| Readability | 15% | Grade 8-10 |
-| Content Length | 10% | 1,200-2,000 words |
-| Structure | 10% | H1, H2, meta tags |
-| SEO | 25% | Title, description, FAQ |
-| Originality | 15% | Unique content |
-| Engagement | 10% | CTAs, features |
+| Metric          | Weight | Target                  |
+| --------------- | ------ | ----------------------- |
+| Keyword Density | 15%    | 1-3%                    |
+| Readability     | 15%    | Grade 8-10              |
+| Content Length  | 10%    | 1,200-2,000 words       |
+| Structure       | 10%    | H1, H2, meta tags       |
+| SEO             | 25%    | Title, description, FAQ |
+| Originality     | 15%    | Unique content          |
+| Engagement      | 10%    | CTAs, features          |
 
 ---
 
 ## Scheduled Functions
 
-| Function | Schedule | Purpose |
-|----------|----------|---------|
-| dailyPageAnalysis | Daily 2:00 AM CT | Analyze page performance |
-| weeklySeoReport | Weekly Monday 3:00 AM CT | Generate SEO reports |
-| scheduledDailyRegeneration | Daily 4:00 AM CT | Regenerate low-quality content |
-| processScheduledGenerations | Hourly | Process content generation queue |
-| syncPerformanceMetrics | Every 6 hours | Sync analytics data |
+| Function                    | Schedule                 | Purpose                          |
+| --------------------------- | ------------------------ | -------------------------------- |
+| dailyPageAnalysis           | Daily 2:00 AM CT         | Analyze page performance         |
+| weeklySeoReport             | Weekly Monday 3:00 AM CT | Generate SEO reports             |
+| scheduledDailyRegeneration  | Daily 4:00 AM CT         | Regenerate low-quality content   |
+| processScheduledGenerations | Hourly                   | Process content generation queue |
+| syncPerformanceMetrics      | Every 6 hours            | Sync analytics data              |
 
 ---
 
 ## Integration Points
 
 ### Data Import
+
 - **Moovs CSV**: 1,660+ booking records
 - **Google Ads CSV**: Campaign performance data
 - **Weekly automated import**: Every Monday 2:00 AM UTC
 
 ### External APIs
+
 - Google Vertex AI (Gemini)
 - Google Analytics (GA4)
 - Google Ads
@@ -187,6 +191,7 @@ Special occasion packages spanning multiple categories
 ## Security
 
 ### Firestore Rules (RBAC)
+
 - **superadmin**: Full access
 - **admin**: Manage content, users
 - **editor**: Edit content
@@ -194,6 +199,7 @@ Special occasion packages spanning multiple categories
 - **api**: Service account access
 
 ### Authentication
+
 - Firebase Auth with custom claims
 - Role-based access control
 - Session management
@@ -245,4 +251,4 @@ curl -X POST https://us-central1-royalcarriagelimoseo.cloudfunctions.net/initial
 
 ---
 
-*Report generated automatically by Claude Code*
+_Report generated automatically by Claude Code_

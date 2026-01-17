@@ -1,16 +1,19 @@
 # Enterprise Data Initialization - Quick Start Guide
 
 ## Overview
+
 This directory contains scripts to initialize Royal Carriage enterprise data in Firestore.
 
 ## Quick Start
 
 ### One-Command Initialization
+
 ```bash
 ./scripts/run-init.sh
 ```
 
 This will:
+
 1. Verify prerequisites (Node.js, Firebase CLI)
 2. Check authentication
 3. Initialize 14 fleet vehicles
@@ -22,25 +25,33 @@ This will:
 ### Main Scripts
 
 #### `run-init.sh` (Recommended)
+
 Complete initialization with pre-flight checks
+
 ```bash
 ./scripts/run-init.sh
 ```
 
 #### `initializeEnterpriseData.cjs`
+
 Core initialization script (Node.js)
+
 ```bash
 node scripts/initializeEnterpriseData.cjs
 ```
 
 #### `expandServices.cjs`
+
 Service-only initialization
+
 ```bash
 node scripts/expandServices.cjs
 ```
 
 #### `verifyEnterpriseData.cjs`
+
 Verify data in Firestore
+
 ```bash
 node scripts/verifyEnterpriseData.cjs
 ```
@@ -48,6 +59,7 @@ node scripts/verifyEnterpriseData.cjs
 ## Data Initialized
 
 ### Fleet Vehicles (14 total)
+
 - 4 Luxury Sedans (Lincoln, Cadillac, Mercedes, BMW)
 - 4 Luxury SUVs (Escalade, Navigator, Suburban, Yukon)
 - 1 Stretch Limousine (Lincoln)
@@ -56,6 +68,7 @@ node scripts/verifyEnterpriseData.cjs
 - 1 Coach Bus (56-passenger)
 
 ### Services (91 total)
+
 - 20 Airport services (chicagoairportblackcar)
 - 20 Corporate services (chicagoexecutivecarservice)
 - 20 Wedding services (chicagoweddingtransportation)
@@ -65,11 +78,13 @@ node scripts/verifyEnterpriseData.cjs
 ## Prerequisites
 
 ### Required
+
 - Node.js (v20+)
 - Firebase CLI (`npm install -g firebase-tools`)
 - Firebase authentication (`firebase login`)
 
 ### Optional
+
 - gcloud CLI (for application default credentials)
 
 ## Authentication
@@ -90,7 +105,9 @@ firebase login:list
 ## Firestore Collections
 
 ### `fleet_vehicles`
+
 Contains all vehicle data with:
+
 - Specifications (capacity, amenities)
 - Pricing (hourly, airport rates)
 - SEO keywords
@@ -98,7 +115,9 @@ Contains all vehicle data with:
 - Image URLs
 
 ### `services`
+
 Contains all service data with:
+
 - Descriptions (short and long)
 - Website assignment
 - Pricing structure
@@ -109,23 +128,28 @@ Contains all service data with:
 ## Troubleshooting
 
 ### "Not authenticated with Firebase"
+
 ```bash
 firebase login
 ```
 
 ### "No Firebase project selected"
+
 ```bash
 firebase use royalcarriagelimoseo
 ```
 
 ### "require is not defined"
+
 The script should use `.cjs` extension. If you see this error:
+
 ```bash
 # Rename .js to .cjs
 mv script.js script.cjs
 ```
 
 ### "Cannot find module"
+
 ```bash
 # Ensure you're in the project root
 cd /Users/admin/VSCODE
@@ -137,11 +161,13 @@ node scripts/initializeEnterpriseData.cjs
 ## Verification
 
 After initialization, verify the data:
+
 ```bash
 node scripts/verifyEnterpriseData.cjs
 ```
 
 Expected output:
+
 - ✓ 14 fleet vehicles (by category)
 - ✓ 91 services (20 per website + 11 shared)
 - ✓ All data successfully verified
@@ -151,16 +177,19 @@ Expected output:
 After initialization:
 
 1. **Generate Content**
+
    ```bash
    node scripts/generateContent.cjs
    ```
 
 2. **Build Websites**
+
    ```bash
    pnpm run build:all-sites
    ```
 
 3. **Deploy**
+
    ```bash
    firebase deploy
    ```
@@ -172,18 +201,19 @@ After initialization:
 
 ## Files Reference
 
-| File | Purpose | Usage |
-|------|---------|-------|
-| `run-init.sh` | Main runner with checks | `./scripts/run-init.sh` |
-| `initializeEnterpriseData.cjs` | Core init script | `node scripts/initializeEnterpriseData.cjs` |
-| `expandServices.cjs` | Services only | `node scripts/expandServices.cjs` |
-| `verifyEnterpriseData.cjs` | Data verification | `node scripts/verifyEnterpriseData.cjs` |
-| `INITIALIZATION_SUMMARY.md` | Detailed report | Documentation |
-| `README-INITIALIZATION.md` | This file | Quick reference |
+| File                           | Purpose                 | Usage                                       |
+| ------------------------------ | ----------------------- | ------------------------------------------- |
+| `run-init.sh`                  | Main runner with checks | `./scripts/run-init.sh`                     |
+| `initializeEnterpriseData.cjs` | Core init script        | `node scripts/initializeEnterpriseData.cjs` |
+| `expandServices.cjs`           | Services only           | `node scripts/expandServices.cjs`           |
+| `verifyEnterpriseData.cjs`     | Data verification       | `node scripts/verifyEnterpriseData.cjs`     |
+| `INITIALIZATION_SUMMARY.md`    | Detailed report         | Documentation                               |
+| `README-INITIALIZATION.md`     | This file               | Quick reference                             |
 
 ## Support
 
 For issues or questions:
+
 1. Check `INITIALIZATION_SUMMARY.md` for detailed information
 2. Review Firebase Console for data status
 3. Check script output for specific error messages

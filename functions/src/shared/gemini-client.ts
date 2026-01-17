@@ -4,10 +4,10 @@
  * Provides unified interface for content generation, analysis, and vision tasks
  */
 
-import { VertexAI } from '@google-cloud/vertexai';
-import * as functions from 'firebase-functions/v1';
+import { VertexAI } from "@google-cloud/vertexai";
+import * as functions from "firebase-functions/v1";
 
-type GeminiModel = 'gemini-1.5-flash' | 'gemini-1.5-pro';
+type GeminiModel = "gemini-1.5-flash" | "gemini-1.5-pro";
 
 interface GenerateOptions {
   model?: GeminiModel;
@@ -25,8 +25,8 @@ export class GeminiClient {
   private initialized: boolean = false;
 
   private constructor() {
-    this.projectId = process.env.GOOGLE_CLOUD_PROJECT || 'royalcarriagelimoseo';
-    this.location = process.env.GOOGLE_CLOUD_LOCATION || 'us-central1';
+    this.projectId = process.env.GOOGLE_CLOUD_PROJECT || "royalcarriagelimoseo";
+    this.location = process.env.GOOGLE_CLOUD_LOCATION || "us-central1";
 
     try {
       this.vertexAI = new VertexAI({
@@ -34,12 +34,12 @@ export class GeminiClient {
         location: this.location,
       });
       this.initialized = true;
-      functions.logger.info('[GeminiClient] Successfully initialized', {
+      functions.logger.info("[GeminiClient] Successfully initialized", {
         project: this.projectId,
         location: this.location,
       });
     } catch (error) {
-      functions.logger.error('[GeminiClient] Initialization failed:', error);
+      functions.logger.error("[GeminiClient] Initialization failed:", error);
       this.initialized = false;
     }
   }
@@ -66,16 +66,16 @@ export class GeminiClient {
    */
   async generateContent(
     prompt: string,
-    options: GenerateOptions = {}
+    options: GenerateOptions = {},
   ): Promise<string> {
     if (!this.vertexAI) {
-      throw new Error('Gemini client not initialized');
+      throw new Error("Gemini client not initialized");
     }
 
-    const model = options.model || 'gemini-1.5-flash';
+    const model = options.model || "gemini-1.5-flash";
 
     try {
-      functions.logger.info('[GeminiClient] Generating content', {
+      functions.logger.info("[GeminiClient] Generating content", {
         model,
         promptLength: prompt.length,
       });
@@ -87,7 +87,7 @@ export class GeminiClient {
       const result = await client.generateContent({
         contents: [
           {
-            role: 'user',
+            role: "user",
             parts: [
               {
                 text: prompt,
@@ -104,16 +104,16 @@ export class GeminiClient {
       });
 
       const responseText =
-        result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        result.response.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-      functions.logger.info('[GeminiClient] Content generated successfully', {
+      functions.logger.info("[GeminiClient] Content generated successfully", {
         model,
         responseLength: responseText.length,
       });
 
       return responseText;
     } catch (error) {
-      functions.logger.error('[GeminiClient] Content generation failed:', {
+      functions.logger.error("[GeminiClient] Content generation failed:", {
         error: error instanceof Error ? error.message : String(error),
         model,
       });
@@ -127,16 +127,16 @@ export class GeminiClient {
   async generateContentWithVision(
     prompt: string,
     imageUrl: string,
-    options: GenerateOptions = {}
+    options: GenerateOptions = {},
   ): Promise<string> {
     if (!this.vertexAI) {
-      throw new Error('Gemini client not initialized');
+      throw new Error("Gemini client not initialized");
     }
 
-    const model = options.model || 'gemini-1.5-flash';
+    const model = options.model || "gemini-1.5-flash";
 
     try {
-      functions.logger.info('[GeminiClient] Generating content with vision', {
+      functions.logger.info("[GeminiClient] Generating content with vision", {
         model,
         imageUrl,
       });
@@ -148,8 +148,8 @@ export class GeminiClient {
       }
 
       const buffer = await response.arrayBuffer();
-      const base64 = Buffer.from(buffer).toString('base64');
-      const mimeType = response.headers.get('content-type') || 'image/jpeg';
+      const base64 = Buffer.from(buffer).toString("base64");
+      const mimeType = response.headers.get("content-type") || "image/jpeg";
 
       const client = this.vertexAI.preview.getGenerativeModel({
         model: `models/${model}`,
@@ -158,7 +158,7 @@ export class GeminiClient {
       const result = await client.generateContent({
         contents: [
           {
-            role: 'user',
+            role: "user",
             parts: [
               {
                 inlineData: {
@@ -181,16 +181,16 @@ export class GeminiClient {
       });
 
       const responseText =
-        result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        result.response.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-      functions.logger.info('[GeminiClient] Vision content generated', {
+      functions.logger.info("[GeminiClient] Vision content generated", {
         model,
         responseLength: responseText.length,
       });
 
       return responseText;
     } catch (error) {
-      functions.logger.error('[GeminiClient] Vision generation failed:', {
+      functions.logger.error("[GeminiClient] Vision generation failed:", {
         error: error instanceof Error ? error.message : String(error),
         model,
         imageUrl,
@@ -211,7 +211,7 @@ export class GeminiClient {
       }
       return fallback || null;
     } catch (error) {
-      functions.logger.warn('[GeminiClient] JSON parsing failed', {
+      functions.logger.warn("[GeminiClient] JSON parsing failed", {
         error: error instanceof Error ? error.message : String(error),
         textPreview: text.substring(0, 100),
       });
@@ -222,13 +222,13 @@ export class GeminiClient {
   /**
    * Select appropriate model based on task complexity
    */
-  selectModel(complexity: 'low' | 'medium' | 'high'): GeminiModel {
+  selectModel(complexity: "low" | "medium" | "high"): GeminiModel {
     // Use Pro for complex tasks that need high accuracy
-    if (complexity === 'high') {
-      return 'gemini-1.5-pro';
+    if (complexity === "high") {
+      return "gemini-1.5-pro";
     }
     // Default to Flash for speed and cost efficiency
-    return 'gemini-1.5-flash';
+    return "gemini-1.5-flash";
   }
 
   /**

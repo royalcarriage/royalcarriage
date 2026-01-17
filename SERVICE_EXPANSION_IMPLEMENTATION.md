@@ -43,6 +43,7 @@ Successfully implemented a comprehensive service expansion system that increases
 ## Service Distribution
 
 ### Airport Website (20 services)
+
 1. O'Hare Airport Transfers
 2. Midway Airport Transfers
 3. Chicago Exec Airport Transfers
@@ -65,6 +66,7 @@ Successfully implemented a comprehensive service expansion system that increases
 20. International Arrivals Service
 
 ### Corporate Website (20 services)
+
 1. Executive Airport Transfer
 2. Daily Commute Service
 3. Corporate Meeting Transportation
@@ -87,6 +89,7 @@ Successfully implemented a comprehensive service expansion system that increases
 20. International Business Delegation
 
 ### Wedding Website (20 services)
+
 1. Bride Transportation
 2. Groom & Groomsmen Shuttle
 3. Bridal Party Travel
@@ -109,6 +112,7 @@ Successfully implemented a comprehensive service expansion system that increases
 20. Special Anniversary Celebration
 
 ### Party Bus Website (20 services)
+
 1. Bachelor Party Chicago Tour
 2. Bachelorette Party Celebration
 3. Birthday Party Bus Experience
@@ -138,27 +142,28 @@ Each service includes:
 
 ```typescript
 interface ServiceData {
-  id: string;                          // Unique identifier (slug format)
-  name: string;                        // Display name
-  website: 'airport' | 'corporate' | 'wedding' | 'partyBus';
-  category: string;                    // Service category
-  description: string;                 // Short description (100-200 words)
-  longDescription: string;             // Detailed description
-  applicableVehicles: string[];        // Vehicle types that can provide this service
-  applicableLocations: 'all' | string[]; // Location availability
+  id: string; // Unique identifier (slug format)
+  name: string; // Display name
+  website: "airport" | "corporate" | "wedding" | "partyBus";
+  category: string; // Service category
+  description: string; // Short description (100-200 words)
+  longDescription: string; // Detailed description
+  applicableVehicles: string[]; // Vehicle types that can provide this service
+  applicableLocations: "all" | string[]; // Location availability
   pricing: {
     baseRate: number;
     hourlyRate?: number;
     additionalInfo?: string;
   };
-  seoKeywords: string[];               // SEO optimization keywords
-  faqs: Array<{                        // Frequently asked questions
+  seoKeywords: string[]; // SEO optimization keywords
+  faqs: Array<{
+    // Frequently asked questions
     question: string;
     answer: string;
   }>;
-  relatedServices: string[];           // Related service IDs for cross-linking
-  searchVolume?: number;               // Estimated monthly search volume
-  difficulty?: string;                 // SEO difficulty rating
+  relatedServices: string[]; // Related service IDs for cross-linking
+  searchVolume?: number; // Estimated monthly search volume
+  difficulty?: string; // SEO difficulty rating
 }
 ```
 
@@ -167,12 +172,15 @@ interface ServiceData {
 ## Cloud Functions Available
 
 ### 1. `initializeExpandedServices`
+
 **Purpose**: Initialize all 80 services in Firestore
 **Auth**: Admin only
 **Parameters**:
+
 - `forceOverwrite`: boolean (optional) - Force reinitialize if services exist
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -190,18 +198,21 @@ interface ServiceData {
 ```
 
 **Usage from Admin Dashboard**:
+
 ```typescript
 const functions = getFunctions();
-const initServices = httpsCallable(functions, 'initializeExpandedServices');
+const initServices = httpsCallable(functions, "initializeExpandedServices");
 
 const result = await initServices({ forceOverwrite: false });
 console.log(result.data);
 ```
 
 ### 2. `getServiceStatistics`
+
 **Purpose**: Get current service counts and statistics
 **Auth**: Authenticated users
 **Response**:
+
 ```json
 {
   "success": true,
@@ -225,9 +236,11 @@ console.log(result.data);
 ```
 
 ### 3. `validateServices`
+
 **Purpose**: Validate all services against expected structure
 **Auth**: Authenticated users
 **Response**:
+
 ```json
 {
   "success": true,
@@ -244,12 +257,15 @@ console.log(result.data);
 ```
 
 ### 4. `getServiceById`
+
 **Purpose**: Retrieve a specific service with all details
 **Auth**: Authenticated users
 **Parameters**:
+
 - `serviceId`: string (required)
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -262,12 +278,15 @@ console.log(result.data);
 ```
 
 ### 5. `listServicesByWebsite`
+
 **Purpose**: Get all services for a specific website
 **Auth**: Authenticated users
 **Parameters**:
+
 - `website`: string (required) - One of: "airport", "corporate", "wedding", "partyBus"
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -282,11 +301,13 @@ console.log(result.data);
 ## Testing & Verification
 
 ### Build Status
+
 - **TypeScript Compilation**: ✅ PASSED
 - **No Errors**: ✅ VERIFIED
 - **Functions Exported**: ✅ VERIFIED
 
 ### Validation Results
+
 - **Total Services**: 80 (20 per website)
 - **Required Fields**: All present
 - **Unique IDs**: All unique, no duplicates
@@ -299,6 +320,7 @@ console.log(result.data);
 ## Deployment Instructions
 
 ### 1. Deploy Functions to Firebase
+
 ```bash
 cd functions
 npm run build
@@ -306,21 +328,24 @@ firebase deploy --only functions
 ```
 
 ### 2. Initialize Services (First Time)
+
 From Firebase Console or Admin Dashboard:
+
 ```typescript
 // Call the function
 const result = await initializeExpandedServices({});
 ```
 
 ### 3. Verify Deployment
+
 ```typescript
 // Get statistics
 const stats = await getServiceStatistics({});
-console.log('Services deployed:', stats.data.stats.total);
+console.log("Services deployed:", stats.data.stats.total);
 
 // Validate services
 const validation = await validateServices({});
-console.log('Validation:', validation.data.valid);
+console.log("Validation:", validation.data.valid);
 ```
 
 ---
@@ -328,6 +353,7 @@ console.log('Validation:', validation.data.valid);
 ## Integration with Admin Dashboard
 
 ### Service Management Page
+
 Add these buttons/features to the admin dashboard:
 
 1. **Initialize Services Button**
@@ -351,6 +377,7 @@ Add these buttons/features to the admin dashboard:
    - Edit/view individual services
 
 ### Example React Component
+
 ```typescript
 import { httpsCallable } from 'firebase/functions';
 import { functions } from './firebase';
@@ -383,22 +410,26 @@ function ServiceManagement() {
 ## Next Steps
 
 ### Phase 1: Content Generation (Immediate)
+
 - Generate location-specific content for each service
 - Create service-location combinations (200+ locations × 80 services)
 - SEO optimization for each page
 
 ### Phase 2: Page Generation (Week 2)
+
 - Build dynamic routes in Astro for each service
 - Create service detail pages
 - Implement internal linking strategy
 
 ### Phase 3: Admin Dashboard Enhancement (Week 3)
+
 - Service editing interface
 - Bulk operations (enable/disable services)
 - Analytics integration
 - Content approval workflow
 
 ### Phase 4: SEO & Marketing (Week 4)
+
 - Submit updated sitemaps
 - Monitor indexing progress
 - Track keyword rankings
@@ -409,18 +440,21 @@ function ServiceManagement() {
 ## Technical Notes
 
 ### Performance Considerations
+
 - Batch writes for Firestore (reduces API calls)
 - Validation runs before initialization
 - Idempotent operations (safe to re-run)
 - Error handling and rollback capabilities
 
 ### Security
+
 - Admin-only initialization function
 - Firebase Auth integration
 - Role-based access control
 - Input validation on all parameters
 
 ### Scalability
+
 - Easy to add more services
 - Modular service data structure
 - Extensible to additional websites
@@ -431,24 +465,30 @@ function ServiceManagement() {
 ## Troubleshooting
 
 ### Issue: "Services already exist"
+
 **Solution**: Use `forceOverwrite: true` parameter
+
 ```typescript
 await initializeExpandedServices({ forceOverwrite: true });
 ```
 
 ### Issue: Build errors
+
 **Solution**: Verify TypeScript compilation
+
 ```bash
 cd functions
 npm run build
 ```
 
 ### Issue: Authentication errors
+
 **Solution**: Ensure user has admin role in Firestore
+
 ```typescript
 // In Firestore: users/{userId}
 {
-  role: "admin" // or "super_admin"
+  role: "admin"; // or "super_admin"
 }
 ```
 
@@ -469,6 +509,7 @@ npm run build
 ## Maintenance
 
 ### Adding New Services
+
 1. Edit `functions/src/scripts/expandServices.ts`
 2. Add service to appropriate array (AIRPORT_SERVICES, etc.)
 3. Update validation counts if needed
@@ -476,6 +517,7 @@ npm run build
 5. Call `initializeExpandedServices({ forceOverwrite: true })`
 
 ### Updating Existing Services
+
 1. Modify service data in expandServices.ts
 2. Rebuild functions
 3. Redeploy to Firebase

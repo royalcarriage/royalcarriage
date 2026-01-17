@@ -18,12 +18,14 @@ firebase deploy --only functions
 ## What Was Built
 
 ✅ **80 Total Services** (20 per website)
+
 - Airport: 20 services
 - Corporate: 20 services
 - Wedding: 20 services
 - Party Bus: 20 services
 
 ✅ **5 Cloud Functions**
+
 1. `initializeExpandedServices` - Deploy services to Firestore
 2. `getServiceStatistics` - Get service counts
 3. `validateServices` - Validate service data
@@ -64,29 +66,32 @@ firebase deploy --only functions
 ## Initialize Services (First Time)
 
 ### Option A: Firebase Console
+
 1. Go to Firebase Console → Functions
 2. Find `initializeExpandedServices`
 3. Test with: `{ "forceOverwrite": false }`
 
 ### Option B: Admin Dashboard Code
-```typescript
-import { httpsCallable } from 'firebase/functions';
-import { functions } from '@/lib/firebase';
 
-const initServices = httpsCallable(functions, 'initializeExpandedServices');
+```typescript
+import { httpsCallable } from "firebase/functions";
+import { functions } from "@/lib/firebase";
+
+const initServices = httpsCallable(functions, "initializeExpandedServices");
 
 async function deployServices() {
   try {
     const result = await initServices({ forceOverwrite: false });
-    console.log('✅ Services initialized:', result.data);
+    console.log("✅ Services initialized:", result.data);
     // Expected: { success: true, stats: { total: 80, byWebsite: {...} } }
   } catch (error) {
-    console.error('❌ Initialization failed:', error);
+    console.error("❌ Initialization failed:", error);
   }
 }
 ```
 
 ### Option C: Firebase CLI (Local Testing)
+
 ```bash
 # From functions directory
 npm run serve
@@ -102,15 +107,15 @@ firebase functions:shell
 
 ```typescript
 // Get statistics
-const getStats = httpsCallable(functions, 'getServiceStatistics');
+const getStats = httpsCallable(functions, "getServiceStatistics");
 const statsResult = await getStats({});
-console.log('Total services:', statsResult.data.stats.total);
+console.log("Total services:", statsResult.data.stats.total);
 // Expected: 80
 
 // Validate services
-const validate = httpsCallable(functions, 'validateServices');
+const validate = httpsCallable(functions, "validateServices");
 const validationResult = await validate({});
-console.log('Valid:', validationResult.data.valid);
+console.log("Valid:", validationResult.data.valid);
 // Expected: true
 ```
 
@@ -120,14 +125,14 @@ console.log('Valid:', validationResult.data.valid);
 
 ```typescript
 // Get all airport services
-const listServices = httpsCallable(functions, 'listServicesByWebsite');
-const airportServices = await listServices({ website: 'airport' });
-console.log('Airport services:', airportServices.data.count); // 20
+const listServices = httpsCallable(functions, "listServicesByWebsite");
+const airportServices = await listServices({ website: "airport" });
+console.log("Airport services:", airportServices.data.count); // 20
 
 // Get specific service
-const getService = httpsCallable(functions, 'getServiceById');
-const service = await getService({ serviceId: 'ohare-airport-transfers' });
-console.log('Service:', service.data.service.name);
+const getService = httpsCallable(functions, "getServiceById");
+const service = await getService({ serviceId: "ohare-airport-transfers" });
+console.log("Service:", service.data.service.name);
 // "O'Hare Airport Transfers"
 ```
 
@@ -239,13 +244,16 @@ export default function ServicesPage() {
 ## Troubleshooting
 
 ### "Services already exist"
+
 ```typescript
 // Use forceOverwrite to reinitialize
 await initServices({ forceOverwrite: true });
 ```
 
 ### "Permission denied"
+
 Ensure user has admin role:
+
 ```typescript
 // In Firestore: users/{userId}
 {
@@ -255,6 +263,7 @@ Ensure user has admin role:
 ```
 
 ### Build errors
+
 ```bash
 cd functions
 npm run build

@@ -1,7 +1,11 @@
 import clsx from "clsx";
 import type { FreshnessStatus } from "../../types";
 
-export function DataFreshnessChip({ label, status, updatedAt }: FreshnessStatus) {
+export function DataFreshnessChip({
+  label,
+  status,
+  updatedAt,
+}: FreshnessStatus) {
   const styles = {
     fresh: "bg-emerald-50 text-emerald-700 border-emerald-200",
     stale: "bg-amber-50 text-amber-700 border-amber-200",

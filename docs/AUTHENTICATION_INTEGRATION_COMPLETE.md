@@ -16,6 +16,7 @@ Successfully integrated a complete authentication and authorization system into 
 ### Backend Components
 
 #### 1. Database Connection (`server/database.ts`)
+
 - PostgreSQL connection using node-postgres Pool
 - Drizzle ORM integration with full schema
 - Connection health check functionality
@@ -31,12 +32,14 @@ Features:
 ```
 
 #### 2. Database Storage (`server/storage.ts`)
+
 - **DatabaseStorage class** - PostgreSQL-backed implementation
 - **MemStorage class** - In-memory fallback (enhanced with bcrypt)
 - Automatic backend selection based on DATABASE_URL
 - Full IStorage interface implementation
 
 **Storage Methods:**
+
 - `getUser(id)` - Fetch user by ID
 - `getUserByUsername(username)` - Fetch by username
 - `createUser(user)` - Create new user with hashed password
@@ -46,6 +49,7 @@ Features:
 - `verifyPassword(username, password)` - Authenticate user
 
 #### 3. Authentication System (`server/auth.ts`)
+
 - Passport.js Local Strategy
 - Session-based authentication
 - Bcrypt password hashing (10 rounds)
@@ -53,12 +57,14 @@ Features:
 - Automatic user lookup from database
 
 #### 4. Security Middleware (`server/security.ts`)
+
 - **requireAuth** - Verify user is authenticated
 - **requireAdmin** - Require admin or super_admin role
 - **requireSuperAdmin** - Require super_admin role only
 - **requireRole(role)** - Flexible hierarchical role checking
 
 **Role Hierarchy:**
+
 ```
 super_admin (level 3)
     ↓
@@ -70,6 +76,7 @@ user (level 1)
 #### 5. Authentication Routes (`server/routes/auth.ts`)
 
 **Endpoints:**
+
 ```
 POST   /api/auth/login       - Login with username/password
 POST   /api/auth/logout      - Logout and destroy session
@@ -79,6 +86,7 @@ GET    /api/auth/check       - Check authentication status
 ```
 
 **Features:**
+
 - Passport authentication integration
 - Session management
 - Password validation
@@ -88,6 +96,7 @@ GET    /api/auth/check       - Check authentication status
 #### 6. User Management Routes (`server/routes/users.ts`)
 
 **Endpoints:**
+
 ```
 GET    /api/users             - List all users (admin only)
 GET    /api/users/:id         - Get user by ID (admin only)
@@ -97,6 +106,7 @@ GET    /api/users/stats/summary - User statistics (admin only)
 ```
 
 **Security Features:**
+
 - Role-based access control on all endpoints
 - Prevent self-deletion
 - Prevent removing own super admin role
@@ -122,12 +132,14 @@ express-session configuration:
 #### 1. Authentication Context (`client/src/hooks/useAuth.tsx`)
 
 **Features:**
+
 - React Context for global auth state
 - Automatic user fetching and caching
 - Login/logout mutations
 - Role-based permission helpers
 
 **Exported Functions:**
+
 ```typescript
 useAuth() - Main hook for accessing auth state
 hasRole(user, role) - Check if user has minimum role level
@@ -136,6 +148,7 @@ isSuperAdmin(user) - Check if user is super_admin
 ```
 
 **Context Value:**
+
 ```typescript
 {
   user: User | null
@@ -150,6 +163,7 @@ isSuperAdmin(user) - Check if user is super_admin
 #### 2. Login Page (`client/src/pages/Login.tsx`)
 
 **Features:**
+
 - Clean, professional login form
 - Username and password inputs
 - Error message display
@@ -158,6 +172,7 @@ isSuperAdmin(user) - Check if user is super_admin
 - Royal Carriage branding with amber theme
 
 **UI Elements:**
+
 - Lock icon branding
 - Form validation
 - Responsive design
@@ -167,6 +182,7 @@ isSuperAdmin(user) - Check if user is super_admin
 #### 3. Protected Route Component (`client/src/components/ProtectedRoute.tsx`)
 
 **Features:**
+
 - Automatic redirect to /login if not authenticated
 - Role-based access control
 - Loading state while checking auth
@@ -174,6 +190,7 @@ isSuperAdmin(user) - Check if user is super_admin
 - Prevents protected content flash
 
 **Usage:**
+
 ```tsx
 <ProtectedRoute requiredRole="admin">
   <AdminDashboard />
@@ -183,6 +200,7 @@ isSuperAdmin(user) - Check if user is super_admin
 #### 4. Unauthorized Page (`client/src/pages/Unauthorized.tsx`)
 
 **Features:**
+
 - Professional access denied message
 - Option to go back
 - Option to sign out
@@ -192,6 +210,7 @@ isSuperAdmin(user) - Check if user is super_admin
 #### 5. User Management Page (`client/src/pages/admin/Users.tsx`)
 
 **Features:**
+
 - List all users in a table
 - Display username, role, and creation date
 - Role badges with color coding
@@ -203,6 +222,7 @@ isSuperAdmin(user) - Check if user is super_admin
 - Responsive design
 
 **Role Badges:**
+
 - User (secondary) - UsersIcon
 - Admin (default) - Shield icon
 - Super Admin (destructive) - ShieldCheck icon
@@ -210,6 +230,7 @@ isSuperAdmin(user) - Check if user is super_admin
 #### 6. App Integration (`client/src/App.tsx`)
 
 **Changes:**
+
 - Wrapped app in AuthProvider
 - Added Login route (/login)
 - Added Unauthorized route (/unauthorized)
@@ -236,6 +257,7 @@ CREATE TABLE users (
 ### Database Setup
 
 **Local Development:**
+
 ```bash
 # Create local PostgreSQL database
 createdb royalcarriage
@@ -249,6 +271,7 @@ npx drizzle-kit migrate
 ```
 
 **Production (Firebase/Cloud SQL):**
+
 ```bash
 # Set DATABASE_URL in .env or Firebase functions config
 DATABASE_URL="postgresql://user:pass@host:5432/dbname"
@@ -259,12 +282,14 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 ## 🔐 Security Features
 
 ### Password Security
+
 - Bcrypt hashing with 10 rounds (industry standard)
 - Passwords never returned in API responses
 - Automatic hashing on user creation
 - Secure password comparison during login
 
 ### Session Security
+
 - Cryptographically secure SESSION_SECRET (64 characters)
 - HTTP-only cookies (prevent XSS)
 - Secure flag in production (HTTPS only)
@@ -272,6 +297,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 - 24-hour session expiration
 
 ### Role-Based Access Control (RBAC)
+
 - Hierarchical role system (user < admin < super_admin)
 - Endpoint-level protection
 - UI element visibility by role
@@ -279,6 +305,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 - Prevent self-deletion/demotion
 
 ### Input Validation
+
 - Zod schemas for all inputs
 - Descriptive error messages
 - XSS prevention
@@ -289,6 +316,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 ## 🎨 UI/UX Features
 
 ### Design System
+
 - Consistent amber (#F59E0B) brand color
 - Slate gray backgrounds
 - Professional card-based layouts
@@ -296,6 +324,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 - Radix UI components
 
 ### User Experience
+
 - Loading states on all async operations
 - Clear error messages
 - Confirmation dialogs for destructive actions
@@ -304,6 +333,7 @@ DATABASE_URL="postgresql://user:pass@host:5432/dbname"
 - Responsive design (mobile-friendly)
 
 ### Accessibility
+
 - Semantic HTML
 - ARIA labels
 - Keyboard navigation
@@ -342,19 +372,21 @@ GOOGLE_CLOUD_LOCATION=us-central1
 ### 1. Create First User (Development)
 
 **Option A: Using Memory Storage (No database)**
+
 ```typescript
 // In server/index.ts or a setup script
-import { storage } from './storage';
+import { storage } from "./storage";
 
 await storage.createUser({
-  username: 'admin',
-  password: 'your-secure-password'
+  username: "admin",
+  password: "your-secure-password",
 });
 
 // Then manually update role to super_admin in memory
 ```
 
 **Option B: Using Database**
+
 ```bash
 # Connect to PostgreSQL
 psql royalcarriage
@@ -393,6 +425,7 @@ VALUES ('admin', '$2a$10$...hashed-password...', 'super_admin');
 ### What Changed
 
 **Before:**
+
 - No authentication
 - No user management
 - Mock data in admin UI
@@ -400,6 +433,7 @@ VALUES ('admin', '$2a$10$...hashed-password...', 'super_admin');
 - No role-based access control
 
 **After:**
+
 - Full authentication with Passport.js
 - Database-backed user storage
 - Real-time user management
@@ -409,14 +443,16 @@ VALUES ('admin', '$2a$10$...hashed-password...', 'super_admin');
 ### Backward Compatibility
 
 ✅ All existing features preserved:
-- AI routes (/api/ai/*)
+
+- AI routes (/api/ai/\*)
 - Public pages (/, /fleet, /pricing, etc.)
 - Admin UI pages (now protected)
 - AI services (PageAnalyzer, ContentGenerator, ImageGenerator)
 
 ✅ New features added:
-- Authentication endpoints (/api/auth/*)
-- User management endpoints (/api/users/*)
+
+- Authentication endpoints (/api/auth/\*)
+- User management endpoints (/api/users/\*)
 - Login UI
 - User management UI
 - Protected route system
@@ -428,6 +464,7 @@ VALUES ('admin', '$2a$10$...hashed-password...', 'super_admin');
 ### Authentication Endpoints
 
 #### POST /api/auth/login
+
 ```json
 Request:
 {
@@ -452,6 +489,7 @@ Errors:
 ```
 
 #### POST /api/auth/logout
+
 ```json
 Response (200):
 {
@@ -464,6 +502,7 @@ Errors:
 ```
 
 #### GET /api/auth/me
+
 ```json
 Response (200):
 {
@@ -482,6 +521,7 @@ Errors:
 ### User Management Endpoints
 
 #### GET /api/users
+
 ```json
 Response (200):
 {
@@ -500,6 +540,7 @@ Auth: Admin role required
 ```
 
 #### PUT /api/users/:id/role
+
 ```json
 Request:
 {
@@ -516,6 +557,7 @@ Auth: Super admin role required
 ```
 
 #### DELETE /api/users/:id
+
 ```json
 Response (200):
 {
@@ -533,6 +575,7 @@ Auth: Super admin role required
 ## 🚀 Deployment
 
 ### Development
+
 ```bash
 # Start development server
 npm run dev
@@ -544,6 +587,7 @@ npm run dev
 ### Production
 
 **1. Set Environment Variables**
+
 ```bash
 export NODE_ENV=production
 export DATABASE_URL=postgresql://...
@@ -551,6 +595,7 @@ export SESSION_SECRET=your-64-char-secret
 ```
 
 **2. Build and Deploy**
+
 ```bash
 npm run build
 npm start
@@ -560,6 +605,7 @@ firebase deploy
 ```
 
 **3. Create Initial Admin User**
+
 ```bash
 # Using psql or Firebase Console
 INSERT INTO users (username, password, role)
@@ -573,6 +619,7 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 ### ✅ Completed Features
 
 **Backend:**
+
 - [x] PostgreSQL database connection
 - [x] Drizzle ORM integration
 - [x] DatabaseStorage implementation
@@ -586,6 +633,7 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 - [x] Error handling
 
 **Frontend:**
+
 - [x] Authentication context
 - [x] Login page
 - [x] Protected routes
@@ -596,6 +644,7 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 - [x] App integration
 
 **Security:**
+
 - [x] Bcrypt password hashing
 - [x] Secure sessions
 - [x] HTTP-only cookies
@@ -607,16 +656,19 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 ### 🔧 Configuration
 
 **Storage Backend:**
+
 - Automatic selection based on DATABASE_URL
 - Falls back to MemStorage if no database
 - Console logging of selected backend
 
 **Session Configuration:**
+
 - 24-hour expiration
 - Secure cookies in production
 - HTTP-only and SameSite protection
 
 **Role System:**
+
 - 3 roles: user, admin, super_admin
 - Hierarchical permissions
 - Flexible role checking
@@ -626,6 +678,7 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 ## 🎯 Next Steps
 
 ### Phase 2: Booking & Dispatch System (Ready to Implement)
+
 - Create booking database schema
 - Build booking API endpoints
 - Create dispatch board UI
@@ -633,12 +686,14 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 - Add real-time status tracking
 
 ### Phase 3: Content Management Integration
+
 - Connect Page Analyzer to backend
 - Build approval workflow UI
 - Implement content deployment
 - Add image library management
 
 ### Phase 4: Analytics & Reporting
+
 - Build analytics dashboard
 - Create custom report builder
 - Add data export functionality
@@ -650,7 +705,7 @@ VALUES ('admin', 'bcrypt-hashed-password', 'super_admin');
 ### Using Authentication in Components
 
 ```tsx
-import { useAuth, isAdmin } from '@/hooks/useAuth';
+import { useAuth, isAdmin } from "@/hooks/useAuth";
 
 function MyComponent() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -684,9 +739,9 @@ function MyComponent() {
 ### Creating Protected API Endpoints
 
 ```typescript
-import { requireAdmin } from '../security';
+import { requireAdmin } from "../security";
 
-router.get('/api/admin/data', requireAdmin, async (req, res) => {
+router.get("/api/admin/data", requireAdmin, async (req, res) => {
   // Only admins and super_admins can access
   const user = req.user as User;
   // ... your logic

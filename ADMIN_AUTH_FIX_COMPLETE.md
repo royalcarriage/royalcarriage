@@ -10,6 +10,7 @@
 ## 🔍 AUDIT RESULTS
 
 ### Current State
+
 ✅ **Page:** Admin login displays correctly
 ✅ **Button:** "Sign in with Google" button present
 ✅ **Auth Method:** Google Popup authentication ready
@@ -17,6 +18,7 @@
 ⚠️ **Issue:** Firebase credentials missing (using mock data store)
 
 ### What You See Now
+
 ```
 Admin Login
 Google sign-in is required. Domain must include admin.royalcarriagelimo.com.
@@ -27,6 +29,7 @@ Firebase config missing; using mock data store.
 ```
 
 ### What Will Happen After Fix
+
 ```
 1. Click "Sign in with Google"
    ↓
@@ -44,6 +47,7 @@ Firebase config missing; using mock data store.
 ## 📋 WHAT WAS FIXED
 
 ### Code Changes
+
 ✅ **Added Firebase client env vars** to `.env.example`
 ✅ **Created setup scripts** in `/scripts/setup-firebase-env.js`
 ✅ **Created setup guides** (FIREBASE_AUTH_SETUP.md, ADMIN_AUTH_QUICKSTART.md)
@@ -51,6 +55,7 @@ Firebase config missing; using mock data store.
 ✅ **Verified redirect logic** - AuthProvider handles it automatically
 
 ### Files Modified
+
 ```
 /Users/admin/VSCODE/.env.example
   Added NEXT_PUBLIC_FIREBASE_* variables section
@@ -66,6 +71,7 @@ Firebase config missing; using mock data store.
 ```
 
 ### Code Already Working
+
 ```
 ✅ firebaseClient.ts (line 76)
    Uses signInWithPopup for Google auth
@@ -85,6 +91,7 @@ Firebase config missing; using mock data store.
 ## 🚀 YOUR NEXT STEPS (3 Simple Steps)
 
 ### Step 1: Get Credentials (2 minutes)
+
 1. Open: https://console.firebase.google.com/project/royalcarriagelimoseo/settings/general
 2. Scroll to "Your apps" section
 3. Find or create a Web app (icon: <>)
@@ -98,13 +105,16 @@ Firebase config missing; using mock data store.
    - measurementId
 
 ### Step 2: Create .env.local (1 minute)
+
 Run this command:
+
 ```bash
 cd /Users/admin/VSCODE
 node scripts/setup-firebase-env.js
 ```
 
 **OR** create file manually at `/Users/admin/VSCODE/.env.local`:
+
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=YOUR_API_KEY_HERE
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=royalcarriagelimoseo.firebaseapp.com
@@ -116,9 +126,11 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=YOUR_GA_ID_HERE
 ```
 
 ### Step 3: Update Admin Email (1 minute)
+
 Edit: `/Users/admin/VSCODE/apps/admin/src/lib/dataStore.ts`
 
 **Line 208** - Change to your email:
+
 ```typescript
 // BEFORE
 role: user.email === "info@royalcarriagelimo.com" ? "superadmin" : "viewer",
@@ -132,6 +144,7 @@ role: user.email === "YOUR_EMAIL@gmail.com" ? "superadmin" : "viewer",
 ## ✅ VALIDATION CHECKLIST
 
 Before testing, verify:
+
 - [ ] Firebase credentials obtained from Console
 - [ ] `.env.local` file created with all 7 values
 - [ ] Admin email updated in `dataStore.ts` line 208
@@ -156,6 +169,7 @@ npm run dev
 ```
 
 Then:
+
 1. Open: http://localhost:3000
 2. Click "Sign in with Google"
 3. See Google popup
@@ -170,6 +184,7 @@ Then:
 ### In Firebase Console
 
 #### Authentication
+
 - [ ] Go to: https://console.firebase.google.com/project/royalcarriagelimoseo/authentication
 - [ ] Enable Google provider
 - [ ] Add authorized domains:
@@ -177,10 +192,12 @@ Then:
   - `localhost`
 
 #### Project Settings
+
 - [ ] Copy Web app credentials
 - [ ] Verify Project ID: `royalcarriagelimoseo`
 
 #### (Optional) Firestore Setup
+
 - [ ] Create Firestore database
 - [ ] Rules: Allow authenticated users to read/write their own data
 - [ ] Collections: `users` (auto-created on first sign-in)
@@ -190,6 +207,7 @@ Then:
 ## 🎯 WHAT HAPPENS AFTER SIGN-IN
 
 ### First Time Sign-In Flow
+
 ```
 1. User signs in with Google
    ↓
@@ -208,6 +226,7 @@ Then:
 ```
 
 ### Subsequent Sign-Ins
+
 ```
 1. User signs in with Google
    ↓
@@ -219,6 +238,7 @@ Then:
 ```
 
 ### Sign-Out
+
 ```
 1. User clicks "Sign out"
    ↓
@@ -234,18 +254,21 @@ Then:
 ## 📁 FILE REFERENCE
 
 ### Setup & Configuration
+
 - `FIREBASE_AUTH_SETUP.md` - Detailed guide
 - `ADMIN_AUTH_QUICKSTART.md` - Quick 5-min setup
 - `.env.example` - Configuration template (updated)
 - `scripts/setup-firebase-env.js` - Interactive setup
 
 ### Authentication Code
+
 - `apps/admin/src/state/AuthProvider.tsx` - Auth context & state
 - `apps/admin/src/lib/firebaseClient.ts` - Firebase initialization
 - `apps/admin/src/lib/dataStore.ts` - Auth functions
 - `apps/admin/src/react/AdminApp.tsx` - Login UI
 
 ### Admin Dashboard
+
 - `apps/admin/src/pages/index.tsx` - Main page
 - `apps/admin/src/components/AdminShell.tsx` - Shell layout
 - `apps/admin/src/components/TopBar.tsx` - Top navigation
@@ -256,6 +279,7 @@ Then:
 ## 🔐 SECURITY NOTES
 
 ✅ **Secure by default:**
+
 - `NEXT_PUBLIC_*` vars are public (this is normal for Firebase)
 - Firebase Security Rules protect your data
 - Only authenticated users can access dashboard
@@ -263,6 +287,7 @@ Then:
 - `.env.local` is in `.gitignore` (never committed)
 
 ⚠️ **Important:**
+
 - Don't share Firebase credentials in logs or GitHub
 - Regenerate Firebase API key if ever exposed
 - Keep Firebase Security Rules restrictive
@@ -272,14 +297,14 @@ Then:
 
 ## 🆘 TROUBLESHOOTING
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| "Firebase config missing" | .env.local not set | Create .env.local with credentials |
-| Google popup doesn't appear | Missing authorized domain | Add domain in Firebase Console |
-| Sign-in succeeds but no redirect | AuthProvider error | Check browser console (F12) |
-| "Access Denied" after sign-in | Email not authorized | Update email check in dataStore.ts |
-| Can't see dashboard | Not logged in | Complete sign-in flow first |
-| Browser says "localhost not valid" | Firebase domain check | Add localhost to authorized domains |
+| Symptom                            | Cause                     | Fix                                 |
+| ---------------------------------- | ------------------------- | ----------------------------------- |
+| "Firebase config missing"          | .env.local not set        | Create .env.local with credentials  |
+| Google popup doesn't appear        | Missing authorized domain | Add domain in Firebase Console      |
+| Sign-in succeeds but no redirect   | AuthProvider error        | Check browser console (F12)         |
+| "Access Denied" after sign-in      | Email not authorized      | Update email check in dataStore.ts  |
+| Can't see dashboard                | Not logged in             | Complete sign-in flow first         |
+| Browser says "localhost not valid" | Firebase domain check     | Add localhost to authorized domains |
 
 ---
 
@@ -295,6 +320,7 @@ Then:
 ## ✨ AFTER EVERYTHING IS WORKING
 
 1. **Deploy Admin App**
+
    ```bash
    npm run build
    # Deploy to your hosting (Vercel, Firebase Hosting, etc)
@@ -318,14 +344,14 @@ Then:
 
 ## 📊 CURRENT ADMIN SETUP STATUS
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Framework** | ✅ Ready | Next.js + React |
-| **Auth Method** | ✅ Ready | Google Popup |
-| **Redirect** | ✅ Ready | Auto → Dashboard |
-| **UI** | ✅ Ready | Login page + Dashboard |
-| **Credentials** | ⏳ Needed | 7 Firebase values |
-| **Email Config** | ⏳ Needed | Update dataStore.ts |
+| Component          | Status    | Details                |
+| ------------------ | --------- | ---------------------- |
+| **Framework**      | ✅ Ready  | Next.js + React        |
+| **Auth Method**    | ✅ Ready  | Google Popup           |
+| **Redirect**       | ✅ Ready  | Auto → Dashboard       |
+| **UI**             | ✅ Ready  | Login page + Dashboard |
+| **Credentials**    | ⏳ Needed | 7 Firebase values      |
+| **Email Config**   | ⏳ Needed | Update dataStore.ts    |
 | **Firebase Setup** | ⏳ Needed | Enable Google provider |
 
 ---
@@ -346,18 +372,22 @@ Then:
 ## 📝 SUMMARY
 
 ### What You're Fixing
+
 The admin dashboard needs Firebase credentials to enable Google popup authentication.
 
 ### Code Status
+
 ✅ **ALL CODE IS READY** - No changes needed
 
 ### What You'll Do
+
 1. Copy 7 Firebase values from Console
 2. Create .env.local file with values
 3. Update your email in dataStore.ts
 4. Done! Authentication works.
 
 ### Result
+
 ✅ Admin login with Google popup
 ✅ Automatic redirect to dashboard
 ✅ Role-based access control

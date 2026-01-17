@@ -3,6 +3,7 @@
 **STATUS:** Full deploy completed (hosting all targets + functions + rules/indexes/storage).
 
 ## Actions
+
 - Built admin app (Next.js) → `apps/admin/out`
 - Updated `firebase.json` admin `public` to `apps/admin/out`
 - Built Functions (`pnpm --filter royalcarriage-functions build` → tsc) and deployed (unchanged, skipped)
@@ -12,6 +13,7 @@
 - Ran admin self-audit (`node scripts/admin-self-audit.mjs`)
 
 ## Verification
+
 - Live hosting:
   - Admin: https://royalcarriagelimoseo.web.app (CNAME for https://admin.royalcarriagelimo.com)
   - Airport: https://chicagoairportblackcar.web.app
@@ -23,5 +25,6 @@
 - Self-audit report PASS in `reports/admin-self-audit.md`
 
 ## Risks / Notes
+
 - Admin app needs `apps/admin/.env.local` with `NEXT_PUBLIC_FIREBASE_*` for live Auth/Firestore; otherwise UI uses mock data.
 - Marketing sites are static `dist` artifacts; source code missing—rebuild only after recovering sources.

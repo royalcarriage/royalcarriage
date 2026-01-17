@@ -3,23 +3,28 @@
  * API endpoints for CSV data imports (Moovs trips and Ads metrics)
  */
 
-import { Router } from 'express';
-import * as admin from 'firebase-admin';
-import { parseCsv, mapCsvRow, createImportAudit, finalizeImportStats } from '../../lib/csv-parser';
+import { Router } from "express";
+import * as admin from "firebase-admin";
+import {
+  parseCsv,
+  mapCsvRow,
+  createImportAudit,
+  finalizeImportStats,
+} from "../../lib/csv-parser";
 import {
   MoovsTrip,
   MOOVS_COLUMN_MAP,
   validateMoovsTrip,
   normalizeMoovsTrip,
   MoovsImportResult,
-} from '../../lib/moovs-schema';
+} from "../../lib/moovs-schema";
 import {
   AdsMetric,
   ADS_COLUMN_MAP,
   validateAdsMetric,
   normalizeAdsMetric,
   AdsImportResult,
-} from '../../lib/ads-schema';
+} from "../../lib/ads-schema";
 
 const router = Router();
 
@@ -27,12 +32,12 @@ const router = Router();
  * POST /imports/moovs
  * Import Moovs trip data from CSV
  */
-router.post('/moovs', async (req, res) => {
+router.post("/moovs", async (req, res) => {
   try {
     const { csvData, fileName } = req.body;
 
     if (!csvData) {
-      return res.status(400).json({ error: 'CSV data is required' });
+      return res.status(400).json({ error: "CSV data is required" });
     }
 
     // Parse CSV
@@ -42,10 +47,10 @@ router.post('/moovs', async (req, res) => {
 
     // Create import audit
     const audit = createImportAudit(
-      fileName || 'unknown.csv',
+      fileName || "unknown.csv",
       csvData.length,
       records.length,
-      'moovs'
+      "moovs",
     );
 
     const db = admin.firestore();
@@ -60,8 +65,8 @@ router.post('/moovs', async (req, res) => {
     // Track existing trip IDs for duplicate detection
     const existingTripIds = new Set<string>();
     const existingTripsSnapshot = await db
-      .collection('trips')
-      .select('tripId')
+      .collection("trips")
+      .select("tripId")
       .get();
     existingTripsSnapshot.docs.forEach((doc) => {
       const data = doc.data();
@@ -87,7 +92,7 @@ router.post('/moovs', async (req, res) => {
         if (!validation.valid) {
           result.errors.push({
             row: rowNumber,
-            error: validation.errors.join('; '),
+            error: validation.errors.join("; "),
             data: record,
           });
           audit.stats.failedRows++;
@@ -103,7 +108,7 @@ router.post('/moovs', async (req, res) => {
         }
 
         // Import to Firestore
-        await db.collection('trips').add({
+        await db.collection("trips").add({
           ...normalized,
           importedAt: admin.firestore.FieldValue.serverTimestamp(),
           importId: audit.importId,
@@ -124,22 +129,22 @@ router.post('/moovs', async (req, res) => {
 
     audit.stats.totalRows = records.length;
     finalizeImportStats(audit.stats);
-    audit.status = result.errors.length === 0 ? 'completed' : 'completed';
+    audit.status = result.errors.length === 0 ? "completed" : "completed";
     audit.errors = result.errors;
     audit.duplicates = result.duplicates;
     audit.completedAt = new Date();
 
     // Save audit to Firestore
-    await db.collection('imports').doc(audit.importId).set(audit);
+    await db.collection("imports").doc(audit.importId).set(audit);
 
     res.json({
       ...result,
       importId: audit.importId,
     });
   } catch (error) {
-    console.error('Moovs import error:', error);
+    console.error("Moovs import error:", error);
     res.status(500).json({
-      error: 'Import failed',
+      error: "Import failed",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -149,12 +154,12 @@ router.post('/moovs', async (req, res) => {
  * POST /imports/ads
  * Import advertising metrics from CSV
  */
-router.post('/ads', async (req, res) => {
+router.post("/ads", async (req, res) => {
   try {
     const { csvData, fileName } = req.body;
 
     if (!csvData) {
-      return res.status(400).json({ error: 'CSV data is required' });
+      return res.status(400).json({ error: "CSV data is required" });
     }
 
     // Parse CSV
@@ -164,10 +169,10 @@ router.post('/ads', async (req, res) => {
 
     // Create import audit
     const audit = createImportAudit(
-      fileName || 'unknown.csv',
+      fileName || "unknown.csv",
       csvData.length,
       records.length,
-      'ads'
+      "ads",
     );
 
     const db = admin.firestore();
@@ -182,9 +187,9 @@ router.post('/ads', async (req, res) => {
     // Track existing metric IDs for duplicate detection
     const existingMetricIds = new Set<string>();
     const existingMetricsSnapshot = await db
-      .collection('metrics')
-      .where('source', '==', 'ads_import')
-      .select('metricId')
+      .collection("metrics")
+      .where("source", "==", "ads_import")
+      .select("metricId")
       .get();
     existingMetricsSnapshot.docs.forEach((doc) => {
       const data = doc.data();
@@ -210,7 +215,7 @@ router.post('/ads', async (req, res) => {
         if (!validation.valid) {
           result.errors.push({
             row: rowNumber,
-            error: validation.errors.join('; '),
+            error: validation.errors.join("; "),
             data: record,
           });
           audit.stats.failedRows++;
@@ -226,9 +231,9 @@ router.post('/ads', async (req, res) => {
         }
 
         // Import to Firestore
-        await db.collection('metrics').add({
+        await db.collection("metrics").add({
           ...normalized,
-          source: 'ads_import',
+          source: "ads_import",
           importedAt: admin.firestore.FieldValue.serverTimestamp(),
           importId: audit.importId,
         });
@@ -248,22 +253,22 @@ router.post('/ads', async (req, res) => {
 
     audit.stats.totalRows = records.length;
     finalizeImportStats(audit.stats);
-    audit.status = result.errors.length === 0 ? 'completed' : 'completed';
+    audit.status = result.errors.length === 0 ? "completed" : "completed";
     audit.errors = result.errors;
     audit.duplicates = result.duplicates;
     audit.completedAt = new Date();
 
     // Save audit to Firestore
-    await db.collection('imports').doc(audit.importId).set(audit);
+    await db.collection("imports").doc(audit.importId).set(audit);
 
     res.json({
       ...result,
       importId: audit.importId,
     });
   } catch (error) {
-    console.error('Ads import error:', error);
+    console.error("Ads import error:", error);
     res.status(500).json({
-      error: 'Import failed',
+      error: "Import failed",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -273,22 +278,22 @@ router.post('/ads', async (req, res) => {
  * GET /imports/:importId
  * Get import status and results
  */
-router.get('/:importId', async (req, res) => {
+router.get("/:importId", async (req, res) => {
   try {
     const { importId } = req.params;
     const db = admin.firestore();
 
-    const importDoc = await db.collection('imports').doc(importId).get();
+    const importDoc = await db.collection("imports").doc(importId).get();
 
     if (!importDoc.exists) {
-      return res.status(404).json({ error: 'Import not found' });
+      return res.status(404).json({ error: "Import not found" });
     }
 
     res.json(importDoc.data());
   } catch (error) {
-    console.error('Get import error:', error);
+    console.error("Get import error:", error);
     res.status(500).json({
-      error: 'Failed to retrieve import',
+      error: "Failed to retrieve import",
       message: error instanceof Error ? error.message : String(error),
     });
   }
@@ -298,17 +303,18 @@ router.get('/:importId', async (req, res) => {
  * GET /imports
  * List all imports
  */
-router.get('/', async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const db = admin.firestore();
     const { limit = 50, importType } = req.query;
 
-    let query = db.collection('imports')
-      .orderBy('uploadedAt', 'desc')
+    let query = db
+      .collection("imports")
+      .orderBy("uploadedAt", "desc")
       .limit(Number(limit));
 
     if (importType) {
-      query = query.where('importType', '==', importType) as any;
+      query = query.where("importType", "==", importType) as any;
     }
 
     const snapshot = await query.get();
@@ -319,9 +325,9 @@ router.get('/', async (req, res) => {
 
     res.json({ imports });
   } catch (error) {
-    console.error('List imports error:', error);
+    console.error("List imports error:", error);
     res.status(500).json({
-      error: 'Failed to list imports',
+      error: "Failed to list imports",
       message: error instanceof Error ? error.message : String(error),
     });
   }

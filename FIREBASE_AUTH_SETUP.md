@@ -1,6 +1,7 @@
 # Firebase Authentication Setup Guide
 
 ## Status
+
 ✅ **DEPLOYED** (January 16, 2026)
 ✅ **PRODUCTION READY:** All authentication systems operational
 ✅ **Google OAuth**: Enabled and functional
@@ -11,6 +12,7 @@
 ## 🟢 Current Production Configuration
 
 ### Deployed Systems
+
 - **Admin Dashboard**: https://admin.royalcarriagelimo.com (Live ✅)
 - **Firebase Project**: royalcarriagelimoseo
 - **Firebase Auth**: Fully configured with Google OAuth + Email/Password
@@ -19,6 +21,7 @@
 - **Cloud Functions**: All 13 functions deployed, including syncUserRole
 
 ### Authentication Flow (Working)
+
 ```
 User visits admin.royalcarriagelimo.com
     ↓
@@ -107,12 +110,14 @@ role: user.email === "info@royalcarriagelimo.com" ? "superadmin" : "viewer",
 ```
 
 **Role Levels** (lowercase):
+
 - `superadmin`: Full system access (all admin features)
 - `admin`: Administrative functions
 - `editor`: Content editing
 - `viewer`: Read-only access (default)
 
 **To Add More Admins**, update the logic to:
+
 ```typescript
 const superAdminEmails = ["info@royalcarriagelimo.com", "your_email@example.com"];
 const adminEmails = ["admin1@example.com", "admin2@example.com"];
@@ -128,6 +133,7 @@ if (superAdminEmails.includes(user.email)) {
 ```
 
 **Then rebuild and redeploy:**
+
 ```bash
 cd apps/admin && npm run build && firebase deploy --only hosting:admin
 ```
@@ -137,6 +143,7 @@ cd apps/admin && npm run build && firebase deploy --only hosting:admin
 ## Step 5: Test Production Authentication
 
 ### Production Testing (Live)
+
 1. Visit: https://admin.royalcarriagelimo.com
 2. Click "Sign in"
 3. Choose authentication method:
@@ -150,6 +157,7 @@ cd apps/admin && npm run build && firebase deploy --only hosting:admin
 1. Set up `.env.local` with Firebase credentials (see Step 2 above)
 
 2. Start dev server:
+
    ```bash
    cd apps/admin
    npm install
@@ -165,24 +173,28 @@ cd apps/admin && npm run build && firebase deploy --only hosting:admin
 ### Debugging Authentication Issues
 
 **Issue: "Loading auth..." stuck on dashboard**
+
 - Check: Firestore security rules are deployed (`firestore deploy`)
 - Check: Role names are lowercase (superadmin, not SuperAdmin)
 - Check: User profile created in Firestore `/users/{uid}` collection
 - Check: Custom claims set in Firebase Auth
 
 **Command to check custom claims:**
+
 ```bash
 firebase auth:export --project=royalcarriagelimoseo /tmp/users.json
 # Then search for your user and check claims
 ```
 
 **View Firestore user record:**
+
 - Go to: https://console.firebase.google.com
 - Select project: royalcarriagelimoseo
 - Firestore Database → Collection: `users`
 - Find your user by UID
 
 **View function logs:**
+
 ```bash
 firebase functions:log --only syncUserRole
 ```
@@ -228,22 +240,28 @@ firebase functions:log --only syncUserRole
 ## Troubleshooting
 
 ### Issue: "Firebase config missing; using mock data store"
+
 **Fix:** Add `NEXT_PUBLIC_FIREBASE_*` variables to `.env.local`
 
 ### Issue: Google popup doesn't appear
+
 **Fix:** Check that `admin.royalcarriagelimo.com` is in Firebase authorized domains
 
 ### Issue: Sign-in succeeds but no redirect
+
 **Fix:** Check browser console for errors in AuthProvider
 
 ### Issue: "Not authorized" message after sign-in
+
 **Fix:** Update the admin email check in `dataStore.ts` line 208
 
 ### Issue: Can't see dashboard after sign-in
+
 **Fix:** Ensure `onAuthStateChanged` is working:
+
 ```javascript
 // In browser console
-firebase.auth().currentUser  // Should show user object
+firebase.auth().currentUser; // Should show user object
 ```
 
 ---
@@ -251,6 +269,7 @@ firebase.auth().currentUser  // Should show user object
 ## Security Notes
 
 ⚠️ **IMPORTANT:**
+
 - Never commit `.env.local` to Git
 - `NEXT_PUBLIC_*` variables are exposed to the client (this is normal for Firebase API key)
 - Firebase Security Rules will protect your data
@@ -279,14 +298,14 @@ firebase.auth().currentUser  // Should show user object
 
 ## ✅ Deployment Status
 
-| Component | Status | Date |
-|-----------|--------|------|
-| Firebase Auth | ✅ Deployed | Jan 16, 2026 |
-| Google OAuth | ✅ Configured | Jan 16, 2026 |
+| Component           | Status        | Date         |
+| ------------------- | ------------- | ------------ |
+| Firebase Auth       | ✅ Deployed   | Jan 16, 2026 |
+| Google OAuth        | ✅ Configured | Jan 16, 2026 |
 | Email/Password Auth | ✅ Configured | Jan 16, 2026 |
-| Custom Claims | ✅ Syncing | Jan 16, 2026 |
-| Admin Dashboard | ✅ Live | Jan 16, 2026 |
-| Firestore Rules | ✅ Deployed | Jan 16, 2026 |
+| Custom Claims       | ✅ Syncing    | Jan 16, 2026 |
+| Admin Dashboard     | ✅ Live       | Jan 16, 2026 |
+| Firestore Rules     | ✅ Deployed   | Jan 16, 2026 |
 
 **All systems operational and ready for production use.**
 
