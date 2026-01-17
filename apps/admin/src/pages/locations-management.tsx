@@ -219,6 +219,47 @@ export default function LocationsManagementPage() {
           </div>
         </div>
 
+        {/* Search and Filters */}
+        <div className="mb-6 bg-gray-50 border border-gray-200 p-6 rounded-lg">
+          <h3 className="font-semibold mb-4">Search and Filters</h3>
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Search Locations
+              </label>
+              <input
+                type="text"
+                placeholder="Search by name or description..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Location Type
+              </label>
+              <select
+                value={selectedType}
+                onChange={(e) => setSelectedType(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="all">All Types</option>
+                <option value="neighborhood">Neighborhoods</option>
+                <option value="suburb">Suburbs</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Results
+              </label>
+              <div className="px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-blue-600">
+                {filteredLocations.length} locations
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Region Filter */}
         <div className="mb-6">
           <h3 className="font-semibold mb-3">Filter by Region</h3>
