@@ -1,0 +1,19 @@
+{
+  "name": "@packages/astro-components",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./Header.astro": "./src/Header.astro",
+    "./Footer.astro": "./src/Footer.astro",
+    "./NavBar.astro": "./src/NavBar.astro",
+    "./CTAButton.astro": "./src/CTAButton.astro",
+    "./CallButton.astro": "./src/CallButton.astro",
+    "./RequestQuoteButton.astro": "./src/RequestQuoteButton.astro",
+    "./ContactForm.astro": "./src/ContactForm.astro",
+    "./FloatingCTA.astro": "./src/FloatingCTA.astro"
+  },
+  "peerDependencies": {
+    "astro": "^4.0.0"
+  }
+}

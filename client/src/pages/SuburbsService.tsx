@@ -11,18 +11,7 @@ import {
 } from "@/components/ui/accordion";
 import { Check, Phone, Calendar, MapPin, Plane, Building } from "lucide-react";
 import { Link } from "wouter";
-import {
-  cities,
-  getCitiesByRegion,
-  allRegions,
-  type City,
-} from "@/data/cities";
-import {
-  LocalBusinessSchema,
-  ServiceSchema,
-  BreadcrumbSchema,
-  FAQSchema,
-} from "@/components/seo/JsonLdSchema";
+import { cities, getCitiesByRegion, allRegions } from "@/data/cities";
 
 import heroImage from "@assets/generated_images/lincoln_sedan_chicago_cityscape.png";
 
@@ -74,7 +63,7 @@ const faqs = [
   },
 ];
 
-const regionLabels: Record<City["region"], string> = {
+const regionLabels: Record<string, string> = {
   "North Shore": "North Shore Suburbs",
   "West Suburbs": "Western Suburbs",
   "Northwest Suburbs": "Northwest Suburbs",
@@ -84,38 +73,8 @@ const regionLabels: Record<City["region"], string> = {
 };
 
 export default function SuburbsService() {
-  const breadcrumbItems = [
-    { name: "Home", url: "https://chicagoairportblackcar.com" },
-    {
-      name: "Suburbs Service",
-      url: "https://chicagoairportblackcar.com/chicago-suburbs",
-    },
-  ];
-
-  const featuredRegions: City["region"][] = [
-    "North Shore",
-    "West Suburbs",
-    "Northwest Suburbs",
-  ];
-
-  const suburbCities = cities
-    .filter((c) => featuredRegions.includes(c.region))
-    .slice(0, 20)
-    .map((c) => c.name);
-
   return (
     <Layout>
-      <LocalBusinessSchema image={heroImage} />
-      <ServiceSchema
-        name="Chicago Suburbs Airport Transportation Service"
-        description="Professional black car service from Chicago suburbs to O'Hare and Midway airports"
-        serviceType="Airport Transfer Service"
-        areaServed={suburbCities}
-        url="https://chicagoairportblackcar.com/chicago-suburbs"
-      />
-      <BreadcrumbSchema items={breadcrumbItems} />
-      <FAQSchema questions={faqs} />
-
       <SEO
         title="Chicago Suburbs Airport Transportation | 80+ Cities Served"
         description="Door-to-door airport transportation from Naperville, Schaumburg, Evanston, and 80+ Chicago suburbs to O'Hare and Midway. Flat-rate pricing, professional chauffeurs. Call (224) 801-3090."

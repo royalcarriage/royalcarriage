@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('wedding');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Bridal Party Transportation',
+  serviceDescription: 'Bridal party transportation in Chicago. Luxury vehicles for bridesmaids, groomsmen, and wedding parties. Comfortable group transportation for your special day.',
+  serviceType: 'Bridal Party Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Bridal Party Transportation Chicago - Group Wedding Limos"
+  description="Bridal party transportation in Chicago. Luxury vehicles for bridesmaids, groomsmen, and wedding parties. Comfortable group transportation for your special day."
+  canonical="/bridal-party-transportation"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Bridal Party Transportation</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="wedding" location="hero" size="lg" />
+        <CallButton target="wedding" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Coordinate seamless transportation for your entire bridal party with Royal Carriage Limousine. We specialize in group transportation that keeps everyone together, on time, and comfortable throughout your wedding day.</p>
+
+<h2 class="text-2xl font-bold mb-4">Bridal Party Services</h2>
+<p class="mb-4">Our bridal party transportation handles every aspect of group travel:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Getting Ready:</strong> Transport bridesmaids from hotel to getting-ready location</li>
+  <li><strong>To the Ceremony:</strong> Coordinated arrival of bridal party at ceremony venue</li>
+  <li><strong>Photo Locations:</strong> Transportation to photo shoot locations between events</li>
+  <li><strong>To the Reception:</strong> Everyone arrives together at reception venue</li>
+  <li><strong>Late Night:</strong> Safe transportation back to hotels after celebration</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Vehicle Options for Groups</h2>
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">SUV Limousines</h3>
+    <p class="text-sm mb-2">Spacious and comfortable for groups of 8-14</p>
+    <ul class="text-xs space-y-1">
+      <li>• Extra room for dresses</li>
+      <li>• Climate control</li>
+      <li>• Entertainment system</li>
+      <li>• Perfect for bridal party</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Party Buses</h3>
+    <p class="text-sm mb-2">Ultimate group transportation for 20+ guests</p>
+    <ul class="text-xs space-y-1">
+      <li>• Standing room</li>
+      <li>• Dance floor and lights</li>
+      <li>• Sound system</li>
+      <li>• Party atmosphere</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Multiple Sedans</h3>
+    <p class="text-sm mb-2">Coordinate multiple luxury sedans</p>
+    <ul class="text-xs space-y-1">
+      <li>• Elegant arrivals</li>
+      <li>• Smaller groups</li>
+      <li>• Professional coordination</li>
+      <li>• Classic sophistication</li>
+    </ul>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h3 class="font-bold mb-3">Luxury Vans</h3>
+    <p class="text-sm mb-2">Comfortable vans for 10-14 passengers</p>
+    <ul class="text-xs space-y-1">
+      <li>• Individual seating</li>
+      <li>• Practical and elegant</li>
+      <li>• Great for getting ready phase</li>
+      <li>• Ample storage</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Coordination & Timing</h2>
+<p class="mb-4">We work closely with you and your wedding planner to ensure perfect timing:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Detailed timeline creation and confirmation</li>
+  <li>Communication with all parties involved</li>
+  <li>Buffer time built in for photos and delays</li>
+  <li>Multiple stops coordinated seamlessly</li>
+  <li>Backup plans for weather or changes</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="wedding" location="bottom-cta" size="lg" />
+        <CallButton target="wedding" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

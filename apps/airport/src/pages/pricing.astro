@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "Transparent Pricing for Airport Limousine Service",
+  serviceDescription: "View transparent flat rate pricing for Chicago airport limousine service. No hidden fees, no surge pricing. Get an instant quote for O'Hare or Midway airport transportation.",
+  serviceType: "Airport Limousine Service",
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Airport Limousine Service Pricing - Transparent Flat Rates"
+  description="View transparent flat rate pricing for Chicago airport limousine service. No hidden fees, no surge pricing. Get an instant quote for O'Hare or Midway airport transportation."
+  canonical="/pricing"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Transparent Pricing for Airport Limousine Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine believes in transparent, fair pricing. We offer flat rates for airport transportation with no hidden fees, no surge pricing, and no surprises. Get an instant quote online or call us for immediate pricing.</p>
+
+<h2 class="text-2xl font-bold mb-4">Our Pricing Philosophy</h2>
+<div class="bg-blue-50 p-6 rounded-lg mb-6">
+  <ul class="space-y-3 text-gray-700">
+    <li><strong>✓ Flat Rate Pricing:</strong> One price quoted, one price charged</li>
+    <li><strong>✓ No Surge Pricing:</strong> Same rates during peak hours and holidays</li>
+    <li><strong>✓ No Hidden Fees:</strong> Tolls and gratuity options clearly stated</li>
+    <li><strong>✓ Free Wait Time:</strong> Complimentary waiting for flight delays up to 60 minutes</li>
+    <li><strong>✓ Free Cancellation:</strong> Cancel up to 24 hours before for full refund</li>
+  </ul>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Sample Flat Rates</h2>
+<div class="overflow-x-auto mb-6">
+  <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="p-3 text-left">Route</th>
+        <th class="p-3 text-left">Sedan</th>
+        <th class="p-3 text-left">SUV</th>
+        <th class="p-3 text-left">Van</th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-700">
+      <tr class="border-b">
+        <td class="p-3">O'Hare to Downtown</td>
+        <td class="p-3">Starting $75</td>
+        <td class="p-3">Starting $95</td>
+        <td class="p-3">Starting $135</td>
+      </tr>
+      <tr class="border-b">
+        <td class="p-3">Midway to Downtown</td>
+        <td class="p-3">Starting $65</td>
+        <td class="p-3">Starting $85</td>
+        <td class="p-3">Starting $125</td>
+      </tr>
+      <tr class="border-b">
+        <td class="p-3">O'Hare to Naperville</td>
+        <td class="p-3">Starting $95</td>
+        <td class="p-3">Starting $115</td>
+        <td class="p-3">Starting $155</td>
+      </tr>
+      <tr>
+        <td class="p-3">O'Hare to Schaumburg</td>
+        <td class="p-3">Starting $70</td>
+        <td class="p-3">Starting $90</td>
+        <td class="p-3">Starting $130</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<p class="text-sm text-gray-600 mb-6">*Rates shown are starting prices for standard service. Final price depends on exact pickup and drop-off addresses. Get an exact quote online.</p>
+
+<h2 class="text-2xl font-bold mb-4">What's Included</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li>Professional chauffeur service</li>
+  <li>Flight tracking and monitoring</li>
+  <li>Meet and greet at baggage claim</li>
+  <li>Luggage assistance</li>
+  <li>Bottled water and amenities</li>
+  <li>All fuel and vehicle costs</li>
+  <li>Highway tolls (on most routes)</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Additional Services</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li><strong>Hourly Service:</strong> Starting at $75/hour (3-hour minimum)</li>
+  <li><strong>Child Car Seats:</strong> Available upon request ($10 per seat)</li>
+  <li><strong>Extra Stops:</strong> $15 per additional stop along route</li>
+  <li><strong>After-Hours Pickup:</strong> No additional fee for late night or early morning</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Payment Methods</h2>
+<p class="text-gray-700 mb-4">We accept all major credit cards, debit cards, corporate accounts, and cash. Payment can be made online during booking or directly to your chauffeur. Corporate invoicing available for established accounts.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

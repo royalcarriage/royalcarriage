@@ -1,0 +1,77 @@
+---
+interface Props {
+  target: string;
+  class?: string;
+  size?: 'sm' | 'md' | 'lg';
+  variant?: 'primary' | 'secondary' | 'gold';
+  location?: string;
+  text?: string;
+}
+
+const {
+  target,
+  class: className = '',
+  size = 'md',
+  variant = 'gold',
+  location = 'unknown',
+  text = 'Get Instant Quote'
+} = Astro.props;
+
+const quoteUrl = `https://customer.moovs.app/royal-carriage-limousine/request/new?utm_source=${target}&utm_medium=seo&utm_campaign=microsites`;
+
+const sizeClasses = {
+  sm: 'px-4 py-2 text-sm',
+  md: 'px-6 py-3 text-base',
+  lg: 'px-8 py-4 text-lg'
+};
+
+const variantClasses = {
+  primary: 'bg-blue-600 hover:bg-blue-700 text-white',
+  secondary: 'bg-white hover:bg-gray-100 text-blue-600 border-2 border-blue-600',
+  gold: 'bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white'
+};
+---
+
+<a
+  href={quoteUrl}
+  target="_blank"
+  class:list={[
+    'inline-flex items-center font-semibold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl',
+    sizeClasses[size],
+    variantClasses[variant],
+    className
+  ]}
+  data-track-event="request_quote_click"
+  data-track-target={target}
+  data-track-location={location}
+  rel="noopener noreferrer"
+>
+  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+  </svg>
+  {text}
+</a>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll('[data-track-event="request_quote_click"]');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        const target = button.getAttribute('data-track-target');
+        const location = button.getAttribute('data-track-location');
+
+        if (typeof window !== 'undefined' && (window as any).dataLayer) {
+          (window as any).dataLayer.push({
+            event: 'request_quote_click',
+            eventCategory: 'Engagement',
+            eventAction: 'Click',
+            eventLabel: `${target} - ${location}`,
+            button_location: location,
+            site_target: target
+          });
+        }
+      });
+    });
+  });
+</script>

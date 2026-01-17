@@ -3,28 +3,34 @@
 Playbook for auditing/extending the Royal Carriage stack with AI assistance.
 
 ## Quick System Map
-- Monorepo with Firebase Hosting (5 targets) + Functions.
-- Admin app: Astro static site in `apps/admin` → build to `apps/admin/dist`.
-- Marketing sites: static assets already in `apps/{airport,corporate,wedding,partybus}/dist` (sources absent; tread carefully).
-- Functions: TypeScript in `functions/src`, compiled to `functions/lib` via `pnpm run build:functions`.
-- Hosting target mapping lives in `.firebaserc` (admin→royalcarriagelimoseo, airport→chicagoairportblackcar, corporate→chicagoexecutivecarservice, wedding→chicagoweddingtransportation, partybus→chicago-partybus).
+- **Admin App**: `apps/admin` (Next.js 14). Builds to static export in `out/`.
+- **Marketing Sites**: `apps/{airport,corporate,wedding,partybus}` (Astro). Build to `dist/`.
+- **Functions**: `functions/` (TypeScript). Compiled to `functions/lib`.
+- **Hosting**: 5 targets in `firebase.json` mapping to their respective build outputs.
 
 ## Audit Steps
-1) **Firebase config**: Check `firebase.json` + `.firebaserc` for target/public alignment; confirm `predeploy` uses `pnpm run build`.
+1) **Firebase config**: Check `firebase.json` + `.firebaserc`.
+   - `admin` -> `apps/admin/out`
+   - `airport` -> `apps/airport/dist`
+   - etc.
 2) **Build health**:
-   - `pnpm run build:admin`
-   - `pnpm run build:functions`
-3) **Hosting outputs**: Ensure `apps/admin/dist` exists post-build; confirm marketing `dist` assets present before deploying hosting targets.
-4) **Functions**: Inspect `functions/src/image-generator.ts` (Vertex AI + Storage fallback) and `functions/lib` after build.
-5) **Rules**: Review `firestore.rules`, `firestore.indexes.json`, `storage.rules`; deploy with `firebase deploy --only firestore:rules,firestore:indexes,storage`.
-6) **Deploy check**: For admin, `firebase deploy --only hosting:admin`; verify `https://admin.royalcarriagelimo.com` resolves to the new build.
+   - `pnpm run build`: Builds ALL workspaces.
+   - Individual: `pnpm --filter <pkg> build`.
+3) **Functions**:
+   - `src/index.ts`: Triggers & scheduled tasks.
+   - `src/{dispatch,fleet,payroll}Functions.ts`: Business logic (HTTP).
+   - `tsconfig.json` excludes legacy `src/api` code.
+4) **Rules**:
+   - `firestore.rules`: Role-based access.
+   - `storage.rules`: Checks custom claims synced by `syncUserRole`.
+5) **Deploy**: `pnpm run deploy` or `firebase deploy`.
 
 ## Extending
-- Add new UI to `apps/admin` (Astro); use Tailwind (integrated via `@astrojs/tailwind`).
-- Shared UI lives in `packages/ui`.
-- For new functions, add under `functions/src`, run `pnpm run build:functions`, then `firebase deploy --only functions`.
+- **Admin UI**: Add pages in `apps/admin/src/pages` (Next.js file routing not used? It seems to be a single page app in `src/react/AdminApp.tsx` mounted via Next.js pages).
+- **Marketing**: Add `.astro` pages in `apps/<site>/src/pages`.
+- **Functions**: Add new files in `functions/src` and update `tsconfig.json` include list.
 
 ## Gotchas
-- Local Node is v24; Functions target nodejs20 (CLI warns).
-- Marketing app sources are missing—do not overwrite existing `dist` unless you have rebuildable sources.
-- Vertex AI/Storage credentials must exist in runtime env; generator falls back to placeholders when absent.
+- Local Node is v24; Functions target nodejs20.
+- Admin app is Next.js "Static Export" (`output: 'export'`), so no SSR/API routes in Next.js.
+- Legacy code exists in `functions/src/api` but is excluded from build.

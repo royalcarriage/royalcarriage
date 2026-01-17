@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Phone, Calendar } from "lucide-react";
 import { TrustBadges } from "./TrustBadges";
-import { TrustSignalsInline } from "./TrustSignalsInline";
 
 const PHONE_TEL = "tel:+12248013090";
 const PHONE_DISPLAY = "(224) 801-3090";
@@ -13,7 +12,6 @@ interface HeroProps {
   subtitle: string;
   backgroundImage: string;
   showTrustBadges?: boolean;
-  showTrustSignals?: boolean;
   breadcrumb?: { label: string; href: string }[];
 }
 
@@ -22,7 +20,6 @@ export function Hero({
   subtitle,
   backgroundImage,
   showTrustBadges = false,
-  showTrustSignals = true,
   breadcrumb,
 }: HeroProps) {
   return (
@@ -95,7 +92,6 @@ export function Hero({
             </Button>
           </div>
 
-          {showTrustSignals && <TrustSignalsInline />}
           {showTrustBadges && <TrustBadges />}
         </div>
       </div>

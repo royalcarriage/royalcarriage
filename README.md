@@ -1,218 +1,157 @@
-# Chicago Airport Black Car
+# Royal Carriage Limousine - Monorepo
 
-[![Build and Deploy](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml/badge.svg)](https://github.com/royalcarriage/royalcarriage/actions/workflows/firebase-deploy.yml)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)](https://admin.royalcarriagelimo.com)
+[![Stack](https://img.shields.io/badge/Stack-Next.js%20%7C%20Astro%20%7C%20Firebase-orange)](https://nextjs.org)
+[![Gemini AI](https://img.shields.io/badge/AI-Gemini%201.5-blue)](https://ai.google.dev)
+[![Deployment](https://img.shields.io/badge/Status-Live-success)](https://admin.royalcarriagelimo.com)
 
-Professional airport transportation serving Chicago O'Hare, Midway, and 80+ suburbs.
+Professional limousine service ecosystem managed via a monorepo. **All systems deployed and operational as of January 16, 2026.**
 
-## 🚀 NEW: AI-Powered Website Management System
+## 🏗 System Architecture
 
-This repository now includes a comprehensive AI-powered system for automated SEO optimization, content generation, and website analytics.
+**Monorepo Structure (pnpm workspaces):**
 
-**Key Features:**
+- `apps/admin`: **Admin Dashboard** (Next.js). The control center. Builds to static export in `out/`.
+- `apps/airport`: **Airport Limo Service** (Astro). Marketing site.
+- `apps/corporate`: **Corporate Car Service** (Astro). Marketing site.
+- `apps/wedding`: **Wedding Transportation** (Astro). Marketing site.
+- `apps/partybus`: **Party Bus Rentals** (Astro). Marketing site.
+- `functions`: **Firebase Cloud Functions** (TypeScript). Backend logic, AI, & automation.
+- `packages/ui`: Shared UI components (Tailwind).
 
-- 🤖 AI Page Analyzer with SEO scoring
-- ✍️ Automated content generation using Google Vertex AI
-- 🖼️ AI-powered image generation
-- 📊 Admin dashboard for website management
-- ⏰ Scheduled automated analysis and reporting
-- 🔒 Secure Firebase integration with role-based access
+## 🚀 Live Deployment Status (✅ All Systems Live)
 
-**Quick Access:**
+**Last Deployment**: January 16, 2026
 
-- Admin Dashboard: `https://your-domain.com/admin`
-- [AI System Guide](docs/AI_SYSTEM_GUIDE.md) - Complete documentation
-- [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) - Setup instructions
+| Service               | Domain                                                                       | Firebase Target | Status  |
+| --------------------- | ---------------------------------------------------------------------------- | --------------- | ------- |
+| **Admin Dashboard**   | [admin.royalcarriagelimo.com](https://admin.royalcarriagelimo.com)           | `admin`         | ✅ Live |
+| **Airport Limo**      | [chicagoairportblackcar.com](https://chicagoairportblackcar.com)             | `airport`       | ✅ Live |
+| **Executive Service** | [chicagoexecutivecarservice.com](https://chicagoexecutivecarservice.com)     | `corporate`     | ✅ Live |
+| **Wedding Transport** | [chicagoweddingtransportation.com](https://chicagoweddingtransportation.com) | `wedding`       | ✅ Live |
+| **Party Bus Rental**  | [chicago-partybus.com](https://chicago-partybus.com)                         | `partybus`      | ✅ Live |
 
-## Quick Start
+## 🛠️ Development
 
 ### Prerequisites
 
-- Node.js 20.x LTS or later
-- npm 10.x or later
-- Git
-- Firebase CLI (for AI features): `npm install -g firebase-tools`
-- Google Cloud Project with Vertex AI enabled (for AI features)
+- Node.js v20+
+- npm (for admin app) / pnpm if working on functions
+- Firebase CLI
 
-### Development Setup
+### Admin (Next.js) local dev
 
 ```bash
-# Clone the repository
-git clone https://github.com/royalcarriage/royalcarriage.git
-cd royalcarriage
-
-# Install dependencies
+cd apps/admin
 npm install
-
-# Start development server
-npm run dev
+npm run dev   # http://localhost:3000
 ```
 
-The development server will start at `http://localhost:5000` with hot module replacement enabled.
+Set env in `apps/admin/.env.local`:
 
-### Build for Production
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=royalcarriagelimoseo
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+```
+
+### Build + Deploy
+
+- Build admin: `cd apps/admin && npm run build` (outputs `apps/admin/out`)
+- Deploy admin hosting: `firebase deploy --only hosting:admin`
+- Functions (if changed): `cd functions && pnpm install && pnpm run build && firebase deploy --only functions`
+- Rules/indexes: `firebase deploy --only firestore:rules,firestore:indexes,storage`
+
+### Emulator (optional)
 
 ```bash
-# Build both client and server
-npm run build
-
-# Run smoke tests to verify build
-npm test
-
-# Type check
-npm run check
+firebase emulators:start --only hosting,functions,firestore,storage
 ```
 
-Build output:
+### AI Features (Powered by Google Gemini 1.5)
 
-- Client: `dist/public/` (ready for Firebase Hosting)
-- Server: `dist/index.cjs` (Express server bundle)
+**Deployed Gemini Functions** ✅:
 
-## Project Structure
+- **generateFAQForCity**: Creates city-specific FAQs with 30-day caching (gemini-1.5-flash)
+- **summarizeCustomerReviews**: Aggregates & analyzes customer feedback with sentiment (gemini-1.5-flash)
+- **translatePageContent**: Multi-language translation preserving tone (gemini-1.5-flash)
+- **suggestSocialCaptions**: Platform-specific social media content with vision (gemini-1.5-flash)
+- **analyzeSentimentOfFeedback**: Automatic sentiment analysis on new feedback (gemini-1.5-pro)
+- **aiModelRouter**: Intelligent model selection with cost optimization
+
+**Dashboard Features**:
+
+- SEO Analysis: Automated page scoring
+- Content Generation: Vertex AI integration
+- Image Analysis: Vision-based insights
+- Cost Optimization: ~$1/month for 1000 API calls
+
+## 📁 Project Structure
 
 ```
-royalcarriage/
-├── client/          # React frontend (Vite + TypeScript)
-│   └── src/
-│       └── pages/
-│           └── admin/    # AI admin dashboard
-├── server/          # Express.js backend
-│   └── ai/          # AI services (analyzer, generator, image)
-├── functions/       # Firebase Functions for automation
-├── shared/          # Shared types and database schema
-├── docs/            # Documentation
-│   ├── DEVELOPER_GUIDE.md     # Comprehensive developer guide
-│   ├── REPO_AUDIT.md          # Repository audit report
-│   ├── AI_SYSTEM_GUIDE.md     # AI system documentation
-│   └── DEPLOYMENT_GUIDE.md    # AI deployment instructions
-├── script/          # Build and utility scripts
-└── .github/         # GitHub Actions workflows
+.
+├── apps/
+│   ├── admin/       # Main Dashboard (Next.js)
+│   ├── airport/     # Marketing Site (Astro)
+│   ├── corporate/   # Marketing Site (Astro)
+│   └── ...
+├── functions/       # Cloud Functions (Triggers, API)
+├── packages/        # Shared libraries
+├── firebase.json    # Hosting configuration
+├── firestore.rules  # Database security
+└── storage.rules    # File security
 ```
 
-## Key Commands
+## 🔐 Security (Role-Based Access Control)
 
-| Command           | Description                        |
-| ----------------- | ---------------------------------- |
-| `npm run dev`     | Start development server with HMR  |
-| `npm run build`   | Build for production               |
-| `npm run check`   | TypeScript type checking           |
-| `npm test`        | Run smoke tests                    |
-| `npm run db:push` | Push database schema (Drizzle ORM) |
+**Role Hierarchy** (lowercase):
 
-## SEO Automation Scripts
+- `superadmin`: Full system access
+- `admin`: Administrative functions
+- `editor`: Content editing
+- `viewer`: Read-only access
 
-The project includes a comprehensive SEO content automation pipeline:
+**Implementation**:
 
-```bash
-# Propose new content topics
-node scripts/seo-propose.mjs --keyword "topic" --profit 90 --traffic 500 --difficulty 40
+- ✅ Custom Claims in Firebase Auth
+- ✅ `syncUserRole` Cloud Function mirrors Firestore roles to Auth claims
+- ✅ Firestore security rules enforce role-based access (13 collections)
+- ✅ Storage security rules enforce role-based file access
+- ✅ AuthProvider context manages role state in React
 
-# Generate AI-powered content drafts
-node scripts/seo-draft.mjs --all
+**See**: [Security & Authentication Documentation](./docs/STATUS_FIREBASE_GEMINI.md)
 
-# Run quality validation gates
-node scripts/seo-gate.mjs --all
+## 📚 Comprehensive Documentation
 
-# Publish content via PR workflow
-node scripts/seo-publish.mjs --draft topic-001-keyword.json
+### Quick Start
 
-# Run full pipeline
-node scripts/seo-run.mjs --run --auto-publish
-```
+- **[Deployment Verification Report](DEPLOYMENT_VERIFICATION_REPORT.md)** - Complete deployment status (Jan 16, 2026)
+- **[Quick Start Guide](docs/QUICK_START.md)** - Get started in 5 minutes
+- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Full development setup
 
-For detailed documentation, see **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** or run:
+### Firebase & Infrastructure
 
-```bash
-node scripts/seo-example-workflow.mjs
-```
+- **[Firebase System Audit](FIREBASE_SYSTEM_AUDIT.md)** - Complete Firebase audit (13 collections, 5 auth functions, 31 data ops)
+- **[Firebase Authentication Setup](FIREBASE_AUTH_SETUP.md)** - Auth configuration guide
+- **[Firebase Local Setup](docs/FIREBASE_LOCAL_SETUP.md)** - Emulator configuration
+- **[Security & Status](docs/STATUS_FIREBASE_GEMINI.md)** - Latest system status
 
-## Documentation
+### AI & Advanced Features
 
-- **[Developer Guide](docs/DEVELOPER_GUIDE.md)** - Complete setup, build, deployment, and troubleshooting guide
-- **[CI/CD Workflow](docs/CICD_WORKFLOW.md)** - Comprehensive GitHub Actions workflow documentation
-- **[Repository Audit](docs/REPO_AUDIT.md)** - Repository structure and audit report
-- **[Design Guidelines](design_guidelines.md)** - Brand and design specifications
-- **[AI System Guide](docs/AI_SYSTEM_GUIDE.md)** - AI features documentation and usage
-- **[Deployment Guide](docs/DEPLOYMENT_GUIDE.md)** - AI system deployment instructions
-- **[SEO Automation Guide](scripts/SEO_AUTOMATION_README.md)** - Content automation pipeline documentation
-- **[Google Cloud Security Audit](docs/GOOGLE_CLOUD_SECURITY_AUDIT.md)** - Comprehensive GCP security audit and configuration guide
-- **[Enable Image Generation](docs/ENABLE_IMAGE_GENERATION.md)** - Quick guide to enable AI image generation
+- **[Gemini Integration Guide](GEMINI_INTEGRATION.md)** - Full AI implementation guide (25 KB)
+- **[Gemini Quick Start](GEMINI_QUICK_START.md)** - Deploy AI features in 10 minutes
+- **[Gemini Implementation Summary](GEMINI_IMPLEMENTATION_SUMMARY.md)** - Technical details & metrics
 
-## AI Features
+### Deployment & Operations
+
+- **[Deployment Checklist](OPS_DEPLOY_CHECKLIST.md)** - Pre-deployment verification
+- **[CI/CD Workflow](docs/CICD_WORKFLOW.md)** - GitHub Actions setup
+- **[Audit Log](VSCODE_AI_AUDIT.md)** - System audit history
 
 ### Admin Dashboard
 
-Access the AI-powered admin dashboard at `/admin` to:
-
-- Analyze all website pages for SEO optimization
-- Generate AI-powered content improvements
-- Create AI-generated images
-- Monitor analytics and performance
-- Configure automation settings
-
-### API Endpoints
-
-- `POST /api/ai/analyze-page` - Analyze a page for SEO
-- `POST /api/ai/generate-content` - Generate optimized content
-- `POST /api/ai/generate-image` - Create AI images
-- `POST /api/ai/batch-analyze` - Analyze multiple pages
-- `GET /api/ai/health` - Check AI services status
-
-### Scheduled Tasks
-
-- **Daily Analysis**: 2:00 AM CT - Analyzes all pages automatically
-- **Weekly Reports**: Monday 9:00 AM CT - Generates SEO reports
-
-See [AI System Guide](docs/AI_SYSTEM_GUIDE.md) for complete documentation.
-
-## Deployment
-
-This project is configured for automatic deployment to Firebase Hosting via GitHub Actions.
-
-### Automatic Deployment
-
-- **Main branch**: Pushes automatically deploy to production
-- **Pull requests**: Preview deployments created automatically
-
-### Required Setup
-
-1. Update `.firebaserc` with your Firebase project ID
-2. Add `FIREBASE_SERVICE_ACCOUNT` secret to GitHub repository
-   - Get from Firebase Console → Project Settings → Service Accounts
-   - Base64 encode the JSON:
-     - Linux/WSL: `base64 -w 0 < service-account.json`
-     - macOS: `base64 -i service-account-key.json`
-   - Add to: Settings → Secrets and variables → Actions
-
-3. For AI features, also set up:
-   - Google Cloud Project with Vertex AI enabled
-   - Service account with Vertex AI permissions
-   - Environment variables (see [Deployment Guide](docs/DEPLOYMENT_GUIDE.md))
-
-See [Developer Guide - Deployment Rollout Plan](docs/DEVELOPER_GUIDE.md#deployment-rollout-plan) and [Deployment Guide](docs/DEPLOYMENT_GUIDE.md) for detailed instructions.
-
-## Tech Stack
-
-- **Frontend**: React 18 + Vite 7 + TypeScript
-- **Backend**: Express.js 4
-- **Styling**: Tailwind CSS + Radix UI
-- **Database**: PostgreSQL + Drizzle ORM
-- **Deployment**: Firebase Hosting
-- **CI/CD**: GitHub Actions
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Test locally (`npm run build && npm test`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-## License
-
-Private repository - All rights reserved.
-
-## Support
-
-For development questions and documentation, see the [Developer Guide](docs/DEVELOPER_GUIDE.md).
+- **[Admin Integration Plan](docs/ADMIN_SYSTEM_INTEGRATION_PLAN.md)** - Architecture overview
+- **[Admin Dashboard Redesign](docs/ADMIN_DASHBOARD_REDESIGN.md)** - UI/UX specifications

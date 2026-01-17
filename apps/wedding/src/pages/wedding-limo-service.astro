@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('wedding');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Wedding Limousine Service',
+  serviceDescription: 'Luxury wedding limousine service in Chicago. Elegant transportation for your special day with professional chauffeurs and pristine vehicles. Book your wedding limo today.',
+  serviceType: 'Wedding Limousine',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Wedding Limousine Service Chicago - Luxury Wedding Transportation"
+  description="Luxury wedding limousine service in Chicago. Elegant transportation for your special day with professional chauffeurs and pristine vehicles. Book your wedding limo today."
+  canonical="/wedding-limo-service"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Wedding Limousine Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="wedding" location="hero" size="lg" />
+        <CallButton target="wedding" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Royal Carriage provides elegant wedding limousine service designed to add luxury and sophistication to your special day. Our pristine vehicles and professional chauffeurs ensure you arrive in style while creating beautiful memories.</p>
+
+<h2 class="text-2xl font-bold mb-4">Wedding Limousine Options</h2>
+<div class="space-y-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Stretch Limousines</h3>
+    <p class="mb-3">Classic stretch limousines perfect for the bride and groom or bridal party.</p>
+    <ul class="text-sm space-y-1">
+      <li>• Seating for 6-10 passengers</li>
+      <li>• Champagne bar and elegant interior</li>
+      <li>• Privacy partition</li>
+      <li>• Perfect for photos and grand arrivals</li>
+    </ul>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">Luxury Sedans</h3>
+    <p class="mb-3">Elegant sedans ideal for intimate weddings or transporting the couple.</p>
+    <ul class="text-sm space-y-1">
+      <li>• Seating for 2-3 passengers</li>
+      <li>• Sophisticated and timeless</li>
+      <li>• Professional chauffeur service</li>
+      <li>• Perfect for couples wanting intimate elegance</li>
+    </ul>
+  </div>
+
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3">SUV Limousines</h3>
+    <p class="mb-3">Spacious SUV limos for larger bridal parties.</p>
+    <ul class="text-sm space-y-1">
+      <li>• Seating for 8-14 passengers</li>
+      <li>• Comfortable for long dresses</li>
+      <li>• Entertainment systems</li>
+      <li>• Great for the entire bridal party</li>
+    </ul>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">What's Included</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Professional chauffeur in formal attire</li>
+  <li>Red carpet service for arrivals</li>
+  <li>Complimentary champagne (where legal)</li>
+  <li>Decorations and ribbons upon request</li>
+  <li>Waiting time between locations</li>
+  <li>Coordination with wedding planner</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Booking Your Wedding Limo</h2>
+<p class="mb-4">We recommend booking your wedding transportation 6-12 months in advance, especially for peak wedding season (May-October). Early booking ensures:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Availability of your preferred vehicle</li>
+  <li>Time to coordinate all details</li>
+  <li>Potential early booking discounts</li>
+  <li>Peace of mind with confirmed transportation</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="wedding" location="bottom-cta" size="lg" />
+        <CallButton target="wedding" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

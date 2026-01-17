@@ -19,10 +19,6 @@ import {
   Calendar,
 } from "lucide-react";
 import { Link } from "wouter";
-import {
-  LocalBusinessSchema,
-  BreadcrumbSchema,
-} from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_suv_downtown_chicago.png";
 
@@ -92,16 +88,8 @@ const faqs = [
 ];
 
 export default function About() {
-  const breadcrumbItems = [
-    { name: "Home", url: "https://chicagoairportblackcar.com" },
-    { name: "About", url: "https://chicagoairportblackcar.com/about" },
-  ];
-
   return (
     <Layout>
-      <LocalBusinessSchema image={heroImage} />
-      <BreadcrumbSchema items={breadcrumbItems} />
-
       <SEO
         title="About Chicago Airport Black Car"
         description="Learn about Chicago Airport Black Car – your trusted partner for premium airport transportation. Licensed, insured, and committed to excellence. Professional chauffeur service since day one."

@@ -5,15 +5,8 @@
 
 import { VertexAI } from "@google-cloud/vertexai";
 
-export type ImagePurpose =
-  | "hero"
-  | "service_card"
-  | "fleet"
-  | "location"
-  | "testimonial";
-
 interface ImageGenerationRequest {
-  purpose: ImagePurpose;
+  purpose: "hero" | "service_card" | "fleet" | "location" | "testimonial";
   location?: string;
   vehicle?: string;
   style?: string;
@@ -162,148 +155,17 @@ export class ImageGenerator {
     prompt: string,
     request: ImageGenerationRequest,
   ): Promise<ImageGenerationResult> {
-    if (!this.vertexAI) {
-      throw new Error(
-        "Vertex AI not initialized. Ensure GOOGLE_CLOUD_PROJECT is set.",
-      );
-    }
+    // Note: This uses Vertex AI's Imagen model
+    // Actual implementation depends on available APIs
 
-    try {
-      // Use Imagen 3 for image generation
-      const generativeModel = this.vertexAI.preview.getGenerativeModel({
-        model: "imagen-3.0-generate-001",
-      });
+    const model = "imagegeneration@006"; // Imagen model
 
-      // Determine aspect ratio based on purpose
-      let aspectRatio = "16:9";
-      if (request.purpose === "service_card") {
-        aspectRatio = "3:2";
-      } else if (request.purpose === "fleet") {
-        aspectRatio = "4:3";
-      } else if (request.purpose === "testimonial") {
-        aspectRatio = "1:1";
-      }
+    // This is a placeholder - actual Vertex AI image generation would use
+    // the appropriate API endpoint and authentication
 
-      // Generate the image
-      const generateImageRequest = {
-        prompt: prompt,
-        numberOfImages: 1,
-        aspectRatio: aspectRatio,
-        // Add negative prompt to improve quality
-        negativePrompt:
-          "blurry, low quality, distorted, text, watermark, logo, signature",
-      };
-
-      const result = await generativeModel.generateContent({
-        contents: [
-          {
-            role: "user",
-            parts: [{ text: JSON.stringify(generateImageRequest) }],
-          },
-        ],
-      });
-
-      // Extract image data from response
-      const response = result.response;
-      if (!response.candidates || response.candidates.length === 0) {
-        throw new Error("No image generated from Vertex AI");
-      }
-
-      // Get the generated image data
-      const candidate = response.candidates[0];
-      const content = candidate.content;
-
-      // Check if we have inline data (base64 image)
-      if (content.parts && content.parts[0].inlineData) {
-        const imageData = content.parts[0].inlineData;
-        const base64Data = imageData.data;
-
-        // Convert base64 to buffer for storage
-        const imageBuffer = Buffer.from(base64Data, "base64");
-
-        // Upload to Cloud Storage if available
-        const imageUrl = await this.uploadToStorage(imageBuffer, request);
-
-        // Determine dimensions based on aspect ratio
-        const dimensions = this.getDimensions(request.purpose);
-
-        return {
-          imageUrl,
-          prompt,
-          width: dimensions.width,
-          height: dimensions.height,
-          format: "png",
-        };
-      } else {
-        throw new Error("No image data in Vertex AI response");
-      }
-    } catch (error) {
-      console.error("Vertex AI image generation error:", error);
-      // Fall back to placeholder if Vertex AI fails
-      console.warn("Falling back to placeholder image due to Vertex AI error");
-      return this.generatePlaceholder(request, prompt);
-    }
-  }
-
-  /**
-   * Get dimensions based on image purpose
-   */
-  private getDimensions(purpose: string): { width: number; height: number } {
-    const specs = ImageGenerator.getRecommendedSpecs(purpose);
-    return { width: specs.width, height: specs.height };
-  }
-
-  /**
-   * Upload image to Cloud Storage
-   */
-  private async uploadToStorage(
-    imageBuffer: Buffer,
-    request: ImageGenerationRequest,
-  ): Promise<string> {
-    // If Cloud Storage is not configured, return data URL
-    const bucketName = process.env.GOOGLE_CLOUD_STORAGE_BUCKET;
-
-    if (!bucketName) {
-      console.warn("Cloud Storage bucket not configured, using data URL");
-      // Return base64 data URL as fallback
-      const base64 = imageBuffer.toString("base64");
-      return `data:image/png;base64,${base64}`;
-    }
-
-    try {
-      // Dynamic import to avoid errors if @google-cloud/storage is not installed
-      const { Storage } = await import("@google-cloud/storage");
-      const storage = new Storage({ projectId: this.projectId });
-      const bucket = storage.bucket(bucketName);
-
-      // Generate unique filename
-      const timestamp = Date.now();
-      const filename = `generated/${request.purpose}-${timestamp}.png`;
-      const file = bucket.file(filename);
-
-      // Upload the image
-      await file.save(imageBuffer, {
-        metadata: {
-          contentType: "image/png",
-          cacheControl: "public, max-age=31536000",
-          metadata: {
-            purpose: request.purpose,
-            generatedAt: new Date().toISOString(),
-          },
-        },
-      });
-
-      // Make the file publicly accessible
-      await file.makePublic();
-
-      // Return the public URL
-      return `https://storage.googleapis.com/${bucketName}/${filename}`;
-    } catch (error) {
-      console.error("Cloud Storage upload error:", error);
-      // Return data URL as fallback
-      const base64 = imageBuffer.toString("base64");
-      return `data:image/png;base64,${base64}`;
-    }
+    throw new Error(
+      "Vertex AI image generation not yet configured. Please set up Imagen API access by following the deployment guide at docs/DEPLOYMENT_GUIDE.md. You need to enable the Vertex AI API in Google Cloud Console and configure service account credentials.",
+    );
   }
 
   /**
@@ -359,23 +221,24 @@ export class ImageGenerator {
   }
 
   /**
-   * Generate multiple variations in parallel for better performance
+   * Generate multiple variations
    */
   async generateVariations(
     request: ImageGenerationRequest,
     count: number = 3,
   ): Promise<ImageGenerationResult[]> {
-    // Generate all images in parallel instead of sequentially
-    const promises = Array.from({ length: count }, () =>
-      this.generateImage(request).catch((error) => {
-        console.error("Failed to generate variation:", error);
-        return null;
-      }),
-    );
+    const results: ImageGenerationResult[] = [];
 
-    const results = await Promise.all(promises);
-    // Filter out failed generations (null values)
-    return results.filter((r): r is ImageGenerationResult => r !== null);
+    for (let i = 0; i < count; i++) {
+      try {
+        const result = await this.generateImage(request);
+        results.push(result);
+      } catch (error) {
+        console.error(`Failed to generate variation ${i + 1}:`, error);
+      }
+    }
+
+    return results;
   }
 
   /**

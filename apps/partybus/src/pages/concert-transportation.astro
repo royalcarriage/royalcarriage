@@ -1,0 +1,116 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Concert & Event Transportation',
+  serviceDescription: 'Party bus transportation to Chicago concerts and shows. Safe group travel to United Center, Wrigley Field, Ravinia, and all Chicago venues. Book your concert party bus.',
+  serviceType: 'Concert Transportation',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Concert Transportation Chicago - Party Bus to Shows"
+  description="Party bus transportation to Chicago concerts and shows. Safe group travel to United Center, Wrigley Field, Ravinia, and all Chicago venues. Book your concert party bus."
+  canonical="/concert-transportation"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Concert & Event Transportation</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="partybus" location="hero" size="lg" />
+        <CallButton target="partybus" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg mb-6">Enhance your concert experience with Royal Carriage party bus transportation. Skip the parking hassles, traffic stress, and designated driver worries. Travel to concerts and events with your group in a mobile party atmosphere.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Use a Party Bus for Concerts</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>No Parking Hassles:</strong> Drop-off at venue entrance, no expensive parking fees</li>
+  <li><strong>Start the Party Early:</strong> Pre-concert celebration during travel</li>
+  <li><strong>Everyone Travels Together:</strong> Keep your group together to and from venue</li>
+  <li><strong>Safe Post-Concert Return:</strong> Professional driver gets everyone home safely</li>
+  <li><strong>No Traffic Stress:</strong> Let the driver handle post-concert traffic</li>
+  <li><strong>BYOB:</strong> Enjoy beverages during travel (must be 21+)</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Chicago Concert Venues We Serve</h2>
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">United Center</h3>
+    <p class="text-sm">Major concerts, Bulls/Blackhawks games, and large events</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Wrigley Field</h3>
+    <p class="text-sm">Cubs games, summer concerts, and special events</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Ravinia Festival</h3>
+    <p class="text-sm">Outdoor summer concerts in Highland Park</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Hollywood Casino Amphitheatre</h3>
+    <p class="text-sm">Outdoor concerts in Tinley Park</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">Aragon Ballroom</h3>
+    <p class="text-sm">Mid-size venue concerts on Lawrence Ave</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="font-bold mb-2">House of Blues</h3>
+    <p class="text-sm">Marina City venue for various concerts</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Concert Transportation Process</h2>
+<ol class="list-decimal list-inside space-y-2 mb-6">
+  <li><strong>Book Early:</strong> Reserve your party bus when you buy concert tickets</li>
+  <li><strong>Pickup:</strong> We pick up your group at designated location(s)</li>
+  <li><strong>Pre-Concert Party:</strong> Enjoy the ride and get excited for the show</li>
+  <li><strong>Venue Drop-Off:</strong> Convenient drop-off near venue entrance</li>
+  <li><strong>Waiting Service:</strong> Driver waits or returns at concert end</li>
+  <li><strong>Post-Concert Pickup:</strong> Quick departure while others wait in traffic</li>
+  <li><strong>Safe Return:</strong> Comfortable ride home reliving concert highlights</li>
+</ol>
+
+<h2 class="text-2xl font-bold mb-4">Popular Concert Packages</h2>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li><strong>Standard Package:</strong> Round-trip transportation to/from concert</li>
+  <li><strong>Extended Package:</strong> Pre-concert bar/restaurant stop included</li>
+  <li><strong>VIP Package:</strong> Waiting service, multiple stops, full evening coverage</li>
+  <li><strong>Festival Package:</strong> All-day service for music festivals</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Sporting Events Transportation</h2>
+<p class="mb-4">Not just concerts - perfect for sporting events too:</p>
+<ul class="list-disc list-inside space-y-2 mb-6">
+  <li>Bears games at Soldier Field</li>
+  <li>Cubs and White Sox games</li>
+  <li>Bulls and Blackhawks at United Center</li>
+  <li>Fire soccer matches</li>
+  <li>Northwestern and college sports</li>
+</ul>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

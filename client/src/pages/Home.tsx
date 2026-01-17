@@ -18,11 +18,6 @@ import {
   Users,
   Car,
 } from "lucide-react";
-import {
-  LocalBusinessSchema,
-  FAQSchema,
-  BreadcrumbSchema,
-} from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
@@ -133,19 +128,13 @@ export default function Home() {
     <Layout>
       <SEO
         title="Chicago Airport Black Car Service – O'Hare & Midway"
-        description="Royal Carriage Airport Service — Scheduled pickup, no surge pricing, professional chauffeurs. Fixed rates to O'Hare & Midway airports. Flight tracking included. Book online or call (224) 801-3090."
+        description="Premium black car service to Chicago O'Hare and Midway airports. Professional chauffeurs, flight tracking, flat-rate pricing. Book your reliable airport transportation today. Call (224) 801-3090."
         path="/"
       />
-      <LocalBusinessSchema image="https://chicagoairportblackcar.com/assets/luxury_black_sedan_airport_terminal.png" />
-      <FAQSchema questions={faqItems} />
-      <BreadcrumbSchema
-        items={[{ name: "Home", url: "https://chicagoairportblackcar.com" }]}
-      />
       <Hero
-        title="Royal Carriage Airport Service — No Surge Pricing, Guaranteed Pickup"
-        subtitle="Scheduled black car service to O'Hare & Midway • Fixed rates • Flight tracking • Professional chauffeurs • Never pay surge pricing"
+        title="Chicago Airport Black Car Service – O'Hare & Midway"
+        subtitle="Experience premium airport transportation with our professional chauffeur service. Reliable, comfortable, and always on time."
         backgroundImage={heroImage}
-        showTrustSignals={true}
         showTrustBadges={true}
       />
 

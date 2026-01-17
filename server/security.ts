@@ -8,6 +8,7 @@ import {
   type Response,
   type NextFunction,
 } from "express";
+import { type User, UserRole, type UserRoleType } from "@shared/schema";
 
 /**
  * Configure security headers
@@ -31,22 +32,11 @@ export function setupSecurityHeaders(app: Express) {
       res.setHeader(
         "Content-Security-Policy",
         "default-src 'self'; " +
-          "script-src 'self' https://fonts.googleapis.com; " +
-          "style-src 'self' https://fonts.googleapis.com; " +
-          "font-src 'self' https://fonts.gstatic.com; " +
-          "img-src 'self' data: https:; " +
-          "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;",
-      );
-    } else {
-      // Development: Allow unsafe-inline for hot module replacement
-      res.setHeader(
-        "Content-Security-Policy",
-        "default-src 'self'; " +
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; " +
+          "script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
           "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
           "font-src 'self' https://fonts.gstatic.com; " +
           "img-src 'self' data: https:; " +
-          "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net ws: wss:;",
+          "connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net;",
       );
     }
 
@@ -98,57 +88,90 @@ export function sanitizeInput(input: string): string {
 }
 
 /**
+ * Check if user is authenticated
+ */
+export function requireAuth(req: Request, res: Response, next: NextFunction) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+  next();
+}
+
+/**
  * Check if request is from an authenticated admin
- * This middleware validates JWT tokens and checks for admin role
  */
 export function requireAdmin(req: Request, res: Response, next: NextFunction) {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
-      error: "Authentication required",
-      message:
-        "Please provide a valid Bearer token in the Authorization header",
-    });
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Authentication required" });
   }
 
-  // Extract token
-  const token = authHeader.substring(7); // Remove 'Bearer ' prefix
+  const user = req.user as User;
+  const allowedRoles: UserRoleType[] = [UserRole.ADMIN, UserRole.SUPER_ADMIN];
 
-  // TODO: Integrate with Firebase Admin SDK for token verification
-  // In production, this should verify the JWT token and check custom claims:
-  //
-  // import * as admin from 'firebase-admin';
-  // try {
-  //   const decodedToken = await admin.auth().verifyIdToken(token);
-  //   if (decodedToken.role !== 'admin') {
-  //     return res.status(403).json({ error: 'Forbidden. Admin access required.' });
-  //   }
-  //   req.user = decodedToken; // Attach user info to request
-  //   next();
-  // } catch (error) {
-  //   return res.status(401).json({ error: 'Invalid token' });
-  // }
-
-  // Temporary: Basic validation for development ONLY
-  // WARNING: This is NOT secure for production use and is blocked in production.
-  if (process.env.NODE_ENV === "production") {
-    console.error(
-      "⚠️  requireAdmin middleware is not configured with proper JWT validation in production. Blocking admin access.",
-    );
-    return res.status(503).json({
-      error: "Admin authentication not configured",
-      message:
-        "Admin routes are disabled because authentication is not properly configured on this server.",
-    });
-  }
-
-  // For now (non-production), just check if token exists and is not empty
-  if (token.length < 10) {
-    return res.status(401).json({ error: "Invalid authentication token" });
+  if (!allowedRoles.includes(user.role)) {
+    return res
+      .status(403)
+      .json({ error: "Insufficient permissions. Admin access required." });
   }
 
   next();
+}
+
+/**
+ * Check if request is from a super admin
+ */
+export function requireSuperAdmin(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  if (!req.isAuthenticated()) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
+  const user = req.user as User;
+
+  if (user.role !== UserRole.SUPER_ADMIN) {
+    return res
+      .status(403)
+      .json({
+        error: "Insufficient permissions. Super admin access required.",
+      });
+  }
+
+  next();
+}
+
+/**
+ * Flexible role-based access control
+ * Checks if user has at least the specified role level
+ */
+export function requireRole(minRole: UserRoleType) {
+  const roleHierarchy: Record<UserRoleType, number> = {
+    [UserRole.USER]: 1,
+    [UserRole.ADMIN]: 2,
+    [UserRole.SUPER_ADMIN]: 3,
+  };
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ error: "Authentication required" });
+    }
+
+    const user = req.user as User;
+    const userLevel = roleHierarchy[user.role] || 0;
+    const requiredLevel = roleHierarchy[minRole] || 0;
+
+    if (userLevel < requiredLevel) {
+      return res.status(403).json({
+        error: "Insufficient permissions",
+        required: minRole,
+        current: user.role,
+      });
+    }
+
+    next();
+  };
 }
 
 /**
@@ -160,18 +183,12 @@ export function validateOrigin(
   next: NextFunction,
 ) {
   const origin = req.headers.origin;
-
-  // Get allowed origins from environment or use defaults
-  const allowedOriginsEnv =
-    process.env.ALLOWED_ORIGINS ||
-    "https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com";
-
-  const allowedOrigins = allowedOriginsEnv.split(",").map((o) => o.trim());
-
-  // Add localhost for development
-  if (process.env.NODE_ENV === "development") {
-    allowedOrigins.push("http://localhost:5000", "http://127.0.0.1:5000");
-  }
+  const allowedOrigins = [
+    "https://royalcarriagelimoseo.web.app",
+    "https://chicagoairportblackcar.com",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+  ];
 
   // Allow requests without origin (same-origin requests)
   if (!origin) {

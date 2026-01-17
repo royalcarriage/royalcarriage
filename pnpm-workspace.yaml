@@ -1,7 +1,11 @@
 packages:
-  - "apps/*"
-  - "packages/*"
-  - "client"
-  - "functions"
-  - "server"
-  - "shared"
+  - apps/*
+  - packages/*
+
+onlyBuiltDependencies:
+  - "@firebase/util"
+  - bufferutil
+  - esbuild
+  - protobufjs
+  - re2
+  - sharp

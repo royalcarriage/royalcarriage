@@ -142,7 +142,7 @@ if [ "$READY" = true ]; then
     echo "4. Deploy Hosting:       firebase deploy --only hosting"
     echo "5. Or deploy all:        firebase deploy"
     echo ""
-    echo "Admin Dashboard: https://your-domain.com/admin"
+    echo "Admin Dashboard: https://admin.royalcarriagelimo.com/"
 else
     echo -e "${RED}System needs configuration before deployment${NC}"
     echo ""

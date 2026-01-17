@@ -1,6 +1,5 @@
 # Dependencies
 node_modules/
-.npm-cache/
 
 # Build outputs
 dist/
@@ -35,10 +34,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-# But allow source code in logs directories
-!client/src/pages/admin/logs/
-!**/pages/admin/logs/*.tsx
-
 # Editor directories and files
 .vscode/
 .idea/
@@ -63,4 +58,8 @@ coverage/
 tmp/
 temp/
 *.tmp
-rc-admin-sa.json
+apps/airport/.env
+apps/corporate/.env
+apps/wedding/.env
+apps/partybus/.env
+functions/health-checker-key.json

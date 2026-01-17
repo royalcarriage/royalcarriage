@@ -1,20 +1,30 @@
 # DEPLOYMENT REPORT
 
-**STATUS:** Admin hosting updated; functions built locally; other hosting targets untouched.
+**STATUS:** Full deploy completed (hosting all targets + functions + rules/indexes/storage).
 
 ## Actions
-- Confirmed active project `royalcarriagelimoseo`
-- Built admin app (`pnpm run build:admin`) → output `apps/admin/dist`
-- Deployed admin hosting target to site `royalcarriagelimoseo` (`firebase deploy --only hosting:admin`)
-- Built Functions (`pnpm run build:functions`) → `functions/lib` (tsc + postbuild)
-- Updated `.firebaserc` target mapping to actual site IDs and `firebase.json` predeploy to `pnpm run build`
+
+- Built admin app (Next.js) → `apps/admin/out`
+- Updated `firebase.json` admin `public` to `apps/admin/out`
+- Built Functions (`pnpm --filter royalcarriage-functions build` → tsc) and deployed (unchanged, skipped)
+- Deployed Firestore rules/indexes and Storage rules
+- Applied hosting targets in `.firebaserc` to site IDs
+- Deployed hosting for admin + airport/corporate/wedding/partybus
+- Ran admin self-audit (`node scripts/admin-self-audit.mjs`)
 
 ## Verification
-- `https://admin.royalcarriagelimo.com` now serves the Astro admin dashboard (no Next.js error)
-- `https://royalcarriagelimoseo.web.app` matches admin build
-- Hosting sites present in project: chicagoairportblackcar, chicagoexecutivecarservice, chicagoweddingtransportation, chicago-partybus, royalcarriagelimoseo
 
-## Pending / Risks
-- Functions not deployed yet (runtime nodejs20; local Node v24 emits CLI warning)
-- Marketing targets rely on checked-in `dist` only—source apps missing; redeploy carefully
-- Auth/storage/firestore rules not redeployed in this run
+- Live hosting:
+  - Admin: https://royalcarriagelimoseo.web.app (CNAME for https://admin.royalcarriagelimo.com)
+  - Airport: https://chicagoairportblackcar.web.app
+  - Corporate: https://chicagoexecutivecarservice.web.app
+  - Wedding: https://chicagoweddingtransportation.web.app
+  - Partybus: https://chicago-partybus.web.app
+- Firestore rules + indexes compiled and deployed; Storage rules deployed
+- Functions deploy reported unchanged (no code diff)
+- Self-audit report PASS in `reports/admin-self-audit.md`
+
+## Risks / Notes
+
+- Admin app needs `apps/admin/.env.local` with `NEXT_PUBLIC_FIREBASE_*` for live Auth/Firestore; otherwise UI uses mock data.
+- Marketing sites are static `dist` artifacts; source code missing—rebuild only after recovering sources.

@@ -5,56 +5,210 @@
 
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
-import fetch from "node-fetch";
-import type { Request, Response } from "firebase-functions/v1";
-import type { DocumentSnapshot } from "firebase-functions/v1/firestore";
-import type { EventContext } from "firebase-functions";
+import express from "express";
+import cors from "cors";
+import { registerRoutes } from "./api/routes";
 
-import { ImageGenerator, ImagePurpose } from "./image-generator";
+// Import AI content functions
+import {
+  generateFAQForCity,
+  summarizeCustomerReviews,
+  translatePageContent,
+  suggestSocialCaptions,
+  analyzeSentimentOfFeedback,
+} from "./contentFunctions";
 
-interface PageAnalysis {
-  pageId: string;
-  pageUrl: string;
-  pageName: string;
-  seoScore: number;
-  contentScore: number;
-  recommendations: string[];
-  analyzedAt: admin.firestore.FieldValue;
-  status: "completed" | "failed";
-  error?: string;
-}
+// Import advanced AI functions
+import { aiModelRouter } from "./advancedFunctions";
+
+// Import initialization functions
+import {
+  initializeData,
+  seedLocationServiceMappings,
+  createCollectionIndexes,
+} from "./initializeData";
+
+// Import content generation functions - PHASE 2
+import {
+  generateServiceContent,
+  generateContentBatch,
+  approveAndPublishContent,
+} from "./contentGenerationFunctions";
+
+// Import page generation functions - PHASE 2
+import {
+  generatePageMetadata,
+  buildStaticPages,
+  publishPages,
+} from "./pageGenerationFunctions";
+
+// Import quality scoring functions - PHASE 3
+import {
+  calculateContentQuality,
+  bulkScoreContent,
+  getQualityScoreSummary,
+} from "./qualityScoringFunctions";
+
+// Import auto-regeneration functions - PHASE 3
+import {
+  autoRegenerateContent,
+  scheduledDailyRegeneration,
+  processRegenerationQueue,
+  getRegenerationStatus,
+} from "./autoRegenerationFunctions";
+
+// Import competitor analysis functions - PHASE 3
+import {
+  analyzeCompetitors,
+  getCompetitorAnalysis,
+  identifyServiceGaps,
+  getKeywordOpportunities,
+} from "./competitorAnalysisFunctions";
+
+// Import performance monitoring functions - PHASE 3
+import {
+  getPerformanceMetrics,
+  getTrafficAnalytics,
+  getKeywordRankings,
+  getPerformanceTrends,
+  syncPerformanceMetrics,
+  generatePerformanceReport,
+} from "./performanceMonitoringFunctions";
+
+// Import data initialization function - PHASE 4
+import { initializeProductionData } from "./dataInitializationFunction";
+
+// Import location expansion function - LOCATION EXPANSION
+import { initializeExpandedLocations } from "./scripts/expandLocationsFunction";
+
+// Import content enhancement functions - P2 RC-201
+import {
+  generateLocationFAQ,
+  translateContent,
+  optimizeContentSEO,
+  generateABVariants,
+  createContentVersion,
+  rollbackContentVersion,
+} from "./contentEnhancements";
+
+// Import image optimization functions - P2 RC-202
+import {
+  optimizeImageOnUpload,
+  batchOptimizeImages,
+  generateSrcset,
+  runImageAudit,
+  getOptimizedImageUrl,
+} from "./imageOptimization";
+
+// Import ROI dashboard functions - P2 RC-203
+import {
+  getMetricTrends,
+  getCohortAnalysis,
+  generateForecast,
+  exportDashboardData,
+  getDateRangeSummary,
+} from "./roiDashboard";
+
+// Import sentiment pipeline functions - P2.2
+import {
+  notifyOnNegativeFeedback,
+  generateResponseSuggestion,
+  submitFeedbackResponse,
+  getFeedbackAlertsDashboard,
+  escalateFeedbackAlert,
+} from "./sentimentPipeline";
+
+// Import content approval workflow functions - P2.3
+import {
+  getPendingContentApprovals,
+  approveContent,
+  rejectContent,
+  batchApproveContent,
+  publishApprovedContent,
+  getApprovalStatistics,
+  requestContentRevision,
+} from "./contentApprovalWorkflow";
+
+// Import schedule management functions - PHASE 3
+import {
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+  getSchedules,
+  executeScheduledGeneration,
+  getScheduleHistory,
+  processScheduledGenerations,
+  toggleSchedule,
+} from "./scheduleManagementFunctions";
+
+// Import advanced analytics functions - PHASE 3
+import {
+  getContentAnalytics,
+  getROIAnalysis,
+  getCompetitorBenchmark,
+  generateCustomReport,
+  getAnalyticsTrends,
+} from "./advancedAnalyticsFunctions";
+
+// Import CSV import functions - P1.3
+import {
+  importMoovsCSV,
+  importAdsCSV,
+  getImportHistory,
+  rollbackImport,
+  getImportErrorReport,
+} from "./csvImportFunctions";
+
+// Import fleet initialization functions - PHASE 1
+import {
+  initializeFleetVehicles,
+  getFleetVehicle,
+  getAllFleetVehicles,
+  updateFleetVehicle,
+  deleteFleetVehicle,
+} from "./fleetInitializationFunction";
 
 // Initialize Firebase Admin
-admin.initializeApp();
-
-// Helper function to get backend API URL
-function getBackendUrl(): string {
-  return (
-    process.env.BACKEND_API_URL ||
-    (process.env.FUNCTIONS_EMULATOR === "true"
-      ? "http://localhost:5000"
-      : "https://royalcarriagelimoseo.web.app")
-  );
+if (!admin.apps.length) {
+  admin.initializeApp();
 }
 
-// Helper function to get allowed origins from environment
-function getAllowedOrigins(): string[] {
-  const allowedOriginsEnv =
-    process.env.ALLOWED_ORIGINS ||
-    "https://royalcarriagelimoseo.web.app,https://chicagoairportblackcar.com";
+// Create Express app for API
+const app = express();
 
-  const origins = allowedOriginsEnv.split(",").map((o: string) => o.trim());
+// CORS Configuration - Whitelist only authorized domains
+const allowedOrigins = [
+  "https://admin.royalcarriagelimo.com",
+  "https://chicagoairportblackcar.com",
+  "https://chicagoexecutivecarservice.com",
+  "https://chicagoweddingtransportation.com",
+  "https://chicago-partybus.com",
+  "http://localhost:3000", // Development only
+];
 
-  // Add localhost for development
-  if (
-    process.env.NODE_ENV === "development" ||
-    process.env.FUNCTIONS_EMULATOR === "true"
-  ) {
-    origins.push("http://localhost:5000", "http://127.0.0.1:5000");
-  }
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error(`CORS policy: origin ${origin} not allowed`));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
 
-  return origins;
-}
+// Middleware
+app.use(cors(corsOptions));
+app.use(express.json());
+
+// Register API routes
+registerRoutes(app);
+
+// Export API function
+export const api = functions.https.onRequest(app);
 
 /**
  * Scheduled function: Daily page analysis
@@ -62,101 +216,109 @@ function getAllowedOrigins(): string[] {
  */
 export const dailyPageAnalysis = functions.pubsub
   .schedule("0 2 * * *")
-  .timeZone(process.env.SCHEDULED_TIMEZONE || "America/Chicago")
-  .onRun(async () => {
+  .timeZone("America/Chicago")
+  .onRun(async (context) => {
     functions.logger.info("Starting daily page analysis...");
 
     try {
-      // Get pages to analyze from environment or use defaults
-      const pagesToAnalyzeEnv =
-        process.env.PAGES_TO_ANALYZE ||
-        "/,/,/ohare-airport-limo,/midway-airport-limo,/airport-limo-downtown-chicago,/airport-limo-suburbs,/fleet,/pricing,/about,/contact";
+      const db = admin.firestore();
+      const { geminiClient } = await import("./shared/gemini-client");
 
-      const pageUrls = pagesToAnalyzeEnv
-        .split(",")
-        .map((url: string) => url.trim());
+      // Fetch all pages from settings/master_spec/pages
+      const pagesSnapshot = await db
+        .collection("settings")
+        .doc("master_spec")
+        .collection("pages")
+        .get();
 
-      const pages = pageUrls.map((url: string) => {
-        // Extract page name from URL
-        const name =
-          url === "/"
-            ? "Home"
-            : url
-                .split("/")
-                .filter(Boolean)
-                .join(" ")
-                .split("-")
-                .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
-                .join(" ");
-        return { url, name };
-      });
-
-      // Analyze each page
-      const backendUrl = getBackendUrl();
-
-      for (const page of pages) {
-        functions.logger.info(`Analyzing page: ${page.name} (${page.url})`);
-
-        try {
-          // Fetch the actual page content
-          const pageResponse = await fetch(`${backendUrl}${page.url}`);
-          const pageContent = await pageResponse.text();
-
-          // Call backend API for analysis
-          const analysisResponse = await fetch(
-            `${backendUrl}/api/ai/analyze-page`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                pageUrl: page.url,
-                pageName: page.name,
-                pageContent: pageContent,
-              }),
-            },
-          );
-
-          if (analysisResponse.ok) {
-            const analysisData = await analysisResponse.json();
-
-            // Store successful analysis results in Firestore
-            await admin.firestore().collection("page_analyses").add({
-              pageUrl: page.url,
-              pageName: page.name,
-              seoScore: analysisData.analysis.seoScore,
-              contentScore: analysisData.analysis.contentScore,
-              recommendations: analysisData.analysis.recommendations,
-              analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-              status: "completed",
-            });
-            functions.logger.info(`✓ Successfully analyzed: ${page.name}`);
-          } else {
-            throw new Error(`API returned ${analysisResponse.status}`);
-          }
-        } catch (error) {
-          functions.logger.error(`✗ Failed to analyze ${page.name}:`, error);
-          // Store failed analysis
-          await admin
-            .firestore()
-            .collection("page_analyses")
-            .add({
-              pageUrl: page.url,
-              pageName: page.name,
-              analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-              status: "failed",
-              error: error instanceof Error ? error.message : "Unknown error",
-            });
-        }
+      if (pagesSnapshot.empty) {
+        functions.logger.info("No pages found to analyze");
+        return null;
       }
 
-      functions.logger.info(
-        `Daily analysis completed for ${pages.length} pages`,
-      );
+      const analysisPromises = [];
+      const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+      for (const doc of pagesSnapshot.docs) {
+        const pageData = doc.data();
+        const pageId = doc.id;
+
+        // Create analysis prompt
+        const analysisPrompt = `Analyze this page for SEO quality and provide a score from 0-100:
+
+Page URL: ${pageData.path || "Unknown"}
+Page Title: ${pageData.title || "Unknown"}
+Meta Description: ${pageData.metaDescription || "None"}
+Content: ${pageData.content?.substring(0, 500) || "No content"}
+
+Provide analysis in JSON format:
+{
+  "seoScore": <number 0-100>,
+  "issues": ["list of SEO issues"],
+  "strengths": ["list of strengths"],
+  "recommendations": ["actionable recommendations"],
+  "priority": "low|medium|high"
+}`;
+
+        const promise = geminiClient
+          .generateContent(analysisPrompt, { temperature: 0.3 })
+          .then(async (response) => {
+            const analysis = geminiClient.parseJSON(response, {
+              seoScore: 50,
+              issues: ["Failed to parse analysis"],
+              strengths: [],
+              recommendations: [],
+              priority: "medium",
+            });
+
+            // Store analysis in page_analyses collection
+            await db.collection("page_analyses").add({
+              pageId,
+              pagePath: pageData.path,
+              pageTitle: pageData.title,
+              seoScore: analysis.seoScore,
+              issues: analysis.issues,
+              strengths: analysis.strengths,
+              recommendations: analysis.recommendations,
+              priority: analysis.priority,
+              analyzedAt: timestamp,
+              analysisType: "daily_scheduled",
+            });
+
+            // Create alert if score is low
+            if (analysis.seoScore < 50) {
+              await db.collection("reports").add({
+                type: "seo_alert",
+                severity: "high",
+                pageId,
+                pagePath: pageData.path,
+                seoScore: analysis.seoScore,
+                message: `Low SEO score detected: ${analysis.seoScore}/100`,
+                issues: analysis.issues,
+                createdAt: timestamp,
+              });
+            }
+
+            functions.logger.info(`Analyzed page: ${pageData.path}`, {
+              score: analysis.seoScore,
+            });
+          })
+          .catch((error) => {
+            functions.logger.error(`Failed to analyze page ${pageId}:`, error);
+          });
+
+        analysisPromises.push(promise);
+      }
+
+      await Promise.all(analysisPromises);
+
+      functions.logger.info("Daily page analysis completed", {
+        totalPages: pagesSnapshot.size,
+      });
+
       return null;
     } catch (error) {
-      functions.logger.error("Daily analysis failed:", error);
+      functions.logger.error("Daily page analysis failed:", error);
       throw error;
     }
   });
@@ -167,456 +329,173 @@ export const dailyPageAnalysis = functions.pubsub
  */
 export const weeklySeoReport = functions.pubsub
   .schedule("0 9 * * 1")
-  .timeZone(process.env.SCHEDULED_TIMEZONE || "America/Chicago")
-  .onRun(async () => {
-    functions.logger.info("Generating weekly SEO report...");
+  .timeZone("America/Chicago")
+  .onRun(async (context) => {
+    functions.logger.info("Starting weekly SEO report generation...");
 
     try {
-      // Get all page analyses from the past week
-      const oneWeekAgo = new Date();
-      oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      const db = admin.firestore();
 
-      const snapshot = await admin
-        .firestore()
+      // Get analyses from the past 7 days
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+      const analysesSnapshot = await db
         .collection("page_analyses")
-        .where("analyzedAt", ">=", oneWeekAgo)
+        .where("analyzedAt", ">=", sevenDaysAgo)
+        .orderBy("analyzedAt", "desc")
         .get();
 
-      const analyses = snapshot.docs.map((doc) => doc.data() as PageAnalysis);
+      if (analysesSnapshot.empty) {
+        functions.logger.info("No analyses found for the past week");
+        return null;
+      }
 
-      // Generate summary report
+      // Aggregate data
+      const analyses = analysesSnapshot.docs.map((doc) => doc.data());
+      const scores = analyses.map((a) => a.seoScore || 0);
+      const avgScore =
+        scores.reduce((sum, score) => sum + score, 0) / scores.length;
+
+      // Sort by score
+      const sortedAnalyses = [...analyses].sort(
+        (a, b) => (b.seoScore || 0) - (a.seoScore || 0),
+      );
+
+      const topPages = sortedAnalyses.slice(0, 10);
+      const bottomPages = sortedAnalyses.slice(-10).reverse();
+
+      // Collect all issues
+      const allIssues: string[] = [];
+      analyses.forEach((a) => {
+        if (a.issues && Array.isArray(a.issues)) {
+          allIssues.push(...a.issues);
+        }
+      });
+
+      // Count issue frequency
+      const issueFrequency: { [key: string]: number } = {};
+      allIssues.forEach((issue) => {
+        issueFrequency[issue] = (issueFrequency[issue] || 0) + 1;
+      });
+
+      // Get top 10 most common issues
+      const commonIssues = Object.entries(issueFrequency)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 10)
+        .map(([issue, count]) => ({ issue, count }));
+
+      // Create weekly report
       const report = {
-        periodStart: oneWeekAgo,
-        periodEnd: new Date(),
-        totalPages: analyses.length,
-        averageSeoScore:
-          analyses.reduce(
-            (sum: number, a: PageAnalysis) => sum + (a.seoScore || 0),
-            0,
-          ) / analyses.length,
-        averageContentScore:
-          analyses.reduce(
-            (sum: number, a: PageAnalysis) => sum + (a.contentScore || 0),
-            0,
-          ) / analyses.length,
-        generatedAt: admin.firestore.FieldValue.serverTimestamp(),
+        type: "weekly_seo_report",
+        reportPeriod: {
+          startDate: sevenDaysAgo.toISOString(),
+          endDate: new Date().toISOString(),
+        },
+        summary: {
+          totalPagesAnalyzed: analyses.length,
+          averageScore: Math.round(avgScore * 10) / 10,
+          highScorePages: topPages.length,
+          lowScorePages: bottomPages.filter((p) => p.seoScore < 50).length,
+        },
+        topPages: topPages.map((p) => ({
+          path: p.pagePath,
+          title: p.pageTitle,
+          score: p.seoScore,
+        })),
+        bottomPages: bottomPages.map((p) => ({
+          path: p.pagePath,
+          title: p.pageTitle,
+          score: p.seoScore,
+        })),
+        commonIssues,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
       };
 
       // Store report
-      await admin.firestore().collection("seo_reports").add(report);
+      await db.collection("reports").add(report);
 
-      functions.logger.info("Weekly SEO report generated successfully");
+      functions.logger.info("Weekly SEO report generated", {
+        totalPages: analyses.length,
+        avgScore,
+      });
+
       return null;
     } catch (error) {
-      functions.logger.error("Weekly report generation failed:", error);
+      functions.logger.error("Weekly SEO report generation failed:", error);
       throw error;
     }
   });
-
-/**
- * HTTP function: Trigger page analysis
- * Manual trigger for page analysis via API
- */
-export const triggerPageAnalysis = functions.https.onRequest(
-  async (req: Request, res: Response) => {
-    // Configure CORS based on environment
-    const allowedOrigins = getAllowedOrigins();
-
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.set("Access-Control-Allow-Origin", origin);
-    }
-
-    if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Methods", "POST");
-      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      res.status(204).send("");
-      return;
-    }
-
-    if (req.method !== "POST") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    // Check authentication (require admin role)
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({
-        error: "Authentication required. Please provide a valid Bearer token.",
-      });
-      return;
-    }
-
-    try {
-      // Verify Firebase Auth token
-      const token = authHeader.substring(7); // Remove 'Bearer ' prefix
-      const decodedToken = await admin.auth().verifyIdToken(token);
-
-      // Check if user is admin (requires custom claims to be set)
-      if (decodedToken.role !== "admin") {
-        res.status(403).json({
-          error: "Forbidden. Admin access required.",
-        });
-        return;
-      }
-
-      const { pageUrl, pageName, pageContent } = req.body;
-
-      if (!pageUrl || !pageName || !pageContent) {
-        res.status(400).json({
-          error: "Missing required fields: pageUrl, pageName, pageContent",
-        });
-        return;
-      }
-
-      // Sanitize inputs
-      const sanitizedPageUrl = pageUrl.trim();
-      const sanitizedPageName = pageName.trim().replace(/[<>]/g, "");
-
-      // Call backend API for actual AI analysis
-      const backendUrl = getBackendUrl();
-      const analysisResponse = await fetch(
-        `${backendUrl}/api/ai/analyze-page`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            pageUrl: sanitizedPageUrl,
-            pageName: sanitizedPageName,
-            pageContent: pageContent,
-          }),
-        },
-      );
-
-      if (!analysisResponse.ok) {
-        throw new Error(
-          `Backend API error: ${analysisResponse.status} ${analysisResponse.statusText}`,
-        );
-      }
-
-      const analysisData = await analysisResponse.json();
-
-      // Store analysis results in Firestore
-      const analysisToStore = {
-        pageUrl: sanitizedPageUrl,
-        pageName: sanitizedPageName,
-        seoScore: analysisData.analysis.seoScore,
-        contentScore: analysisData.analysis.contentScore,
-        recommendations: analysisData.analysis.recommendations,
-        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-        status: "completed",
-      };
-
-      const docRef = await admin
-        .firestore()
-        .collection("page_analyses")
-        .add(analysisToStore);
-
-      // Now that we have the docRef.id, we can create the full analysis object if needed,
-      // or just return the relevant data.
-      res.status(200).json({
-        success: true,
-        analysisId: docRef.id,
-        analysis: { ...analysisToStore, pageId: docRef.id },
-      });
-    } catch (error) {
-      functions.logger.error("Page analysis failed:", error);
-      res.status(500).json({
-        error: "Analysis failed",
-        message: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  },
-);
-
-/**
- * HTTP function: Generate content
- * Trigger AI content generation
- */
-export const generateContent = functions.https.onRequest(
-  async (req: Request, res: Response) => {
-    // Configure CORS based on environment
-    const allowedOrigins = getAllowedOrigins();
-
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.set("Access-Control-Allow-Origin", origin);
-    }
-
-    if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Methods", "POST");
-      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      res.status(204).send("");
-      return;
-    }
-
-    if (req.method !== "POST") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    // Check authentication (require admin role)
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({
-        error: "Authentication required. Please provide a valid Bearer token.",
-      });
-      return;
-    }
-
-    try {
-      // Verify Firebase Auth token
-      const token = authHeader.substring(7);
-      const decodedToken = await admin.auth().verifyIdToken(token);
-
-      // Check if user is admin
-      if (decodedToken.role !== "admin") {
-        res.status(403).json({
-          error: "Forbidden. Admin access required.",
-        });
-        return;
-      }
-
-      const { pageType, location, vehicle, targetKeywords } = req.body;
-
-      if (!pageType || !targetKeywords) {
-        res.status(400).json({
-          error: "Missing required fields: pageType, targetKeywords",
-        });
-        return;
-      }
-
-      // Sanitize inputs
-      const sanitizedLocation = location
-        ? location.trim().replace(/[<>]/g, "")
-        : "Chicago";
-      const sanitizedVehicle = vehicle
-        ? vehicle.trim().replace(/[<>]/g, "")
-        : "Limo";
-      const sanitizedPageType = pageType.trim().replace(/[<>]/g, "");
-
-      // Generate content (simplified template for now)
-      const content = {
-        title: `${sanitizedLocation} ${sanitizedVehicle} Service | Premium Airport Transportation`,
-        metaDescription: `Professional ${sanitizedLocation} airport limo service. Reliable black car transportation to O'Hare & Midway.`,
-        heading: `Premium ${sanitizedVehicle} Service`,
-        content: `Experience luxury transportation with our professional ${sanitizedVehicle.toLowerCase()} service in ${sanitizedLocation}.`,
-        ctaText: "Book Your Ride Now",
-        generatedAt: new Date().toISOString(),
-      };
-
-      // Store in Firestore
-      await admin.firestore().collection("content_suggestions").add({
-        pageType: sanitizedPageType,
-        location: sanitizedLocation,
-        vehicle: sanitizedVehicle,
-        targetKeywords,
-        generatedContent: content,
-        status: "pending_review",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      res.status(200).json({
-        success: true,
-        content,
-      });
-    } catch (error) {
-      functions.logger.error("Content generation failed:", error);
-      res.status(500).json({
-        error: "Content generation failed",
-        message: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  },
-);
-
-/**
- * HTTP function: Generate image
- * Trigger AI image generation
- */
-export const generateImage = functions.https.onRequest(
-  async (req: Request, res: Response) => {
-    // Configure CORS based on environment
-    const allowedOrigins = getAllowedOrigins();
-
-    const origin = req.headers.origin;
-    if (origin && allowedOrigins.includes(origin)) {
-      res.set("Access-Control-Allow-Origin", origin);
-    }
-
-    if (req.method === "OPTIONS") {
-      res.set("Access-Control-Allow-Methods", "POST");
-      res.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
-      res.status(204).send("");
-      return;
-    }
-
-    if (req.method !== "POST") {
-      res.status(405).send("Method Not Allowed");
-      return;
-    }
-
-    // Check authentication (require admin role)
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({
-        error: "Authentication required. Please provide a valid Bearer token.",
-      });
-      return;
-    }
-
-    try {
-      const { purpose, location, vehicle, style, description } = req.body;
-
-      if (!purpose) {
-        res.status(400).json({
-          error: "Missing required field: purpose",
-        });
-        return;
-      }
-
-      // Create image generator instance
-      const projectId =
-        process.env.GOOGLE_CLOUD_PROJECT || process.env.GCP_PROJECT;
-      const imageGenerator = new ImageGenerator(projectId, "us-central1");
-
-      // Generate the image
-      const result = await imageGenerator.generateImage({
-        purpose: purpose as ImagePurpose,
-        location,
-        vehicle,
-        style,
-        description,
-      });
-
-      // Store in Firestore with full metadata
-      const docRef = await admin.firestore().collection("ai_images").add({
-        purpose,
-        location,
-        vehicle,
-        style,
-        description,
-        imageUrl: result.imageUrl,
-        prompt: result.prompt,
-        width: result.width,
-        height: result.height,
-        format: result.format,
-        status: "generated",
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      // Track usage for rate limiting
-      const today = new Date().toISOString().split("T")[0];
-      const userId = "system"; // In production, use actual user ID from auth
-      const usageRef = admin
-        .firestore()
-        .collection("usage_stats")
-        .doc(`${userId}_${today}`);
-
-      await usageRef.set(
-        {
-          userId,
-          date: today,
-          imageGenerations: admin.firestore.FieldValue.increment(1),
-          totalCost: admin.firestore.FieldValue.increment(0.02), // Approximate cost per image
-          lastGeneration: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true },
-      );
-
-      // Log audit event
-      await admin
-        .firestore()
-        .collection("audit_logs")
-        .add({
-          action: "image_generated",
-          resourceId: docRef.id,
-          resourceType: "ai_image",
-          userId: "system",
-          details: {
-            purpose,
-            prompt: result.prompt,
-            status: "success",
-          },
-          timestamp: admin.firestore.FieldValue.serverTimestamp(),
-        });
-
-      res.status(200).json({
-        success: true,
-        image: result,
-        imageId: docRef.id,
-      });
-    } catch (error) {
-      functions.logger.error("Image generation failed:", error);
-
-      // Log failure in audit logs
-      try {
-        await admin
-          .firestore()
-          .collection("audit_logs")
-          .add({
-            action: "image_generation_failed",
-            resourceType: "ai_image",
-            userId: "system",
-            details: {
-              error: error instanceof Error ? error.message : "Unknown error",
-              status: "failed",
-            },
-            timestamp: admin.firestore.FieldValue.serverTimestamp(),
-          });
-      } catch (logError) {
-        functions.logger.error("Failed to log error:", logError);
-      }
-
-      res.status(500).json({
-        error: "Image generation failed",
-        message: error instanceof Error ? error.message : "Unknown error",
-      });
-    }
-  },
-);
 
 /**
  * Firestore trigger: Auto-analyze new pages
  * Automatically analyze pages when they're added to the database
  */
 export const autoAnalyzeNewPage = functions.firestore
-  .document("pages/{pageId}")
-  .onCreate(async (snap: DocumentSnapshot, context: EventContext) => {
-    const page = snap.data();
+  .document("settings/master_spec/pages/{pageId}")
+  .onCreate(async (snap, context) => {
+    const pageId = context.params.pageId;
+    const pageData = snap.data();
 
-    if (!page) {
-      functions.logger.error("Page data is undefined");
-      return null;
-    }
-
-    functions.logger.info(`Auto-analyzing new page: ${page.name}`);
+    functions.logger.info(`Auto-analyzing new page: ${pageId}`);
 
     try {
-      // Perform analysis
-      const analysis: PageAnalysis = {
-        pageId: context.params.pageId,
-        pageUrl: page.url,
-        pageName: page.name,
-        seoScore: Math.floor(Math.random() * 40) + 60,
-        contentScore: Math.floor(Math.random() * 40) + 60,
+      const db = admin.firestore();
+      const { geminiClient } = await import("./shared/gemini-client");
+
+      // Create analysis prompt
+      const analysisPrompt = `Analyze this newly created page for SEO quality and provide a score from 0-100:
+
+Page URL: ${pageData.path || "Unknown"}
+Page Title: ${pageData.title || "Unknown"}
+Meta Description: ${pageData.metaDescription || "None"}
+Content: ${pageData.content?.substring(0, 500) || "No content"}
+
+Provide analysis in JSON format:
+{
+  "seoScore": <number 0-100>,
+  "issues": ["list of SEO issues"],
+  "strengths": ["list of strengths"],
+  "recommendations": ["actionable recommendations"],
+  "priority": "low|medium|high"
+}`;
+
+      const response = await geminiClient.generateContent(analysisPrompt, {
+        temperature: 0.3,
+      });
+
+      const analysis = geminiClient.parseJSON(response, {
+        seoScore: 50,
+        issues: ["Failed to parse analysis"],
+        strengths: [],
         recommendations: [],
-        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
-        status: "completed",
-      };
+        priority: "medium",
+      });
 
       // Store analysis
-      await admin.firestore().collection("page_analyses").add(analysis);
+      await db.collection("page_analyses").add({
+        pageId,
+        pagePath: pageData.path,
+        pageTitle: pageData.title,
+        seoScore: analysis.seoScore,
+        issues: analysis.issues,
+        strengths: analysis.strengths,
+        recommendations: analysis.recommendations,
+        priority: analysis.priority,
+        analyzedAt: admin.firestore.FieldValue.serverTimestamp(),
+        analysisType: "auto_on_create",
+      });
 
-      functions.logger.info(`Auto-analysis completed for page: ${page.name}`);
+      functions.logger.info(`Successfully analyzed new page: ${pageId}`, {
+        score: analysis.seoScore,
+      });
+
+      return null;
     } catch (error) {
-      functions.logger.error("Auto-analysis failed:", error);
+      functions.logger.error(`Failed to auto-analyze page ${pageId}:`, error);
+      // Don't throw - we don't want to fail page creation
+      return null;
     }
-
-    return null;
   });
 
 /**
@@ -625,7 +504,7 @@ export const autoAnalyzeNewPage = functions.firestore
  */
 export const syncUserRole = functions.firestore
   .document("users/{userId}")
-  .onWrite(async (change: functions.Change<functions.firestore.DocumentSnapshot>, context: functions.EventContext) => {
+  .onWrite(async (change, context) => {
     const userId = context.params.userId;
     const newData = change.after.exists ? change.after.data() : null;
     const previousData = change.before.exists ? change.before.data() : null;
@@ -638,13 +517,17 @@ export const syncUserRole = functions.firestore
       return null;
     }
 
-    functions.logger.info(`Syncing role for user ${userId}: ${previousRole} -> ${newRole}`);
+    functions.logger.info(
+      `Syncing role for user ${userId}: ${previousRole} -> ${newRole}`,
+    );
 
     try {
       if (newRole) {
         // Set custom claim
         await admin.auth().setCustomUserClaims(userId, { role: newRole });
-        functions.logger.info(`Successfully set role '${newRole}' for user ${userId}`);
+        functions.logger.info(
+          `Successfully set role '${newRole}' for user ${userId}`,
+        );
       } else {
         // Remove custom claim if role is removed
         await admin.auth().setCustomUserClaims(userId, { role: null });
@@ -656,3 +539,321 @@ export const syncUserRole = functions.firestore
 
     return null;
   });
+
+// --- AI CONTENT FUNCTIONS ---
+
+// Export AI content functions
+export {
+  generateFAQForCity,
+  summarizeCustomerReviews,
+  translatePageContent,
+  suggestSocialCaptions,
+  analyzeSentimentOfFeedback,
+};
+
+// Export advanced AI functions
+export { aiModelRouter };
+
+// --- INITIALIZATION & DATA MANAGEMENT FUNCTIONS ---
+
+// Export initialization functions
+export { initializeData, seedLocationServiceMappings, createCollectionIndexes };
+
+// --- CONTENT GENERATION FUNCTIONS ---
+
+// Export content generation functions
+export {
+  generateServiceContent,
+  generateContentBatch,
+  approveAndPublishContent,
+};
+
+// --- PAGE GENERATION FUNCTIONS ---
+
+// Export page generation functions
+export { generatePageMetadata, buildStaticPages, publishPages };
+
+// --- QUALITY SCORING FUNCTIONS - PHASE 3 ---
+
+// Export quality scoring functions
+export { calculateContentQuality, bulkScoreContent, getQualityScoreSummary };
+
+// --- AUTO-REGENERATION FUNCTIONS - PHASE 3 ---
+
+// Export auto-regeneration functions
+export {
+  autoRegenerateContent,
+  scheduledDailyRegeneration,
+  processRegenerationQueue,
+  getRegenerationStatus,
+};
+
+// --- COMPETITOR ANALYSIS FUNCTIONS - PHASE 3 ---
+
+// Export competitor analysis functions
+export {
+  analyzeCompetitors,
+  getCompetitorAnalysis,
+  identifyServiceGaps,
+  getKeywordOpportunities,
+};
+
+// --- PERFORMANCE MONITORING FUNCTIONS - PHASE 3 ---
+
+// Export performance monitoring functions
+export {
+  getPerformanceMetrics,
+  getTrafficAnalytics,
+  getKeywordRankings,
+  getPerformanceTrends,
+  syncPerformanceMetrics,
+  generatePerformanceReport,
+};
+
+// --- PHASE 4: PRODUCTION DATA INITIALIZATION ---
+
+// Export data initialization function
+export { initializeProductionData };
+
+// --- LOCATION EXPANSION: 173+ CHICAGO LOCATIONS ---
+
+// Export location expansion function
+export { initializeExpandedLocations };
+
+// --- P2 RC-201: CONTENT GENERATION ENHANCEMENTS ---
+
+// Export content enhancement functions
+export {
+  generateLocationFAQ,
+  translateContent,
+  optimizeContentSEO,
+  generateABVariants,
+  createContentVersion,
+  rollbackContentVersion,
+};
+
+// --- P2 RC-202: IMAGE OPTIMIZATION PIPELINE ---
+
+// Export image optimization functions
+export {
+  optimizeImageOnUpload,
+  batchOptimizeImages,
+  generateSrcset,
+  runImageAudit,
+  getOptimizedImageUrl,
+};
+
+// --- P2 RC-203: ROI DASHBOARD ENHANCEMENTS ---
+
+// Export ROI dashboard functions
+export {
+  getMetricTrends,
+  getCohortAnalysis,
+  generateForecast,
+  exportDashboardData,
+  getDateRangeSummary,
+};
+
+// --- P2.2: SENTIMENT ANALYSIS PIPELINE ---
+
+// Export sentiment pipeline functions
+export {
+  notifyOnNegativeFeedback,
+  generateResponseSuggestion,
+  submitFeedbackResponse,
+  getFeedbackAlertsDashboard,
+  escalateFeedbackAlert,
+};
+
+// --- P2.3: CONTENT APPROVAL WORKFLOW ---
+
+// Export content approval workflow functions
+export {
+  getPendingContentApprovals,
+  approveContent,
+  rejectContent,
+  batchApproveContent,
+  publishApprovedContent,
+  getApprovalStatistics,
+  requestContentRevision,
+};
+
+// --- PHASE 3: SCHEDULE MANAGEMENT FUNCTIONS ---
+
+// Export schedule management functions
+export {
+  createSchedule,
+  updateSchedule,
+  deleteSchedule,
+  getSchedules,
+  executeScheduledGeneration,
+  getScheduleHistory,
+  processScheduledGenerations,
+  toggleSchedule,
+};
+
+// --- PHASE 3: ADVANCED ANALYTICS FUNCTIONS ---
+
+// Export advanced analytics functions
+export {
+  getContentAnalytics,
+  getROIAnalysis,
+  getCompetitorBenchmark,
+  generateCustomReport,
+  getAnalyticsTrends,
+};
+
+// --- SERVICE EXPANSION: 80 SERVICES (20 PER WEBSITE) ---
+
+// Import expanded services functions
+import {
+  initializeExpandedServices,
+  getServiceStatistics,
+  validateServices,
+  getServiceById,
+  listServicesByWebsite,
+} from "./expandedServicesFunction";
+
+// Export expanded services functions
+export {
+  initializeExpandedServices,
+  getServiceStatistics,
+  validateServices,
+  getServiceById,
+  listServicesByWebsite,
+};
+
+// --- PHASE 1: FLEET INITIALIZATION FUNCTIONS ---
+
+// Export fleet initialization functions
+export {
+  initializeFleetVehicles,
+  getFleetVehicle,
+  getAllFleetVehicles,
+  updateFleetVehicle,
+  deleteFleetVehicle,
+};
+
+// --- CONTENT GENERATION PIPELINE - ENTERPRISE SCALE ---
+
+// Import content generation pipeline functions
+import {
+  generateLocationServiceContent,
+  batchGenerateContent,
+  approveAndPublishContent as pipelineApproveAndPublishContent,
+  generatePageMetadata as pipelineGeneratePageMetadata,
+  buildStaticPages as pipelineBuildStaticPages,
+} from "./contentGenerationPipeline";
+
+// Export content generation pipeline functions
+export {
+  generateLocationServiceContent,
+  batchGenerateContent,
+  pipelineApproveAndPublishContent,
+  pipelineGeneratePageMetadata,
+  pipelineBuildStaticPages,
+};
+
+// --- P1.3: CSV DATA IMPORT FUNCTIONS ---
+
+// Export CSV import functions
+export {
+  importMoovsCSV,
+  importAdsCSV,
+  getImportHistory,
+  rollbackImport,
+  getImportErrorReport,
+};
+
+// --- AI COMMAND CENTER FUNCTIONS ---
+
+// Import AI terminal functions
+import {
+  executeTerminalCommand,
+  getCommandHistory,
+  getSystemMetrics,
+  logActivity,
+} from "./aiTerminalFunctions";
+
+// Import AI chat functions
+import {
+  chatWithAI,
+  getChatHistory,
+  deleteChatConversation,
+  quickAIAction,
+} from "./aiChatFunctions";
+
+// Export AI terminal functions
+export {
+  executeTerminalCommand,
+  getCommandHistory,
+  getSystemMetrics,
+  logActivity,
+};
+
+// Export AI chat functions
+export { chatWithAI, getChatHistory, deleteChatConversation, quickAIAction };
+
+// --- AI CHAT WITH ROLE-BASED PERMISSIONS ---
+
+// Import role-based AI chat functions
+import {
+  processAIChatMessage,
+  getAIChatHistory,
+  executeAICommand,
+  deleteAIConversation,
+} from "./aiChat";
+
+// Export role-based AI chat functions
+export {
+  processAIChatMessage,
+  getAIChatHistory,
+  executeAICommand,
+  deleteAIConversation,
+};
+
+// --- RBAC & USER MANAGEMENT FUNCTIONS ---
+
+// Import user management functions
+import {
+  createUser,
+  updateUser,
+  deleteUser,
+  assignRole,
+  updateUserRole,
+  getUsersByOrganization,
+  getUserPermissions,
+} from "./userManagement";
+
+// Import organization management functions
+import {
+  createOrganization,
+  updateOrganization,
+  deleteOrganization,
+  listOrganizations,
+  addUserToOrganization,
+  removeUserFromOrganization,
+  getOrganizationUsers,
+} from "./organizationManagement";
+
+// Export user management functions
+export {
+  createUser,
+  updateUser,
+  deleteUser,
+  assignRole,
+  updateUserRole,
+  getUsersByOrganization,
+  getUserPermissions,
+};
+
+// Export organization management functions
+export {
+  createOrganization,
+  updateOrganization,
+  deleteOrganization,
+  listOrganizations,
+  addUserToOrganization,
+  removeUserFromOrganization,
+  getOrganizationUsers,
+};

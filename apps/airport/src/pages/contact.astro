@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "Contact Us",
+  serviceDescription: "Contact Royal Carriage Limousine for Chicago airport transportation. Call (224) 801-3090 or book online. 24/7 customer service for O'Hare and Midway limo service.",
+  serviceType: "Airport Limousine Service",
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="Contact Royal Carriage Limousine - Book Airport Transportation"
+  description="Contact Royal Carriage Limousine for Chicago airport transportation. Call (224) 801-3090 or book online. 24/7 customer service for O'Hare and Midway limo service."
+  canonical="/contact"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Ready to book your airport limousine service? Contact Royal Carriage Limousine today. We're available 24/7 to answer questions, provide quotes, and make reservations for O'Hare and Midway airport transportation.</p>
+
+<div class="grid md:grid-cols-2 gap-8 mb-8">
+  <div>
+    <h2 class="text-2xl font-bold mb-4">Get In Touch</h2>
+    <div class="space-y-4">
+      <div class="flex items-start">
+        <svg class="w-6 h-6 text-blue-600 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Phone</p>
+          <a href="tel:+12248013090" class="text-blue-600 hover:text-blue-800">(224) 801-3090</a>
+          <p class="text-sm text-gray-600">Available 24/7</p>
+        </div>
+      </div>
+
+      <div class="flex items-start">
+        <svg class="w-6 h-6 text-blue-600 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Service Area</p>
+          <p class="text-gray-700">Chicago & All Suburbs</p>
+          <p class="text-sm text-gray-600">O'Hare & Midway Airports</p>
+        </div>
+      </div>
+
+      <div class="flex items-start">
+        <svg class="w-6 h-6 text-blue-600 mr-3 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div>
+          <p class="font-bold">Hours</p>
+          <p class="text-gray-700">24/7 Service</p>
+          <p class="text-sm text-gray-600">Including holidays</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-8">
+      <h3 class="text-xl font-bold mb-3">Quick Quote Request</h3>
+      <p class="text-gray-700 mb-4">For the fastest service, book online using our instant quote system. You'll receive immediate confirmation and pricing.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-50 p-6 rounded-lg">
+    <h2 class="text-2xl font-bold mb-4">Frequently Asked Questions</h2>
+    <div class="space-y-4">
+      <div>
+        <p class="font-bold">How far in advance should I book?</p>
+        <p class="text-sm text-gray-700">We recommend booking at least 24 hours in advance, but we can often accommodate same-day reservations based on availability.</p>
+      </div>
+      <div>
+        <p class="font-bold">Do you track flight delays?</p>
+        <p class="text-sm text-gray-700">Yes, we monitor all flights in real-time and automatically adjust pickup times for delays or early arrivals at no extra charge.</p>
+      </div>
+      <div>
+        <p class="font-bold">What is your cancellation policy?</p>
+        <p class="text-sm text-gray-700">Free cancellation up to 24 hours before scheduled pickup. Cancellations within 24 hours may incur a fee.</p>
+      </div>
+      <div>
+        <p class="font-bold">Do you offer corporate accounts?</p>
+        <p class="text-sm text-gray-700">Yes, we provide corporate billing with monthly invoicing for businesses requiring frequent airport transportation.</p>
+      </div>
+      <div>
+        <p class="font-bold">Are gratuities included?</p>
+        <p class="text-sm text-gray-700">Gratuity is not included in the quoted price but can be added during booking or paid directly to your chauffeur.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bg-blue-600 text-white p-8 rounded-lg text-center">
+  <h2 class="text-2xl font-bold mb-4">Ready to Experience Premium Airport Transportation?</h2>
+  <p class="mb-6">Book online now or call us for immediate assistance</p>
+</div>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

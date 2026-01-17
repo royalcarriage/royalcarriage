@@ -1,0 +1,213 @@
+{
+  "version": "1.0.0",
+  "org": "royalcarriagelimo",
+  "firebase": {
+    "projectId": "royalcarriagelimoseo",
+    "primaryAdminDomain": "https://admin.royalcarriagelimo.com",
+    "defaultDomains": [
+      "https://royalcarriagelimoseo.web.app",
+      "https://royalcarriagelimoseo.firebaseapp.com"
+    ],
+    "redirectPolicy": "redirect-defaults-to-primary-or-noindex",
+    "auth": {
+      "provider": "google",
+      "roles": ["SuperAdmin", "Admin", "Editor", "Viewer"],
+      "superAdminEmail": "info@royalcarriagelimo.com",
+      "authorizedDomains": [
+        "admin.royalcarriagelimo.com",
+        "royalcarriagelimoseo.web.app",
+        "royalcarriagelimoseo.firebaseapp.com"
+      ]
+    }
+  },
+  "constants": {
+    "phoneDisplay": "(224) 801-3090",
+    "phoneTel": "tel:+12248013090",
+    "bookingUrlBase": "https://customer.moovs.app/royal-carriage-limousine/new/info",
+    "ga4MeasurementId": "G-CC67CH86JR",
+    "utmDefaults": {
+      "utm_medium": "seo",
+      "utm_campaign": "microsites",
+      "utm_source_from_siteSlug": true,
+      "preserveQueryParams": [
+        "gclid",
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content"
+      ]
+    }
+  },
+  "sites": [
+    {
+      "siteSlug": "airport",
+      "domain": "https://chicagoairportblackcar.com",
+      "intent": "airport"
+    },
+    {
+      "siteSlug": "partybus",
+      "domain": "https://chicago-partybus.com",
+      "intent": "partybus"
+    },
+    {
+      "siteSlug": "corporate",
+      "domain": "https://chicagoexecutivecarservice.com",
+      "intent": "corporate"
+    },
+    {
+      "siteSlug": "wedding",
+      "domain": "https://chicagoweddingtransportation.com",
+      "intent": "wedding"
+    }
+  ],
+  "imports": {
+    "moovs": {
+      "storagePath": "imports/moovs/",
+      "immutableRaw": true,
+      "requiredColumns": [
+        "Pickup Date",
+        "Order Type",
+        "Trip Type",
+        "Total Amount ($)",
+        "Status Slug"
+      ],
+      "dedupeKeys": [
+        "Order No",
+        "Reservation ID",
+        "Pickup Date",
+        "Total Amount ($)",
+        "Created At"
+      ],
+      "statusRules": {
+        "countRevenueStatuses": ["done"],
+        "excludeStatuses": ["cancelled", "refunded", "no_show"]
+      }
+    },
+    "googleAds": {
+      "storagePath": "imports/google-ads/",
+      "datasets": [
+        "campaigns",
+        "keywords",
+        "search_terms",
+        "devices",
+        "demographics_age",
+        "demographics_gender"
+      ],
+      "minFilesForRoi": ["campaigns", "keywords"]
+    },
+    "ga4": {
+      "requiredEvents": [
+        "call_now_click",
+        "book_now_click",
+        "quote_submit",
+        "scroll_75",
+        "view_vehicle"
+      ],
+      "adminTrafficFilter": true
+    },
+    "gsc": {
+      "manualCsvImport": true,
+      "requiredReports": ["pages", "queries", "coverage"]
+    }
+  },
+  "profitModel": {
+    "marginDefaults": {
+      "airport": 0.28,
+      "corporate": 0.3,
+      "wedding": 0.33,
+      "partybus": 0.35
+    },
+    "profitProxyFormula": "revenue - tax - driver_payout - ad_spend"
+  },
+  "kpiThresholds": {
+    "freshness": {
+      "adsHoursGreen": 24,
+      "adsHoursYellow": 72,
+      "moovsHoursGreen": 24,
+      "moovsHoursYellow": 72,
+      "ga4HoursGreen": 24,
+      "ga4HoursYellow": 72,
+      "gscDaysGreen": 7,
+      "gscDaysYellow": 14
+    },
+    "seoGate": {
+      "minWords": { "service": 1200, "city": 1200, "blog": 900, "fleet": 900 },
+      "minFaq": { "service": 10, "city": 8, "blog": 6, "fleet": 8 },
+      "maxSemanticSimilarity": 0.8,
+      "maxDuplicateTitles": 0,
+      "maxBrokenLinks": 0
+    },
+    "images": {
+      "minImagesMoneyPage": 4,
+      "minImagesFleetPage": 10,
+      "maxHeroKb": 300,
+      "requireAltText": true
+    },
+    "publishing": {
+      "maxPagesPerCycle": 10,
+      "defaultPublishCadenceDays": 14,
+      "blockPublishIfAnyRed": true
+    }
+  },
+  "ui": {
+    "nav": {
+      "sidebarAccordion": true,
+      "topBar": ["siteSelector", "globalSearch", "statusChips", "quickActions"],
+      "topBarConfig": {
+        "statusChips": ["freshness", "seo_health", "system_status"],
+        "quickActions": ["import_moovs", "import_ads", "run_audit", "deploy"]
+      },
+      "densityToggle": true
+    },
+    "pages": [
+      "overview",
+      "imports/moovs",
+      "imports/ads",
+      "roi",
+      "sites",
+      "seo-bot",
+      "images",
+      "deploy",
+      "users",
+      "settings",
+      "reports"
+    ]
+  },
+  "automation": {
+    "schedules": [
+      {
+        "name": "nightly_metrics",
+        "freq": "daily",
+        "time": "03:10",
+        "action": "metrics:import"
+      },
+      {
+        "name": "biweekly_seo_propose",
+        "freq": "biweekly",
+        "time": "04:20",
+        "action": "seo:propose+seo:gate+openPR"
+      },
+      {
+        "name": "weekly_quality",
+        "freq": "weekly",
+        "time": "05:15",
+        "action": "verify:seo:full+openIssueIfFail"
+      }
+    ],
+    "publishing": { "mode": "PR-only", "noDirectMainPush": true }
+  },
+  "reports": {
+    "dir": "/reports",
+    "required": [
+      "repo-audit.md",
+      "firebase-targets-and-domains.md",
+      "auth-domain-check.md",
+      "admin-login-smoketest.md",
+      "roi-report.md",
+      "seo-gate-report.md",
+      "image-audit.md",
+      "enterprise-audit.md"
+    ]
+  }
+}

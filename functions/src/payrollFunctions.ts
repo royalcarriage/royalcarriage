@@ -1,128 +1,210 @@
-// Functions for Payroll module
-
 import * as functions from "firebase-functions/v1";
 import * as admin from "firebase-admin";
+import { initFirebase } from "./init";
 
-// Initialize Firebase Admin
-admin.initializeApp();
+initFirebase();
+const db = admin.firestore();
 
-// --- Driver Profiles Functions ---
+const verifyAuth = (context: any) => {
+  if (!context.auth)
+    throw new functions.https.HttpsError("unauthenticated", "Auth required");
+};
 
-export const createDriverProfile = functions.https.onRequest(
-  async (req, res) => {
-    if (req.method !== "POST") {
-      return res.status(405).send("Method Not Allowed");
-    }
+// --- DRIVER PROFILES ---
 
-    try {
-      const {
-        firstName,
-        lastName,
-        email,
-        phone,
-        hireDate,
-        status,
-        payRate,
-        payRateType,
-        paymentMethod,
-        bankInfo,
-        deductions,
-      } = req.body;
-
-      if (!firstName || !lastName || !email || !payRate || !payRateType) {
-        return res.status(400).json({
-          error:
-            "Missing required fields: firstName, lastName, email, payRate, payRateType",
-        });
-      }
-
-      const profile = {
-        firstName,
-        lastName,
-        email,
-        phone,
-        hireDate: new Date(hireDate), // Ensure date is valid
-        status: status || "active",
-        payRate: parseFloat(payRate),
-        payRateType,
-        paymentMethod,
-        bankInfo,
-        deductions: deductions || [],
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        createdBy: req.body.auth?.uid || null,
-      };
-
-      const writeResult = await admin
-        .firestore()
-        .collection("driverProfiles")
-        .add(profile);
-      res.status(201).json({ id: writeResult.id, ...profile });
-    } catch (error) {
-      functions.logger.error("Error creating driver profile:", error);
-      res.status(500).json({ error: "Internal server error" });
-    }
+export const createDriverProfile = functions.https.onCall(
+  async (data, context) => {
+    verifyAuth(context);
+    const ref = await db.collection("drivers").add({
+      ...data,
+      status: "active",
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    return { id: ref.id };
   },
 );
 
-export const getDriverProfiles = functions.https.onRequest(async (req, res) => {
-  if (req.method !== "GET") {
-    return res.status(405).send("Method Not Allowed");
-  }
+export const updateDriverProfile = functions.https.onCall(
+  async (data, context) => {
+    verifyAuth(context);
+    const { driverId, updates } = data;
+    await db.collection("drivers").doc(driverId).update(updates);
+    return { success: true };
+  },
+);
 
-  try {
-    const snapshot = await admin.firestore().collection("driverProfiles").get();
-    const profiles = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    res.status(200).json(profiles);
-  } catch (error) {
-    functions.logger.error("Error fetching driver profiles:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
+export const getDriverList = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const snap = await db.collection("drivers").get();
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }));
 });
 
-// Placeholder for update and delete functions for driver profiles
-export const updateDriverProfile = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Update Driver Profile");
+// --- TIME & ATTENDANCE ---
+
+export const clockIn = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const { driverId, location } = data;
+  await db.collection("time_entries").add({
+    driverId,
+    type: "clock_in",
+    location,
+    timestamp: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  await db.collection("drivers").doc(driverId).update({ status: "on_duty" });
+  return { success: true };
 });
 
-export const deleteDriverProfile = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Delete Driver Profile");
+export const clockOut = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const { driverId, location } = data;
+  await db.collection("time_entries").add({
+    driverId,
+    type: "clock_out",
+    location,
+    timestamp: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  await db.collection("drivers").doc(driverId).update({ status: "off_duty" });
+  return { success: true };
 });
 
-// --- Pay Rules Functions (Placeholders) ---
-
-export const createPayRule = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Create Pay Rule");
+export const getTimeSheet = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const { driverId, startDate, endDate } = data;
+  const snap = await db
+    .collection("time_entries")
+    .where("driverId", "==", driverId)
+    .where("timestamp", ">=", new Date(startDate))
+    .where("timestamp", "<=", new Date(endDate))
+    .orderBy("timestamp", "asc")
+    .get();
+  return snap.docs.map((d) => d.data());
 });
 
-export const getPayRules = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Get Pay Rules");
+// --- PAYROLL CALCULATION ---
+
+export const generatePayStub = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const { driverId, periodStart, periodEnd } = data;
+
+  // Fetch trips
+  const trips = await db
+    .collection("trips")
+    .where("driverId", "==", driverId)
+    .where("completedAt", ">=", new Date(periodStart))
+    .where("completedAt", "<=", new Date(periodEnd))
+    .get();
+
+  let grossPay = 0;
+  trips.docs.forEach((t) => {
+    // Simplified payout logic: 40% of fare
+    grossPay += (t.data().finalFare || 0) * 0.4;
+  });
+
+  // Create record
+  const ref = await db.collection("pay_stubs").add({
+    driverId,
+    periodStart,
+    periodEnd,
+    grossPay,
+    generatedAt: admin.firestore.FieldValue.serverTimestamp(),
+    status: "draft",
+  });
+
+  return { id: ref.id, grossPay };
 });
 
-// --- Payroll Runs Functions (Placeholders) ---
-
-export const createPayrollRun = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Create Payroll Run");
+export const approvePayStub = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  await db.collection("pay_stubs").doc(data.stubId).update({
+    status: "approved",
+    approvedBy: context.auth!.uid,
+    approvedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  return { success: true };
 });
 
-export const getPayrollRuns = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Get Payroll Runs");
+export const listPayStubs = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const snap = await db
+    .collection("pay_stubs")
+    .where("driverId", "==", data.driverId)
+    .orderBy("periodStart", "desc")
+    .get();
+  return snap.docs.map((d) => d.data());
 });
 
-// --- Payroll Statements Functions (Placeholders) ---
+// --- PERFORMANCE & INCIDENTS ---
 
-export const createPayrollStatement = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Create Payroll Statement");
+export const logDriverIncident = functions.https.onCall(
+  async (data, context) => {
+    verifyAuth(context);
+    const { driverId, type, description, severity } = data;
+    await db.collection("incidents").add({
+      driverId,
+      type,
+      description,
+      severity,
+      reportedBy: context.auth!.uid,
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    return { success: true };
+  },
+);
+
+export const getDriverPerformance = functions.https.onCall(
+  async (data, context) => {
+    verifyAuth(context);
+    const trips = await db
+      .collection("trips")
+      .where("driverId", "==", data.driverId)
+      .where("status", "==", "completed")
+      .get();
+
+    const totalTrips = trips.size;
+    const ratingSum = trips.docs.reduce(
+      (acc, t) => acc + (t.data().rating || 5),
+      0,
+    );
+
+    return {
+      totalTrips,
+      averageRating: totalTrips > 0 ? ratingSum / totalTrips : 5,
+    };
+  },
+);
+
+// --- ADMIN ---
+
+export const updatePayRate = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  const { driverId, newRate, type } = data; // type: hourly or percentage
+  await db.collection("drivers").doc(driverId).update({
+    payRate: newRate,
+    payType: type,
+  });
+  return { success: true };
 });
 
-export const getPayrollStatements = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Get Payroll Statements");
+export const terminateDriver = functions.https.onCall(async (data, context) => {
+  verifyAuth(context);
+  await db.collection("drivers").doc(data.driverId).update({
+    status: "terminated",
+    terminatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  });
+  return { success: true };
 });
 
-// --- Carryover Functions (Placeholders) ---
-
-export const updateCarryover = functions.https.onRequest((req, res) => {
-  res.status(501).send("Not Implemented: Update Carryover");
-});
+export const verifyDriverDocuments = functions.https.onCall(
+  async (data, context) => {
+    verifyAuth(context);
+    const { driverId, documentType } = data;
+    await db.collection("driver_documents").add({
+      driverId,
+      documentType,
+      verified: true,
+      verifiedBy: context.auth!.uid,
+      verifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+    });
+    return { success: true };
+  },
+);

@@ -1,39 +1,239 @@
 ---
-import { MainLayout } from '@royal-carriage/ui';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+import { getSiteImages } from '@packages/astro-utils/images';
+
+const config = getSiteConfig('partybus');
+const images = getSiteImages('partybus');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: 'Chicago Party Bus Rental',
+  serviceDescription: 'Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation.',
+  serviceType: 'Party Bus Rental',
+  url: Astro.url.pathname
+});
 ---
 
-<MainLayout
-  title="Chicago Party Bus Rental | Luxury Event Transportation"
-  description="Chicago's premier party bus rental service. Perfect for weddings, birthdays, corporate events, and nights out."
-  siteTitle="Chicago Party Bus"
-  navLinks={[
-    { href: '/', text: 'Home' },
-    { href: '/fleet', text: 'Fleet' },
-    { href: '/events', text: 'Events' },
-    { href: '/pricing', text: 'Pricing' },
-    { href: '/contact', text: 'Contact' }
-  ]}
-  utmSource="partybus"
+<BaseLayout
+  title="Chicago Party Bus Rental - Premium Group Transportation"
+  description="Premium party bus rentals in Chicago. Perfect for birthdays, concerts, bachelor/bachelorette parties, and special events. Spacious, entertaining, safe group transportation."
+  canonical="/index"
+  schema={serviceSchema}
+  ogImage={images.og}
 >
-  <div class="container mx-auto p-8">
-    <h1 class="text-5xl font-bold mb-6">Chicago Party Bus Rentals</h1>
-    <p class="text-xl mb-4">
-      Make your celebration unforgettable with our luxury party bus service.
-      Perfect for any occasion - birthdays, bachelor/bachelorette parties, corporate events, and more.
-    </p>
-    <div class="grid md:grid-cols-3 gap-6 mt-8">
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-3">Birthdays</h2>
-        <p>Celebrate in style with our spacious party buses</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-3">Weddings</h2>
-        <p>Transport your bridal party in luxury</p>
-      </div>
-      <div class="bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold mb-3">Corporate</h2>
-        <p>Professional event transportation</p>
+  <!-- Hero Section with Real Image -->
+  <section class="relative text-white py-28 md:py-36">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={images.hero.main}
+        alt="Chicago party bus rental nightlife"
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-900/90 to-slate-900/80"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4">
+      <div class="max-w-3xl text-center mx-auto">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">Chicago Party Bus Rental</h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-100">The ultimate way to celebrate with your crew</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <CTAButton target="partybus" location="hero" size="lg" />
+          <CallButton target="partybus" location="hero" size="lg" />
+        </div>
       </div>
     </div>
-  </div>
-</MainLayout>
+  </section>
+
+  <!-- Introduction -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-xl text-gray-700 leading-relaxed">
+          Experience the ultimate group celebration with Royal Carriage Limousine's premium party bus rentals. Perfect for birthdays, bachelor/bachelorette parties, concerts, and any event where your group wants to travel and party together in style.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us with Interior Image -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6">Why Choose Our Party Buses</h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <span class="text-purple-600 text-2xl">🎉</span>
+              <div><strong>Spacious Interior:</strong> Room for 20-30 passengers with space to move and socialize</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-purple-600 text-2xl">🔊</span>
+              <div><strong>Entertainment Systems:</strong> Premium sound, LED lighting, and entertainment features</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-purple-600 text-2xl">🛡️</span>
+              <div><strong>Safety First:</strong> Professional chauffeurs ensure safe transportation while you party</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-purple-600 text-2xl">🍻</span>
+              <div><strong>No Designated Driver:</strong> Everyone can enjoy the celebration</div>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-purple-600 text-2xl">📍</span>
+              <div><strong>Multiple Stops:</strong> Visit multiple venues without parking hassles</div>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <img src={images.fleet.partybus} alt="Party bus interior with LED lights" class="rounded-lg shadow-xl w-full" loading="lazy" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Perfect For Section with Images -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Perfect For Every Occasion</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.hero.secondary} alt="Birthday party bus Chicago" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Birthday Parties</h3>
+            <p class="text-gray-600">Celebrate milestone birthdays with friends in a mobile party venue</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image1} alt="Bachelor bachelorette party bus" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Bachelor/Bachelorette</h3>
+            <p class="text-gray-600">Pre-wedding celebrations with the wedding party</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.hero.tertiary} alt="Concert transportation party bus" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Concerts & Events</h3>
+            <p class="text-gray-600">Transportation to concerts, sporting events, and shows</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image3} alt="Bar crawl party bus Chicago" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Bar Crawls</h3>
+            <p class="text-gray-600">Visit multiple bars and clubs without driving</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.suv} alt="Corporate party bus rental" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Corporate Events</h3>
+            <p class="text-gray-600">Team building, company parties, and outings</p>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image2} alt="Prom party bus Chicago" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6 text-center">
+            <h3 class="text-xl font-bold mb-2 text-purple-700">Proms & Homecoming</h3>
+            <p class="text-gray-600">Safe group transportation for school dances</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Party Bus Features -->
+  <section class="py-16 bg-purple-900 text-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Party Bus Features</h2>
+      <div class="grid md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">🔊</div>
+          <div class="font-bold">Premium Sound Systems</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">💡</div>
+          <div class="font-bold">LED Mood Lighting</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">💃</div>
+          <div class="font-bold">Dance Floor Area</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">🍾</div>
+          <div class="font-bold">Bar with Coolers</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">🛋️</div>
+          <div class="font-bold">Comfortable Seating</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">🔒</div>
+          <div class="font-bold">Privacy Windows</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">❄️</div>
+          <div class="font-bold">Climate Control</div>
+        </div>
+        <div class="text-center p-6 bg-purple-800/50 rounded-lg">
+          <div class="text-4xl mb-4">📱</div>
+          <div class="font-bold">Bluetooth Connectivity</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">How Party Bus Rental Works</h2>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-700">1</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Choose Your Bus</h3>
+          <p class="text-gray-600">Select size based on your group (20-30 passengers)</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-700">2</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Book Your Time</h3>
+          <p class="text-gray-600">Minimum 4-hour rental, additional hours available</p>
+        </div>
+        <div class="text-center">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl font-bold text-purple-700">3</span>
+          </div>
+          <h3 class="font-bold text-lg mb-2">Enjoy the Ride</h3>
+          <p class="text-gray-600">Your chauffeur handles driving while you party!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA with Background Image -->
+  <section class="relative text-white py-20">
+    <div class="absolute inset-0 z-0">
+      <img src={images.supporting.image3} alt="Chicago party bus nightlife" class="w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-900/95 to-slate-900/90"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Book Your Party Bus Now</h2>
+      <p class="text-xl mb-8 text-gray-200">Get the party started - call or book online</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="partybus" location="bottom-cta" size="lg" variant="secondary" />
+        <CallButton target="partybus" location="bottom-cta" size="lg" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

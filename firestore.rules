@@ -1,174 +1,447 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helper function to check if user is authenticated
+
+    // ===========================================
+    // HELPER FUNCTIONS
+    // ===========================================
+
     function isAuthenticated() {
       return request.auth != null;
     }
-    
-    // Helper function to get user data
-    function getUserData() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+
+    function getRole() {
+      return request.auth.token.role != null ? request.auth.token.role : 'viewer';
     }
-    
-    // Helper function to check user role
+
+    function getUserOrgId() {
+      return request.auth.token.organizationId != null ? request.auth.token.organizationId : null;
+    }
+
     function hasRole(role) {
-      return isAuthenticated() && getUserData().role == role;
+      return isAuthenticated() && getRole() == role;
     }
-    
-    // Helper function to check if user has minimum role
-    function hasMinimumRole(role) {
-      let userRole = getUserData().role;
-      let roleHierarchy = {
-        'SuperAdmin': 4,
-        'Admin': 3,
-        'Editor': 2,
-        'Viewer': 1
-      };
-      return isAuthenticated() && 
-             roleHierarchy[userRole] >= roleHierarchy[role];
+
+    // ===========================================
+    // ROLE HIERARCHY (Multi-Organization)
+    // ===========================================
+
+    // SaaS Admin - Can view/manage everything across all organizations
+    function isSaasAdmin() {
+      return hasRole('saas_admin') || hasRole('superadmin');
     }
-    
-    // Helper function to check if user is SuperAdmin
-    function isSuperAdmin() {
-      return hasRole('SuperAdmin');
-    }
-    
-    // Helper function to check if user is Admin or higher
+
+    // Admin - Full access within their organization
     function isAdmin() {
-      return hasMinimumRole('Admin');
+      return isSaasAdmin() || hasRole('admin');
     }
-    
-    // Helper function to check if user is Editor or higher
+
+    // Fleet Manager - Manage drivers, vehicles, issues, deductions
+    function isFleetManager() {
+      return isAdmin() || hasRole('fleet_manager');
+    }
+
+    // Accountant - Import CSV, view accounting, receipts, refunds
+    function isAccountant() {
+      return isAdmin() || hasRole('accountant');
+    }
+
+    // Dispatcher - View vehicles, drivers, assignments, issues
+    function isDispatcher() {
+      return isAdmin() || hasRole('dispatcher');
+    }
+
+    // Editor - Content editing (legacy)
     function isEditor() {
-      return hasMinimumRole('Editor');
+      return isAdmin() || hasRole('editor');
     }
-    
-    // Helper function to check if user is authenticated (Viewer or higher)
+
+    // Viewer - Read-only access (legacy)
     function isViewer() {
-      return hasMinimumRole('Viewer');
+      return isEditor() || hasRole('viewer') || isDispatcher() || isAccountant() || isFleetManager();
     }
-    
-    // Helper function to check image generation rate limit
-    function canGenerateImage() {
-      let today = request.time.toMillis() - (request.time.toMillis() % 86400000); // 86400000 ms = 1 day
-      let usageStatsPath = /databases/$(database)/documents/usage_stats/$(request.auth.uid + '_' + today);
-      
-      // Rate limit: matches MAX_IMAGES_PER_DAY environment variable (default 50)
-      let maxImagesPerDay = 50;
-      
-      return isAdmin() && (
-        !exists(usageStatsPath) ||
-        get(usageStatsPath).data.imageGenerations < maxImagesPerDay
-      );
+
+    // ===========================================
+    // ORGANIZATION ACCESS CONTROL
+    // ===========================================
+
+    function belongsToOrganization(orgId) {
+      return isSaasAdmin() || getUserOrgId() == orgId;
     }
-    
-    // Helper function to validate image data
-    function isValidImageData() {
-      return request.resource.data.keys().hasAll(['imageUrl', 'purpose', 'prompt', 'createdAt', 'createdBy']) &&
-             request.resource.data.purpose in ['hero', 'service_card', 'fleet', 'location', 'testimonial'] &&
-             request.resource.data.imageUrl is string &&
-             request.resource.data.prompt is string &&
-             request.resource.data.createdBy == request.auth.uid;
+
+    function canAccessResourceOrg(resourceOrgId) {
+      return isSaasAdmin() || (resourceOrgId == null) || (getUserOrgId() == resourceOrgId);
     }
-    
-    // Users collection - role-based access
+
+    // ===========================================
+    // ORGANIZATIONS COLLECTION
+    // ===========================================
+
+    match /organizations/{orgId} {
+      allow read: if isAuthenticated() && (isSaasAdmin() || belongsToOrganization(orgId));
+      allow create: if isSaasAdmin();
+      allow update: if isSaasAdmin() || (isAdmin() && belongsToOrganization(orgId));
+      allow delete: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // USERS COLLECTION (Multi-Org)
+    // ===========================================
+
     match /users/{userId} {
-      // Users can read their own data
-      allow read: if isAuthenticated() && request.auth.uid == userId;
-      // Admins can read all users
-      allow read: if isAdmin();
-      // Users can update their own profile (but not role)
-      allow update: if isAuthenticated() && 
-                      request.auth.uid == userId && 
-                      !request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']);
-      // Only SuperAdmin and Admin can manage user roles
-      allow write: if isSuperAdmin() || isAdmin();
+      // Users can read their own profile, admins can read users in their org, saas_admin can read all
+      allow read: if isAuthenticated() && (
+        request.auth.uid == userId ||
+        isSaasAdmin() ||
+        (isAdmin() && canAccessResourceOrg(resource.data.organizationId))
+      );
+      // Users can create their own profile
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      // Admins can update users in their org (except role), saas_admin can update any
+      allow update: if isSaasAdmin() || (
+        isAdmin() &&
+        canAccessResourceOrg(resource.data.organizationId) &&
+        request.resource.data.role == resource.data.role
+      );
+      allow delete: if isSaasAdmin();
     }
-    
-    // Page analyses - Editor or higher can write, Viewer can read
-    match /page_analyses/{analysisId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    // ===========================================
+    // VEHICLES COLLECTION (Dispatcher, Fleet Manager, Admin)
+    // ===========================================
+
+    match /vehicles/{vehicleId} {
+      allow read: if isAuthenticated() && (
+        isSaasAdmin() ||
+        isDispatcher() ||
+        isFleetManager() ||
+        isAdmin()
+      ) && canAccessResourceOrg(resource.data.organizationId);
+      allow create, update: if isAuthenticated() && (
+        isSaasAdmin() ||
+        isFleetManager() ||
+        isAdmin()
+      ) && canAccessResourceOrg(request.resource.data.organizationId);
+      allow delete: if isSaasAdmin() || isAdmin();
     }
-    
-    // Content suggestions - Editor or higher
-    match /content_suggestions/{suggestionId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    match /fleet_vehicles/{vehicleId} {
+      // Public read for static site generation (fleet pages)
+      allow read: if true;
+      allow write: if isFleetManager() || isAdmin() || isSaasAdmin();
     }
-    
-    // AI images - admin only with validation
-    match /ai_images/{imageId} {
-      allow read: if isViewer();
-      
-      // Create: admin only, must pass validation and rate limit
-      allow create: if isAdmin() && 
-                      canGenerateImage() &&
-                      isValidImageData();
-      
-      // Update: admin only, can only update status and approval fields
-      allow update: if isAdmin() && 
-                      request.resource.data.diff(resource.data).affectedKeys()
-                        .hasOnly(['status', 'approvedAt', 'approvedBy', 'updatedAt']);
-      
-      // Delete: soft delete only via status field, no hard deletes
-      allow delete: if false;
+
+    // ===========================================
+    // DRIVERS COLLECTION (Dispatcher, Fleet Manager, Admin)
+    // ===========================================
+
+    match /drivers/{driverId} {
+      allow read: if isAuthenticated() && (
+        isDispatcher() ||
+        isFleetManager() ||
+        isAccountant() ||
+        isAdmin() ||
+        isSaasAdmin()
+      ) && canAccessResourceOrg(resource.data.organizationId);
+      allow create, update: if isAuthenticated() && (
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      ) && canAccessResourceOrg(request.resource.data.organizationId);
+      allow delete: if isAdmin() || isSaasAdmin();
     }
-    
-    // Usage statistics - system managed, admin read-only
-    match /usage_stats/{statId} {
-      allow read: if isAdmin();
-      allow write: if false; // Only Firebase Functions can write
+
+    // ===========================================
+    // VEHICLE ASSIGNMENTS (Dispatcher, Fleet Manager)
+    // ===========================================
+
+    match /vehicle_assignments/{assignmentId} {
+      allow read: if isAuthenticated() && (
+        isDispatcher() ||
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow write: if isFleetManager() || isAdmin() || isSaasAdmin();
     }
-    
-    // Audit logs - read only for admins
-    match /audit_logs/{logId} {
-      allow read: if isAdmin();
-      allow write: if false; // Only system can write
+
+    // ===========================================
+    // VEHICLE ISSUES (Dispatcher can view, Fleet Manager can manage)
+    // ===========================================
+
+    match /vehicle_issues/{issueId} {
+      allow read: if isAuthenticated() && (
+        isDispatcher() ||
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow create: if isDispatcher() || isFleetManager() || isAdmin() || isSaasAdmin();
+      allow update, delete: if isFleetManager() || isAdmin() || isSaasAdmin();
     }
-    
-    // Scheduled jobs - admin only
-    match /scheduled_jobs/{jobId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    // ===========================================
+    // ACCOUNTING & FINANCIAL (Accountant, Admin)
+    // ===========================================
+
+    match /accounting/{docId} {
+      allow read: if isAuthenticated() && (
+        isAccountant() ||
+        isAdmin() ||
+        isSaasAdmin()
+      ) && canAccessResourceOrg(resource.data.organizationId);
+      allow write: if isAccountant() || isAdmin() || isSaasAdmin();
     }
-    
-    // AI settings - admin only
-    match /ai_settings/{settingId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated() && (
+        isAccountant() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow write: if isAccountant() || isAdmin() || isSaasAdmin();
     }
-    
-    // SEO reports - viewer can read, editor can write
-    match /seo_reports/{reportId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (isAccountant() || isAdmin() || isSaasAdmin());
+      allow write: if isAccountant() || isAdmin() || isSaasAdmin();
     }
-    
-    // Pages - viewer can read, editor can write
-    match /pages/{pageId} {
-      allow read: if isViewer();
-      allow write: if isEditor();
+
+    // ===========================================
+    // RECEIPTS (Accountant can view/upload)
+    // ===========================================
+
+    match /receipts/{receiptId} {
+      allow read: if isAuthenticated() && (
+        isAccountant() ||
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow create: if isAccountant() || isFleetManager() || isAdmin() || isSaasAdmin();
+      allow update, delete: if isAccountant() || isAdmin() || isSaasAdmin();
     }
-    
-    // CSV imports - admin only
-    match /csv_imports/{importId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    // ===========================================
+    // REFUNDS (Accountant can report)
+    // ===========================================
+
+    match /refunds/{refundId} {
+      allow read: if isAuthenticated() && (isAccountant() || isAdmin() || isSaasAdmin());
+      allow create, update: if isAccountant() || isAdmin() || isSaasAdmin();
+      allow delete: if isAdmin() || isSaasAdmin();
     }
-    
-    // Analytics data - viewer can read, admin can write
-    match /analytics/{docId} {
-      allow read: if isViewer();
-      allow write: if isAdmin();
+
+    // ===========================================
+    // PAYROLL & DEDUCTIONS (Fleet Manager, Admin)
+    // ===========================================
+
+    match /payroll/{payrollId} {
+      allow read: if isAuthenticated() && (
+        isAccountant() ||
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow write: if isFleetManager() || isAdmin() || isSaasAdmin();
     }
-    
-    // Settings - admin only
+
+    match /deductions/{deductionId} {
+      allow read: if isAuthenticated() && (
+        isAccountant() ||
+        isFleetManager() ||
+        isAdmin() ||
+        isSaasAdmin()
+      );
+      allow create, update: if isFleetManager() || isAdmin() || isSaasAdmin();
+      allow delete: if isAdmin() || isSaasAdmin();
+    }
+
+    // ===========================================
+    // CSV IMPORTS (Accountant, Admin)
+    // ===========================================
+
+    match /imports/{importId} {
+      allow read: if isAccountant() || isAdmin() || isSaasAdmin();
+      allow write: if isAccountant() || isAdmin() || isSaasAdmin();
+    }
+
+    match /ads_metrics/{metricId} {
+      allow read: if isAccountant() || isAdmin() || isSaasAdmin();
+      allow write: if isAccountant() || isAdmin() || isSaasAdmin();
+    }
+
+    // ===========================================
+    // AI CHAT MESSAGES & HISTORY (Role-filtered)
+    // ===========================================
+
+    match /ai_chat_sessions/{sessionId} {
+      allow read: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isSaasAdmin()
+      );
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && (
+        resource.data.userId == request.auth.uid ||
+        isSaasAdmin()
+      );
+      allow delete: if isSaasAdmin();
+    }
+
+    match /ai_chat_messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // ===========================================
+    // EXISTING SEO/CONTENT COLLECTIONS
+    // ===========================================
+
     match /settings/{settingId} {
       allow read: if isViewer();
-      allow write: if isAdmin();
+      allow write: if isSaasAdmin();
+    }
+
+    match /metrics/{metricId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /seo_bot/{taskId} {
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+
+    match /images/{imageId} {
+      allow read: if isViewer();
+      allow write: if isEditor();
+    }
+
+    match /deploy_logs/{logId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /reports/{reportId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /service_content/{contentId} {
+      // Public read for static site generation
+      allow read: if true;
+      allow create, update: if isAdmin() || isSaasAdmin() || request.auth.token.role == 'api';
+      allow delete: if isSaasAdmin();
+    }
+
+    match /content_quality_scores/{contentId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin() || request.auth.token.role == 'api';
+    }
+
+    match /regeneration_queue/{taskId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow write: if isAdmin() || isSaasAdmin() || request.auth.token.role == 'api';
+    }
+
+    match /regeneration_logs/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow write: if request.auth.token.role == 'api';
+    }
+
+    match /content_regeneration_history/{historyId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow write: if request.auth.token.role == 'api';
+    }
+
+    match /competitor_analysis/{analysisId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow write: if isAdmin() || isSaasAdmin() || request.auth.token.role == 'api';
+    }
+
+    match /locations/{locationId} {
+      // Public read for static site generation
+      allow read: if true;
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /services/{serviceId} {
+      // Public read for static site generation
+      allow read: if true;
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    // Legacy support
+    match /page_analyses/{id} { allow read: if isViewer(); allow write: if isAdmin() || isSaasAdmin(); }
+    match /content_suggestions/{id} { allow read: if isViewer(); allow write: if isEditor(); }
+    match /ai_images/{id} { allow read: if isViewer(); allow write: if isEditor(); }
+
+    // ===========================================
+    // ACTIVITY LOGS (Audit Trail)
+    // ===========================================
+
+    match /activity_logs/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSaasAdmin();
+    }
+
+    match /activity_log/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // BLOG POSTS (Public Read)
+    // ===========================================
+
+    match /blog_posts/{postId} {
+      // Public read for blog pages
+      allow read: if true;
+      allow write: if isEditor() || isAdmin() || isSaasAdmin();
+    }
+
+    // ===========================================
+    // TENANTS
+    // ===========================================
+
+    match /tenants/{tenantId} {
+      allow read: if isAuthenticated();
+      allow write: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // AUDIT LOGS
+    // ===========================================
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // SEO COLLECTIONS
+    // ===========================================
+
+    match /seo-reports/{reportId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /seo-tasks/{taskId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    // ===========================================
+    // SCHEDULES (Content Generation)
+    // ===========================================
+
+    match /schedules/{scheduleId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
     }
   }
 }

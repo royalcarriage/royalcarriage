@@ -1,0 +1,9 @@
+node_modules/
+dist/
+**/.next/
+**/out/
+functions/lib/
+pnpm-lock.yaml
+
+# Ignore Astro files (Astro has its own linting/build)
+**/*.astro

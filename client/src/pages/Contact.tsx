@@ -12,11 +12,6 @@ import {
 } from "@/components/ui/accordion";
 import { Phone, Mail, MapPin, Clock, Calendar, Check } from "lucide-react";
 import { Link } from "wouter";
-import {
-  LocalBusinessSchema,
-  BreadcrumbSchema,
-  FAQSchema,
-} from "@/components/seo/JsonLdSchema";
 
 import heroImage from "@assets/generated_images/luxury_black_sedan_airport_terminal.png";
 
@@ -64,17 +59,8 @@ const faqs = [
 ];
 
 export default function Contact() {
-  const breadcrumbItems = [
-    { name: "Home", url: "https://chicagoairportblackcar.com" },
-    { name: "Contact", url: "https://chicagoairportblackcar.com/contact" },
-  ];
-
   return (
     <Layout>
-      <LocalBusinessSchema image={heroImage} />
-      <BreadcrumbSchema items={breadcrumbItems} />
-      <FAQSchema questions={faqs} />
-
       <SEO
         title="Contact Us – Book Your Ride"
         description="Ready to book your Chicago airport black car? Call (224) 801-3090 or book online. Available 24/7 for O'Hare, Midway, and suburban transportation."

@@ -1,0 +1,16 @@
+# Royal Carriage Limousine - https://chicago-partybus.com
+# https://royalcarriagelimo.com
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://chicago-partybus.com/sitemap.xml
+
+# Crawl-delay (optional, for politeness)
+Crawl-delay: 1
+
+# Disallow admin and private paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/

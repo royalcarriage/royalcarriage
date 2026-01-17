@@ -1,20 +1,12 @@
-import { defineConfig } from 'astro/config';
-import { fileURLToPath } from 'url';
-import path from 'path';
+import { defineConfig } from "astro/config";
+import tailwind from "@astrojs/tailwind";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
+// https://astro.build/config
 export default defineConfig({
-  site: 'https://chicagoairportblackcar.com',
-  integrations: [],
-  output: 'static',
-  vite: {
-    resolve: {
-      alias: {
-        '@royal-carriage/ui': path.resolve(__dirname, '../../packages/ui'),
-        '@royal-carriage/seo': path.resolve(__dirname, '../../packages/seo'),
-      },
-    },
+  site: "https://chicagoairportblackcar.web.app",
+  integrations: [tailwind()],
+  output: "static",
+  build: {
+    format: "file",
   },
 });

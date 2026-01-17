@@ -1,0 +1,33 @@
+---
+import CTAButton from './CTAButton.astro';
+import CallButton from './CallButton.astro';
+
+interface Props {
+  target: string;
+}
+
+const { target } = Astro.props;
+---
+
+<!-- Sticky Mobile CTA Bar (shows only on mobile, hides on desktop) -->
+<div class="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg border-t border-gray-200">
+  <div class="flex items-center justify-around py-3 px-4">
+    <CallButton
+      target={target}
+      location="mobile-sticky-cta"
+      size="sm"
+      class="flex-1 mr-2"
+    />
+    <CTAButton
+      target={target}
+      location="mobile-sticky-cta"
+      size="sm"
+      class="flex-1 ml-2"
+    />
+  </div>
+</div>
+
+<!-- Top Info Bar (optional, can show business hours or promo) -->
+<div class="bg-blue-600 text-white text-center py-2 text-sm">
+  <p>24/7 Professional Limousine Service in Chicago | Call Now for Instant Quote</p>
+</div>

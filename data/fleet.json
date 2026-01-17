@@ -1,0 +1,498 @@
+{
+  "vehicles": [
+    {
+      "id": "lincoln-continental",
+      "name": "Lincoln Continental",
+      "category": "luxury-sedan",
+      "capacity": 3,
+      "baseHourlyRate": 95,
+      "baseAirportRate": 75,
+      "description": "Premium luxury sedan with elegant lines, advanced technology, and supremely comfortable seating for executive travel.",
+      "features": [
+        "leather-seats",
+        "climate-control",
+        "premium-sound-system",
+        "wifi",
+        "charging-ports",
+        "privacy-partition"
+      ],
+      "applicableServices": [
+        "airport-ohare-transfer",
+        "airport-midway-transfer",
+        "business-meeting-transport",
+        "airport-business-meeting",
+        "fine-dining-transport"
+      ],
+      "imageUrl": "gs://bucket/lincoln-continental.jpg",
+      "seoKeywords": [
+        "Lincoln Continental rental Chicago",
+        "luxury sedan service",
+        "executive car rental"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "cadillac-xts",
+      "name": "Cadillac XTS Premium Sedan",
+      "category": "luxury-sedan",
+      "capacity": 3,
+      "baseHourlyRate": 90,
+      "baseAirportRate": 70,
+      "description": "American luxury at its finest. Cadillac XTS combines comfort, technology, and sophistication for business and leisure travel.",
+      "features": [
+        "leather-seats",
+        "heated-seats",
+        "premium-sound-system",
+        "backup-camera",
+        "wifi",
+        "charging-ports"
+      ],
+      "applicableServices": [
+        "airport-ohare-transfer",
+        "airport-midway-transfer",
+        "business-meeting-transport",
+        "downtown-business-meeting",
+        "fine-dining-transport"
+      ],
+      "imageUrl": "gs://bucket/cadillac-xts.jpg",
+      "seoKeywords": [
+        "Cadillac sedan rental Chicago",
+        "business car service",
+        "professional transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "mercedes-s-class",
+      "name": "Mercedes-Benz S-Class",
+      "category": "luxury-sedan",
+      "capacity": 3,
+      "baseHourlyRate": 120,
+      "baseAirportRate": 95,
+      "description": "The pinnacle of German engineering. Mercedes S-Class delivers uncompromising comfort and cutting-edge technology.",
+      "features": [
+        "leather-seats",
+        "panoramic-sunroof",
+        "premium-sound-system",
+        "navigation",
+        "wifi",
+        "charging-ports",
+        "ambient-lighting"
+      ],
+      "applicableServices": [
+        "airport-business-meeting",
+        "board-member-travel",
+        "vip-executive-travel",
+        "fine-dining-transport",
+        "client-entertainment"
+      ],
+      "imageUrl": "gs://bucket/mercedes-s-class.jpg",
+      "seoKeywords": [
+        "Mercedes S-Class rental Chicago",
+        "luxury car service",
+        "VIP transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "bmw-7-series",
+      "name": "BMW 7 Series",
+      "category": "luxury-sedan",
+      "capacity": 3,
+      "baseHourlyRate": 115,
+      "baseAirportRate": 90,
+      "description": "German luxury performance meets exceptional comfort. BMW 7 Series provides refined travel for discerning executives.",
+      "features": [
+        "leather-seats",
+        "adaptive-suspension",
+        "premium-audio",
+        "navigation",
+        "wifi",
+        "charging-ports",
+        "gesture-control"
+      ],
+      "applicableServices": [
+        "executive-commute",
+        "board-member-travel",
+        "vip-executive-travel",
+        "fine-dining-transport"
+      ],
+      "imageUrl": "gs://bucket/bmw-7-series.jpg",
+      "seoKeywords": [
+        "BMW luxury car rental Chicago",
+        "premium sedan service",
+        "executive transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "escalade-suv",
+      "name": "Cadillac Escalade ESV",
+      "category": "luxury-suv",
+      "capacity": 6,
+      "baseHourlyRate": 130,
+      "baseAirportRate": 100,
+      "description": "The ultimate full-size luxury SUV. Cadillac Escalade offers spacious comfort with premium amenities for group travel.",
+      "features": [
+        "leather-seats",
+        "entertainment-system",
+        "bar",
+        "sunroof",
+        "navigation",
+        "wifi",
+        "charging-ports"
+      ],
+      "applicableServices": [
+        "airport-suburban-hotel",
+        "airport-downtown-hotel",
+        "group-airport-transport",
+        "wedding-guest-transportation",
+        "corporate-group-airport"
+      ],
+      "imageUrl": "gs://bucket/escalade-suv.jpg",
+      "seoKeywords": [
+        "Cadillac Escalade rental Chicago",
+        "luxury SUV service",
+        "group transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "lincoln-navigator",
+      "name": "Lincoln Navigator Premium SUV",
+      "category": "luxury-suv",
+      "capacity": 6,
+      "baseHourlyRate": 125,
+      "baseAirportRate": 95,
+      "description": "Lincoln Navigator combines American comfort with contemporary luxury. Perfect for families and group travel.",
+      "features": [
+        "leather-seats",
+        "sunroof",
+        "premium-sound-system",
+        "navigation",
+        "wifi",
+        "charging-ports",
+        "power-seats"
+      ],
+      "applicableServices": [
+        "airport-suburban-hotel",
+        "airport-downtown-hotel",
+        "family-group-airport",
+        "wedding-guest-transportation"
+      ],
+      "imageUrl": "gs://bucket/lincoln-navigator.jpg",
+      "seoKeywords": [
+        "Lincoln Navigator rental Chicago",
+        "full-size SUV service",
+        "family transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "chevy-suburban",
+      "name": "Chevrolet Suburban",
+      "category": "luxury-suv",
+      "capacity": 6,
+      "baseHourlyRate": 110,
+      "baseAirportRate": 85,
+      "description": "Spacious, reliable, and comfortable. Chevy Suburban provides ample room and smooth ride for group travel.",
+      "features": [
+        "leather-seats",
+        "third-row-seating",
+        "climate-control",
+        "navigation",
+        "charging-ports"
+      ],
+      "applicableServices": [
+        "airport-suburban-hotel",
+        "family-group-airport",
+        "wedding-guest-transportation",
+        "group-airport-transport"
+      ],
+      "imageUrl": "gs://bucket/chevy-suburban.jpg",
+      "seoKeywords": [
+        "Chevrolet Suburban rental Chicago",
+        "large SUV service",
+        "group transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "gmc-yukon-denali",
+      "name": "GMC Yukon Denali",
+      "category": "luxury-suv",
+      "capacity": 6,
+      "baseHourlyRate": 125,
+      "baseAirportRate": 95,
+      "description": "GMC Yukon Denali delivers premium comfort with distinctive styling and advanced technology.",
+      "features": [
+        "leather-seats",
+        "power-seats",
+        "sunroof",
+        "premium-sound-system",
+        "navigation",
+        "wifi",
+        "charging-ports"
+      ],
+      "applicableServices": [
+        "airport-suburban-hotel",
+        "wedding-guest-transportation",
+        "corporate-group-airport",
+        "client-entertainment"
+      ],
+      "imageUrl": "gs://bucket/gmc-yukon-denali.jpg",
+      "seoKeywords": [
+        "GMC Yukon rental Chicago",
+        "premium SUV service",
+        "executive group transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "stretch-limo",
+      "name": "Lincoln Stretch Limousine",
+      "category": "stretch-limousine",
+      "capacity": 8,
+      "baseHourlyRate": 180,
+      "baseAirportRate": 150,
+      "description": "Classic American elegance. Lincoln Stretch Limousine is the ultimate celebration vehicle with bar and entertainment system.",
+      "features": [
+        "leather-seats",
+        "bar",
+        "entertainment-system",
+        "fiber-optics",
+        "champagne-service",
+        "premium-sound"
+      ],
+      "applicableServices": [
+        "airport-fine-dining",
+        "wedding-bride-transportation",
+        "groom-groomsmen-shuttle",
+        "bachelor-party-chicago",
+        "bachelorette-celebration",
+        "nightclub-crawl"
+      ],
+      "imageUrl": "gs://bucket/stretch-limo.jpg",
+      "seoKeywords": [
+        "stretch limo rental Chicago",
+        "wedding limo service",
+        "celebration transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "sprinter-14",
+      "name": "Mercedes Sprinter Van 14-Seat Executive",
+      "category": "executive-van",
+      "capacity": 14,
+      "baseHourlyRate": 140,
+      "baseAirportRate": 110,
+      "description": "Spacious executive van perfect for group corporate travel and airport shuttles. High roof for maximum comfort.",
+      "features": [
+        "comfortable-seating",
+        "climate-control",
+        "premium-sound-system",
+        "wifi",
+        "charging-ports",
+        "luxury-interior"
+      ],
+      "applicableServices": [
+        "corporate-group-airport",
+        "wedding-guest-airport-shuttle",
+        "conference-transport",
+        "corporate-group-transport",
+        "group-airport-transport"
+      ],
+      "imageUrl": "gs://bucket/sprinter-14.jpg",
+      "seoKeywords": [
+        "Sprinter van rental Chicago",
+        "group transportation",
+        "corporate shuttle service"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "sprinter-executive",
+      "name": "Luxury Sprinter Van Executive 12-Seat",
+      "category": "executive-van",
+      "capacity": 12,
+      "baseHourlyRate": 160,
+      "baseAirportRate": 125,
+      "description": "Premium executive Sprinter with enhanced comfort features. Ideal for small corporate groups and wedding parties.",
+      "features": [
+        "premium-leather-seating",
+        "entertainment-system",
+        "climate-control",
+        "premium-sound-system",
+        "wifi",
+        "charging-ports"
+      ],
+      "applicableServices": [
+        "wedding-group-airport-shuttle",
+        "corporate-group-airport",
+        "conference-transport",
+        "executive-tour-service",
+        "vip-event-transport"
+      ],
+      "imageUrl": "gs://bucket/sprinter-executive.jpg",
+      "seoKeywords": [
+        "executive van rental Chicago",
+        "premium group transportation",
+        "corporate travel"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "party-bus-36",
+      "name": "Full-Size Party Bus 36-Passenger",
+      "category": "party-bus",
+      "capacity": 36,
+      "baseHourlyRate": 250,
+      "baseAirportRate": 200,
+      "description": "Premier party experience. Full-size party bus with LED lighting, dance floor, sound system, and bar for ultimate celebration.",
+      "features": [
+        "led-lighting",
+        "dance-floor",
+        "sound-system",
+        "bar",
+        "comfortable-seating",
+        "bathroom",
+        "premium-sound"
+      ],
+      "applicableServices": [
+        "bachelor-party-chicago",
+        "bachelorette-celebration",
+        "birthday-party-bus",
+        "new-years-eve-party",
+        "nightclub-crawl",
+        "prom-night-party"
+      ],
+      "imageUrl": "gs://bucket/party-bus-36.jpg",
+      "seoKeywords": [
+        "party bus rental Chicago",
+        "large party bus",
+        "celebration transportation"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "party-bus-24",
+      "name": "Mid-Size Party Bus 24-Passenger",
+      "category": "party-bus",
+      "capacity": 24,
+      "baseHourlyRate": 200,
+      "baseAirportRate": 160,
+      "description": "Great party experience in a more intimate setting. Mid-size party bus with entertainment features and comfortable spacing.",
+      "features": [
+        "led-lighting",
+        "sound-system",
+        "bar-area",
+        "comfortable-seating",
+        "bathroom",
+        "entertainment-system"
+      ],
+      "applicableServices": [
+        "bachelor-party-chicago",
+        "bachelorette-celebration",
+        "birthday-party-bus",
+        "graduation-party",
+        "brewery-tour-bus",
+        "concert-transport"
+      ],
+      "imageUrl": "gs://bucket/party-bus-24.jpg",
+      "seoKeywords": [
+        "party bus Chicago rental",
+        "mid-size party bus",
+        "group celebration"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    },
+    {
+      "id": "motor-coach",
+      "name": "Full-Size Motor Coach 50+ Passenger",
+      "category": "coach-bus",
+      "capacity": 50,
+      "baseHourlyRate": 300,
+      "baseAirportRate": 250,
+      "description": "Premier coach transportation for large groups. Full-size motor coach with luxury amenities and wheelchair accessibility.",
+      "features": [
+        "comfortable-seating",
+        "climate-control",
+        "premium-sound-system",
+        "wheelchair-accessible",
+        "onboard-restroom",
+        "premium-comfort"
+      ],
+      "applicableServices": [
+        "corporate-group-airport",
+        "wedding-guest-airport-shuttle",
+        "conference-transport",
+        "motor-coach-large-group",
+        "multi-day-event-transport"
+      ],
+      "imageUrl": "gs://bucket/motor-coach.jpg",
+      "seoKeywords": [
+        "motor coach rental Chicago",
+        "large group transportation",
+        "charter bus service"
+      ],
+      "availability": {
+        "weekday": true,
+        "weekend": true,
+        "available24_7": true
+      }
+    }
+  ]
+}

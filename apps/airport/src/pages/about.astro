@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "About Royal Carriage Limousine",
+  serviceDescription: "Learn about Royal Carriage Limousine, Chicago's premier airport transportation service. Professional chauffeurs, luxury fleet, and commitment to excellence since our founding.",
+  serviceType: "Airport Limousine Service",
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="About Royal Carriage Limousine - Chicago Airport Transportation"
+  description="Learn about Royal Carriage Limousine, Chicago's premier airport transportation service. Professional chauffeurs, luxury fleet, and commitment to excellence since our founding."
+  canonical="/about"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">About Royal Carriage Limousine</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine has been providing exceptional airport transportation services throughout Chicago and surrounding suburbs. We've built our reputation on reliability, professionalism, and an unwavering commitment to customer satisfaction.</p>
+
+<h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+<p class="text-gray-700 mb-6">To provide the most reliable, professional, and comfortable airport limousine service in Chicago. We strive to make every journey seamless, stress-free, and punctual, whether you're traveling for business or leisure.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Choose Royal Carriage</h2>
+<div class="grid md:grid-cols-2 gap-6 mb-6">
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3 text-blue-600">Professional Chauffeurs</h3>
+    <p class="text-gray-700">Our chauffeurs are carefully selected, thoroughly vetted, and extensively trained. All drivers undergo background checks, have excellent driving records, and are knowledgeable about Chicago area routes and traffic patterns.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3 text-blue-600">Luxury Fleet</h3>
+    <p class="text-gray-700">We maintain a modern fleet of luxury vehicles including executive sedans, SUVs, and passenger vans. Every vehicle is meticulously maintained, regularly detailed, and equipped with premium amenities.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3 text-blue-600">24/7 Availability</h3>
+    <p class="text-gray-700">Airport flights don't follow a 9-to-5 schedule, and neither do we. Royal Carriage is available 24 hours a day, 7 days a week, including holidays, for all your airport transportation needs.</p>
+  </div>
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h3 class="text-xl font-bold mb-3 text-blue-600">Technology-Driven</h3>
+    <p class="text-gray-700">We use advanced flight tracking systems, GPS routing, and real-time traffic monitoring to ensure punctual service. Easy online booking and instant confirmations make reservations simple.</p>
+  </div>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Our Service Standards</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li>Punctuality guaranteed - we're always on time</li>
+  <li>Immaculate vehicles cleaned and sanitized before every trip</li>
+  <li>Professional attire and courteous service from all chauffeurs</li>
+  <li>Confidentiality and discretion for all clients</li>
+  <li>Safe driving practices and defensive driving techniques</li>
+  <li>Comprehensive insurance coverage for your protection</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Serving All of Chicagoland</h2>
+<p class="text-gray-700 mb-6">From downtown Chicago to the farthest suburbs, Royal Carriage provides comprehensive airport limousine service throughout the metropolitan area. We know the best routes to O'Hare and Midway airports from every neighborhood and suburb, ensuring efficient, comfortable transportation regardless of your location.</p>
+
+<h2 class="text-2xl font-bold mb-4">Corporate & Individual Services</h2>
+<p class="text-gray-700 mb-6">Whether you're a business executive requiring regular airport transportation, a family traveling on vacation, or an event planner coordinating group transfers, Royal Carriage Limousine has the expertise and fleet to meet your needs. We offer both individual reservations and corporate account services with flexible billing options.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>

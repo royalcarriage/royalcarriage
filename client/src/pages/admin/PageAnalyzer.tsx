@@ -1,5 +1,4 @@
-import { Layout } from "@/components/layout/Layout";
-import { SEO } from "@/components/SEO";
+import { AdminLayout } from "@/components/layout/AdminLayout";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,9 +16,7 @@ import {
   AlertCircle,
   TrendingUp,
   FileText,
-  ArrowLeft,
 } from "lucide-react";
-import { Link } from "wouter";
 
 interface PageScore {
   url: string;
@@ -59,97 +56,52 @@ export default function PageAnalyzer() {
     setAnalyzing(true);
 
     try {
-      // Fetch actual page content for each URL
-      const pagesWithContent = await Promise.all(
-        websitePages.map(async (page) => {
-          try {
-            // Fetch the actual page HTML
-            const response = await fetch(page.url);
-            const html = await response.text();
-            return {
-              ...page,
-              content: html,
-            };
-          } catch (error) {
-            console.error(`Failed to fetch ${page.url}:`, error);
-            return {
-              ...page,
-              content: "", // Empty content if fetch fails
-            };
-          }
-        }),
-      );
+      // TODO: Replace with actual API call to /api/ai/batch-analyze
+      // This is currently using mock data for demonstration purposes
+      // In production, this should call the real API:
+      // const response = await fetch('/api/ai/batch-analyze', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ pages: websitePages })
+      // });
+      // const data = await response.json();
+      // setResults(data.results);
 
-      // Call the real backend API
-      const response = await fetch("/api/ai/batch-analyze", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ pages: pagesWithContent }),
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `API returned ${response.status}: ${response.statusText}`,
-        );
-      }
-
-      const data = await response.json();
-
-      // Transform API response to match PageScore interface
-      const transformedResults: PageScore[] = data.results
-        .filter((r: any) => r.success)
-        .map((r: any) => ({
-          url: r.url,
-          name: r.name,
-          seoScore: r.analysis.seoScore,
-          contentScore: r.analysis.contentScore,
-          recommendations: r.analysis.recommendations || {
-            seo: [],
-            content: [],
-            style: [],
-            conversion: [],
-          },
-        }));
-
-      setResults(transformedResults);
-
-      // Show success notification if all pages analyzed
-      if (data.successCount === data.totalPages) {
-        console.log(`✅ Successfully analyzed all ${data.totalPages} pages`);
-      } else {
-        console.warn(
-          `⚠️ Analyzed ${data.successCount} of ${data.totalPages} pages`,
-        );
-      }
-    } catch (error) {
-      console.error("Analysis failed:", error);
-      // Fall back to mock data in case of error
-      console.warn("Falling back to demo data due to API error");
-
-      const mockResults: PageScore[] = websitePages.map((page) => ({
+      // Simulate page analysis with mock data
+      const mockResults: PageScore[] = websitePages.map((page, index) => ({
         url: page.url,
         name: page.name,
-        seoScore: Math.floor(Math.random() * 40) + 60,
+        seoScore: Math.floor(Math.random() * 40) + 60, // Random score between 60-100
         contentScore: Math.floor(Math.random() * 40) + 60,
         recommendations: {
           seo: [
             "Add more location-specific keywords",
             "Optimize meta description length",
-          ],
+            "Improve heading structure",
+          ].slice(0, Math.floor(Math.random() * 3) + 1),
           content: [
             "Expand content to 400+ words",
             "Add vehicle-specific details",
-          ],
-          style: ["Ensure consistent font sizing"],
+            "Include customer testimonials",
+          ].slice(0, Math.floor(Math.random() * 3) + 1),
+          style: [
+            "Ensure consistent font sizing",
+            "Use professional imagery",
+          ].slice(0, Math.floor(Math.random() * 2) + 1),
           conversion: [
             "Add prominent phone number",
             "Include clear call-to-action",
-          ],
+            "Display trust badges",
+          ].slice(0, Math.floor(Math.random() * 3) + 1),
         },
       }));
+
+      // Simulate API delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       setResults(mockResults);
+    } catch (error) {
+      console.error("Analysis failed:", error);
     } finally {
       setAnalyzing(false);
     }
@@ -184,266 +136,252 @@ export default function PageAnalyzer() {
       : 0;
 
   return (
-    <Layout>
-      <SEO
-        title="Page Analyzer | AI Website Management"
-        description="Analyze website pages for SEO and content optimization"
-        noindex={true}
-      />
+    <AdminLayout>
+      <div className="p-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+            <Brain className="h-10 w-10 text-purple-600" />
+            AI Page Analyzer
+          </h1>
+          <p className="text-lg text-gray-600">
+            Analyze all website pages for SEO optimization and content quality
+          </p>
+        </div>
 
-      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12">
-        <div className="container mx-auto px-4 max-w-7xl">
-          {/* Header */}
-          <div className="mb-8">
-            <Link href="/admin">
-              <Button variant="ghost" className="mb-4">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Dashboard
-              </Button>
-            </Link>
-            <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-              <Brain className="h-10 w-10 text-purple-600" />
-              AI Page Analyzer
-            </h1>
-            <p className="text-lg text-gray-600">
-              Analyze all website pages for SEO optimization and content quality
-            </p>
-          </div>
+        {/* Analysis Controls */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle>Start Analysis</CardTitle>
+            <CardDescription>
+              Analyze all {websitePages.length} pages for SEO and content
+              optimization opportunities
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={handleAnalyzePages}
+              disabled={analyzing}
+              className="w-full sm:w-auto"
+              size="lg"
+            >
+              {analyzing ? (
+                <>
+                  <Brain className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing Pages...
+                </>
+              ) : (
+                <>
+                  <Brain className="mr-2 h-4 w-4" />
+                  Analyze All Pages
+                </>
+              )}
+            </Button>
+          </CardContent>
+        </Card>
 
-          {/* Analysis Controls */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle>Start Analysis</CardTitle>
-              <CardDescription>
-                Analyze all {websitePages.length} pages for SEO and content
-                optimization opportunities
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                onClick={handleAnalyzePages}
-                disabled={analyzing}
-                className="w-full sm:w-auto"
-                size="lg"
-              >
-                {analyzing ? (
-                  <>
-                    <Brain className="mr-2 h-4 w-4 animate-spin" />
-                    Analyzing Pages...
-                  </>
-                ) : (
-                  <>
-                    <Brain className="mr-2 h-4 w-4" />
-                    Analyze All Pages
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Summary Stats */}
-          {results.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Average SEO Score
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div
-                    className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}
-                  >
-                    {averageSeoScore}/100
-                  </div>
-                  <Progress value={averageSeoScore} className="mt-2" />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Average Content Score
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div
-                    className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}
-                  >
-                    {averageContentScore}/100
-                  </div>
-                  <Progress value={averageContentScore} className="mt-2" />
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-medium text-gray-600">
-                    Pages Analyzed
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-blue-600">
-                    {results.length}
-                  </div>
-                  <p className="text-sm text-gray-500 mt-1">
-                    Total pages scanned
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Analysis Results */}
-          {results.length > 0 && (
-            <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Analysis Results
-              </h2>
-
-              {results.map((result, index) => (
-                <Card key={index}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="flex items-center gap-2">
-                          <FileText className="h-5 w-5" />
-                          {result.name}
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          {result.url}
-                        </CardDescription>
-                      </div>
-                      <div className="text-right">
-                        {getScoreBadge(
-                          (result.seoScore + result.contentScore) / 2,
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                      {/* SEO Score */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium">SEO Score</span>
-                          <span
-                            className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}
-                          >
-                            {result.seoScore}/100
-                          </span>
-                        </div>
-                        <Progress value={result.seoScore} />
-                      </div>
-
-                      {/* Content Score */}
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm font-medium">
-                            Content Score
-                          </span>
-                          <span
-                            className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}
-                          >
-                            {result.contentScore}/100
-                          </span>
-                        </div>
-                        <Progress value={result.contentScore} />
-                      </div>
-                    </div>
-
-                    {/* Recommendations */}
-                    <div className="space-y-4">
-                      {result.recommendations.seo.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
-                            <TrendingUp className="h-4 w-4" />
-                            SEO Recommendations
-                          </h4>
-                          <ul className="space-y-1">
-                            {result.recommendations.seo.map((rec, i) => (
-                              <li
-                                key={i}
-                                className="text-sm text-gray-600 flex items-start gap-2"
-                              >
-                                <AlertCircle className="h-4 w-4 mt-0.5 text-yellow-500 flex-shrink-0" />
-                                {rec}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {result.recommendations.content.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
-                            <FileText className="h-4 w-4" />
-                            Content Recommendations
-                          </h4>
-                          <ul className="space-y-1">
-                            {result.recommendations.content.map((rec, i) => (
-                              <li
-                                key={i}
-                                className="text-sm text-gray-600 flex items-start gap-2"
-                              >
-                                <AlertCircle className="h-4 w-4 mt-0.5 text-blue-500 flex-shrink-0" />
-                                {rec}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {result.recommendations.conversion.length > 0 && (
-                        <div>
-                          <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4" />
-                            Conversion Recommendations
-                          </h4>
-                          <ul className="space-y-1">
-                            {result.recommendations.conversion.map((rec, i) => (
-                              <li
-                                key={i}
-                                className="text-sm text-gray-600 flex items-start gap-2"
-                              >
-                                <AlertCircle className="h-4 w-4 mt-0.5 text-green-500 flex-shrink-0" />
-                                {rec}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="mt-6 flex gap-2">
-                      <Button variant="default" size="sm">
-                        Generate Improvements
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-
-          {/* Empty State */}
-          {!analyzing && results.length === 0 && (
+        {/* Summary Stats */}
+        {results.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <Card>
-              <CardContent className="py-12 text-center">
-                <Brain className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                <h3 className="text-lg font-semibold mb-2">Ready to Analyze</h3>
-                <p className="text-gray-600 mb-4">
-                  Click "Analyze All Pages" to start the AI-powered analysis
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  Average SEO Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className={`text-3xl font-bold ${getScoreColor(averageSeoScore)}`}
+                >
+                  {averageSeoScore}/100
+                </div>
+                <Progress value={averageSeoScore} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  Average Content Score
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div
+                  className={`text-3xl font-bold ${getScoreColor(averageContentScore)}`}
+                >
+                  {averageContentScore}/100
+                </div>
+                <Progress value={averageContentScore} className="mt-2" />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-medium text-gray-600">
+                  Pages Analyzed
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl font-bold text-blue-600">
+                  {results.length}
+                </div>
+                <p className="text-sm text-gray-500 mt-1">
+                  Total pages scanned
                 </p>
               </CardContent>
             </Card>
-          )}
-        </div>
+          </div>
+        )}
+
+        {/* Analysis Results */}
+        {results.length > 0 && (
+          <div className="space-y-4">
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Analysis Results
+            </h2>
+
+            {results.map((result, index) => (
+              <Card key={index}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="h-5 w-5" />
+                        {result.name}
+                      </CardTitle>
+                      <CardDescription className="mt-1">
+                        {result.url}
+                      </CardDescription>
+                    </div>
+                    <div className="text-right">
+                      {getScoreBadge(
+                        (result.seoScore + result.contentScore) / 2,
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    {/* SEO Score */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">SEO Score</span>
+                        <span
+                          className={`text-lg font-bold ${getScoreColor(result.seoScore)}`}
+                        >
+                          {result.seoScore}/100
+                        </span>
+                      </div>
+                      <Progress value={result.seoScore} />
+                    </div>
+
+                    {/* Content Score */}
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">
+                          Content Score
+                        </span>
+                        <span
+                          className={`text-lg font-bold ${getScoreColor(result.contentScore)}`}
+                        >
+                          {result.contentScore}/100
+                        </span>
+                      </div>
+                      <Progress value={result.contentScore} />
+                    </div>
+                  </div>
+
+                  {/* Recommendations */}
+                  <div className="space-y-4">
+                    {result.recommendations.seo.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
+                          <TrendingUp className="h-4 w-4" />
+                          SEO Recommendations
+                        </h4>
+                        <ul className="space-y-1">
+                          {result.recommendations.seo.map((rec, i) => (
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
+                              <AlertCircle className="h-4 w-4 mt-0.5 text-yellow-500 flex-shrink-0" />
+                              {rec}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {result.recommendations.content.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
+                          <FileText className="h-4 w-4" />
+                          Content Recommendations
+                        </h4>
+                        <ul className="space-y-1">
+                          {result.recommendations.content.map((rec, i) => (
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
+                              <AlertCircle className="h-4 w-4 mt-0.5 text-blue-500 flex-shrink-0" />
+                              {rec}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {result.recommendations.conversion.length > 0 && (
+                      <div>
+                        <h4 className="font-semibold text-sm text-gray-700 mb-2 flex items-center gap-2">
+                          <CheckCircle className="h-4 w-4" />
+                          Conversion Recommendations
+                        </h4>
+                        <ul className="space-y-1">
+                          {result.recommendations.conversion.map((rec, i) => (
+                            <li
+                              key={i}
+                              className="text-sm text-gray-600 flex items-start gap-2"
+                            >
+                              <AlertCircle className="h-4 w-4 mt-0.5 text-green-500 flex-shrink-0" />
+                              {rec}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="mt-6 flex gap-2">
+                    <Button variant="default" size="sm">
+                      Generate Improvements
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      View Details
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!analyzing && results.length === 0 && (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <Brain className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+              <h3 className="text-lg font-semibold mb-2">Ready to Analyze</h3>
+              <p className="text-gray-600 mb-4">
+                Click "Analyze All Pages" to start the AI-powered analysis
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
-    </Layout>
+    </AdminLayout>
   );
 }

@@ -1614,26 +1614,12 @@ export const cities: City[] = [
   },
 ];
 
-// Pre-built indexes for O(1) lookups - created once at module load time
-const cityBySlugIndex = new Map<string, City>(
-  cities.map((city) => [city.slug, city]),
-);
-
-const citiesByRegionIndex = new Map<City["region"], City[]>();
-for (const city of cities) {
-  const regionCities = citiesByRegionIndex.get(city.region) || [];
-  regionCities.push(city);
-  citiesByRegionIndex.set(city.region, regionCities);
-}
-
 export function getCityBySlug(slug: string): City | undefined {
-  // O(1) lookup using pre-built index instead of O(n) linear search
-  return cityBySlugIndex.get(slug);
+  return cities.find((city) => city.slug === slug);
 }
 
 export function getCitiesByRegion(region: City["region"]): City[] {
-  // O(1) lookup using pre-built index instead of O(n) filter
-  return citiesByRegionIndex.get(region) || [];
+  return cities.filter((city) => city.region === region);
 }
 
 export function getRelatedCities(
@@ -1643,33 +1629,16 @@ export function getRelatedCities(
   const currentCity = getCityBySlug(currentSlug);
   if (!currentCity) return [];
 
-  // Pre-compute limit values to avoid redundant calculations
-  const halfLimitFloor = Math.floor(limit / 2);
-  const halfLimitCeil = Math.ceil(limit / 2);
-
-  // Use the pre-built region index for O(1) lookup instead of O(n) filter
-  const regionCities = getCitiesByRegion(currentCity.region);
-  const sameRegion = regionCities.filter((c) => c.slug !== currentSlug);
-
-  // For other cities, we need to gather from other regions
-  const otherCities: City[] = [];
-  const regions = Array.from(citiesByRegionIndex.entries());
-  for (const [region, citiesInRegion] of regions) {
-    if (region !== currentCity.region) {
-      for (const city of citiesInRegion) {
-        if (city.slug !== currentSlug) {
-          otherCities.push(city);
-          // Early exit if we have enough other cities
-          if (otherCities.length >= halfLimitFloor) break;
-        }
-      }
-      if (otherCities.length >= halfLimitFloor) break;
-    }
-  }
+  const sameRegion = cities.filter(
+    (c) => c.region === currentCity.region && c.slug !== currentSlug,
+  );
+  const otherCities = cities.filter(
+    (c) => c.region !== currentCity.region && c.slug !== currentSlug,
+  );
 
   const result = [
-    ...sameRegion.slice(0, halfLimitCeil),
-    ...otherCities.slice(0, halfLimitFloor),
+    ...sameRegion.slice(0, Math.ceil(limit / 2)),
+    ...otherCities.slice(0, Math.floor(limit / 2)),
   ];
   return result.slice(0, limit);
 }

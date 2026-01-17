@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+import { generateServiceSchema } from '@packages/astro-utils/schema';
+import { getSiteConfig } from '@packages/astro-utils/config';
+
+const config = getSiteConfig('airport');
+const serviceSchema = generateServiceSchema({
+  config,
+  serviceName: "O'Hare Airport Limousine Service",
+  serviceDescription: "Professional limousine service to O'Hare International Airport. Luxury black car transportation with flight tracking, meet & greet service, and punctual pickup. Book your O'Hare limo now.",
+  serviceType: 'Airport Limousine Service',
+  url: Astro.url.pathname
+});
+---
+
+<BaseLayout
+  title="O'Hare Airport Limousine Service - Chicago Black Car Transportation"
+  description="Professional limousine service to O'Hare International Airport. Luxury black car transportation with flight tracking, meet & greet service, and punctual pickup. Book your O'Hare limo now."
+  canonical="/ohare-airport-limo"
+  schema={serviceSchema}
+>
+  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+    <div class="container mx-auto px-4">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">O'Hare Airport Limousine Service</h1>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <CTAButton target="airport" location="hero" size="lg" />
+        <CallButton target="airport" location="hero" size="lg" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container mx-auto px-4 py-12">
+    <div class="max-w-4xl mx-auto prose prose-lg">
+      <p class="text-lg text-gray-700 mb-6">Royal Carriage Limousine provides premium transportation services to and from Chicago O'Hare International Airport (ORD). As Chicago's busiest airport, O'Hare requires reliable, professional transportation that you can count on. Our experienced chauffeurs and luxury fleet ensure you arrive on time, every time.</p>
+
+<h2 class="text-2xl font-bold mb-4">Why Choose Our O'Hare Limo Service?</h2>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li><strong>Flight Tracking:</strong> We monitor your flight status in real-time to adjust pickup times for delays or early arrivals</li>
+  <li><strong>Meet & Greet Service:</strong> Your chauffeur will be waiting at baggage claim with a name sign</li>
+  <li><strong>All Terminals Covered:</strong> Service to and from all O'Hare terminals including international arrivals</li>
+  <li><strong>Luggage Assistance:</strong> Professional help with all luggage, including oversized items</li>
+  <li><strong>24/7 Availability:</strong> Service available around the clock for any flight time</li>
+  <li><strong>Flat Rate Pricing:</strong> No surge pricing or hidden fees, just transparent flat rates</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">O'Hare Airport Transportation Routes</h2>
+<p class="text-gray-700 mb-4">We provide limousine service from O'Hare to all Chicago destinations:</p>
+<ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+  <li>O'Hare to Downtown Chicago (Loop, River North, Gold Coast)</li>
+  <li>O'Hare to North Shore suburbs (Evanston, Wilmette, Highland Park)</li>
+  <li>O'Hare to Western suburbs (Naperville, Oak Brook, Wheaton)</li>
+  <li>O'Hare to Northwest suburbs (Schaumburg, Arlington Heights, Palatine)</li>
+  <li>O'Hare to South suburbs (Tinley Park, Orland Park)</li>
+</ul>
+
+<h2 class="text-2xl font-bold mb-4">Our O'Hare Service Process</h2>
+<div class="bg-gray-50 p-6 rounded-lg mb-6">
+  <ol class="list-decimal list-inside space-y-3 text-gray-700">
+    <li><strong>Book Online:</strong> Reserve your O'Hare limo service with flight details</li>
+    <li><strong>Flight Monitoring:</strong> We track your flight and adjust pickup time automatically</li>
+    <li><strong>Meet & Greet:</strong> Chauffeur waits at baggage claim with name sign</li>
+    <li><strong>Luggage Handling:</strong> Professional assistance with all bags</li>
+    <li><strong>Comfortable Ride:</strong> Relax in a luxury vehicle to your destination</li>
+    <li><strong>Safe Arrival:</strong> Door-to-door service to your exact location</li>
+  </ol>
+</div>
+
+<h2 class="text-2xl font-bold mb-4">Business Travel to O'Hare</h2>
+<p class="text-gray-700 mb-6">Our corporate clients rely on us for consistent, professional O'Hare airport transportation. We understand the importance of punctuality for business travel and provide quiet, productive environments for calls or work during transit. All vehicles feature Wi-Fi, power outlets, and privacy partitions.</p>
+    </div>
+  </div>
+
+  <div class="bg-gray-100 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-6">Book Your Airport Limousine Now</h2>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <CTAButton target="airport" location="bottom-cta" size="lg" />
+        <CallButton target="airport" location="bottom-cta" size="lg" variant="primary" />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
