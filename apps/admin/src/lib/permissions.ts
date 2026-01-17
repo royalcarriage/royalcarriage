@@ -21,9 +21,25 @@ export type Permission =
   | 'view:users'
   | 'view:settings'
   | 'view:audit'
+  | 'view:vehicles'
+  | 'view:drivers'
+  | 'view:assignments'
+  | 'view:issues'
+  | 'view:accounting'
+  | 'view:receipts'
+  | 'view:refunds'
+  | 'view:payroll'
+  | 'view:deductions'
+  | 'view:organizations'
   | 'edit:content'
   | 'edit:settings'
   | 'edit:users'
+  | 'edit:vehicles'
+  | 'edit:drivers'
+  | 'edit:fleet'
+  | 'edit:issues'
+  | 'edit:deductions'
+  | 'edit:organizations'
   | 'execute:imports'
   | 'execute:deploy'
   | 'execute:ai-commands'
@@ -31,14 +47,49 @@ export type Permission =
   | 'approve:content'
   | 'delete:content'
   | 'delete:users'
-  | 'admin:system';
+  | 'admin:system'
+  | 'admin:organizations';
 
 // Role permission mappings
-const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
+const ROLE_PERMISSIONS: Partial<Record<Role, Permission[]>> = {
   viewer: [
     'view:dashboard',
     'view:analytics',
     'view:websites',
+  ],
+  // Dispatcher: view vehicles, drivers, assignments, issues
+  dispatcher: [
+    'view:dashboard',
+    'view:vehicles',
+    'view:drivers',
+    'view:assignments',
+    'view:issues',
+  ],
+  // Accountant: import CSV, view accounting, drivers, receipts, refunds
+  accountant: [
+    'view:dashboard',
+    'view:imports',
+    'view:accounting',
+    'view:drivers',
+    'view:receipts',
+    'view:refunds',
+    'execute:imports',
+  ],
+  // Fleet Manager: manage drivers, fleet, issues, deductions
+  fleet_manager: [
+    'view:dashboard',
+    'view:vehicles',
+    'view:drivers',
+    'view:assignments',
+    'view:issues',
+    'view:deductions',
+    'view:payroll',
+    'view:receipts',
+    'edit:vehicles',
+    'edit:drivers',
+    'edit:fleet',
+    'edit:issues',
+    'edit:deductions',
   ],
   editor: [
     'view:dashboard',
@@ -53,6 +104,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'edit:content',
     'execute:ai-commands',
   ],
+  // Admin: full access within organization
   admin: [
     'view:dashboard',
     'view:ai-systems',
@@ -67,8 +119,22 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'view:users',
     'view:settings',
     'view:audit',
+    'view:vehicles',
+    'view:drivers',
+    'view:assignments',
+    'view:issues',
+    'view:accounting',
+    'view:receipts',
+    'view:refunds',
+    'view:payroll',
+    'view:deductions',
     'edit:content',
     'edit:settings',
+    'edit:vehicles',
+    'edit:drivers',
+    'edit:fleet',
+    'edit:issues',
+    'edit:deductions',
     'execute:imports',
     'execute:deploy',
     'execute:ai-commands',
@@ -76,6 +142,7 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'approve:content',
     'delete:content',
   ],
+  // Superadmin: legacy role, same as admin
   superadmin: [
     'view:dashboard',
     'view:ai-systems',
@@ -90,9 +157,25 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'view:users',
     'view:settings',
     'view:audit',
+    'view:vehicles',
+    'view:drivers',
+    'view:assignments',
+    'view:issues',
+    'view:accounting',
+    'view:receipts',
+    'view:refunds',
+    'view:payroll',
+    'view:deductions',
+    'view:organizations',
     'edit:content',
     'edit:settings',
     'edit:users',
+    'edit:vehicles',
+    'edit:drivers',
+    'edit:fleet',
+    'edit:issues',
+    'edit:deductions',
+    'edit:organizations',
     'execute:imports',
     'execute:deploy',
     'execute:ai-commands',
@@ -101,6 +184,51 @@ const ROLE_PERMISSIONS: Record<Role, Permission[]> = {
     'delete:content',
     'delete:users',
     'admin:system',
+    'admin:organizations',
+  ],
+  // SaaS Admin: view/manage everything across all organizations
+  saas_admin: [
+    'view:dashboard',
+    'view:ai-systems',
+    'view:imports',
+    'view:analytics',
+    'view:websites',
+    'view:seo',
+    'view:images',
+    'view:enterprise',
+    'view:workflows',
+    'view:deploy',
+    'view:users',
+    'view:settings',
+    'view:audit',
+    'view:vehicles',
+    'view:drivers',
+    'view:assignments',
+    'view:issues',
+    'view:accounting',
+    'view:receipts',
+    'view:refunds',
+    'view:payroll',
+    'view:deductions',
+    'view:organizations',
+    'edit:content',
+    'edit:settings',
+    'edit:users',
+    'edit:vehicles',
+    'edit:drivers',
+    'edit:fleet',
+    'edit:issues',
+    'edit:deductions',
+    'edit:organizations',
+    'execute:imports',
+    'execute:deploy',
+    'execute:ai-commands',
+    'execute:regeneration',
+    'approve:content',
+    'delete:content',
+    'delete:users',
+    'admin:system',
+    'admin:organizations',
   ],
 };
 
@@ -157,7 +285,7 @@ export const ACTION_PERMISSIONS: Record<string, Permission> = {
  * Check if a role has a specific permission
  */
 export function hasPermission(role: Role, permission: Permission): boolean {
-  return ROLE_PERMISSIONS[role]?.includes(permission) ?? false;
+  return (ROLE_PERMISSIONS[role] || []).includes(permission) ?? false;
 }
 
 /**
@@ -189,9 +317,22 @@ export function getRolePermissions(role: Role): Permission[] {
  * Check if role is at least a certain level
  */
 export function isAtLeastRole(currentRole: Role, requiredRole: Role): boolean {
-  const roleHierarchy: Role[] = ['viewer', 'editor', 'admin', 'superadmin'];
+  // Role hierarchy: lower index = lower privilege
+  const roleHierarchy: Role[] = [
+    'viewer',
+    'dispatcher',
+    'accountant',
+    'editor',
+    'fleet_manager',
+    'admin',
+    'superadmin',
+    'saas_admin',
+  ];
   const currentIndex = roleHierarchy.indexOf(currentRole);
   const requiredIndex = roleHierarchy.indexOf(requiredRole);
+  // If role not found in hierarchy, default to lowest
+  if (currentIndex === -1) return false;
+  if (requiredIndex === -1) return true;
   return currentIndex >= requiredIndex;
 }
 
@@ -239,11 +380,15 @@ export interface AccessControlProps {
  * Format role for display
  */
 export function formatRole(role: Role): string {
-  const labels: Record<Role, string> = {
+  const labels: Partial<Record<Role, string>> = {
     viewer: 'Viewer',
+    dispatcher: 'Dispatcher',
+    accountant: 'Accountant',
     editor: 'Editor',
+    fleet_manager: 'Fleet Manager',
     admin: 'Admin',
     superadmin: 'Super Admin',
+    saas_admin: 'SaaS Admin',
   };
   return labels[role] || role;
 }
@@ -252,11 +397,15 @@ export function formatRole(role: Role): string {
  * Get role badge color
  */
 export function getRoleBadgeColor(role: Role): string {
-  const colors: Record<Role, string> = {
+  const colors: Partial<Record<Role, string>> = {
     viewer: 'bg-slate-100 text-slate-700',
+    dispatcher: 'bg-cyan-100 text-cyan-700',
+    accountant: 'bg-green-100 text-green-700',
     editor: 'bg-blue-100 text-blue-700',
+    fleet_manager: 'bg-orange-100 text-orange-700',
     admin: 'bg-amber-100 text-amber-700',
     superadmin: 'bg-purple-100 text-purple-700',
+    saas_admin: 'bg-rose-100 text-rose-700',
   };
   return colors[role] || 'bg-slate-100 text-slate-700';
 }

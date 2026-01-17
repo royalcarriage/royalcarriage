@@ -17,6 +17,7 @@ const DataImportDashboard = lazy(() => import("../pages/data-import"));
 const LocationsManagement = lazy(() => import("../pages/locations-management"));
 const ServicesManagement = lazy(() => import("../pages/services-management"));
 const FleetManagement = lazy(() => import("../pages/fleet-management"));
+const OverviewDashboard = lazy(() => import("../pages/overview-dashboard"));
 
 // Loading component for lazy loaded pages
 function PageLoader() {
@@ -1099,12 +1100,9 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         onSignOut={signOut}
       >
         {activePage === "overview" && (
-          <Overview
-            metrics={metrics}
-            freshness={freshness}
-            alerts={alerts}
-            onQuickAction={quickAction}
-          />
+          <Suspense fallback={<PageLoader />}>
+            <OverviewDashboard />
+          </Suspense>
         )}
         {activePage === "imports-moovs" && (
           <ImportsPage

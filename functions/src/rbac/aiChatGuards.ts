@@ -270,15 +270,15 @@ export function redactSensitiveData<T extends Record<string, unknown>>(
   data: T
 ): T {
   const fieldsToRedact = getFieldsToRedact(user);
-  const redactedData = { ...data };
+  const redactedData: Record<string, unknown> = { ...data };
 
   for (const field of fieldsToRedact) {
     if (field in redactedData) {
-      redactedData[field] = '[REDACTED]' as unknown as T[typeof field];
+      redactedData[field] = '[REDACTED]';
     }
   }
 
-  return redactedData;
+  return redactedData as T;
 }
 
 /**
@@ -530,11 +530,3 @@ export function buildSafeQueryParams(
   };
 }
 
-// Export types and interfaces
-export type {
-  AIChatAccessConfig,
-  AIQueryRequest,
-  AIQueryValidationResult,
-  OrganizationFilter,
-  SafeQueryConfig,
-};

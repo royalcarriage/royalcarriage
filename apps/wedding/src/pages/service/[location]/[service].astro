@@ -4,28 +4,38 @@ import { db } from '../../../lib/firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
 export async function getStaticPaths() {
-  // Fetch all approved content for wedding website
-  const contentQuery = query(
-    collection(db, 'service_content'),
-    where('websiteId', '==', 'wedding'),
-    where('approvalStatus', '==', 'approved')
-  );
+  try {
+    if (!db) {
+      console.warn('[Astro Build] Firebase not initialized, returning empty paths');
+      return [];
+    }
 
-  const snapshot = await getDocs(contentQuery);
+    // Fetch all approved content for wedding website
+    const contentQuery = query(
+      collection(db, 'service_content'),
+      where('websiteId', '==', 'wedding'),
+      where('approvalStatus', '==', 'approved')
+    );
 
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      params: {
-        location: data.locationId,
-        service: data.serviceId,
-      },
-      props: {
-        content: data,
-        contentId: doc.id,
-      },
-    };
-  });
+    const snapshot = await getDocs(contentQuery);
+
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        params: {
+          location: data.locationId,
+          service: data.serviceId,
+        },
+        props: {
+          content: data,
+          contentId: doc.id,
+        },
+      };
+    });
+  } catch (error) {
+    console.warn('[Astro Build] Could not fetch service content:', error);
+    return [];
+  }
 }
 
 interface Props {
