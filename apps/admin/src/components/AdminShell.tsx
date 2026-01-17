@@ -90,9 +90,10 @@ export function AdminShell({
       id: "enterprise",
       label: "Enterprise",
       children: [
-        { id: "locations", label: "Locations (173)", href: "/locations" },
+        { id: "locations", label: "Locations (233)", href: "/locations" },
         { id: "services", label: "Services (91)", href: "/services" },
-        { id: "fleet", label: "Fleet Vehicles", href: "/fleet-management" },
+        { id: "fleet", label: "Fleet Vehicles (14)", href: "/fleet-management" },
+        { id: "blog-seo", label: "Blog & SEO", href: "/blog-management" },
       ],
     },
     {
