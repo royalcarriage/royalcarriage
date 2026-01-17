@@ -1,533 +1,211 @@
-# Royal Carriage Admin System - Quick Start Guide
+# Quick Start Guide - Public Websites
 
-**Last Updated:** January 14, 2026
-**Status:** Production Ready
+## Immediate Deployment (5 minutes)
 
----
-
-## System Access
-
-### Live URLs
-- **Login:** https://royalcarriagelimoseo.web.app/login
-- **Dashboard:** https://royalcarriagelimoseo.web.app/admin
-- **Firebase Console:** https://console.firebase.google.com/project/royalcarriagelimoseo
-
-### Admin Pages
-- Dashboard: `/admin`
-- Page Analyzer: `/admin/analyze`
-- User Management: `/admin/users`
-- Analytics: `/admin/analytics`
-- Settings: `/admin/settings`
-
----
-
-## Prerequisites Checklist
-
-- [ ] Node.js 20.x or later installed
-- [ ] npm 10.x or later installed
-- [ ] Firebase CLI installed (`npm install -g firebase-tools`)
-- [ ] Firebase project created at https://console.firebase.google.com
-- [ ] Git repository cloned locally
-
----
-
-## Quick Deployment (30 minutes)
-
-### Step 1: Configuration (5 minutes)
-
-#### 1.1 Update Firebase Project ID
-
-Edit `.firebaserc`:
-```json
-{
-  "projects": {
-    "default": "your-actual-project-id"
-  }
-}
-```
-
-#### 1.2 Create Environment File
-
+### 1. Deploy to Firebase
 ```bash
-cp .env.example .env
-```
-
-Edit `.env` with minimum required values:
-```env
-NODE_ENV=production
-PORT=5000
-FIREBASE_PROJECT_ID=your-firebase-project-id
-SESSION_SECRET=generate-random-32-char-string
-```
-
-Generate session secret:
-```bash
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-```
-
-### Step 2: Install & Build (10 minutes)
-
-Run the automated deployment script:
-
-```bash
-./deploy.sh
-```
-
-Or manually:
-
-```bash
-# Install dependencies
-npm install
-
-# Type check
-npm run check
-
-# Build
-npm run build
-
-# Install Functions dependencies
-cd functions
-npm install
-cd ..
-```
-
-### Step 3: Deploy to Firebase (10 minutes)
-
-#### 3.1 Login to Firebase
-
-```bash
+cd /Users/admin/gemini-workspace/repo
 firebase login
-```
-
-#### 3.2 Deploy Everything
-
-```bash
+firebase use YOUR_PROJECT_ID
 firebase deploy
 ```
 
-Or deploy individually:
+### 2. Configure Custom Domains
+In Firebase Console:
+- Hosting > Domains
+- Add: chicagoairportblackcar.com → airport target
+- Add: chicagoexecutivecarservice.com → corporate target
+- Add: chicagoweddingtransportation.com → wedding target
+- Add: chicago-partybus.com → partybus target
+
+### 3. Point DNS Records
+Update your domain registrar to point to Firebase nameservers.
+
+## Quick Configuration (15 minutes)
+
+### Update Analytics IDs
+File: `/public-sites/shared/js/analytics.js`
+
+Replace placeholder IDs:
+```javascript
+// Line 18-29
+if (window.location.hostname.includes('chicagoairportblackcar')) {
+    measurementId = 'G-AIRPORT123'; // Update this
+}
+// ... repeat for other domains
+```
+
+### Update Contact Phone Numbers
+Search and replace in each domain's index.html:
+- Airport: (773) 123-4567
+- Corporate: (773) 555-0100
+- Wedding: (773) 555-0200
+- Party Bus: (773) 555-0300
+
+## Testing Checklist (10 minutes)
 
 ```bash
-# Deploy security rules
-firebase deploy --only firestore
+# Test locally
+firebase serve --port 8000
 
-# Deploy functions
-firebase deploy --only functions
-
-# Deploy website
-firebase deploy --only hosting
+# Visit http://localhost:8000 and test:
+☐ Mobile responsive (try different screen sizes)
+☐ Navigation menu working
+☐ Forms submitting (check browser console)
+☐ Links working
+☐ Images loading
+☐ Analytics firing (check Network tab for gtag requests)
 ```
 
-### Step 4: Create Admin User (5 minutes)
+## Enable Content (20 minutes)
 
-#### Option A: Using init-admin Script (Development)
+### Create Firestore Collection
+1. Firebase Console > Firestore
+2. Create collection: `ai_content`
+3. Add sample documents:
 
-```bash
-npm run init-admin
-```
-
-Default credentials:
-- Username: `admin`
-- Password: `Admin123!`
-
-**Important:** Change password after first login!
-
-#### Option B: Firebase Console (Production)
-
-1. Go to Firestore Database in Firebase Console
-2. Create collection: `users`
-3. Add document with ID: `admin-001`
-4. Fields:
-   ```json
-   {
-     "id": "admin-001",
-     "username": "admin",
-     "password": "CHANGE_THIS_PASSWORD",
-     "role": "super_admin",
-     "createdAt": "2026-01-14T00:00:00Z"
-   }
-   ```
-
-#### Option C: Using PostgreSQL
-
-```bash
-# 1. Setup database
-export DATABASE_URL="postgresql://localhost:5432/royalcarriage"
-npx drizzle-kit migrate
-
-# 2. Hash password
-node -e "require('bcryptjs').hash('YourPass123!', 10).then(console.log)"
-
-# 3. Create user
-psql royalcarriage -c "INSERT INTO users (username, password, role) VALUES ('admin', 'HASHED_PASSWORD', 'super_admin');"
-```
-
-### Step 5: Verify Deployment (5 minutes)
-
-#### 5.1 Check Website
-Visit: `https://your-project-id.web.app`
-
-#### 5.2 Check Admin Dashboard
-Visit: `https://your-project-id.web.app/admin`
-
-Login with admin credentials created in Step 4.
-
-#### 5.3 Verify Functions
-```bash
-firebase functions:list
-```
-
-Should show:
-- `dailyPageAnalysis`
-- `weeklySeoReport`
-- `triggerPageAnalysis`
-- `generateContent`
-- `generateImage`
-- `autoAnalyzeNewPage`
-
----
-
-## Local Development
-
-### Local Setup
-
-```bash
-# Clone repository
-git clone <repo-url>
-cd VSCODE
-
-# Install dependencies
-npm install
-
-# Create admin user
-npm run init-admin
-
-# Start development server
-npm run dev
-# Server: http://localhost:5000
-```
-
-### Available Scripts
-
-```bash
-npm run dev          # Start development server
-npm run build        # Build for production
-npm run start        # Run production build
-npm run check        # TypeScript type checking
-npm run init-admin   # Create initial admin user
-npm run db:push      # Push database schema
-npm test            # Run tests
-```
-
----
-
-## Login Process
-
-1. Visit: https://royalcarriagelimoseo.web.app/login
-2. Enter username and password
-3. Click "Sign In"
-4. Redirected to dashboard
-
-**Session:** 24 hours
-**Security:** HTTP-only cookies, HTTPS only in production
-
----
-
-## Dashboard Overview
-
-### Stats Cards
-- Pages Analyzed
-- AI Suggestions
-- Images Generated
-- Avg SEO Score
-
-### Quick Actions
-- Analyze All Pages
-- Manage Users (admin+)
-- Generate Content
-- Generate Images
-
-### Recent Activity
-- Real-time operation feed
-- Status indicators
-- Timestamps
-
-### System Status
-- Service health
-- Uptime percentages
-- Operational status
-
----
-
-## User Roles
-
-### Hierarchy
-
-```
-super_admin → Full control
-    ↓
-admin → Management access
-    ↓
-user → Basic access
-```
-
-### Permissions
-
-| Feature | User | Admin | Super Admin |
-|---------|:----:|:-----:|:-----------:|
-| Dashboard | ✅ | ✅ | ✅ |
-| Page Analyzer | ❌ | ✅ | ✅ |
-| User Management | ❌ | View | Full |
-| Analytics | ❌ | ✅ | ✅ |
-| Settings | ❌ | ❌ | ✅ |
-
----
-
-## User Management
-
-### Add User (Super Admin)
-
-```typescript
-POST /api/auth/register
+```javascript
+// Sample Blog Post
 {
-  "username": "newuser",
-  "password": "SecurePass123!"
+  type: 'blog_post',
+  title: 'Sample Blog Post',
+  excerpt: 'This is a sample post',
+  content: 'Full content here...',
+  category: 'Travel Tips',
+  author: 'AI Content',
+  created_at: new Date(),
+  published: true,
+  image_url: 'https://via.placeholder.com/400x300'
+}
+
+// Sample FAQ
+{
+  type: 'faq',
+  question: 'How do I book?',
+  answer: 'Click the booking button...',
+  category: 'Booking',
+  created_at: new Date(),
+  published: true
 }
 ```
 
-### Update Role
+## Verify Everything Works
 
-```typescript
-PUT /api/users/:id/role
-{
-  "role": "admin" | "super_admin" | "user"
-}
-```
-
-### Delete User
-
-```typescript
-DELETE /api/users/:id
-```
-
-**Protections:**
-- Cannot delete yourself
-- Cannot remove own super admin role
-
----
-
-## API Endpoints
-
-### Auth
-
-```
-POST   /api/auth/login       Login
-POST   /api/auth/logout      Logout
-GET    /api/auth/me          Current user
-POST   /api/auth/register    Create user (super admin)
-GET    /api/auth/check       Auth status
-```
-
-### Users
-
-```
-GET    /api/users             List all (admin+)
-GET    /api/users/:id         Get one (admin+)
-PUT    /api/users/:id/role    Update role (super admin)
-DELETE /api/users/:id         Delete (super admin)
-```
-
-### AI Features
-
-```
-POST   /api/ai/analyze-page       Analyze a page for SEO
-POST   /api/ai/generate-content   Generate optimized content
-POST   /api/ai/generate-image     Create AI images
-POST   /api/ai/batch-analyze      Analyze multiple pages
-GET    /api/ai/health             Check AI services status
-```
-
----
-
-## Enable AI Features (Optional)
-
-### 1. Enable Vertex AI (2-3 hours)
-
-1. **Enable Vertex AI**
-   - Go to Google Cloud Console
-   - Enable Vertex AI API
-   - Enable Gemini and Imagen APIs
-
-2. **Create Service Account**
-   - IAM & Admin → Service Accounts
-   - Create with roles:
-     - Vertex AI User
-     - Cloud Functions Developer
-     - Firestore User
-
-3. **Download Credentials**
-   - Download JSON key
-   - Store securely (never commit to git)
-
-4. **Update Environment**
-   ```env
-   GOOGLE_CLOUD_PROJECT=your-gcp-project-id
-   GOOGLE_CLOUD_LOCATION=us-central1
-   GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json
-   ```
-
-5. **Update Code**
-   - Replace TODOs in `PageAnalyzer.tsx`
-   - Replace TODOs in `functions/src/index.ts`
-   - Redeploy: `firebase deploy`
-
----
-
-## Troubleshooting
-
-### Login Issues
-
-**Can't login:**
-- Check username/password
-- Verify user exists
-- Check SESSION_SECRET set
-
-**Session expires:**
-- 24-hour timeout
-- Re-login required
-- Automatic redirect
-
-### Navigation Issues
-
-**Blank page:**
-- Check browser console
-- Clear cache
-- Verify JavaScript enabled
-
-**Missing menu items:**
-- Check user role
-- Verify authentication
-- Review permissions
-
-### Build Fails
 ```bash
-rm -rf node_modules dist
-npm install
-npm run build
+# Check all pages load
+curl -s https://chicagoairportblackcar.com | head -20
+curl -s https://chicagoexecutivecarservice.com | head -20
+curl -s https://chicagoweddingtransportation.com | head -20
+curl -s https://chicago-partybus.com | head -20
+
+# Test on mobile
+- iPhone: https://chicagoairportblackcar.com
+- Android: https://chicagoairportblackcar.com
+- Tablet: https://chicagoairportblackcar.com
 ```
 
-### Deploy Fails
-- Check Firebase project ID in `.firebaserc`
-- Ensure logged in: `firebase login`
-- Check Firebase quota limits
+## Post-Launch Checklist
 
-### Admin Dashboard Not Loading
-- Verify build succeeded
-- Check browser console for errors
-- Ensure routing configured in `firebase.json`
+- [ ] All 4 domains live and accessible
+- [ ] Mobile responsive verified
+- [ ] Forms submitting to Firestore
+- [ ] Analytics tracking (check real-time)
+- [ ] Blog posts loading from Firestore
+- [ ] Contact forms working
+- [ ] Social sharing (test OG tags)
+- [ ] Search Console submission
+- [ ] Google Ads conversion tracking setup
+- [ ] Monitor Lighthouse scores
 
-### Functions Not Running
-- Check Firebase Console → Functions
-- View logs: `firebase functions:log`
-- Verify function deployment: `firebase functions:list`
+## File Locations Reference
 
-### API Errors
+**Main Files:**
+- `/public-sites/airport/index.html` - Airport homepage
+- `/public-sites/corporate/index.html` - Corporate homepage
+- `/public-sites/wedding/index.html` - Wedding homepage
+- `/public-sites/party-bus/index.html` - Party Bus homepage
 
-**401 Unauthorized:**
-- Not logged in
-- Session expired
-- Login required
+**Shared Resources:**
+- `/public-sites/shared/css/base.css` - Main styles
+- `/public-sites/shared/css/colors.css` - Color schemes
+- `/public-sites/shared/css/responsive.css` - Mobile styles
+- `/public-sites/shared/js/analytics.js` - GA4 setup
+- `/public-sites/shared/js/forms.js` - Form handling
+- `/public-sites/shared/js/ai-content-loader.js` - Dynamic content
 
-**403 Forbidden:**
-- Insufficient permissions
-- Wrong role for action
-- Check role hierarchy
-
----
-
-## What You Have Now
-
-✅ **Deployed Website**: Live at your Firebase URL
-✅ **Admin Dashboard**: Accessible at `/admin`
-✅ **Scheduled Functions**: Running daily and weekly
-✅ **Security Rules**: Admin-only access enabled
-✅ **Database**: Firestore with indexes
-✅ **Authentication**: Role-based access control
-✅ **AI Features**: Page analyzer and content generation
-
----
+**Documentation:**
+- `/DEPLOYMENT_GUIDE.md` - Full deployment instructions
+- `/ANALYTICS_SETUP.md` - Analytics configuration
+- `/AI_CONTENT_GUIDE.md` - Content integration guide
+- `/firebase.json` - Firebase hosting config
 
 ## Common Tasks
 
-### Check System Health
+### Add a New Blog Post
+1. Go to Firestore Console
+2. Add document to `ai_content` collection
+3. Set `type: 'blog_post'`, `published: true`
+4. Blog page auto-updates in 1-2 minutes
 
-1. Login to dashboard
-2. View System Status card
-3. Check service uptimes
-4. Review automation schedule
+### Update Contact Information
+Search files for phone numbers and update:
+```
+Airport: (773) 123-4567
+Corporate: (773) 555-0100
+Wedding: (773) 555-0200
+Party Bus: (773) 555-0300
+```
 
-### Analyze Pages
+### Change Color Scheme
+Edit `/public-sites/shared/css/colors.css`:
+```css
+:root.airport {
+  --primary-color: #1a1a1a;  /* Change this */
+  --accent-color: #c9a961;   /* Or this */
+}
+```
 
-1. Navigate to Page Analyzer
-2. Click "Analyze All Pages"
-3. Review scores
-4. Implement recommendations
+### Enable Conversion Tracking
+1. Get Google Ads conversion IDs
+2. Update `/public-sites/shared/js/forms.js`
+3. Forms automatically track conversions
 
-### Manage Admins
+## Troubleshooting
 
-1. Go to User Management
-2. Create user via API
-3. Update role to admin/super_admin
-4. Share credentials securely
+**Forms not submitting:**
+- Check Firestore enabled
+- Verify security rules allow writes
+- Check browser console for errors
 
-### Configure System
+**Analytics not tracking:**
+- Verify measurement ID is correct
+- Check GA4 account has property created
+- Allow 1-2 hours for data to appear
 
-1. Login as super admin
-2. Navigate to Settings
-3. Update configurations
-4. Save changes
+**Content not loading:**
+- Check Firestore collection exists
+- Verify documents have `published: true`
+- Refresh page (F5)
+
+**Mobile not responsive:**
+- Check viewport meta tag present
+- Test in Chrome DevTools device mode
+- Verify CSS loads (check Network tab)
+
+## Next Steps
+
+1. **Week 1:** Deploy, test, fix bugs
+2. **Week 2:** Create initial content, launch advertising
+3. **Week 3:** Monitor analytics, optimize CTAs
+4. **Week 4:** Scale content, review performance
+
+## Support Files
+
+For detailed information, see:
+- `DEPLOYMENT_GUIDE.md` - Complete setup
+- `ANALYTICS_SETUP.md` - Analytics details
+- `AI_CONTENT_GUIDE.md` - Content management
+- `WEBSITES_SUMMARY.md` - Full project overview
 
 ---
-
-## Cost Estimate
-
-**First Month**: $0-5 (Free tier covers most usage)
-- Hosting: Free tier sufficient
-- Functions: 2M invocations free
-- Firestore: 50K reads/day free
-
-**With AI Enabled**: $15-50/month
-- Depends on content generation frequency
-- Monitor usage in Google Cloud Console
-
----
-
-## System Status
-
-**Build:** ✅ Passing (0 TypeScript errors)
-**Deployment:** ✅ Live on Firebase
-**Authentication:** ✅ Working
-**Navigation:** ✅ All pages accessible
-**Security:** ✅ HTTPS, HSTS, RBAC active
-**AI Features:** ✅ Page analyzer operational
-
-**The system is ready for production use!**
-
----
-
-## Documentation
-
-**Quick References:**
-- Full System Guide: `docs/AI_SYSTEM_GUIDE.md`
-- Detailed Deployment: `docs/DEPLOYMENT_GUIDE.md`
-- Authentication System: `docs/AUTHENTICATION_INTEGRATION_COMPLETE.md`
-- Dashboard Design: `docs/ADMIN_DASHBOARD_REDESIGN.md`
-- Audit Report: `docs/PRE_DEPLOYMENT_AUDIT.md`
-
-**Admin URL**: `https://your-project-id.web.app/admin`
-
----
-
-**Total Setup Time**: ~30 minutes
-**Difficulty**: Easy
-**Status**: Production Ready ✅
+Ready to launch? Contact DevOps for final deployment approval.
