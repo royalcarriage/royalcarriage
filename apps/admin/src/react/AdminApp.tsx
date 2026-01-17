@@ -8,6 +8,7 @@ import { useToast } from "../components/ui/Toast";
 
 // Lazy load new AI dashboard pages
 const AICommandCenter = lazy(() => import("../pages/ai-command-center"));
+const AIChat = lazy(() => import("../pages/ai-chat"));
 const AIAnalytics = lazy(() => import("../pages/ai-analytics"));
 const ContentPipeline = lazy(() => import("../pages/content-pipeline"));
 const ContentApproval = lazy(() => import("../pages/content-approval"));
@@ -89,6 +90,7 @@ type PageKey =
   | "settings"
   | "self-audit"
   | "ai-command-center"
+  | "ai-chat"
   | "ai-analytics"
   | "content-pipeline"
   | "content-approval"
@@ -1165,6 +1167,11 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         {activePage === "ai-command-center" && (
           <Suspense fallback={<PageLoader />}>
             <AICommandCenter />
+          </Suspense>
+        )}
+        {activePage === "ai-chat" && (
+          <Suspense fallback={<PageLoader />}>
+            <AIChat />
           </Suspense>
         )}
         {activePage === "ai-analytics" && (

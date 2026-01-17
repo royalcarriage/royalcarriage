@@ -1,8 +1,10 @@
-import type { ReactNode } from "react";
+import { useMemo, type ReactNode } from "react";
 import { TopBar } from "./TopBar";
 import { SidebarAccordion } from "./ui/SidebarAccordion";
 import type { FreshnessStatus, Role, SiteKey, UserProfile } from "../types";
 import { PillButton } from "./ui/PillButton";
+import { filterNavByRole } from "../lib/permissions";
+import { RoleBadge } from "./AccessControl";
 
 interface AdminShellProps {
   activePage: string;
@@ -40,6 +42,7 @@ export function AdminShell({
       label: "AI Systems",
       children: [
         { id: "ai-command-center", label: "Command Center", href: "/ai/command-center" },
+        { id: "ai-chat", label: "AI Chat", href: "/ai/chat" },
         { id: "ai-analytics", label: "AI Analytics", href: "/ai/analytics" },
         { id: "content-pipeline", label: "Content Pipeline", href: "/content-pipeline" },
       ],
@@ -106,6 +109,9 @@ export function AdminShell({
     { id: "self-audit", label: "Self Audit", href: "/self-audit" },
   ];
 
+  // Filter navigation based on user role
+  const filteredNavItems = useMemo(() => filterNavByRole(navItems, role), [role]);
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-4 lg:flex-row">
@@ -115,11 +121,9 @@ export function AdminShell({
               <div className="text-xs uppercase text-slate-500">Royal Carriage</div>
               <div className="text-lg font-semibold">Command Center</div>
             </div>
-            <span className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
-              {role.toUpperCase()}
-            </span>
+            <RoleBadge role={role} />
           </div>
-          <SidebarAccordion items={navItems} activeId={activePage} />
+          <SidebarAccordion items={filteredNavItems} activeId={activePage} />
           <div className="mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-3 text-xs text-indigo-900">
             {user?.email ? (
               <>

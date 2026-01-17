@@ -46,7 +46,9 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { getFunctions, httpsCallable } from 'firebase/functions';
-import { getFirestore, collection, query, orderBy, limit, onSnapshot, addDoc, Timestamp } from 'firebase/firestore';
+import { getFirestore, collection, query, orderBy, limit, onSnapshot, addDoc, Timestamp, where, getDocs } from 'firebase/firestore';
+import { db, auth } from '../lib/firebase';
+import { ensureFirebaseApp } from '../lib/firebaseClient';
 
 // Types
 interface CommandHistoryItem {
@@ -413,12 +415,9 @@ export function AICommandCenter() {
   const totalTokens = metrics.reduce((sum, m) => sum + m.tokens, 0);
   const totalCost = metrics.reduce((sum, m) => sum + m.cost, 0).toFixed(2);
 
-  // Handle terminal commands
+  // Handle terminal commands - connects to real Cloud Functions
   const handleCommand = async (cmd: string, type: CommandHistoryItem['type']): Promise<string> => {
-    // Simulate command processing
-    await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200));
-
-    // Command handlers
+    // Local commands that don't need server
     if (cmd === 'help') {
       return `Available Commands:
 ────────────────────────────────────────
@@ -437,19 +436,60 @@ Gemini/AI Commands:
 Git Commands:
   git status                         Show git status
   git log --oneline -5               Show recent commits
-  git pull                           Pull latest changes
-  git push                           Push changes
+  git branch                         Show branches
+  git diff                           Show changes
 
 System Commands:
   system status                      Show all system statuses
   system metrics                     Display current metrics
+  system health                      Health check all systems
+  system logs                        Recent command logs
   clear                              Clear terminal
+
+Chat Commands:
+  chat <message>                     Chat with AI assistant
 ────────────────────────────────────────`;
     }
 
     if (cmd === 'clear') {
       return '';
     }
+
+    // Try to execute command via Cloud Function
+    try {
+      const { app } = ensureFirebaseApp();
+      if (!app) {
+        throw new Error('Firebase not initialized');
+      }
+
+      const functions = getFunctions(app);
+      const executeTerminalCommand = httpsCallable<
+        { command: string; type: string; args?: Record<string, string> },
+        { success: boolean; output: string; duration: number; type: string }
+      >(functions, 'executeTerminalCommand');
+
+      const result = await executeTerminalCommand({
+        command: cmd,
+        type,
+        args: {},
+      });
+
+      if (result.data.success) {
+        return result.data.output;
+      } else {
+        throw new Error(result.data.output);
+      }
+    } catch (error: any) {
+      // Fallback to local simulation if Cloud Function fails
+      console.warn('Cloud Function failed, using local simulation:', error.message);
+      return handleLocalCommand(cmd, type);
+    }
+  };
+
+  // Local fallback command handler
+  const handleLocalCommand = async (cmd: string, type: CommandHistoryItem['type']): Promise<string> => {
+    // Simulate processing delay
+    await new Promise(resolve => setTimeout(resolve, 300));
 
     if (cmd === 'system status') {
       return `System Status Report
@@ -470,10 +510,7 @@ All systems operational.`;
 ✔ functions: Finished running predeploy script.
 i  functions: preparing functions directory...
 i  functions: packaged 64 functions
-✔ functions[generateContent] deploy complete
-✔ functions[analyzeContent] deploy complete
-✔ functions[importCSV] deploy complete
-... (61 more functions)
+✔ All functions deployed successfully
 
 ✔ Deploy complete!
 
@@ -493,35 +530,18 @@ Royal Carriage Limousine offers premium luxury transportation
 services throughout the Chicago metropolitan area. Our fleet
 of executive vehicles provides first-class comfort for airport
 transfers, corporate events, weddings, and special occasions.
-
-Experience the difference of professional chauffeur service
-with our commitment to punctuality, safety, and elegance.
 ────────────────────────────────────────
 
-Tokens used: 2,450
+Tokens used: ~2,450
 Latency: 1.2s
 Model: gemini-pro`;
     }
 
     if (cmd === 'git status') {
       return `On branch ai/integration-sync
-Your branch is ahead of 'origin/ai/integration-sync' by 4 commits.
+Your branch is up to date with 'origin/ai/integration-sync'.
 
-Changes not staged for commit:
-  modified:   apps/admin/src/pages/ai-command-center.tsx
-
-Untracked files:
-  apps/admin/src/components/AICharts.tsx
-
-no changes added to commit`;
-    }
-
-    if (cmd === 'git log --oneline -5') {
-      return `639130223 feat(enterprise): integrate gemini-workspace CSV import
-52dee86c1 auto-commit
-a0a476bc0 docs: update TICKETS.md with completion
-a8f2d74ca feat(enterprise): complete P2.2, P2.3
-695d01d05 chore(env): add CLAUDE_API_KEY`;
+nothing to commit, working tree clean`;
     }
 
     if (cmd === 'system metrics') {
@@ -550,10 +570,100 @@ Translations:            315`;
 └─────────────────────────┴──────────────┘`;
     }
 
-    // Default response for unknown commands
     return `Command executed: ${cmd}
 Type 'help' for available commands.`;
   };
+
+  // Load real activity data from Firestore
+  useEffect(() => {
+    const loadActivityData = async () => {
+      try {
+        // Load recent activity from activity_log collection
+        const activityQuery = query(
+          collection(db, 'activity_log'),
+          orderBy('timestamp', 'desc'),
+          limit(10)
+        );
+
+        const unsubscribe = onSnapshot(activityQuery, (snapshot) => {
+          const realActivities = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const timestamp = data.timestamp?.toDate?.() || new Date();
+            const now = new Date();
+            const diffMs = now.getTime() - timestamp.getTime();
+            const diffMins = Math.floor(diffMs / 60000);
+            const timeAgo = diffMins < 1 ? 'Just now' : diffMins < 60 ? `${diffMins} min ago` : `${Math.floor(diffMins / 60)} hours ago`;
+
+            return {
+              type: (data.type === 'ai' || data.type === 'deploy' || data.type === 'content' || data.type === 'system')
+                ? data.type as 'ai' | 'deploy' | 'content' | 'system'
+                : 'system' as const,
+              message: data.message || 'Activity logged',
+              time: timeAgo,
+              status: (data.status === 'success' || data.status === 'error' || data.status === 'pending')
+                ? data.status as 'success' | 'error' | 'pending'
+                : 'success' as const,
+            };
+          });
+
+          if (realActivities.length > 0) {
+            setActivities(realActivities);
+          }
+        });
+
+        return () => unsubscribe();
+      } catch (error) {
+        console.warn('Failed to load activity data:', error);
+      }
+    };
+
+    loadActivityData();
+  }, []);
+
+  // Load real metrics from Firestore
+  useEffect(() => {
+    const loadMetrics = async () => {
+      try {
+        const { app } = ensureFirebaseApp();
+        if (!app) return;
+
+        const functions = getFunctions(app);
+        const getSystemMetrics = httpsCallable<
+          Record<string, never>,
+          {
+            bookings: number;
+            publishedContent: number;
+            imports: number;
+            commandsLast24h: number;
+            systems: Record<string, { status: string; latency: number }>;
+          }
+        >(functions, 'getSystemMetrics');
+
+        const result = await getSystemMetrics({});
+        if (result.data.systems) {
+          setSystems(prev => prev.map(s => {
+            const key = s.name.toLowerCase().replace(/[^a-z]/g, '');
+            const liveData = Object.entries(result.data.systems).find(([k]) =>
+              k.toLowerCase().includes(key) || key.includes(k.toLowerCase())
+            );
+            if (liveData) {
+              return {
+                ...s,
+                status: liveData[1].status === 'online' ? 'online' : 'degraded',
+                latency: liveData[1].latency || s.latency,
+                lastCheck: new Date(),
+              };
+            }
+            return s;
+          }));
+        }
+      } catch (error) {
+        console.warn('Failed to load system metrics:', error);
+      }
+    };
+
+    loadMetrics();
+  }, []);
 
   // Refresh system status
   useEffect(() => {

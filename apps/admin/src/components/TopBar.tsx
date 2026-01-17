@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 import { PillButton } from "./ui/PillButton";
 import { DataFreshnessChip } from "./ui/DataFreshnessChip";
-import type { FreshnessStatus, SiteKey } from "../types";
+import type { FreshnessStatus, Role, SiteKey } from "../types";
+import { canPerformAction } from "../lib/permissions";
+import { Lock } from "lucide-react";
 
 interface TopBarProps {
   site: SiteKey;
@@ -11,6 +13,7 @@ interface TopBarProps {
   onImportAds: () => void;
   onRunGate: () => void;
   onDeploy: () => void;
+  role?: Role;
 }
 
 export function TopBar({
@@ -21,7 +24,11 @@ export function TopBar({
   onImportMoovs,
   onRunGate,
   onDeploy,
+  role = "viewer",
 }: TopBarProps) {
+  const canImport = canPerformAction(role, "importMoovs");
+  const canRunGate = canPerformAction(role, "runGate");
+  const canDeploy = canPerformAction(role, "deploy");
   const siteOptions = useMemo(
     () => [
       { value: "all", label: "All Sites" },

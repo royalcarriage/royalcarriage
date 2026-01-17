@@ -783,10 +783,26 @@ import {
   logActivity,
 } from './aiTerminalFunctions';
 
+// Import AI chat functions
+import {
+  chatWithAI,
+  getChatHistory,
+  deleteChatConversation,
+  quickAIAction,
+} from './aiChatFunctions';
+
 // Export AI terminal functions
 export {
   executeTerminalCommand,
   getCommandHistory,
   getSystemMetrics,
   logActivity,
+};
+
+// Export AI chat functions
+export {
+  chatWithAI,
+  getChatHistory,
+  deleteChatConversation,
+  quickAIAction,
 };
