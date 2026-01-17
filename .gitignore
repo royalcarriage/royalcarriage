@@ -65,3 +65,5 @@ apps/partybus/.env
 functions/health-checker-key.json
 functions/health-checker-key.json
 *-key.json
+google-ads-credentials.json
+*credentials*.json
