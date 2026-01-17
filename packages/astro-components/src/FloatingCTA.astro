@@ -1,0 +1,103 @@
+---
+interface Props {
+  target: string;
+  accentColor?: string;
+}
+
+const { target, accentColor = 'blue' } = Astro.props;
+
+const bookingUrl = `https://customer.moovs.app/royal-carriage-limousine/new/info?utm_source=${target}&utm_medium=seo&utm_campaign=floating_cta`;
+
+const colorClasses: Record<string, { bg: string; button: string }> = {
+  blue: { bg: 'from-blue-900 to-blue-800', button: 'bg-amber-500 hover:bg-amber-600' },
+  rose: { bg: 'from-rose-900 to-rose-800', button: 'bg-amber-500 hover:bg-amber-600' },
+  purple: { bg: 'from-purple-900 to-purple-800', button: 'bg-amber-500 hover:bg-amber-600' },
+  slate: { bg: 'from-slate-900 to-slate-800', button: 'bg-amber-500 hover:bg-amber-600' }
+};
+
+const colors = colorClasses[accentColor] || colorClasses.blue;
+---
+
+<!-- Floating CTA Bar - Fixed at bottom on mobile -->
+<div
+  id="floating-cta"
+  class={`fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-r ${colors.bg} shadow-2xl transform translate-y-full transition-transform duration-300 md:hidden`}
+>
+  <div class="flex items-center justify-between px-4 py-3 gap-3">
+    <a
+      href="tel:+12248013090"
+      class="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-4 rounded-lg transition"
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+      </svg>
+      Call
+    </a>
+    <a
+      href={bookingUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class={`flex-1 flex items-center justify-center gap-2 ${colors.button} text-white font-semibold py-3 px-4 rounded-lg transition`}
+    >
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      Book Now
+    </a>
+  </div>
+</div>
+
+<!-- Desktop Floating Button -->
+<div
+  id="floating-book-btn"
+  class="hidden md:block fixed bottom-6 right-6 z-50 opacity-0 transition-opacity duration-300"
+>
+  <a
+    href={bookingUrl}
+    target="_blank"
+    rel="noopener noreferrer"
+    class={`flex items-center gap-3 ${colors.button} text-white font-bold py-4 px-6 rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-105`}
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+    </svg>
+    Book Your Ride
+  </a>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const floatingCta = document.getElementById('floating-cta');
+    const floatingBtn = document.getElementById('floating-book-btn');
+    let lastScrollY = 0;
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const documentHeight = document.body.scrollHeight;
+
+      // Show floating elements after scrolling 300px
+      if (scrollY > 300) {
+        floatingCta?.classList.remove('translate-y-full');
+        floatingBtn?.classList.remove('opacity-0');
+        floatingBtn?.classList.add('opacity-100');
+      } else {
+        floatingCta?.classList.add('translate-y-full');
+        floatingBtn?.classList.add('opacity-0');
+        floatingBtn?.classList.remove('opacity-100');
+      }
+
+      // Hide when near bottom to avoid overlapping footer
+      if (scrollY + viewportHeight > documentHeight - 200) {
+        floatingCta?.classList.add('translate-y-full');
+        floatingBtn?.classList.add('opacity-0');
+        floatingBtn?.classList.remove('opacity-100');
+      }
+
+      lastScrollY = scrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+  });
+</script>

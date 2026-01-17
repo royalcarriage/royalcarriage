@@ -9,7 +9,8 @@
     "./seo": "./src/seo.ts",
     "./schema": "./src/schema.ts",
     "./tracking": "./src/tracking.ts",
-    "./config": "./src/config.ts"
+    "./config": "./src/config.ts",
+    "./images": "./src/images.ts"
   },
   "dependencies": {
     "astro": "^4.0.0"

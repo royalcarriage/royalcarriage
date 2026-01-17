@@ -14,7 +14,7 @@ export async function getStaticPaths() {
     // Fetch all approved content for airport website
     const contentQuery = query(
       collection(db, 'service_content'),
-      where('websiteId', '==', 'airport'),
+      where('websiteId', '==', 'chicagoairportblackcar'),
       where('approvalStatus', '==', 'approved')
     );
 
@@ -47,6 +47,10 @@ interface Props {
     content: string;
     keywords: string[];
     aiQualityScore?: number;
+    locationName?: string;
+    serviceName?: string;
+    recommendedVehicles?: string[];
+    crossSellWebsites?: string[];
     internalLinks?: Array<{
       title: string;
       url: string;
@@ -101,15 +105,6 @@ const metaTags = {
         </nav>
       )}
 
-      {/* Quality Score Badge */}
-      {content.aiQualityScore && (
-        <div class="mb-4 inline-block">
-          <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-sm font-semibold text-blue-800">
-            Quality: {(content.aiQualityScore * 100).toFixed(0)}%
-          </span>
-        </div>
-      )}
-
       {/* Main Content */}
       <article class="prose prose-lg max-w-none">
         <h1 class="mb-4 text-4xl font-bold leading-tight text-gray-900">
@@ -140,17 +135,79 @@ const metaTags = {
           </div>
         )}
 
+        {/* Recommended Vehicles */}
+        {content.recommendedVehicles && content.recommendedVehicles.length > 0 && (
+          <div class="my-8 rounded-lg bg-blue-50 p-6">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Recommended Vehicles for This Service</h3>
+            <div class="grid gap-3 sm:grid-cols-3">
+              {content.recommendedVehicles.map((vehicle) => (
+                <a href="/fleet" class="flex items-center gap-2 rounded-lg bg-white p-3 shadow-sm hover:shadow-md transition">
+                  <span class="text-blue-600 text-xl">🚗</span>
+                  <span class="font-medium text-gray-800">{vehicle}</span>
+                </a>
+              ))}
+            </div>
+            <p class="mt-3 text-sm text-gray-600">
+              <a href="/fleet" class="text-blue-600 hover:underline">View our complete fleet</a> to find the perfect vehicle for your needs.
+            </p>
+          </div>
+        )}
+
         {/* Call-to-Action */}
         <div class="my-8 rounded-lg border-2 border-blue-600 bg-blue-50 p-6 text-center">
           <h3 class="mb-2 text-2xl font-bold text-blue-900">Ready to Book?</h3>
           <p class="mb-4 text-blue-800">Get premium airport transportation in Chicago</p>
-          <a
-            href="/booking"
-            class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
-          >
-            Book Now
-          </a>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/booking"
+              class="inline-block rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
+            >
+              Book Online
+            </a>
+            <a
+              href="tel:+12248013090"
+              class="inline-block rounded-lg border-2 border-blue-600 px-8 py-3 font-semibold text-blue-600 hover:bg-blue-100"
+            >
+              Call (224) 801-3090
+            </a>
+          </div>
         </div>
+
+        {/* Cross-Sell Other Services */}
+        {content.crossSellWebsites && content.crossSellWebsites.length > 0 && (
+          <div class="my-8 rounded-lg border border-gray-200 bg-white p-6">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Explore Our Other Services</h3>
+            <div class="grid gap-4 sm:grid-cols-2">
+              {content.crossSellWebsites.includes('chicagoexecutivecarservice') && (
+                <a href="https://chicagoexecutivecarservice.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
+                  <span class="text-2xl">💼</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900">Executive Car Service</h4>
+                    <p class="text-sm text-gray-600">Corporate transportation for business professionals</p>
+                  </div>
+                </a>
+              )}
+              {content.crossSellWebsites.includes('chicago-partybus') && (
+                <a href="https://chicago-partybus.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
+                  <span class="text-2xl">🎉</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900">Party Bus Rentals</h4>
+                    <p class="text-sm text-gray-600">Group celebration transportation for any occasion</p>
+                  </div>
+                </a>
+              )}
+              {content.crossSellWebsites.includes('chicagoweddingtransportation') && (
+                <a href="https://chicagoweddingtransportation.com" target="_blank" rel="noopener" class="flex items-start gap-3 rounded-lg bg-gray-50 p-4 hover:bg-gray-100 transition">
+                  <span class="text-2xl">💒</span>
+                  <div>
+                    <h4 class="font-semibold text-gray-900">Wedding Transportation</h4>
+                    <p class="text-sm text-gray-600">Elegant limousine service for your special day</p>
+                  </div>
+                </a>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* Internal Links Section */}
         {content.internalLinks && content.internalLinks.length > 0 && (

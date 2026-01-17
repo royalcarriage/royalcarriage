@@ -4,8 +4,10 @@ import CTAButton from '@packages/astro-components/CTAButton.astro';
 import CallButton from '@packages/astro-components/CallButton.astro';
 import { generateServiceSchema } from '@packages/astro-utils/schema';
 import { getSiteConfig } from '@packages/astro-utils/config';
+import { getSiteImages } from '@packages/astro-utils/images';
 
 const config = getSiteConfig('wedding');
+const images = getSiteImages('wedding');
 const serviceSchema = generateServiceSchema({
   config,
   serviceName: 'Chicago Wedding Transportation',
@@ -20,66 +22,163 @@ const serviceSchema = generateServiceSchema({
   description="Elegant wedding limousine service in Chicago. Professional transportation for weddings, bridal parties, and special occasions. Luxury vehicles and experienced chauffeurs."
   canonical="/index"
   schema={serviceSchema}
+  ogImage={images.og}
 >
-  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+  <!-- Hero Section with Real Image -->
+  <section class="relative text-white py-28 md:py-36">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={images.hero.main}
+        alt="Elegant wedding limousine service Chicago"
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-rose-900/85 to-slate-900/75"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4">
+      <div class="max-w-3xl text-center mx-auto">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">Chicago Wedding Transportation</h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-100">Make your special day unforgettable with elegant limousine service</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <CTAButton target="wedding" location="hero" size="lg" />
+          <CallButton target="wedding" location="hero" size="lg" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Introduction -->
+  <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
-      <h1 class="text-4xl md:text-5xl font-bold mb-6">Chicago Wedding Transportation</h1>
-      <div class="flex flex-col sm:flex-row gap-4">
-        <CTAButton target="wedding" location="hero" size="lg" />
-        <CallButton target="wedding" location="hero" size="lg" />
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="text-xl text-gray-700 leading-relaxed">
+          Make your special day even more memorable with Royal Carriage Limousine's elegant wedding transportation service. We provide luxury vehicles, professional chauffeurs, and meticulous attention to detail for weddings throughout Chicago and surrounding suburbs.
+        </p>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="container mx-auto px-4 py-12">
-    <div class="max-w-4xl mx-auto prose prose-lg">
-      <p class="text-lg mb-6">Make your special day even more memorable with Royal Carriage Limousine's elegant wedding transportation service. We provide luxury vehicles, professional chauffeurs, and meticulous attention to detail for weddings throughout Chicago and surrounding suburbs.</p>
+  <!-- Services Grid with Images -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Wedding Transportation Services</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.hero.secondary} alt="Bridal party limousine transportation" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Bridal Party Transportation</h3>
+            <p class="text-gray-600">Comfortable and elegant transport for the wedding party to ceremony and reception venues.</p>
+          </div>
+        </div>
 
-<h2 class="text-2xl font-bold mb-4">Wedding Transportation Services</h2>
-<ul class="list-disc list-inside space-y-2 mb-6">
-  <li><strong>Bridal Party Transportation:</strong> Comfortable transport for the wedding party to ceremony and reception</li>
-  <li><strong>Bride & Groom Service:</strong> Elegant limousine for the happy couple's grand entrance and exit</li>
-  <li><strong>Guest Shuttles:</strong> Coordinate transportation for guests between venues and hotels</li>
-  <li><strong>Bachelor/Bachelorette Parties:</strong> Safe, fun transportation for pre-wedding celebrations</li>
-  <li><strong>Rehearsal Dinner:</strong> Professional service for pre-wedding events</li>
-  <li><strong>Airport Transfers:</strong> Transportation for out-of-town guests arriving for your wedding</li>
-</ul>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.sedan} alt="Bride and groom limousine service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Bride & Groom Service</h3>
+            <p class="text-gray-600">Elegant limousine for the happy couple's grand entrance and memorable exit.</p>
+          </div>
+        </div>
 
-<h2 class="text-2xl font-bold mb-4">Why Choose Royal Carriage for Your Wedding</h2>
-<div class="grid md:grid-cols-3 gap-6 mb-6">
-  <div class="text-center bg-white p-6 rounded-lg shadow-md">
-    <h3 class="font-bold mb-2">Elegant Fleet</h3>
-    <p class="text-sm">Luxury limousines and vehicles perfect for wedding photography and elegant arrivals</p>
-  </div>
-  <div class="text-center bg-white p-6 rounded-lg shadow-md">
-    <h3 class="font-bold mb-2">Professional Chauffeurs</h3>
-    <p class="text-sm">Experienced drivers who understand wedding timelines and special day protocols</p>
-  </div>
-  <div class="text-center bg-white p-6 rounded-lg shadow-md">
-    <h3 class="font-bold mb-2">Stress-Free Service</h3>
-    <p class="text-sm">Coordination with wedding planners, on-time arrivals, and seamless execution</p>
-  </div>
-</div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.suv} alt="Wedding guest shuttle service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Guest Shuttles</h3>
+            <p class="text-gray-600">Coordinate transportation for guests between venues, hotels, and airports.</p>
+          </div>
+        </div>
 
-<h2 class="text-2xl font-bold mb-4">Wedding Package Options</h2>
-<p class="mb-4">We offer flexible wedding transportation packages to fit your needs:</p>
-<ul class="list-disc list-inside space-y-2 mb-6">
-  <li>Hourly service with minimum booking (typically 3-4 hours)</li>
-  <li>Point-to-point transfers (ceremony to reception)</li>
-  <li>Multiple vehicle coordination for large wedding parties</li>
-  <li>Custom packages combining various services</li>
-  <li>Complimentary champagne service available</li>
-</ul>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image1} alt="Bachelor bachelorette party limo" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Bachelor/Bachelorette Parties</h3>
+            <p class="text-gray-600">Safe, fun transportation for pre-wedding celebrations and parties.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.hero.tertiary} alt="Rehearsal dinner transportation" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Rehearsal Dinner</h3>
+            <p class="text-gray-600">Professional service for rehearsal dinners and pre-wedding events.</p>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image2} alt="Wedding guest airport transfers" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3 text-rose-700">Airport Transfers</h3>
+            <p class="text-gray-600">Transportation for out-of-town guests arriving for your wedding.</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="bg-gray-100 py-12">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+  <!-- Why Choose Us -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Why Choose Royal Carriage for Your Wedding</h2>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="text-center p-8 bg-rose-50 rounded-lg">
+          <div class="text-5xl mb-4">💒</div>
+          <h3 class="text-xl font-bold mb-3">Elegant Fleet</h3>
+          <p class="text-gray-600">Luxury limousines and vehicles perfect for wedding photography and elegant arrivals</p>
+        </div>
+        <div class="text-center p-8 bg-rose-50 rounded-lg">
+          <div class="text-5xl mb-4">👔</div>
+          <h3 class="text-xl font-bold mb-3">Professional Chauffeurs</h3>
+          <p class="text-gray-600">Experienced drivers who understand wedding timelines and special day protocols</p>
+        </div>
+        <div class="text-center p-8 bg-rose-50 rounded-lg">
+          <div class="text-5xl mb-4">✨</div>
+          <h3 class="text-xl font-bold mb-3">Stress-Free Service</h3>
+          <p class="text-gray-600">Coordination with wedding planners, on-time arrivals, and seamless execution</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wedding Packages -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-8">Wedding Package Options</h2>
+        <p class="text-center text-gray-600 mb-8">We offer flexible wedding transportation packages to fit your needs</p>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="flex items-start gap-3 bg-white p-6 rounded-lg shadow">
+            <span class="text-rose-600 text-2xl">🕐</span>
+            <div><strong>Hourly Service</strong> - Minimum booking (typically 3-4 hours)</div>
+          </div>
+          <div class="flex items-start gap-3 bg-white p-6 rounded-lg shadow">
+            <span class="text-rose-600 text-2xl">🚗</span>
+            <div><strong>Point-to-Point</strong> - Transfers from ceremony to reception</div>
+          </div>
+          <div class="flex items-start gap-3 bg-white p-6 rounded-lg shadow">
+            <span class="text-rose-600 text-2xl">🚌</span>
+            <div><strong>Multiple Vehicles</strong> - Coordination for large wedding parties</div>
+          </div>
+          <div class="flex items-start gap-3 bg-white p-6 rounded-lg shadow">
+            <span class="text-rose-600 text-2xl">🍾</span>
+            <div><strong>Champagne Service</strong> - Complimentary champagne available</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA with Background Image -->
+  <section class="relative text-white py-20">
+    <div class="absolute inset-0 z-0">
+      <img src={images.hero.secondary} alt="Wedding limousine Chicago" class="w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-r from-rose-900/90 to-slate-900/85"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Book Your Wedding Transportation</h2>
+      <p class="text-xl mb-8 text-gray-200">Let us make your special day even more memorable</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <CTAButton target="wedding" location="bottom-cta" size="lg" />
-        <CallButton target="wedding" location="bottom-cta" size="lg" variant="primary" />
+        <CTAButton target="wedding" location="bottom-cta" size="lg" variant="secondary" />
+        <CallButton target="wedding" location="bottom-cta" size="lg" />
       </div>
     </div>
-  </div>
+  </section>
 </BaseLayout>

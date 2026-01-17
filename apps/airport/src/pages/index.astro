@@ -2,21 +2,36 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CTAButton from '@packages/astro-components/CTAButton.astro';
 import CallButton from '@packages/astro-components/CallButton.astro';
+import { getSiteImages } from '@packages/astro-utils/images';
+
+const images = getSiteImages('airport');
 ---
 
 <BaseLayout
   title="Chicago Airport Limousine Service - O'Hare & Midway Transportation"
   description="Professional airport limousine service in Chicago. Luxury transportation to O'Hare and Midway airports, downtown Chicago, and suburbs. Reliable 24/7 black car service with experienced chauffeurs."
   canonical="/"
+  ogImage={images.og}
 >
-  <!-- Hero Section -->
-  <section class="bg-gradient-to-r from-blue-900 to-blue-700 text-white py-20">
-    <div class="container mx-auto px-4">
+  <!-- Hero Section with Real Image -->
+  <section class="relative text-white py-24 md:py-32">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src={images.hero.main}
+        alt="Luxury black car airport transportation Chicago"
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-800/80"></div>
+    </div>
+
+    <div class="relative z-10 container mx-auto px-4">
       <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">
           Chicago's Premier Airport Limousine Service
         </h1>
-        <p class="text-xl md:text-2xl mb-8">
+        <p class="text-xl md:text-2xl mb-8 drop-shadow">
           Professional transportation to O'Hare, Midway, and all Chicago area destinations. Available 24/7 with luxury vehicles and experienced chauffeurs.
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -27,57 +42,75 @@ import CallButton from '@packages/astro-components/CallButton.astro';
     </div>
   </section>
 
-  <!-- Services Overview -->
+  <!-- Services Overview with Images -->
   <section class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Our Airport Transportation Services</h2>
       <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">O'Hare Airport Service</h3>
-          <p class="text-gray-700 mb-4">
-            Professional limousine service to and from Chicago O'Hare International Airport. We monitor flight schedules to ensure timely pickups and drop-offs, regardless of delays or early arrivals.
-          </p>
-          <a href="/ohare-airport-limo" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.services?.ohare} alt="O'Hare Airport limousine service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">O'Hare Airport Service</h3>
+            <p class="text-gray-700 mb-4">
+              Professional limousine service to and from Chicago O'Hare International Airport. We monitor flight schedules to ensure timely pickups and drop-offs, regardless of delays or early arrivals.
+            </p>
+            <a href="/ohare-airport-limo" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">Midway Airport Service</h3>
-          <p class="text-gray-700 mb-4">
-            Reliable transportation to and from Midway International Airport. Our chauffeurs know the best routes to avoid traffic and ensure you arrive on time for your flight or destination.
-          </p>
-          <a href="/midway-airport-limo" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.services?.midway} alt="Midway Airport car service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">Midway Airport Service</h3>
+            <p class="text-gray-700 mb-4">
+              Reliable transportation to and from Midway International Airport. Our chauffeurs know the best routes to avoid traffic and ensure you arrive on time for your flight or destination.
+            </p>
+            <a href="/midway-airport-limo" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">Downtown Chicago</h3>
-          <p class="text-gray-700 mb-4">
-            Seamless airport transportation to and from downtown Chicago. Whether you're heading to the Loop, River North, or any downtown destination, we provide efficient and comfortable service.
-          </p>
-          <a href="/airport-limo-downtown-chicago" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.services?.downtown} alt="Downtown Chicago airport transportation" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">Downtown Chicago</h3>
+            <p class="text-gray-700 mb-4">
+              Seamless airport transportation to and from downtown Chicago. Whether you're heading to the Loop, River North, or any downtown destination, we provide efficient and comfortable service.
+            </p>
+            <a href="/airport-limo-downtown-chicago" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">Suburb Transportation</h3>
-          <p class="text-gray-700 mb-4">
-            Airport limousine service to all Chicago suburbs including Naperville, Schaumburg, Oak Brook, and beyond. We cover the entire Chicagoland area with reliable, punctual service.
-          </p>
-          <a href="/airport-limo-suburbs" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.services?.suburbs} alt="Chicago suburbs airport limousine" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">Suburb Transportation</h3>
+            <p class="text-gray-700 mb-4">
+              Airport limousine service to all Chicago suburbs including Naperville, Schaumburg, Oak Brook, and beyond. We cover the entire Chicagoland area with reliable, punctual service.
+            </p>
+            <a href="/airport-limo-suburbs" class="text-blue-600 hover:text-blue-800 font-semibold">Learn More →</a>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">Meet & Greet Service</h3>
-          <p class="text-gray-700 mb-4">
-            Premium meet and greet service at baggage claim. Your chauffeur will be waiting with a name sign, ready to assist with luggage and escort you to your luxury vehicle.
-          </p>
-          <a href="/contact" class="text-blue-600 hover:text-blue-800 font-semibold">Request Service →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image1} alt="Meet and greet chauffeur service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">Meet & Greet Service</h3>
+            <p class="text-gray-700 mb-4">
+              Premium meet and greet service at baggage claim. Your chauffeur will be waiting with a name sign, ready to assist with luggage and escort you to your luxury vehicle.
+            </p>
+            <a href="/contact" class="text-blue-600 hover:text-blue-800 font-semibold">Request Service →</a>
+          </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-lg">
-          <h3 class="text-2xl font-bold mb-4 text-blue-600">Group Transportation</h3>
-          <p class="text-gray-700 mb-4">
-            SUVs and luxury vans for group airport transportation. Perfect for corporate groups, families, or traveling parties needing reliable transportation to or from the airport.
-          </p>
-          <a href="/fleet" class="text-blue-600 hover:text-blue-800 font-semibold">View Fleet →</a>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.suv} alt="Group airport transportation SUV" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-2xl font-bold mb-4 text-blue-600">Group Transportation</h3>
+            <p class="text-gray-700 mb-4">
+              SUVs and luxury vans for group airport transportation. Perfect for corporate groups, families, or traveling parties needing reliable transportation to or from the airport.
+            </p>
+            <a href="/fleet" class="text-blue-600 hover:text-blue-800 font-semibold">View Fleet →</a>
+          </div>
         </div>
       </div>
     </div>
@@ -197,9 +230,52 @@ import CallButton from '@packages/astro-components/CallButton.astro';
     </div>
   </section>
 
-  <!-- Final CTA -->
-  <section class="bg-blue-600 text-white py-16">
-    <div class="container mx-auto px-4 text-center">
+  <!-- Fleet Preview Section -->
+  <section class="py-16 bg-gray-100">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-4">Our Luxury Fleet</h2>
+      <p class="text-center text-gray-600 mb-12 max-w-2xl mx-auto">Immaculately maintained vehicles for your comfort and safety</p>
+      <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.sedan} alt="Executive sedan for airport transfers" class="w-full h-56 object-cover" loading="lazy" />
+          <div class="p-4 text-center">
+            <h3 class="text-xl font-bold">Executive Sedan</h3>
+            <p class="text-gray-600">Up to 3 passengers</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.suv} alt="Luxury SUV for airport transportation" class="w-full h-56 object-cover" loading="lazy" />
+          <div class="p-4 text-center">
+            <h3 class="text-xl font-bold">Luxury SUV</h3>
+            <p class="text-gray-600">Up to 6 passengers</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.van} alt="Executive van for group airport travel" class="w-full h-56 object-cover" loading="lazy" />
+          <div class="p-4 text-center">
+            <h3 class="text-xl font-bold">Executive Van</h3>
+            <p class="text-gray-600">Up to 14 passengers</p>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-8">
+        <a href="/fleet" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-700 transition">View Full Fleet →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA with Background Image -->
+  <section class="relative text-white py-20">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={images.hero.secondary}
+        alt="Chicago airport car service"
+        class="w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-blue-900/85"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4 text-center">
       <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Book Your Airport Transportation?</h2>
       <p class="text-xl mb-8">Get a quote instantly or call us now for immediate assistance.</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">

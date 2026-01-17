@@ -126,7 +126,8 @@ service cloud.firestore {
     }
 
     match /fleet_vehicles/{vehicleId} {
-      allow read: if isAuthenticated() && (isDispatcher() || isFleetManager() || isAdmin() || isSaasAdmin());
+      // Public read for static site generation (fleet pages)
+      allow read: if true;
       allow write: if isFleetManager() || isAdmin() || isSaasAdmin();
     }
 
@@ -327,7 +328,8 @@ service cloud.firestore {
     }
 
     match /service_content/{contentId} {
-      allow read: if isViewer();
+      // Public read for static site generation
+      allow read: if true;
       allow create, update: if isAdmin() || isSaasAdmin() || request.auth.token.role == 'api';
       allow delete: if isSaasAdmin();
     }
@@ -358,12 +360,14 @@ service cloud.firestore {
     }
 
     match /locations/{locationId} {
-      allow read: if isViewer();
+      // Public read for static site generation
+      allow read: if true;
       allow write: if isAdmin() || isSaasAdmin();
     }
 
     match /services/{serviceId} {
-      allow read: if isViewer();
+      // Public read for static site generation
+      allow read: if true;
       allow write: if isAdmin() || isSaasAdmin();
     }
 
@@ -380,6 +384,55 @@ service cloud.firestore {
       allow read: if isAdmin() || isSaasAdmin();
       allow create: if isAuthenticated();
       allow update, delete: if isSaasAdmin();
+    }
+
+    match /activity_log/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // BLOG POSTS (Public Read)
+    // ===========================================
+
+    match /blog_posts/{postId} {
+      // Public read for blog pages
+      allow read: if true;
+      allow write: if isEditor() || isAdmin() || isSaasAdmin();
+    }
+
+    // ===========================================
+    // TENANTS
+    // ===========================================
+
+    match /tenants/{tenantId} {
+      allow read: if isAuthenticated();
+      allow write: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // AUDIT LOGS
+    // ===========================================
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin() || isSaasAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isSaasAdmin();
+    }
+
+    // ===========================================
+    // SEO COLLECTIONS
+    // ===========================================
+
+    match /seo-reports/{reportId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
+    }
+
+    match /seo-tasks/{taskId} {
+      allow read: if isViewer();
+      allow write: if isAdmin() || isSaasAdmin();
     }
 
     // ===========================================

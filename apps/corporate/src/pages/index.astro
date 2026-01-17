@@ -4,8 +4,10 @@ import CTAButton from '@packages/astro-components/CTAButton.astro';
 import CallButton from '@packages/astro-components/CallButton.astro';
 import { generateServiceSchema } from '@packages/astro-utils/schema';
 import { getSiteConfig } from '@packages/astro-utils/config';
+import { getSiteImages } from '@packages/astro-utils/images';
 
 const config = getSiteConfig('corporate');
+const images = getSiteImages('corporate');
 const serviceSchema = generateServiceSchema({
   config,
   serviceName: 'Chicago Executive Car Service',
@@ -20,71 +22,145 @@ const serviceSchema = generateServiceSchema({
   description="Professional executive car service in Chicago. Corporate black car transportation, hourly chauffeur services, and business travel solutions. Reliable, discreet, punctual service for professionals."
   canonical="/index"
   schema={serviceSchema}
+  ogImage={images.og}
 >
-  <div class="bg-gradient-to-r from-blue-800 to-blue-600 text-white py-16">
+  <!-- Hero Section with Real Image -->
+  <section class="relative text-white py-24 md:py-32">
+    <div class="absolute inset-0 z-0">
+      <img
+        src={images.hero.main}
+        alt="Professional executive car service Chicago"
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-800/85"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4">
+      <div class="max-w-3xl">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 drop-shadow-lg">Chicago Executive Car Service</h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-200">Professional corporate transportation for business leaders. Punctual, discreet, and luxurious.</p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <CTAButton target="corporate" location="hero" size="lg" />
+          <CallButton target="corporate" location="hero" size="lg" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Choose Us Section -->
+  <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
-      <h1 class="text-4xl md:text-5xl font-bold mb-6">Chicago Executive Car Service</h1>
-      <div class="flex flex-col sm:flex-row gap-4">
-        <CTAButton target="corporate" location="hero" size="lg" />
-        <CallButton target="corporate" location="hero" size="lg" />
+      <div class="max-w-6xl mx-auto">
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <h2 class="text-3xl md:text-4xl font-bold mb-6">Why Chicago Businesses Choose Us</h2>
+            <ul class="space-y-4">
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 text-2xl">✓</span>
+                <div><strong>Punctuality Guaranteed:</strong> Your time is valuable. We're always on time, every time</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 text-2xl">✓</span>
+                <div><strong>Professional Chauffeurs:</strong> Background-checked drivers with business etiquette training</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 text-2xl">✓</span>
+                <div><strong>Luxury Fleet:</strong> Executive sedans and SUVs maintained to the highest standards</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 text-2xl">✓</span>
+                <div><strong>Productive Environment:</strong> Wi-Fi, power outlets, and privacy for calls and work</div>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-blue-600 text-2xl">✓</span>
+                <div><strong>Confidentiality:</strong> Complete discretion for all business transportation needs</div>
+              </li>
+            </ul>
+          </div>
+          <div class="relative">
+            <img src={images.supporting.image1} alt="Professional corporate chauffeur service" class="rounded-lg shadow-xl w-full" loading="lazy" />
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <div class="container mx-auto px-4 py-12">
-    <div class="max-w-4xl mx-auto prose prose-lg">
-      <p class="text-lg mb-6">Royal Carriage Limousine provides premium executive car service tailored to the needs of business professionals and corporate clients throughout Chicago. Our professional chauffeur service delivers punctual, discreet, and comfortable transportation for meetings, airport transfers, and corporate events.</p>
-
-<h2 class="text-2xl font-bold mb-4">Why Chicago Businesses Choose Us</h2>
-<ul class="list-disc list-inside space-y-2 mb-6">
-  <li><strong>Punctuality Guaranteed:</strong> Your time is valuable. We're always on time, every time</li>
-  <li><strong>Professional Chauffeurs:</strong> Background-checked drivers with business etiquette training</li>
-  <li><strong>Luxury Fleet:</strong> Executive sedans and SUVs maintained to the highest standards</li>
-  <li><strong>Productive Environment:</strong> Wi-Fi, power outlets, and privacy for calls and work</li>
-  <li><strong>Flexible Billing:</strong> Corporate accounts with monthly invoicing available</li>
-  <li><strong>Confidentiality:</strong> Complete discretion for all business transportation needs</li>
-</ul>
-
-<h2 class="text-2xl font-bold mb-4">Corporate Transportation Services</h2>
-<div class="grid md:grid-cols-2 gap-6 mb-6">
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <h3 class="text-xl font-bold mb-3">Airport Transfers</h3>
-    <p>Professional transportation to O'Hare and Midway airports. Flight tracking, meet & greet service, and reliable pickup for business travelers.</p>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <h3 class="text-xl font-bold mb-3">Corporate Events</h3>
-    <p>Transportation coordination for conferences, seminars, client entertainment, and company events throughout Chicago.</p>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <h3 class="text-xl font-bold mb-3">Hourly Services</h3>
-    <p>Dedicated chauffeur and vehicle for multiple stops, meetings, or full-day business needs.</p>
-  </div>
-  <div class="bg-white p-6 rounded-lg shadow-md">
-    <h3 class="text-xl font-bold mb-3">Executive Travel</h3>
-    <p>Premium transportation for C-suite executives, visiting clients, and VIP business guests.</p>
-  </div>
-</div>
-
-<h2 class="text-2xl font-bold mb-4">Corporate Account Benefits</h2>
-<p class="mb-4">Establish a corporate account with Royal Carriage for streamlined business transportation:</p>
-<ul class="list-disc list-inside space-y-2 mb-6">
-  <li>Monthly consolidated billing and detailed ride reports</li>
-  <li>Priority booking and dedicated account management</li>
-  <li>Employee travel management and tracking</li>
-  <li>Customizable approval workflows</li>
-  <li>Preferred rates for regular clients</li>
-  <li>24/7 customer support for urgent needs</li>
-</ul>
+  <!-- Services Grid with Images -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center mb-12">Corporate Transportation Services</h2>
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.sedan} alt="Executive sedan for airport transfers" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Airport Transfers</h3>
+            <p class="text-gray-600">Professional transportation to O'Hare and Midway airports. Flight tracking, meet & greet service, and reliable pickup for business travelers.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.hero.secondary} alt="Corporate events transportation" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Corporate Events</h3>
+            <p class="text-gray-600">Transportation coordination for conferences, seminars, client entertainment, and company events throughout Chicago.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.fleet.suv} alt="Executive SUV for hourly chauffeur service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Hourly Services</h3>
+            <p class="text-gray-600">Dedicated chauffeur and vehicle for multiple stops, meetings, or full-day business needs.</p>
+          </div>
+        </div>
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+          <img src={images.supporting.image2} alt="VIP executive travel service" class="w-full h-48 object-cover" loading="lazy" />
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-3">Executive Travel</h3>
+            <p class="text-gray-600">Premium transportation for C-suite executives, visiting clients, and VIP business guests.</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <div class="bg-gray-100 py-12">
-    <div class="container mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-6">Book Your Service Now</h2>
+  <!-- Corporate Account Benefits -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8">Corporate Account Benefits</h2>
+        <div class="grid md:grid-cols-3 gap-6 mb-8">
+          <div class="p-6 border rounded-lg">
+            <div class="text-4xl mb-4">📊</div>
+            <h3 class="font-bold mb-2">Monthly Billing</h3>
+            <p class="text-gray-600 text-sm">Consolidated billing and detailed ride reports</p>
+          </div>
+          <div class="p-6 border rounded-lg">
+            <div class="text-4xl mb-4">⭐</div>
+            <h3 class="font-bold mb-2">Priority Booking</h3>
+            <p class="text-gray-600 text-sm">Dedicated account management</p>
+          </div>
+          <div class="p-6 border rounded-lg">
+            <div class="text-4xl mb-4">💰</div>
+            <h3 class="font-bold mb-2">Preferred Rates</h3>
+            <p class="text-gray-600 text-sm">Special pricing for regular clients</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA with Background Image -->
+  <section class="relative text-white py-20">
+    <div class="absolute inset-0 z-0">
+      <img src={images.hero.tertiary} alt="Chicago corporate car service" class="w-full h-full object-cover" loading="lazy" />
+      <div class="absolute inset-0 bg-slate-900/90"></div>
+    </div>
+    <div class="relative z-10 container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Book Your Corporate Transportation</h2>
+      <p class="text-xl mb-8 text-gray-200">Professional service for business professionals</p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <CTAButton target="corporate" location="bottom-cta" size="lg" />
-        <CallButton target="corporate" location="bottom-cta" size="lg" variant="primary" />
+        <CTAButton target="corporate" location="bottom-cta" size="lg" variant="secondary" />
+        <CallButton target="corporate" location="bottom-cta" size="lg" />
       </div>
     </div>
-  </div>
+  </section>
 </BaseLayout>

@@ -92,7 +92,8 @@ export function AdminShell({
       children: [
         { id: "locations", label: "Locations (233)", href: "/locations" },
         { id: "services", label: "Services (91)", href: "/services" },
-        { id: "fleet", label: "Fleet Vehicles (14)", href: "/fleet-management" },
+        { id: "fleet", label: "Fleet Vehicles (23)", href: "/fleet-management" },
+        { id: "drivers", label: "Drivers (8)", href: "/driver-management" },
         { id: "blog-seo", label: "Blog & SEO", href: "/blog-management" },
       ],
     },

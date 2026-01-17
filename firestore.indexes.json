@@ -1,6 +1,14 @@
 {
   "indexes": [
     {
+      "collectionGroup": "content_schedules",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "enabled", "order": "ASCENDING" },
+        { "fieldPath": "nextExecutionAt", "order": "ASCENDING" }
+      ]
+    },
+    {
       "collectionGroup": "page_analyses",
       "queryScope": "COLLECTION",
       "fields": [

@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CTAButton from '@packages/astro-components/CTAButton.astro';
+import CallButton from '@packages/astro-components/CallButton.astro';
+---
+
+<BaseLayout
+  title="Thank You | Royal Carriage Limousine"
+  description="Thank you for contacting Royal Carriage Limousine. We'll be in touch shortly."
+>
+  <section class="py-24 bg-gradient-to-b from-blue-50 to-white">
+    <div class="container mx-auto px-4 text-center">
+      <div class="max-w-2xl mx-auto">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Thank You!</h1>
+        <p class="text-xl text-gray-600 mb-8">
+          Your request has been received. Our team will review your inquiry and get back to you within the hour during business hours.
+        </p>
+
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+          <h2 class="text-lg font-semibold text-gray-900 mb-3">What happens next?</h2>
+          <ul class="text-left space-y-3 text-gray-700">
+            <li class="flex items-start gap-3">
+              <span class="text-blue-600 font-bold">1.</span>
+              Our team reviews your transportation request
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-blue-600 font-bold">2.</span>
+              We'll contact you via phone or email with pricing and availability
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-blue-600 font-bold">3.</span>
+              Confirm your booking and receive your confirmation details
+            </li>
+          </ul>
+        </div>
+
+        <p class="text-gray-600 mb-6">
+          Need immediate assistance? Call us directly:
+        </p>
+        <div class="flex flex-wrap gap-4 justify-center">
+          <CallButton target="airport" location="thank-you" size="lg" />
+          <a href="/" class="inline-block bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-4 px-8 rounded-lg transition">
+            Return Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
