@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { db } from '../lib/firebase';
+import React, { useEffect, useState, useRef } from 'react';
+import { db, storage } from '../lib/firebase';
 import { collection, getDocs, query, doc, updateDoc, addDoc, deleteDoc, Timestamp, onSnapshot } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { useAuth } from '../state/AuthProvider';
 import { canPerformAction } from '../lib/permissions';
-import { Plus, Edit2, Trash2, Save, X, Loader2, RefreshCw, Car, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, Save, X, Loader2, RefreshCw, Car, AlertTriangle, CheckCircle, Upload, Image as ImageIcon } from 'lucide-react';
 
 interface VehicleItem {
   id: string;
@@ -61,10 +62,45 @@ function VehicleModal({
     serviceIds: [],
   });
   const [newFeature, setNewFeature] = useState('');
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function handleImageSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  async function handleImageUpload(): Promise<string | null> {
+    if (!imageFile) return formData.imageUrl || null;
+
+    setUploadingImage(true);
+    try {
+      const vehicleId = formData.name?.toLowerCase().replace(/\s+/g, '-') || `vehicle-${Date.now()}`;
+      const storageRef = ref(storage, `fleet-images/${vehicleId}-${Date.now()}.${imageFile.name.split('.').pop()}`);
+      await uploadBytes(storageRef, imageFile);
+      const url = await getDownloadURL(storageRef);
+      return url;
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return null;
+    } finally {
+      setUploadingImage(false);
+    }
+  }
 
   useEffect(() => {
     if (vehicle) {
       setFormData(vehicle);
+      setImagePreview(vehicle.imageUrl || null);
     } else {
       setFormData({
         name: '',
@@ -80,7 +116,9 @@ function VehicleModal({
         model: '',
         serviceIds: [],
       });
+      setImagePreview(null);
     }
+    setImageFile(null);
   }, [vehicle, isOpen]);
 
   function handleAddFeature() {
@@ -229,6 +267,66 @@ function VehicleModal({
             />
           </div>
 
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Vehicle Image</label>
+            <div className="flex items-start gap-4">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="w-40 h-32 bg-gray-100 rounded-lg flex items-center justify-center cursor-pointer hover:bg-gray-200 transition overflow-hidden border-2 border-dashed border-gray-300"
+              >
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="text-center text-gray-400">
+                    <ImageIcon className="w-8 h-8 mx-auto mb-1" />
+                    <span className="text-xs">Click to upload</span>
+                  </div>
+                )}
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageSelect}
+                className="hidden"
+              />
+              <div className="flex-1">
+                <p className="text-sm text-gray-500 mb-2">
+                  Upload a high-quality image of the vehicle. Supported formats: JPG, PNG, WebP.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-1 px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 text-sm"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Choose File
+                  </button>
+                  {imagePreview && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setImageFile(null);
+                        setImagePreview(null);
+                        setFormData({ ...formData, imageUrl: '' });
+                      }}
+                      className="px-3 py-1.5 text-red-600 hover:bg-red-50 rounded-lg text-sm"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+                {imageFile && (
+                  <p className="text-xs text-green-600 mt-1">
+                    New image selected: {imageFile.name}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Features</label>
             <div className="flex gap-2 mb-2">
@@ -269,12 +367,15 @@ function VehicleModal({
             Cancel
           </button>
           <button
-            onClick={() => onSave(formData)}
-            disabled={isLoading || !formData.name}
+            onClick={async () => {
+              const imageUrl = await handleImageUpload();
+              onSave({ ...formData, imageUrl: imageUrl || formData.imageUrl });
+            }}
+            disabled={isLoading || uploadingImage || !formData.name}
             className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            {vehicle ? 'Update' : 'Create'}
+            {(isLoading || uploadingImage) ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            {uploadingImage ? 'Uploading...' : vehicle ? 'Update' : 'Create'}
           </button>
         </div>
       </div>
@@ -305,7 +406,7 @@ export default function FleetManagementPage() {
     }
 
     setLoading(true);
-    const q = query(collection(db, 'vehicles'));
+    const q = query(collection(db, 'fleet_vehicles'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const items = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -332,7 +433,7 @@ export default function FleetManagementPage() {
   async function loadVehicles() {
     try {
       setLoading(true);
-      const q = query(collection(db, 'vehicles'));
+      const q = query(collection(db, 'fleet_vehicles'));
       const snapshot = await getDocs(q);
       const items = snapshot.docs.map((doc) => ({
         id: doc.id,
@@ -365,7 +466,7 @@ export default function FleetManagementPage() {
     try {
       if (editingVehicle) {
         // Update existing
-        await updateDoc(doc(db, 'vehicles', editingVehicle.id), {
+        await updateDoc(doc(db, 'fleet_vehicles', editingVehicle.id), {
           ...data,
           updatedAt: Timestamp.now(),
           updatedBy: user?.email,
@@ -382,7 +483,7 @@ export default function FleetManagementPage() {
         });
       } else {
         // Create new
-        await addDoc(collection(db, 'vehicles'), {
+        await addDoc(collection(db, 'fleet_vehicles'), {
           ...data,
           serviceIds: data.serviceIds || [],
           createdAt: Timestamp.now(),
@@ -423,7 +524,7 @@ export default function FleetManagementPage() {
 
     setIsDeleting(vehicle.id);
     try {
-      await deleteDoc(doc(db, 'vehicles', vehicle.id));
+      await deleteDoc(doc(db, 'fleet_vehicles', vehicle.id));
 
       // Log activity
       await addDoc(collection(db, 'activity_log'), {
@@ -462,7 +563,7 @@ export default function FleetManagementPage() {
     }
 
     try {
-      await updateDoc(doc(db, 'vehicles', vehicle.id), {
+      await updateDoc(doc(db, 'fleet_vehicles', vehicle.id), {
         status: newStatus,
         updatedAt: Timestamp.now(),
         updatedBy: user?.email,
