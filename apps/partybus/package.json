@@ -1,0 +1,17 @@
+{
+  "name": "@royal/partybus",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.15.8",
+    "@astrojs/tailwind": "^5.1.0",
+    "@royal-carriage/ui": "workspace:*"
+  }
+}

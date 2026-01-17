@@ -1,0 +1,39 @@
+---
+import { MainLayout } from '@royal-carriage/ui';
+---
+
+<MainLayout
+  title="Chicago Wedding Transportation | Luxury Limo & Car Service"
+  description="Elegant wedding transportation in Chicago. Make your special day perfect with our luxury limo and car service."
+  siteTitle="Chicago Wedding Transportation"
+  navLinks={[
+    { href: '/', text: 'Home' },
+    { href: '/packages', text: 'Packages' },
+    { href: '/fleet', text: 'Fleet' },
+    { href: '/pricing', text: 'Pricing' },
+    { href: '/contact', text: 'Contact' }
+  ]}
+  utmSource="wedding"
+>
+  <div class="container mx-auto p-8">
+    <h1 class="text-5xl font-bold mb-6">Chicago Wedding Transportation</h1>
+    <p class="text-xl mb-4">
+      Make your wedding day unforgettable with our elegant transportation service.
+      Luxury limousines and black cars for the bride, groom, and wedding party.
+    </p>
+    <div class="grid md:grid-cols-3 gap-6 mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Bride & Groom</h2>
+        <p>Arrive in style with our luxury wedding limousines</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Wedding Party</h2>
+        <p>Transport your bridesmaids and groomsmen comfortably</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold mb-3">Guests</h2>
+        <p>Coordinate transportation for your wedding guests</p>
+      </div>
+    </div>
+  </div>
+</MainLayout>

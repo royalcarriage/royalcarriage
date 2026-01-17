@@ -14,9 +14,8 @@
     "tailwindcss": "^3.4.14"
   },
   "dependencies": {
-    "astro": "^4.5.9",
+    "astro": "^5.15.8",
     "@astrojs/tailwind": "^5.1.0",
-    "@royal-carriage/ui": "workspace:*",
-    "@royal-carriage/firebase": "workspace:*"
+    "@royal-carriage/ui": "workspace:*"
   }
 }
