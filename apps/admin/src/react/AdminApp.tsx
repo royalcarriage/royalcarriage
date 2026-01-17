@@ -1,10 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { AdminShell } from "../components/AdminShell";
 import { KpiCard } from "../components/ui/KpiCard";
 import { Table } from "../components/ui/Table";
 import { PillButton } from "../components/ui/PillButton";
 import { Modal } from "../components/ui/Modal";
 import { useToast } from "../components/ui/Toast";
+
+// Lazy load new AI dashboard pages
+const AICommandCenter = lazy(() => import("../pages/ai-command-center"));
+const AIAnalytics = lazy(() => import("../pages/ai-analytics"));
+const ContentPipeline = lazy(() => import("../pages/content-pipeline"));
+const ContentApproval = lazy(() => import("../pages/content-approval"));
+const FeedbackAlerts = lazy(() => import("../pages/feedback-alerts"));
+const DataImportDashboard = lazy(() => import("../pages/data-import"));
+const LocationsManagement = lazy(() => import("../pages/locations-management"));
+const ServicesManagement = lazy(() => import("../pages/services-management"));
+const FleetManagement = lazy(() => import("../pages/fleet-management"));
+
+// Loading component for lazy loaded pages
+function PageLoader() {
+  return (
+    <div className="flex items-center justify-center min-h-[400px]">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+    </div>
+  );
+}
 import {
   addDeployLog,
   addGateReport,
@@ -51,6 +71,7 @@ type PageKey =
   | "overview"
   | "imports-moovs"
   | "imports-ads"
+  | "data-import"
   | "roi"
   | "site-health"
   | "money-pages"
@@ -66,7 +87,15 @@ type PageKey =
   | "deploy-logs"
   | "users"
   | "settings"
-  | "self-audit";
+  | "self-audit"
+  | "ai-command-center"
+  | "ai-analytics"
+  | "content-pipeline"
+  | "content-approval"
+  | "feedback-alerts"
+  | "locations"
+  | "services"
+  | "fleet-management";
 
 const ROLE_ORDER: Role[] = ["viewer", "editor", "admin", "superadmin"];
 
@@ -1131,6 +1160,55 @@ function AdminAppInner({ activePage }: { activePage: PageKey }) {
         )}
         {activePage === "self-audit" && (
           <SelfAuditPage onRun={handleSelfAudit} results={auditResults} />
+        )}
+        {/* AI Systems Pages */}
+        {activePage === "ai-command-center" && (
+          <Suspense fallback={<PageLoader />}>
+            <AICommandCenter />
+          </Suspense>
+        )}
+        {activePage === "ai-analytics" && (
+          <Suspense fallback={<PageLoader />}>
+            <AIAnalytics />
+          </Suspense>
+        )}
+        {activePage === "content-pipeline" && (
+          <Suspense fallback={<PageLoader />}>
+            <ContentPipeline />
+          </Suspense>
+        )}
+        {/* Workflow Pages */}
+        {activePage === "content-approval" && (
+          <Suspense fallback={<PageLoader />}>
+            <ContentApproval />
+          </Suspense>
+        )}
+        {activePage === "feedback-alerts" && (
+          <Suspense fallback={<PageLoader />}>
+            <FeedbackAlerts />
+          </Suspense>
+        )}
+        {/* Data Import Dashboard */}
+        {activePage === "data-import" && (
+          <Suspense fallback={<PageLoader />}>
+            <DataImportDashboard />
+          </Suspense>
+        )}
+        {/* Enterprise Pages */}
+        {activePage === "locations" && (
+          <Suspense fallback={<PageLoader />}>
+            <LocationsManagement />
+          </Suspense>
+        )}
+        {activePage === "services" && (
+          <Suspense fallback={<PageLoader />}>
+            <ServicesManagement />
+          </Suspense>
+        )}
+        {activePage === "fleet-management" && (
+          <Suspense fallback={<PageLoader />}>
+            <FleetManagement />
+          </Suspense>
         )}
       </AdminShell>
       <Modal

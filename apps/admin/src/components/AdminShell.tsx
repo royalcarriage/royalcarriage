@@ -36,11 +36,21 @@ export function AdminShell({
   const navItems = [
     { id: "overview", label: "Overview", href: "/" },
     {
+      id: "ai-systems",
+      label: "AI Systems",
+      children: [
+        { id: "ai-command-center", label: "Command Center", href: "/ai/command-center" },
+        { id: "ai-analytics", label: "AI Analytics", href: "/ai/analytics" },
+        { id: "content-pipeline", label: "Content Pipeline", href: "/content-pipeline" },
+      ],
+    },
+    {
       id: "imports",
       label: "Imports",
       children: [
         { id: "imports-moovs", label: "Moovs Import", href: "/imports/moovs" },
         { id: "imports-ads", label: "Ads Import", href: "/imports/ads" },
+        { id: "data-import", label: "Data Dashboard", href: "/data-import" },
       ],
     },
     { id: "roi", label: "ROI / Analytics", href: "/roi" },
@@ -71,6 +81,23 @@ export function AdminShell({
       children: [
         { id: "images-library", label: "Library", href: "/images/library" },
         { id: "images-missing", label: "Missing", href: "/images/missing" },
+      ],
+    },
+    {
+      id: "enterprise",
+      label: "Enterprise",
+      children: [
+        { id: "locations", label: "Locations (173)", href: "/locations" },
+        { id: "services", label: "Services (91)", href: "/services" },
+        { id: "fleet", label: "Fleet Vehicles", href: "/fleet-management" },
+      ],
+    },
+    {
+      id: "workflows",
+      label: "Workflows",
+      children: [
+        { id: "content-approval", label: "Content Approval", href: "/content-approval" },
+        { id: "feedback", label: "Feedback Alerts", href: "/feedback-alerts" },
       ],
     },
     { id: "deploy", label: "Deploy & Logs", href: "/deploy-logs" },

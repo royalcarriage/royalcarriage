@@ -772,3 +772,21 @@ export {
   rollbackImport,
   getImportErrorReport,
 };
+
+// --- AI COMMAND CENTER FUNCTIONS ---
+
+// Import AI terminal functions
+import {
+  executeTerminalCommand,
+  getCommandHistory,
+  getSystemMetrics,
+  logActivity,
+} from './aiTerminalFunctions';
+
+// Export AI terminal functions
+export {
+  executeTerminalCommand,
+  getCommandHistory,
+  getSystemMetrics,
+  logActivity,
+};
