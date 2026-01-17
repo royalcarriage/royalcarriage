@@ -33,7 +33,7 @@ jobs:
           node-version: "20"
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
           version: 8
 
@@ -48,7 +48,7 @@ jobs:
           fi
 
       - name: Authenticate to GCP (OIDC or service account key)
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER || '' }}
           service_account: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT || '' }}

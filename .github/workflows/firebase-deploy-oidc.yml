@@ -32,14 +32,14 @@ jobs:
 
       - name: Authenticate to GCP using Workload Identity (OIDC)
         if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER != '' }}
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account_email: ${{ secrets.WORKLOAD_IDENTITY_SERVICE_ACCOUNT }}
 
       - name: Authenticate to GCP using service account key (fallback)
         if: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER == '' && secrets.GCP_SA_KEY != '' }}
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           # Use explicit service-account JSON credentials supplied via repo secret GCP_SA_KEY
           credentials_json: ${{ secrets.GCP_SA_KEY }}
