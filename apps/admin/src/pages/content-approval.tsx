@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '../lib/firebase';
-import { collection, getDocs, query, where, updateDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, query, where, updateDoc, doc, addDoc, Timestamp } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
+import { ensureFirebaseApp } from '../lib/firebaseClient';
 import { useAuth } from '../state/AuthProvider';
+import { AccessControl, AdminOnly } from '../components/AccessControl';
+import { canPerformAction } from '../lib/permissions';
+import { Lock, CheckCircle, XCircle, Loader2 } from 'lucide-react';
 
 interface ApprovalItem {
   id: string;
@@ -82,6 +87,11 @@ export default function ContentApprovalPage() {
   }
 
   async function handleApprove(item: ApprovalItem) {
+    if (!canPerformAction(role, 'approveContent')) {
+      alert('You do not have permission to approve content');
+      return;
+    }
+
     try {
       const contentRef = doc(db, 'service_content', item.id);
       await updateDoc(contentRef, {
@@ -90,14 +100,30 @@ export default function ContentApprovalPage() {
         approvedBy: user?.email,
       });
 
+      // Log activity
+      await addDoc(collection(db, 'activity_log'), {
+        type: 'content',
+        message: `Approved content: ${item.serviceName || item.serviceId} - ${item.locationName || item.locationId}`,
+        status: 'success',
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: Timestamp.now(),
+      });
+
       setContent(content.filter((c) => c.id !== item.id));
       setSelectedContent(null);
     } catch (error) {
       console.error('Error approving content:', error);
+      alert('Failed to approve content. Please try again.');
     }
   }
 
   async function handleReject(item: ApprovalItem) {
+    if (!canPerformAction(role, 'approveContent')) {
+      alert('You do not have permission to reject content');
+      return;
+    }
+
     try {
       const contentRef = doc(db, 'service_content', item.id);
       await updateDoc(contentRef, {
@@ -107,15 +133,31 @@ export default function ContentApprovalPage() {
         rejectedBy: user?.email,
       });
 
+      // Log activity
+      await addDoc(collection(db, 'activity_log'), {
+        type: 'content',
+        message: `Rejected content: ${item.serviceName || item.serviceId} - ${item.locationName || item.locationId}`,
+        status: 'error',
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: Timestamp.now(),
+      });
+
       setContent(content.filter((c) => c.id !== item.id));
       setSelectedContent(null);
       setFeedback('');
     } catch (error) {
       console.error('Error rejecting content:', error);
+      alert('Failed to reject content. Please try again.');
     }
   }
 
   async function handleBulkApprove() {
+    if (!canPerformAction(role, 'approveContent')) {
+      alert('You do not have permission to approve content');
+      return;
+    }
+
     try {
       const itemsToApprove = selectedItems.size > 0
         ? content.filter((item) => selectedItems.has(item.id))
@@ -130,6 +172,16 @@ export default function ContentApprovalPage() {
         });
       }
 
+      // Log bulk activity
+      await addDoc(collection(db, 'activity_log'), {
+        type: 'content',
+        message: `Bulk approved ${itemsToApprove.length} content items`,
+        status: 'success',
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: Timestamp.now(),
+      });
+
       setSelectedItems(new Set());
       loadContent();
       alert(`Successfully approved ${itemsToApprove.length} items`);
@@ -140,6 +192,11 @@ export default function ContentApprovalPage() {
   }
 
   async function handleBulkApproveQuality() {
+    if (!canPerformAction(role, 'approveContent')) {
+      alert('You do not have permission to approve content');
+      return;
+    }
+
     try {
       const qualityThreshold = 0.75;
       const itemsToApprove = content.filter((item) =>
@@ -154,6 +211,16 @@ export default function ContentApprovalPage() {
           approvedBy: user?.email,
         });
       }
+
+      // Log activity
+      await addDoc(collection(db, 'activity_log'), {
+        type: 'ai',
+        message: `Auto-approved ${itemsToApprove.length} high-quality content items (>= 75%)`,
+        status: 'success',
+        userId: user?.uid,
+        userEmail: user?.email,
+        timestamp: Timestamp.now(),
+      });
 
       loadContent();
       alert(`Successfully approved ${itemsToApprove.length} items with quality score >= 75%`);

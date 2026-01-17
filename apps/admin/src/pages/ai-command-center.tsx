@@ -75,6 +75,13 @@ interface SystemStatus {
   lastCheck: Date;
 }
 
+interface ActivityItem {
+  type: 'ai' | 'deploy' | 'content' | 'system';
+  message: string;
+  time: string;
+  status: 'success' | 'error' | 'pending';
+}
+
 // Mock data for AI metrics
 const generateMockMetrics = (): AIMetric[] => {
   const now = new Date();
@@ -349,17 +356,12 @@ function MetricCard({
 }
 
 // Activity Feed Item
-function ActivityItem({
+function ActivityItemComponent({
   type,
   message,
   time,
   status,
-}: {
-  type: 'ai' | 'deploy' | 'content' | 'system';
-  message: string;
-  time: string;
-  status: 'success' | 'error' | 'pending';
-}) {
+}: ActivityItem) {
   const getIcon = () => {
     switch (type) {
       case 'ai': return <Bot className="w-4 h-4 text-purple-400" />;
@@ -400,12 +402,12 @@ export function AICommandCenter() {
     { name: 'Firestore', status: 'online', latency: 35, lastCheck: new Date() },
     { name: 'Storage', status: 'online', latency: 50, lastCheck: new Date() },
   ]);
-  const [activities, setActivities] = useState([
-    { type: 'ai' as const, message: 'Generated content for 12 location pages', time: '2 min ago', status: 'success' as const },
-    { type: 'deploy' as const, message: 'Deployed admin dashboard to production', time: '15 min ago', status: 'success' as const },
-    { type: 'content' as const, message: 'SEO analysis completed for wedding services', time: '23 min ago', status: 'success' as const },
-    { type: 'system' as const, message: 'Database backup completed', time: '1 hour ago', status: 'success' as const },
-    { type: 'ai' as const, message: 'Sentiment analysis on 45 reviews', time: '2 hours ago', status: 'success' as const },
+  const [activities, setActivities] = useState<ActivityItem[]>([
+    { type: 'ai', message: 'Generated content for 12 location pages', time: '2 min ago', status: 'success' },
+    { type: 'deploy', message: 'Deployed admin dashboard to production', time: '15 min ago', status: 'success' },
+    { type: 'content', message: 'SEO analysis completed for wedding services', time: '23 min ago', status: 'success' },
+    { type: 'system', message: 'Database backup completed', time: '1 hour ago', status: 'success' },
+    { type: 'ai', message: 'Sentiment analysis on 45 reviews', time: '2 hours ago', status: 'success' },
   ]);
   const [isAutoRefresh, setIsAutoRefresh] = useState(true);
 
@@ -761,7 +763,7 @@ Type 'help' for available commands.`;
           </div>
           <div className="space-y-1">
             {activities.map((activity, i) => (
-              <ActivityItem key={i} {...activity} />
+              <ActivityItemComponent key={i} {...activity} />
             ))}
           </div>
         </div>

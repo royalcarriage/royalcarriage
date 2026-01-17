@@ -64,17 +64,41 @@ export function TopBar({
         </div>
       </div>
       <div className="flex flex-wrap items-center gap-2">
-        <PillButton variant="secondary" onClick={onImportMoovs}>
+        <PillButton
+          variant="secondary"
+          onClick={onImportMoovs}
+          disabled={!canImport}
+          title={!canImport ? "Admin role required" : undefined}
+        >
           Import Moovs
+          {!canImport && <Lock className="w-3 h-3 ml-1" />}
         </PillButton>
-        <PillButton variant="secondary" onClick={onImportAds}>
+        <PillButton
+          variant="secondary"
+          onClick={onImportAds}
+          disabled={!canImport}
+          title={!canImport ? "Admin role required" : undefined}
+        >
           Import Ads
+          {!canImport && <Lock className="w-3 h-3 ml-1" />}
         </PillButton>
-        <PillButton variant="primary" onClick={onRunGate}>
+        <PillButton
+          variant="primary"
+          onClick={onRunGate}
+          disabled={!canRunGate}
+          title={!canRunGate ? "Admin role required" : undefined}
+        >
           Run Gate
+          {!canRunGate && <Lock className="w-3 h-3 ml-1" />}
         </PillButton>
-        <PillButton variant="danger" onClick={onDeploy}>
+        <PillButton
+          variant="danger"
+          onClick={onDeploy}
+          disabled={!canDeploy}
+          title={!canDeploy ? "Admin role required" : undefined}
+        >
           Deploy
+          {!canDeploy && <Lock className="w-3 h-3 ml-1" />}
         </PillButton>
       </div>
     </header>

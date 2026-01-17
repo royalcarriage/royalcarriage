@@ -21,6 +21,10 @@ import {
   Loader2,
 } from 'lucide-react';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { collection, query, orderBy, onSnapshot, doc, updateDoc, addDoc, Timestamp } from 'firebase/firestore';
+import { db } from '../lib/firebase';
+import { ensureFirebaseApp } from '../lib/firebaseClient';
+import { useAuth } from '../state/AuthProvider';
 
 // Types
 interface FeedbackAlert {
@@ -358,11 +362,54 @@ function AlertCard({
 
 // Main Component
 export function FeedbackAlerts() {
+  const { user } = useAuth();
   const [alerts, setAlerts] = useState<FeedbackAlert[]>(mockAlerts);
   const [filter, setFilter] = useState<'all' | 'new' | 'in_progress' | 'escalated' | 'resolved'>('all');
   const [sentimentFilter, setSentimentFilter] = useState<'all' | 'positive' | 'neutral' | 'negative'>('all');
   const [generatingId, setGeneratingId] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [useRealData, setUseRealData] = useState(false);
+
+  // Load real data from Firestore
+  useEffect(() => {
+    if (!useRealData) return;
+
+    const feedbackQuery = query(
+      collection(db, 'feedback'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(feedbackQuery, (snapshot) => {
+      const realAlerts = snapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          customerId: data.customerId || '',
+          customerName: data.customerName || 'Unknown',
+          customerEmail: data.customerEmail || '',
+          customerPhone: data.customerPhone,
+          rating: data.rating || 3,
+          sentiment: data.sentiment || 'neutral',
+          feedback: data.feedback || '',
+          source: data.source || 'direct',
+          bookingId: data.bookingId,
+          status: data.status || 'new',
+          priority: data.priority || 'medium',
+          createdAt: data.createdAt?.toDate() || new Date(),
+          assignedTo: data.assignedTo,
+          aiSuggestion: data.aiSuggestion,
+          response: data.response,
+          respondedAt: data.respondedAt?.toDate(),
+        } as FeedbackAlert;
+      });
+
+      if (realAlerts.length > 0) {
+        setAlerts(realAlerts);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [useRealData]);
 
   const filteredAlerts = alerts.filter(alert => {
     if (filter !== 'all' && alert.status !== filter) return false;
@@ -381,7 +428,44 @@ export function FeedbackAlerts() {
 
   const handleGenerateSuggestion = async (id: string) => {
     setGeneratingId(id);
-    // Simulate AI generation
+
+    try {
+      // Try using Gemini via Cloud Function
+      const { app } = ensureFirebaseApp();
+      if (app) {
+        const functions = getFunctions(app);
+        const quickAIAction = httpsCallable<
+          { action: string; content: string },
+          { result: string; tokens: number }
+        >(functions, 'quickAIAction');
+
+        const alert = alerts.find(a => a.id === id);
+        if (alert) {
+          const result = await quickAIAction({
+            action: 'generate',
+            content: `Write a professional, empathetic customer service response to this feedback from ${alert.customerName}: "${alert.feedback}". The response should apologize if appropriate, address their concerns, and offer a solution.`,
+          });
+
+          setAlerts(prev =>
+            prev.map(a => (a.id === id ? { ...a, aiSuggestion: result.data.result } : a))
+          );
+
+          // Update Firestore if using real data
+          if (useRealData) {
+            await updateDoc(doc(db, 'feedback', id), {
+              aiSuggestion: result.data.result,
+            });
+          }
+
+          setGeneratingId(null);
+          return;
+        }
+      }
+    } catch (error) {
+      console.warn('Cloud Function failed, using fallback:', error);
+    }
+
+    // Fallback to local generation
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const alert = alerts.find(a => a.id === id);
@@ -404,7 +488,8 @@ The Royal Carriage Team`;
     setGeneratingId(null);
   };
 
-  const handleRespond = (id: string, response: string) => {
+  const handleRespond = async (id: string, response: string) => {
+    // Update local state
     setAlerts(prev =>
       prev.map(a =>
         a.id === id
@@ -412,22 +497,88 @@ The Royal Carriage Team`;
           : a
       )
     );
+
+    // Update Firestore if using real data
+    if (useRealData) {
+      try {
+        await updateDoc(doc(db, 'feedback', id), {
+          status: 'resolved',
+          response,
+          respondedAt: Timestamp.now(),
+          respondedBy: user?.email,
+        });
+
+        // Log activity
+        await addDoc(collection(db, 'activity_log'), {
+          type: 'content',
+          message: `Responded to feedback from ${alerts.find(a => a.id === id)?.customerName}`,
+          status: 'success',
+          userId: user?.uid,
+          timestamp: Timestamp.now(),
+        });
+      } catch (error) {
+        console.error('Error updating feedback:', error);
+      }
+    }
   };
 
-  const handleEscalate = (id: string) => {
+  const handleEscalate = async (id: string) => {
     setAlerts(prev =>
       prev.map(a => (a.id === id ? { ...a, status: 'escalated', assignedTo: 'Manager' } : a))
     );
+
+    if (useRealData) {
+      try {
+        await updateDoc(doc(db, 'feedback', id), {
+          status: 'escalated',
+          assignedTo: 'Manager',
+          escalatedAt: Timestamp.now(),
+          escalatedBy: user?.email,
+        });
+
+        await addDoc(collection(db, 'activity_log'), {
+          type: 'system',
+          message: `Escalated feedback from ${alerts.find(a => a.id === id)?.customerName}`,
+          status: 'pending',
+          userId: user?.uid,
+          timestamp: Timestamp.now(),
+        });
+      } catch (error) {
+        console.error('Error escalating feedback:', error);
+      }
+    }
   };
 
-  const handleResolve = (id: string) => {
+  const handleResolve = async (id: string) => {
     setAlerts(prev =>
       prev.map(a => (a.id === id ? { ...a, status: 'resolved' } : a))
     );
+
+    if (useRealData) {
+      try {
+        await updateDoc(doc(db, 'feedback', id), {
+          status: 'resolved',
+          resolvedAt: Timestamp.now(),
+          resolvedBy: user?.email,
+        });
+
+        await addDoc(collection(db, 'activity_log'), {
+          type: 'content',
+          message: `Resolved feedback from ${alerts.find(a => a.id === id)?.customerName}`,
+          status: 'success',
+          userId: user?.uid,
+          timestamp: Timestamp.now(),
+        });
+      } catch (error) {
+        console.error('Error resolving feedback:', error);
+      }
+    }
   };
 
   const handleRefresh = async () => {
     setIsRefreshing(true);
+    // Toggle real data mode
+    setUseRealData(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
     setIsRefreshing(false);
   };
