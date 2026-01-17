@@ -138,6 +138,10 @@ export function RoleBadge({ role }: { role: Role }) {
     editor: 'bg-blue-50 text-blue-700 border-blue-200',
     admin: 'bg-amber-50 text-amber-700 border-amber-200',
     superadmin: 'bg-purple-50 text-purple-700 border-purple-200',
+    saas_admin: 'bg-red-50 text-red-700 border-red-200',
+    fleet_manager: 'bg-green-50 text-green-700 border-green-200',
+    accountant: 'bg-teal-50 text-teal-700 border-teal-200',
+    dispatcher: 'bg-indigo-50 text-indigo-700 border-indigo-200',
   };
 
   const labels: Record<Role, string> = {
@@ -145,6 +149,10 @@ export function RoleBadge({ role }: { role: Role }) {
     editor: 'Editor',
     admin: 'Admin',
     superadmin: 'Super Admin',
+    saas_admin: 'SaaS Admin',
+    fleet_manager: 'Fleet Manager',
+    accountant: 'Accountant',
+    dispatcher: 'Dispatcher',
   };
 
   return (
